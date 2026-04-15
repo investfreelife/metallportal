@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+@layer base {
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@layer components {
+  .container-main {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .btn-gold {
+    @apply bg-gold text-background font-semibold px-6 py-3 rounded-lg
+           hover:bg-gold-light transition-colors duration-200;
+  }
+
+  .btn-outline {
+    @apply border border-gold text-gold font-semibold px-6 py-3 rounded-lg
+           hover:bg-gold hover:text-background transition-colors duration-200;
+  }
+
+  .card-surface {
+    @apply bg-surface border border-surface-border rounded-xl p-6;
+  }
+}
