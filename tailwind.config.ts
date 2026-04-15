@@ -9,21 +9,26 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#0d0d1a",
-        foreground: "#ffffff",
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+        card: "var(--card)",
+        "card-foreground": "var(--card-foreground)",
+        border: "var(--border)",
+        muted: "var(--muted)",
+        "muted-foreground": "var(--muted-foreground)",
         gold: {
-          DEFAULT: "#E8B86D",
-          light: "#f0cc8a",
-          dark: "#c9993e",
+          DEFAULT: "var(--gold)",
+          dark: "var(--gold-dark)",
         },
-        surface: {
-          DEFAULT: "#15152a",
-          light: "#1e1e38",
-          border: "#2a2a4a",
-        },
+        success: "var(--success)",
+        "input-background": "var(--input-background)",
+        "primary-foreground": "var(--primary-foreground)",
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],
+      },
+      maxWidth: {
+        container: "1440px",
       },
     },
   },

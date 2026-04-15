@@ -1,63 +1,84 @@
 import Link from "next/link";
 
-const footerLinks = {
-  Каталог: [
-    { label: "Арматура", href: "/catalog/armatura" },
-    { label: "Трубы", href: "/catalog/truby" },
-    { label: "Листовой прокат", href: "/catalog/listovoy-prokat" },
-    { label: "Нержавеющая сталь", href: "/catalog/nerzhaveyka" },
-  ],
-  Компания: [
-    { label: "О нас", href: "#" },
-    { label: "Контакты", href: "#" },
-    { label: "Вакансии", href: "#" },
-    { label: "Партнёрам", href: "#" },
-  ],
-  Поддержка: [
-    { label: "Помощь", href: "#" },
-    { label: "Условия", href: "#" },
-    { label: "Политика конфиденциальности", href: "#" },
-    { label: "Возврат", href: "#" },
-  ],
-};
-
 export default function Footer() {
   return (
-    <footer className="border-t border-surface-border bg-surface py-12">
-      <div className="container-main">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    <footer className="bg-card border-t border-gold/20">
+      <div className="max-w-[1440px] mx-auto px-8 py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
           <div>
-            <span className="text-xl font-extrabold tracking-tight">
-              <span className="text-gold">МЕТАЛЛ</span>ПОРТАЛ
-            </span>
-            <p className="mt-3 text-sm text-gray-400">
-              Крупнейший маркетплейс металлопродукции в России
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-gold flex items-center justify-center">
+                <div className="w-6 h-6 border-2 border-background" />
+              </div>
+              <span className="text-[24px] font-bold text-foreground tracking-wide">
+                МЕТАЛЛПОРТАЛ
+              </span>
+            </div>
+            <p className="text-foreground/60 text-sm leading-relaxed">
+              Премиальный B2B портал металлопродукции, соединяющий проверенных
+              поставщиков с серьёзными покупателями.
             </p>
           </div>
 
-          {/* Link columns */}
-          {Object.entries(footerLinks).map(([title, links]) => (
-            <div key={title}>
-              <h4 className="text-sm font-semibold text-gold mb-3">{title}</h4>
-              <ul className="space-y-2">
-                {links.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-gray-400 hover:text-foreground transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {/* Products */}
+          <div>
+            <h4 className="text-foreground uppercase tracking-widest mb-4 text-sm">
+              Продукция
+            </h4>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/catalog/armatura" className="text-sm text-foreground/60 hover:text-gold transition-colors">Арматура</Link>
+              </li>
+              <li>
+                <Link href="/catalog/truby" className="text-sm text-foreground/60 hover:text-gold transition-colors">Трубы</Link>
+              </li>
+              <li>
+                <Link href="/catalog/listovoy-prokat" className="text-sm text-foreground/60 hover:text-gold transition-colors">Листовой металл</Link>
+              </li>
+              <li>
+                <Link href="/catalog/balki-shvellery" className="text-sm text-foreground/60 hover:text-gold transition-colors">Балки и швеллера</Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Company */}
+          <div>
+            <h4 className="text-foreground uppercase tracking-widest mb-4 text-sm">
+              Компания
+            </h4>
+            <ul className="space-y-2">
+              <li><Link href="#" className="text-sm text-foreground/60 hover:text-gold transition-colors">О нас</Link></li>
+              <li><Link href="#" className="text-sm text-foreground/60 hover:text-gold transition-colors">Наши поставщики</Link></li>
+              <li><Link href="#" className="text-sm text-foreground/60 hover:text-gold transition-colors">Вакансии</Link></li>
+              <li><Link href="#" className="text-sm text-foreground/60 hover:text-gold transition-colors">Контакты</Link></li>
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h4 className="text-foreground uppercase tracking-widest mb-4 text-sm">
+              Правовая информация
+            </h4>
+            <ul className="space-y-2">
+              <li><Link href="#" className="text-sm text-foreground/60 hover:text-gold transition-colors">Политика конфиденциальности</Link></li>
+              <li><Link href="#" className="text-sm text-foreground/60 hover:text-gold transition-colors">Условия использования</Link></li>
+              <li><Link href="#" className="text-sm text-foreground/60 hover:text-gold transition-colors">Политика cookies</Link></li>
+              <li><Link href="#" className="text-sm text-foreground/60 hover:text-gold transition-colors">Соответствие</Link></li>
+            </ul>
+          </div>
         </div>
 
-        <div className="mt-10 pt-6 border-t border-surface-border text-center text-sm text-gray-500">
-          © {new Date().getFullYear()} МЕТАЛЛПОРТАЛ. Все права защищены.
+        {/* Bottom */}
+        <div className="pt-8 border-t border-gold/10 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <p className="text-foreground/40 text-sm">
+            © {new Date().getFullYear()} МеталлПортал. Все права защищены.
+          </p>
+          <div className="flex gap-6">
+            <a href="#" className="text-foreground/40 hover:text-gold transition-colors text-sm uppercase tracking-wider">VK</a>
+            <a href="#" className="text-foreground/40 hover:text-gold transition-colors text-sm uppercase tracking-wider">Telegram</a>
+            <a href="#" className="text-foreground/40 hover:text-gold transition-colors text-sm uppercase tracking-wider">YouTube</a>
+          </div>
         </div>
       </div>
     </footer>
