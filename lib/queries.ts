@@ -59,7 +59,7 @@ export async function getCategoryWithChildren(slug: string) {
       `
       *,
       category:categories(id, name, slug),
-      supplier:suppliers(id, company_name, region, city, rating),
+      supplier:suppliers!left(id, company_name, region, city, rating),
       price_items(*)
     `
     )
@@ -86,7 +86,7 @@ export async function getProductBySlug(slug: string): Promise<any | null> {
       category:categories(id, name, slug, parent_id,
         parent:categories(id, name, slug)
       ),
-      supplier:suppliers(id, company_name, region, city, rating)
+      supplier:suppliers!left(id, company_name, region, city, rating)
     `
     )
     .eq("slug", slug)
