@@ -1,13 +1,16 @@
 import { Zap, Factory, Truck, FileText } from "lucide-react";
+import { getSiteSettings } from "@/lib/settings";
 
-const counters = [
-  { icon: Zap, label: "1500+ позиций в каталоге" },
-  { icon: Factory, label: "50+ проверенных поставщиков" },
-  { icon: Truck, label: "Доставка за 3 дня" },
-  { icon: FileText, label: "Документы: УПД, счёт-фактура" },
-];
+const ICONS = [Zap, Factory, Truck, FileText];
 
-export default function TrustCounters() {
+export default async function TrustCounters() {
+  const settings = await getSiteSettings();
+
+  const counters = [1, 2, 3, 4].map((i) => ({
+    icon: ICONS[i - 1],
+    label: settings[`trust_bar_${i}`] || ["1500+ позиций", "50+ поставщиков", "Доставка за 3 дня", "Документы"][i - 1],
+  }));
+
   return (
     <section className="bg-card border-y border-border">
       <div className="container-main py-6">

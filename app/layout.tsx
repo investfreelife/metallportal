@@ -2,33 +2,24 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import ThemeProvider from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "МЕТАЛЛПОРТАЛ — Маркетплейс металлопродукции",
   description:
     "B2B/B2C маркетплейс металлопроката, труб, арматуры и другой металлопродукции. Прямые поставки от производителей.",
-  keywords: [
-    "металлопрокат",
-    "арматура",
-    "трубы",
-    "металл",
-    "маркетплейс",
-    "B2B",
-    "оптом",
-  ],
+  keywords: ["металлопрокат", "арматура", "трубы", "металл", "маркетплейс", "B2B", "оптом"],
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru">
-      <body className="min-h-screen bg-background text-foreground">
-        <Header />
-        {children}
-        <Footer />
+    <html lang="ru" suppressHydrationWarning>
+      <body className="min-h-screen bg-background text-foreground transition-colors duration-200">
+        <ThemeProvider>
+          <Header />
+          {children}
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

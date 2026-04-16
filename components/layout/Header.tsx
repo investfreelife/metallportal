@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Search, Mic, ChevronDown, FileUp, Menu, X } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const NAV_ITEMS = [
   {
@@ -212,6 +213,7 @@ export default function Header() {
           </div>
 
           <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
+            <ThemeToggle />
             <button className="flex items-center gap-2 border-2 border-gold text-foreground hover:bg-gold/10 px-4 h-11 font-semibold rounded transition-all text-sm">
               <FileUp size={16} />
               <span>Загрузить смету</span>

@@ -1,68 +1,68 @@
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { getSiteSettings } from "@/lib/settings";
+import { supabase } from "@/lib/supabase";
 
-const categories = [
-  {
-    title: "Металлопрокат",
-    subtitle: "Трубы · Арматура · Лист · Балки · Уголок",
-    link: "1200+ позиций →",
-    image: "https://loremflickr.com/800/600/steel,pipe,industrial,metal",
-  },
-  {
-    title: "Готовые конструкции",
-    subtitle: "Ангары · Склады · Навесы · Каркасы зданий",
-    link: "Подобрать конструкцию →",
-    image: "https://loremflickr.com/800/600/warehouse,steel,building,hangar",
-  },
-  {
-    title: "Заборы и ограждения",
-    subtitle: "Профнастил · Сетка · Ворота · Калитки · Рабица",
-    link: "Смотреть каталог →",
-    image: "https://loremflickr.com/800/600/fence,metal,gate,steel",
-  },
-  {
-    title: "Быстровозводимые здания",
-    subtitle: "Модульные здания · Склады · Ангары · Павильоны",
-    link: "Рассчитать стоимость →",
-    image: "https://loremflickr.com/800/600/industrial,construction,building,factory",
-  },
+const CARD_HREFS = [
+  "/catalog/metalloprokat",
+  "/catalog/konstruktsii",
+  "/catalog/zabory",
+  "/catalog/zdaniya",
 ];
 
-export default function Hero() {
+const CARD_DEFAULTS = [
+  { title: "Металлопрокат", sub: "Трубы · Арматура · Лист · Балки · Уголок", link: "1200+ позиций →",
+    image: "https://loremflickr.com/800/600/steel,pipe,industrial,metal" },
+  { title: "Готовые конструкции", sub: "Ангары · Склады · Навесы · Каркасы зданий", link: "Подобрать конструкцию →",
+    image: "https://loremflickr.com/800/600/warehouse,steel,building,hangar" },
+  { title: "Заборы и ограждения", sub: "Профнастил · Сетка · Ворота · Калитки", link: "Смотреть каталог →",
+    image: "https://loremflickr.com/800/600/fence,metal,gate,steel" },
+  { title: "Быстровозводимые здания", sub: "Модульные · Склады · Ангары · Павильоны", link: "Рассчитать стоимость →",
+    image: "https://loremflickr.com/800/600/industrial,construction,building,factory" },
+];
+
+async function getCategoryImages() {
+  const slugs = ["metalloprokat", "konstruktsii", "zabory", "zdaniya"];
+  const { data } = await supabase.from("categories").select("slug, image_url").in("slug", slugs);
+  if (!data) return {} as Record<string, string>;
+  return Object.fromEntries(
+    (data as Array<{ slug: string; image_url: string | null }>)
+      .filter(c => c.image_url)
+      .map(c => [c.slug, c.image_url as string])
+  );
+}
+
+export default async function Hero() {
+  const [settings, catImages] = await Promise.all([getSiteSettings(), getCategoryImages()]);
+
+  const cards = CARD_DEFAULTS.map((def, i) => ({
+    title: settings[`hero_card_${i + 1}_title`] || def.title,
+    sub: settings[`hero_card_${i + 1}_sub`] || def.sub,
+    link: def.link,
+    image: settings[`hero_card_${i + 1}_image`] || catImages[["metalloprokat","konstruktsii","zabory","zdaniya"][i]] || def.image,
+    href: CARD_HREFS[i],
+  }));
+
   return (
     <section className="bg-background py-5">
       <div className="container-main">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {categories.map((category, index) => (
-            <div
-              key={index}
-              className="relative h-80 rounded overflow-hidden group cursor-pointer shadow-md hover:shadow-xl transition-all"
-            >
-              {/* Background image */}
+          {cards.map((card, index) => (
+            <Link key={index} href={card.href}
+              className="relative h-80 rounded overflow-hidden group cursor-pointer shadow-md hover:shadow-xl transition-all">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={category.image}
-                alt={category.title}
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-
-              {/* Overlay gradient */}
+              <img src={card.image} alt={card.title} className="absolute inset-0 w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-
-              {/* Content */}
               <div className="relative h-full p-8 flex flex-col justify-end text-white">
-                <h2 className="text-3xl font-bold mb-2">{category.title}</h2>
-                <p className="text-white/90 mb-4 text-base leading-relaxed">
-                  {category.subtitle}
-                </p>
+                <h2 className="text-3xl font-bold mb-2">{card.title}</h2>
+                <p className="text-white/90 mb-4 text-base leading-relaxed">{card.sub}</p>
                 <div className="flex items-center gap-2 text-gold group-hover:gap-3 transition-all">
-                  <span className="text-sm font-medium">{category.link}</span>
+                  <span className="text-sm font-medium">{card.link}</span>
                   <ArrowRight size={16} />
                 </div>
               </div>
-
-              {/* Hover effect overlay */}
               <div className="absolute inset-0 bg-gold/0 group-hover:bg-gold/10 transition-all pointer-events-none" />
-            </div>
+            </Link>
           ))}
         </div>
       </div>
