@@ -86,7 +86,7 @@ const NAV_ITEMS = [
 
 type NavItem = typeof NAV_ITEMS[number];
 
-function NavDropdown({ item }: { item: NavItem }) {
+function NavDropdown({ item, mega }: { item: NavItem; mega?: boolean }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -113,7 +113,9 @@ function NavDropdown({ item }: { item: NavItem }) {
       {open && (
         <div
           onMouseLeave={() => setOpen(false)}
-          className="absolute top-full left-0 z-50 bg-background border border-border rounded-lg shadow-2xl p-4 min-w-[260px]"
+          className={`absolute top-full left-0 z-50 bg-background border border-border rounded-lg shadow-2xl p-5 ${
+            mega ? "min-w-[520px]" : "min-w-[260px]"
+          }`}
         >
           <Link
             href={item.href}
@@ -122,7 +124,7 @@ function NavDropdown({ item }: { item: NavItem }) {
           >
             Все — {item.label} →
           </Link>
-          <div className="space-y-3">
+          <div className={mega ? "grid grid-cols-2 gap-x-6 gap-y-3" : "space-y-3"}>
             {item.children.map((child: any) => (
               <div key={child.href}>
                 <Link
@@ -232,8 +234,8 @@ export default function Header() {
       {/* Desktop nav */}
       <div style={{ backgroundColor: "var(--nav-bg)", color: "var(--nav-text)" }}>
         <div className="container-main hidden lg:flex items-center gap-4 xl:gap-6 h-11">
-          {NAV_ITEMS.map((item) => (
-            <NavDropdown key={item.href} item={item} />
+          {NAV_ITEMS.map((item, i) => (
+            <NavDropdown key={item.href} item={item} mega={i === 0} />
           ))}
           <Link href="/catalog" className="ml-auto text-xs hover:text-gold transition-colors opacity-60">
             Весь каталог →
