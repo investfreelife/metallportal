@@ -2,7 +2,7 @@ import Link from "next/link";
 
 interface ProductCardProps {
   product: any;
-  categorySlug: string;
+  productBasePath: string;
 }
 
 function getBestPrice(product: any): { base: number; discount: number | null } | null {
@@ -16,13 +16,13 @@ function getBestPrice(product: any): { base: number; discount: number | null } |
   return { base: best.base_price, discount: best.discount_price };
 }
 
-export default function CatalogProductCard({ product, categorySlug }: ProductCardProps) {
+export default function CatalogProductCard({ product, productBasePath }: ProductCardProps) {
   const price = getBestPrice(product);
   const inStock = product.price_items?.some((pi: any) => pi.in_stock) ?? false;
 
   return (
     <Link
-      href={`/catalog/${categorySlug}/${product.slug}`}
+      href={`${productBasePath}/${product.slug}`}
       className="bg-card border border-border rounded p-4 hover:border-gold hover:shadow-lg transition-all flex flex-col"
     >
       {product.image_url && (

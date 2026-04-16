@@ -4,7 +4,7 @@ const MC_SUPPLIER_ID = "a2000000-0000-0000-0000-000000000001";
 
 interface ProductTableProps {
   products: any[];
-  categorySlug: string;
+  productBasePath: string;
 }
 
 function extractSize(name: string): string {
@@ -49,7 +49,7 @@ function hasStock(product: any): boolean {
   return product.price_items?.some((pi: any) => pi.in_stock) ?? false;
 }
 
-export default function CatalogProductTable({ products, categorySlug }: ProductTableProps) {
+export default function CatalogProductTable({ products, productBasePath }: ProductTableProps) {
   return (
     <div className="overflow-x-auto bg-card border border-border rounded">
       <table className="w-full text-left">
@@ -75,7 +75,7 @@ export default function CatalogProductTable({ products, categorySlug }: ProductT
               >
                 <td className="px-4 py-3">
                   <Link
-                    href={`/catalog/${categorySlug}/${product.slug}`}
+                    href={`${productBasePath}/${product.slug}`}
                     className="text-sm font-medium text-foreground hover:text-gold transition-colors"
                   >
                     {product.name}
@@ -119,7 +119,7 @@ export default function CatalogProductTable({ products, categorySlug }: ProductT
                 </td>
                 <td className="px-4 py-3">
                   <Link
-                    href={`/catalog/${categorySlug}/${product.slug}`}
+                    href={`${productBasePath}/${product.slug}`}
                     className="text-xs border border-gold text-gold hover:bg-gold hover:text-primary-foreground font-medium px-3 py-1.5 rounded transition-all"
                   >
                     Подробнее

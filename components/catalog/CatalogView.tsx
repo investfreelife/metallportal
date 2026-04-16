@@ -12,6 +12,7 @@ interface CatalogViewProps {
   products: any[];
   categorySlug: string;
   activeSubSlug?: string;
+  productBasePath?: string; // e.g. "/catalog/metalloprokat/truby-i-profil"
 }
 
 export interface FilterState {
@@ -85,7 +86,8 @@ function RangeFilter({ label, unit, minVal, maxVal, onMinChange, onMaxChange }: 
   );
 }
 
-export default function CatalogView({ category, subcategories, products, categorySlug, activeSubSlug }: CatalogViewProps) {
+export default function CatalogView({ category, subcategories, products, categorySlug, activeSubSlug, productBasePath }: CatalogViewProps) {
+  const resolvedProductBasePath = productBasePath ?? `/catalog/${categorySlug}`;
   const [viewMode, setViewMode] = useState<"table" | "cards">("table");
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
   const [activeSub, setActiveSub] = useState<string>(activeSubSlug || "");
@@ -316,11 +318,11 @@ export default function CatalogView({ category, subcategories, products, categor
                 <button onClick={reset} className="text-gold hover:underline text-sm">Сбросить фильтры</button>
               </div>
             ) : viewMode === "table" ? (
-              <CatalogProductTable products={paginatedProducts} categorySlug={categorySlug} />
+              <CatalogProductTable products={paginatedProducts} productBasePath={resolvedProductBasePath} />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {paginatedProducts.map((product: any) => (
-                  <CatalogProductCard key={product.id} product={product} categorySlug={categorySlug} />
+                  <CatalogProductCard key={product.id} product={product} productBasePath={resolvedProductBasePath} />
                 ))}
               </div>
             )}

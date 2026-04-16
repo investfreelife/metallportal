@@ -1,37 +1,25 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getProductBySlug, getProductPriceItems, getRelatedProducts, getCategoryWithChildren } from "@/lib/queries";
+import { getProductBySlug, getProductPriceItems, getRelatedProducts } from "@/lib/queries";
 import ProductTabs from "@/components/catalog/ProductTabs";
 import PriceBlock from "@/components/catalog/PriceBlock";
-import CatalogView from "@/components/catalog/CatalogView";
 
 export const revalidate = 60;
 
 interface Props {
-  params: { category: string; slug: string };
+  params: { category: string; slug: string; productSlug: string };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const product = await getProductBySlug(params.slug);
-  if (!product) {
-    const cat = await getCategoryWithChildren(params.slug);
-    if (cat) return { title: `${cat.category.name} — купить в Москве | МеталлПортал` };
-    return { title: "Не найдено | МеталлПортал" };
-  }
+  const product = await getProductBySlug(params.productSlug);
+  if (!product) return { title: "Товар не найден | МеталлПортал" };
 
   const title = `${product.name} цена купить в Москве | МеталлПортал`;
   const description = product.description
     ? product.description.slice(0, 155)
     : `${product.name} — купить оптом и в розницу в Москве. Доставка по всей России. Лучшие цены.`;
-  const keywords = [
-    product.name,
-    "купить",
-    "цена",
-    "Москва",
-    product.gost,
-    product.steel_grade,
-  ]
+  const keywords = [product.name, "купить", "цена", "Москва", product.gost, product.steel_grade]
     .filter(Boolean)
     .join(", ");
 
@@ -39,11 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     keywords,
-    openGraph: {
-      title,
-      description,
-      images: product.image_url ? [product.image_url] : [],
-    },
+    openGraph: { title, description, images: product.image_url ? [product.image_url] : [] },
   };
 }
 
@@ -80,31 +64,14 @@ function getCategoryImage(slug: string): string {
 }
 
 export default async function ProductPage({ params }: Props) {
-  const product = await getProductBySlug(params.slug);
-
-  // Slug is a subcategory, not a product — render the category page
-  if (!product) {
-    const result = await getCategoryWithChildren(params.slug);
-    if (result) {
-      return (
-        <CatalogView
-          category={result.category}
-          subcategories={result.subcategories}
-          products={result.products}
-          categorySlug={params.slug}
-          productBasePath={`/catalog/${params.category}/${params.slug}`}
-        />
-      );
-    }
-    return notFound();
-  }
+  const product = await getProductBySlug(params.productSlug);
+  if (!product) return notFound();
 
   const parentCategoryId = (product.category as any)?.parent_id;
   let [priceItems, related] = await Promise.all([
     getProductPriceItems(product.id),
     getRelatedProducts(product.category_id, product.id, 6),
   ]);
-  // Fall back to parent category when subcategory has too few products
   if (related.length < 3 && parentCategoryId) {
     related = await getRelatedProducts(parentCategoryId, product.id, 6);
   }
@@ -115,7 +82,7 @@ export default async function ProductPage({ params }: Props) {
 
   const parentCategory = (product.category as any)?.parent;
   const categoryName = (product.category as any)?.name;
-  const categorySlug = (product.category as any)?.slug || params.category;
+  const categorySlug = (product.category as any)?.slug || params.slug;
   const fallbackImage = getCategoryImage(categorySlug);
 
   const specs = buildSpecs(product);
@@ -141,6 +108,10 @@ export default async function ProductPage({ params }: Props) {
     }),
   };
 
+  // Breadcrumb: use params.category and params.slug for L1/L2 context
+  const l1Slug = params.category;
+  const l2Slug = params.slug;
+
   return (
     <div className="bg-background min-h-screen">
       <script
@@ -165,7 +136,7 @@ export default async function ProductPage({ params }: Props) {
           {categoryName && (
             <>
               <span>/</span>
-              <Link href={`/catalog/${categorySlug}`} className="hover:text-gold transition-colors">
+              <Link href={`/catalog/${l1Slug}/${l2Slug}`} className="hover:text-gold transition-colors">
                 {categoryName}
               </Link>
             </>
@@ -202,9 +173,8 @@ export default async function ProductPage({ params }: Props) {
 
         {/* Two-column layout */}
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* LEFT — 58% */}
+          {/* LEFT */}
           <div className="flex-1 min-w-0 space-y-6">
-            {/* Product image */}
             <div className="rounded-lg overflow-hidden h-64 lg:h-80">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -214,7 +184,6 @@ export default async function ProductPage({ params }: Props) {
               />
             </div>
 
-            {/* Tabs */}
             <div className="bg-card border border-border rounded-lg overflow-hidden">
               <ProductTabs
                 description={product.description}
@@ -228,7 +197,7 @@ export default async function ProductPage({ params }: Props) {
             </div>
           </div>
 
-          {/* RIGHT — 42% */}
+          {/* RIGHT */}
           <div className="w-full lg:w-[380px] flex-shrink-0">
             <PriceBlock
               priceItems={priceItems}
@@ -251,7 +220,7 @@ export default async function ProductPage({ params }: Props) {
                 return (
                   <Link
                     key={rel.id}
-                    href={`/catalog/${categorySlug}/${rel.slug}`}
+                    href={`/catalog/${l1Slug}/${l2Slug}/${rel.slug}`}
                     className="bg-card border border-border rounded-lg p-3 hover:border-gold transition-all group"
                   >
                     <p className="text-xs font-medium text-foreground line-clamp-2 mb-2 group-hover:text-gold transition-colors">
