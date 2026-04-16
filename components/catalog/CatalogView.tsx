@@ -188,8 +188,7 @@ export default function CatalogView({ category, subcategories, products, categor
   const hasActiveFilters = Object.entries(filters).some(([k, v]) => k === "inStock" ? v : v !== 0 && v !== "");
 
   return (
-    <div className="bg-background min-h-screen">
-      <div className="container-main py-6">
+    <div>
         {/* Breadcrumb */}
         <nav className="text-sm text-muted-foreground mb-4">
           <Link href="/" className="hover:text-gold transition-colors">Главная</Link>
@@ -352,7 +351,6 @@ export default function CatalogView({ category, subcategories, products, categor
             )}
           </main>
         </div>
-      </div>
     </div>
   );
 }

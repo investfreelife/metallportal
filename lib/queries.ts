@@ -111,53 +111,64 @@ export async function getRelatedProducts(categoryId: string, excludeId: string, 
   return data ?? [];
 }
 
-export async function getCatalogPageData(): Promise<{
-  categories: any[];
-  productCounts: Record<string, number>;
-}> {
-  // Fetch all active categories with parent info
-  const { data: allCategories, error: catErr } = await supabase
-    .from("categories")
-    .select("*")
-    .eq("is_active", true)
-    .order("sort_order");
-
-  if (catErr) {
-    console.error("getCatalogPageData categories error:", catErr);
-    return { categories: [], productCounts: {} };
-  }
-
-  // Fetch product counts per category
-  const { data: countRows, error: countErr } = await supabase
+export async function getProductCounts(): Promise<Record<string, number>> {
+  const { data: countRows, error } = await supabase
     .from("products")
     .select("category_id")
     .eq("is_active", true) as { data: { category_id: string }[] | null; error: any };
 
-  const productCounts: Record<string, number> = {};
-  if (!countErr && countRows) {
+  const counts: Record<string, number> = {};
+  if (!error && countRows) {
     for (const row of countRows) {
-      productCounts[row.category_id] = (productCounts[row.category_id] || 0) + 1;
+      counts[row.category_id] = (counts[row.category_id] || 0) + 1;
     }
+  }
+  return counts;
+}
+
+function sumCounts(catId: string, allCats: any[], counts: Record<string, number>): number {
+  const direct = counts[catId] || 0;
+  const children = allCats.filter((c: any) => c.parent_id === catId);
+  const childSum = children.reduce((acc: number, c: any) => acc + sumCounts(c.id, allCats, counts), 0);
+  return direct + childSum;
+}
+
+export async function getFullCategoryTree(): Promise<any[]> {
+  const [{ data: allCategories, error }, counts] = await Promise.all([
+    supabase.from("categories").select("*").eq("is_active", true).order("sort_order"),
+    getProductCounts(),
+  ]);
+
+  if (error) {
+    console.error("getFullCategoryTree error:", error);
+    return [];
   }
 
   const cats = allCategories ?? [];
-  const mainCategories = cats.filter((c: any) => !c.parent_id);
-  const enriched = mainCategories.map((cat: any) => {
-    const subs = cats.filter((c: any) => c.parent_id === cat.id);
-    // Sum subcategory counts + direct products for total
-    const subTotal = subs.reduce((acc: number, s: any) => acc + (productCounts[s.id] || 0), 0);
-    const directCount = productCounts[cat.id] || 0;
-    return {
-      ...cat,
-      subcategories: subs.map((s: any) => ({
-        ...s,
-        productCount: productCounts[s.id] || 0,
-      })),
-      totalProducts: directCount + subTotal,
-    };
-  });
 
-  return { categories: enriched, productCounts };
+  const buildLevel = (parentId: string | null): any[] =>
+    cats
+      .filter((c: any) => (parentId ? c.parent_id === parentId : !c.parent_id))
+      .map((c: any) => {
+        const children = buildLevel(c.id);
+        return {
+          ...c,
+          productCount: counts[c.id] || 0,
+          totalProducts: sumCounts(c.id, cats, counts),
+          subcategories: children,
+        };
+      });
+
+  return buildLevel(null);
+}
+
+export async function getCatalogPageData(): Promise<{
+  categories: any[];
+  productCounts: Record<string, number>;
+}> {
+  const categories = await getFullCategoryTree();
+  const counts = await getProductCounts();
+  return { categories, productCounts: counts };
 }
 
 export async function getProductPriceItems(productId: string): Promise<any[]> {

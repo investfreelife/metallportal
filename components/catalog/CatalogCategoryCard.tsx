@@ -1,19 +1,13 @@
 import Link from "next/link";
 
-interface SubcategoryInfo {
-  id: string;
-  name: string;
-  slug: string;
-  productCount: number;
-}
-
 interface CategoryCardProps {
   name: string;
   slug: string;
   icon?: string;
   imageUrl?: string;
   totalProducts: number;
-  subcategories: SubcategoryInfo[];
+  subcategories: any[];
+  basePath: string; // e.g. "/catalog/metalloprokat" or "/catalog"
 }
 
 export default function CatalogCategoryCard({
@@ -23,11 +17,13 @@ export default function CatalogCategoryCard({
   imageUrl,
   totalProducts,
   subcategories,
+  basePath,
 }: CategoryCardProps) {
+  const cardHref = `${basePath}/${slug}`;
+
   return (
     <div className="bg-card border border-border rounded-lg p-5 hover:border-gold/40 transition-all">
       <div className="flex gap-4 mb-4">
-        {/* Category image or icon */}
         <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-muted flex items-center justify-center">
           {imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -37,10 +33,9 @@ export default function CatalogCategoryCard({
           )}
         </div>
 
-        {/* Title and total */}
         <div className="flex-1 min-w-0">
           <Link
-            href={`/catalog/${slug}`}
+            href={cardHref}
             className="text-lg font-bold text-foreground hover:text-gold transition-colors block truncate"
           >
             {name}
@@ -53,18 +48,17 @@ export default function CatalogCategoryCard({
         </div>
       </div>
 
-      {/* Subcategory links grid */}
       {subcategories.length > 0 && (
         <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
-          {subcategories.map((sub) => (
+          {subcategories.map((sub: any) => (
             <Link
               key={sub.id}
-              href={`/catalog/${slug}/${sub.slug}`}
+              href={`${cardHref}/${sub.slug}`}
               className="flex items-baseline gap-1 text-sm text-muted-foreground hover:text-gold hover:underline transition-colors truncate"
             >
               <span className="truncate">{sub.name}</span>
-              {sub.productCount > 0 && (
-                <span className="text-xs flex-shrink-0 opacity-60">{sub.productCount}</span>
+              {sub.totalProducts > 0 && (
+                <span className="text-xs flex-shrink-0 opacity-60">{sub.totalProducts}</span>
               )}
             </Link>
           ))}
