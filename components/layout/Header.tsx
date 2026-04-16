@@ -9,7 +9,7 @@ const NAV_ITEMS = [
   {
     label: "Металлопрокат",
     icon: "🔩",
-    href: "/catalog/metalloprokat",
+    href: "/catalog",
     children: [
       { label: "Трубы и профиль", href: "/catalog/truby-i-profil", children: [
         { label: "Трубы ВГП", href: "/catalog/truba-vgp" },
