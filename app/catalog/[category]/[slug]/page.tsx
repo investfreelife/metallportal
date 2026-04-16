@@ -16,7 +16,7 @@ export default async function ProductPage({ params }: Props) {
   const product = await getProductBySlug(params.slug);
 
   if (!product) {
-    notFound();
+    return notFound();
   }
 
   const priceItems = await getProductPriceItems(product.id);

@@ -1,6 +1,6 @@
 import { supabase } from "./supabase";
 
-export async function getMainCategories() {
+export async function getMainCategories(): Promise<any[]> {
   const { data, error } = await supabase
     .from("categories")
     .select("*")
@@ -15,7 +15,7 @@ export async function getMainCategories() {
   return data ?? [];
 }
 
-export async function getCategoryBySlug(slug: string) {
+export async function getCategoryBySlug(slug: string): Promise<any | null> {
   const { data, error } = await supabase
     .from("categories")
     .select("*")
@@ -29,7 +29,7 @@ export async function getCategoryBySlug(slug: string) {
   return data;
 }
 
-export async function getSubcategories(parentId: string) {
+export async function getSubcategories(parentId: string): Promise<any[]> {
   const { data, error } = await supabase
     .from("categories")
     .select("*")
@@ -77,7 +77,7 @@ export async function getCategoryWithChildren(slug: string) {
   };
 }
 
-export async function getProductBySlug(slug: string) {
+export async function getProductBySlug(slug: string): Promise<any | null> {
   const { data, error } = await supabase
     .from("products")
     .select(
@@ -99,7 +99,7 @@ export async function getProductBySlug(slug: string) {
   return data;
 }
 
-export async function getProductPriceItems(productId: string) {
+export async function getProductPriceItems(productId: string): Promise<any[]> {
   const { data, error } = await supabase
     .from("price_items")
     .select(

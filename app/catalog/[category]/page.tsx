@@ -12,7 +12,7 @@ export default async function CategoryPage({ params }: Props) {
   const result = await getCategoryWithChildren(params.category);
 
   if (!result) {
-    notFound();
+    return notFound();
   }
 
   return (
