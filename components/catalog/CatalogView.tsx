@@ -107,9 +107,14 @@ export default function CatalogView({ category, subcategories, products, categor
       if (p.steel_grade) steelGrades.add(p.steel_grade);
       if (p.gost) gosts.add(p.gost);
       if (p.coating) coatings.add(p.coating);
-      if (p.supplier?.company_name) suppliers.add(p.supplier.company_name);
-      if (p.supplier?.region) regions.add(p.supplier.region);
       if (p.unit) units.add(p.unit);
+      // Supplier from direct join OR from price_items
+      const supplierName = p.supplier?.company_name
+        ?? p.price_items?.find((pi: any) => pi.supplier?.company_name)?.supplier?.company_name;
+      if (supplierName) suppliers.add(supplierName);
+      const region = p.supplier?.region
+        ?? p.price_items?.find((pi: any) => pi.supplier?.region)?.supplier?.region;
+      if (region) regions.add(region);
     });
     return {
       steelGrades: Array.from(steelGrades).sort(),
@@ -134,8 +139,16 @@ export default function CatalogView({ category, subcategories, products, categor
       if (filters.gost && p.gost !== filters.gost) return false;
       if (filters.coating && p.coating !== filters.coating) return false;
       if (filters.unit && p.unit !== filters.unit) return false;
-      if (filters.supplier && p.supplier?.company_name !== filters.supplier) return false;
-      if (filters.region && p.supplier?.region !== filters.region) return false;
+      if (filters.supplier) {
+        const name = p.supplier?.company_name
+          ?? p.price_items?.find((pi: any) => pi.supplier?.company_name)?.supplier?.company_name;
+        if (name !== filters.supplier) return false;
+      }
+      if (filters.region) {
+        const reg = p.supplier?.region
+          ?? p.price_items?.find((pi: any) => pi.supplier?.region)?.supplier?.region;
+        if (reg !== filters.region) return false;
+      }
       if (filters.inStock && !p.price_items?.some((pi: any) => pi.in_stock)) return false;
       if (filters.priceMin > 0 || filters.priceMax > 0) {
         const best = getBestPrice(p);

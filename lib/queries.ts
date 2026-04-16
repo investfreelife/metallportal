@@ -60,7 +60,7 @@ export async function getCategoryWithChildren(slug: string) {
       *,
       category:categories(id, name, slug),
       supplier:suppliers!left(id, company_name, region, city, rating),
-      price_items(*)
+      price_items(*, supplier:suppliers!left(id, company_name, region, city, rating, is_verified))
     `
     )
     .in("category_id", categoryIds)

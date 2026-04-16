@@ -75,10 +75,15 @@ export default async function ProductPage({ params }: Props) {
   const product = await getProductBySlug(params.slug);
   if (!product) return notFound();
 
-  const [priceItems, related] = await Promise.all([
+  const parentCategoryId = (product.category as any)?.parent_id;
+  let [priceItems, related] = await Promise.all([
     getProductPriceItems(product.id),
     getRelatedProducts(product.category_id, product.id, 6),
   ]);
+  // Fall back to parent category when subcategory has too few products
+  if (related.length < 3 && parentCategoryId) {
+    related = await getRelatedProducts(parentCategoryId, product.id, 6);
+  }
 
   const bestPrice = priceItems.length
     ? Math.min(...priceItems.map((pi: any) => Number(pi.discount_price ?? pi.base_price)))
@@ -125,7 +130,7 @@ export default async function ProductPage({ params }: Props) {
           <Link href="/" className="hover:text-gold transition-colors">Главная</Link>
           <span>/</span>
           <Link href="/catalog" className="hover:text-gold transition-colors">Каталог</Link>
-          {parentCategory && (
+          {parentCategory?.name && (
             <>
               <span>/</span>
               <Link href={`/catalog/${parentCategory.slug}`} className="hover:text-gold transition-colors">
