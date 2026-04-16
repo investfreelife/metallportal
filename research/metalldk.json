@@ -1,0 +1,376 @@
+{
+  "catalog_nav": [
+    {
+      "text": "КАТАЛОГ",
+      "href": "https://metall-dk.ru/catalog/"
+    },
+    {
+      "text": "Арматура",
+      "href": "https://metall-dk.ru/catalog/armatura/"
+    },
+    {
+      "text": "Труба профильная",
+      "href": "https://metall-dk.ru/catalog/truba-profilnaya/"
+    },
+    {
+      "text": "Труба круглая",
+      "href": "https://metall-dk.ru/catalog/truba/"
+    },
+    {
+      "text": "Листовой прокат",
+      "href": "https://metall-dk.ru/catalog/listovoy-prokat/"
+    },
+    {
+      "text": "Уголок",
+      "href": "https://metall-dk.ru/catalog/ugolok/"
+    },
+    {
+      "text": "Швеллер",
+      "href": "https://metall-dk.ru/catalog/shveller/"
+    },
+    {
+      "text": "Балка двутавровая",
+      "href": "https://metall-dk.ru/catalog/balka-dvutavrovaja/"
+    },
+    {
+      "text": "Полоса",
+      "href": "https://metall-dk.ru/catalog/polosa_metallicheskaja/"
+    },
+    {
+      "text": "Квадрат стальной",
+      "href": "https://metall-dk.ru/catalog/kvadrat/"
+    },
+    {
+      "text": "Сетка металлическая",
+      "href": "https://metall-dk.ru/catalog/setka/"
+    },
+    {
+      "text": "Проволока вязальная",
+      "href": "https://metall-dk.ru/catalog/provoloka_vjazalnaja/"
+    },
+    {
+      "text": "Заглушки для профильных труб",
+      "href": "https://metall-dk.ru/catalog/zaglushki-dlya-profilnykh-trub/"
+    },
+    {
+      "text": "Профнастил",
+      "href": "https://metall-dk.ru/catalog/profnastil/"
+    },
+    {
+      "text": "Штакетник металлический",
+      "href": "https://metall-dk.ru/catalog/shtaketnik-metallicheskiy/"
+    },
+    {
+      "text": "Заборы",
+      "href": "https://metall-dk.ru/catalog/zabory/"
+    },
+    {
+      "text": "Крепеж",
+      "href": "https://metall-dk.ru/catalog/krepezh/"
+    },
+    {
+      "text": "Фитинги",
+      "href": "https://metall-dk.ru/catalog/fitingi_stalnye/"
+    },
+    {
+      "text": "Винтовые сваи",
+      "href": "https://metall-dk.ru/catalog/vintovye-svai/"
+    },
+    {
+      "text": "Петли",
+      "href": "https://metall-dk.ru/catalog/petli/"
+    },
+    {
+      "text": "Стройматериалы",
+      "href": "https://metall-dk.ru/catalog/stroymaterialy/"
+    },
+    {
+      "text": "Кованые изделия",
+      "href": "https://metall-dk.ru/catalog/kovka/"
+    },
+    {
+      "text": "Арматура A500C",
+      "href": "https://metall-dk.ru/catalog/armatura/armatura-a500c/"
+    },
+    {
+      "text": "Гладкая арматура А1",
+      "href": "https://metall-dk.ru/catalog/armatura/armatura-a1-katanka/"
+    },
+    {
+      "text": "Арматура А400",
+      "href": "https://metall-dk.ru/catalog/armatura/armatura-a400/"
+    },
+    {
+      "text": "Фиксаторы для арматуры",
+      "href": "https://metall-dk.ru/catalog/armatura/fiksatory-dlya-armatury/"
+    },
+    {
+      "text": "Арматура стеклопластиковая",
+      "href": "https://metall-dk.ru/catalog/armatura/armatura-kompozitnaya-stekloplastikovaya/"
+    },
+    {
+      "text": "Хомуты для арматуры",
+      "href": "https://metall-dk.ru/catalog/armatura/khomuty-dlya-armatury/"
+    },
+    {
+      "text": "Сетка арматурная",
+      "href": "https://metall-dk.ru/catalog/setka/setka-svarnaya-v-kartah/"
+    },
+    {
+      "text": "Сетка тканная",
+      "href": "https://metall-dk.ru/catalog/setka/setka-shtukaturnaya/"
+    },
+    {
+      "text": "Проволока вязальная",
+      "href": "https://metall-dk.ru/catalog/sortovoy-prokat/provoloka_vjazalnaja/"
+    },
+    {
+      "text": "Комплектующие для опалубки",
+      "href": "https://metall-dk.ru/catalog/komplektuyushchie_dlya_opalubki/"
+    },
+    {
+      "text": "Арматура 6 мм",
+      "href": "https://metall-dk.ru/catalog/armatura/armatura-6-mm/"
+    },
+    {
+      "text": "Арматура 8 мм",
+      "href": "https://metall-dk.ru/catalog/armatura/armatura-8-mm/"
+    },
+    {
+      "text": "Арматура 10 мм",
+      "href": "https://metall-dk.ru/catalog/armatura/armatura-10-mm/"
+    },
+    {
+      "text": "Арматура 12 мм",
+      "href": "https://metall-dk.ru/catalog/armatura/armatura-12mm/"
+    },
+    {
+      "text": "Арматура 14 мм",
+      "href": "https://metall-dk.ru/catalog/armatura/armatura-14-mm/"
+    },
+    {
+      "text": "Арматура 16 мм",
+      "href": "https://metall-dk.ru/catalog/armatura/armatura-16-mm/"
+    },
+    {
+      "text": "Арматура 18 мм",
+      "href": "https://metall-dk.ru/catalog/armatura/armatura-18-mm/"
+    },
+    {
+      "text": "Арматура 20 мм",
+      "href": "https://metall-dk.ru/catalog/armatura/armatura-20-mm/"
+    },
+    {
+      "text": "Арматура 25 мм",
+      "href": "https://metall-dk.ru/catalog/armatura/armatura-25-mm/"
+    },
+    {
+      "text": "Труба квадратная",
+      "href": "https://metall-dk.ru/catalog/truba-profilnaya/truba-kvadratnaya/"
+    },
+    {
+      "text": "Труба 10x10",
+      "href": "https://metall-dk.ru/catalog/truba-profilnaya/truba-kvadratnaya/10x10/"
+    },
+    {
+      "text": "Труба  15x15",
+      "href": "https://metall-dk.ru/catalog/truba-profilnaya/truba-kvadratnaya/15x15/"
+    },
+    {
+      "text": "Труба 20x20",
+      "href": "https://metall-dk.ru/catalog/truba-profilnaya/truba-kvadratnaya/20x20/"
+    },
+    {
+      "text": "Труба 25x25",
+      "href": "https://metall-dk.ru/catalog/truba-profilnaya/truba-kvadratnaya/25x25/"
+    },
+    {
+      "text": "Труба 30x30",
+      "href": "https://metall-dk.ru/catalog/truba-profilnaya/truba-kvadratnaya/truba-30x30/"
+    },
+    {
+      "text": "Труба 40x40",
+      "href": "https://metall-dk.ru/catalog/truba-profilnaya/truba-kvadratnaya/40x40/"
+    },
+    {
+      "text": "Труба 50x50",
+      "href": "https://metall-dk.ru/catalog/truba-profilnaya/truba-kvadratnaya/50x50/"
+    },
+    {
+      "text": "Труба 60x60",
+      "href": "https://metall-dk.ru/catalog/truba-profilnaya/truba-kvadratnaya/60x60/"
+    }
+  ],
+  "catalog_h1": "Каталог_металлопроката_в_Москве",
+  "catalog_categories": [
+    {
+      "text": "+7(495) 414-31-23",
+      "href": "tel:+74954143123"
+    },
+    {
+      "text": "ЧТО С МОИМ ЗАКАЗОМ",
+      "href": "https://metall-dk.ru/chto-s-moim-zakazom/"
+    },
+    {
+      "text": "РАСCЧИТАЙТЕ СВОЙ ЗАКАЗ.",
+      "href": "javascript:void(0)"
+    },
+    {
+      "text": "0",
+      "href": "https://metall-dk.ru/basket/"
+    },
+    {
+      "text": "Перейти в корзину",
+      "href": "https://metall-dk.ru/basket/"
+    },
+    {
+      "text": "КАТАЛОГ",
+      "href": "https://metall-dk.ru/catalog/"
+    },
+    {
+      "text": "Арматура",
+      "href": "https://metall-dk.ru/catalog/armatura/"
+    },
+    {
+      "text": "Труба профильная",
+      "href": "https://metall-dk.ru/catalog/truba-profilnaya/"
+    },
+    {
+      "text": "Труба круглая",
+      "href": "https://metall-dk.ru/catalog/truba/"
+    },
+    {
+      "text": "Листовой прокат",
+      "href": "https://metall-dk.ru/catalog/listovoy-prokat/"
+    },
+    {
+      "text": "Уголок",
+      "href": "https://metall-dk.ru/catalog/ugolok/"
+    },
+    {
+      "text": "Швеллер",
+      "href": "https://metall-dk.ru/catalog/shveller/"
+    },
+    {
+      "text": "Балка двутавровая",
+      "href": "https://metall-dk.ru/catalog/balka-dvutavrovaja/"
+    },
+    {
+      "text": "Полоса",
+      "href": "https://metall-dk.ru/catalog/polosa_metallicheskaja/"
+    },
+    {
+      "text": "Квадрат стальной",
+      "href": "https://metall-dk.ru/catalog/kvadrat/"
+    },
+    {
+      "text": "Сетка металлическая",
+      "href": "https://metall-dk.ru/catalog/setka/"
+    },
+    {
+      "text": "Проволока вязальная",
+      "href": "https://metall-dk.ru/catalog/provoloka_vjazalnaja/"
+    },
+    {
+      "text": "Заглушки для профильных труб",
+      "href": "https://metall-dk.ru/catalog/zaglushki-dlya-profilnykh-trub/"
+    },
+    {
+      "text": "Профнастил",
+      "href": "https://metall-dk.ru/catalog/profnastil/"
+    },
+    {
+      "text": "Штакетник металлический",
+      "href": "https://metall-dk.ru/catalog/shtaketnik-metallicheskiy/"
+    },
+    {
+      "text": "Заборы",
+      "href": "https://metall-dk.ru/catalog/zabory/"
+    },
+    {
+      "text": "Крепеж",
+      "href": "https://metall-dk.ru/catalog/krepezh/"
+    },
+    {
+      "text": "Фитинги",
+      "href": "https://metall-dk.ru/catalog/fitingi_stalnye/"
+    },
+    {
+      "text": "Винтовые сваи",
+      "href": "https://metall-dk.ru/catalog/vintovye-svai/"
+    },
+    {
+      "text": "Петли",
+      "href": "https://metall-dk.ru/catalog/petli/"
+    },
+    {
+      "text": "Стройматериалы",
+      "href": "https://metall-dk.ru/catalog/stroymaterialy/"
+    },
+    {
+      "text": "Кованые изделия",
+      "href": "https://metall-dk.ru/catalog/kovka/"
+    },
+    {
+      "text": "Арматура A500C",
+      "href": "https://metall-dk.ru/catalog/armatura/armatura-a500c/"
+    },
+    {
+      "text": "Гладкая арматура А1",
+      "href": "https://metall-dk.ru/catalog/armatura/armatura-a1-katanka/"
+    },
+    {
+      "text": "Арматура А400",
+      "href": "https://metall-dk.ru/catalog/armatura/armatura-a400/"
+    }
+  ],
+  "armatura": {
+    "url": "https://metall-dk.ru/catalog/armatura/",
+    "h1": "Арматура",
+    "filters": [],
+    "table_headers": [],
+    "subcategory_chips": [
+      "КАТАЛОГ",
+      "Арматура",
+      "Труба профильная",
+      "Труба круглая",
+      "Листовой прокат",
+      "Уголок",
+      "Швеллер",
+      "Балка двутавровая",
+      "Полоса",
+      "Квадрат стальной",
+      "Сетка металлическая",
+      "Проволока вязальная",
+      "Заглушки для профильных труб",
+      "Профнастил",
+      "Штакетник металлический",
+      "Заборы",
+      "Крепеж",
+      "Фитинги",
+      "Винтовые сваи",
+      "Петли"
+    ],
+    "first_product_href": "https://metall-dk.ru/catalog/",
+    "full_html_sample": "\n\t\t\t\t<!--title_content-->\n\t\t<div class=\"top-block-wrapper\">\n\t<section class=\"page-top maxwidth-theme \">\n\t\t<div class=\"topic\">\n\t\t\t<div class=\"topic__inner\">\n\t\t\t\t\t\t\t\t<div class=\"topic__heading\">\n\t\t\t\t\t<h1 id=\"pagetitle\">Арматура</h1>                <span class=\"element-count-wrapper\"><span class=\"element-count muted font_xs rounded3\">160</span></span>\n                \t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t                                \t\t<div id=\"navigation\">\n\t\t\t<div class=\"breadcrumbs swipeignore\"><div class=\"breadcrumbs__item\" id=\"bx_breadcrumb_0\"><a class=\"breadcrumbs__link\" href=\"/catalog/\" title=\"Каталог металлопроката в Москве\"><span class=\"breadcrumbs__item-name font_xs\">Каталог металлопроката в Москве</span><meta></a></div><span class=\"breadcrumbs__separator\">—</span><div class=\"breadcrumbs__item breadcrumbs__item--with-dropdown colored_theme_hover_bg-block cat_last\" id=\"bx_breadcrumb_1\"><link href=\"/catalog/armatura/\"><span><span class=\"breadcrumbs__item-name font_xs\">Арматура</span><span class=\"breadcrumbs__arrow-down \"><i class=\"svg inline  svg-inline-arrow\" aria-hidden=\"true\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"5\" height=\"3\" viewBox=\"0 0 5 3\"><path class=\"cls-1\" d=\"M250,80h5l-2.5,3Z\" transform=\"translate(-250 -80)\"></path></svg></i></span><meta></span><div class=\"breadcrumbs__dropdown-wrapper\"><div class=\"breadcrumbs__dropdown rounded3\"><a class=\"breadcrumbs__dropdown-item dark_link font_xs\" href=\"/catalog/truba-profilnaya/\">Труба профильная</a><a class=\"breadcrumbs__dropdown-item dark_link font_xs\" href=\"/catalog/truba/\">Труба круглая</a><a class=\"breadcrumbs__dropdown-item dark_link font_xs\" href=\"/catalog/listovoy-prokat/\">Листовой прокат</a><a class=\"breadcrumbs__dropdown-item dark_link font_xs\" href=\"/catalog/ugolok/\">Уголок</a><a class=\"breadcrumbs__dropdown-item dark_link font_xs\" href=\"/catalog/shveller/\">Швеллер</a><a class=\"breadcrumbs__dropdown-item dark_link font_xs\" href=\"/catalog/balka-dvutavrovaja/\">Балка двутавровая</a><a class=\"breadcrumbs__dropdown-item dark_link font_xs\" href=\"/catalog/polosa_metallicheskaja/\">Полоса</a><a class=\"breadcrumbs__dropdown-item dark_link font_xs\" href=\"/catalog/kvadrat/\">Квадрат стальной</a><a class=\"breadcrumbs__dropdown-item dark_link font_xs\" href=\"/catalog/setka/\">Сетка металлическая</a><a class=\"breadcrumbs__dropdown-item dark_link font_xs\" href=\"/catalog/provoloka_vjazalnaja/\">Проволока вязальная</a><a class=\"breadcrumbs__dropdown-item dark_link font_xs\" href=\"/catalog/zaglushki-dlya-profilnykh-trub/\">Заглушки для профильных труб</a><a class=\"breadcrumbs__dropdown-item dark_link font_xs\" href=\"/catalog/profnastil/\">Профнастил</a><a class=\"breadcrumbs__dropdown-item dark_link font_xs\" href=\"/catalog/shtaketnik-metallicheskiy/\">Штакетник металлический</a><a class=\"breadcrumbs__dropdown-item dark_link font_xs\" href=\"/catalog/zabory/\">Заборы</a><a class=\"breadcrumbs__dropdown-item dark_link font_xs\" href=\"/catalog/krepezh/\">Крепеж</a><a class=\"breadcrumbs__dropdown-item dark_link fon"
+  },
+  "product": {
+    "url": "https://metall-dk.ru/catalog/",
+    "h1": "Каталог_металлопроката_в_Москве",
+    "price_text": [
+      "2 rub.2 rub.0",
+      "0"
+    ],
+    "tabs": [],
+    "size_buttons": [],
+    "specs": {},
+    "related": [],
+    "layout_structure": null,
+    "seo_headings": [
+      "H1: Каталог_металлопроката_в_Москве",
+      "H1: Каталог металлопроката в Москве",
+      "H2: Пожалуйста, введите номер телефона для авторизации"
+    ]
+  },
+  "screenshot_saved": "research/product-page.png"
+}

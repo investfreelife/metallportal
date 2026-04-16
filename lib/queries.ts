@@ -99,6 +99,18 @@ export async function getProductBySlug(slug: string): Promise<any | null> {
   return data;
 }
 
+export async function getRelatedProducts(categoryId: string, excludeId: string, limit = 6): Promise<any[]> {
+  const { data, error } = await supabase
+    .from("products")
+    .select("id, name, slug, unit, gost, steel_grade, price_items(*)")
+    .eq("category_id", categoryId)
+    .neq("id", excludeId)
+    .eq("is_active", true)
+    .limit(limit);
+  if (error) { console.error("getRelatedProducts error:", error); return []; }
+  return data ?? [];
+}
+
 export async function getProductPriceItems(productId: string): Promise<any[]> {
   const { data, error } = await supabase
     .from("price_items")
