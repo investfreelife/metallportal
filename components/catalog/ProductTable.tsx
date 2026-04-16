@@ -1,8 +1,37 @@
 import Link from "next/link";
 
+const MC_SUPPLIER_ID = "a2000000-0000-0000-0000-000000000001";
+
 interface ProductTableProps {
   products: any[];
   categorySlug: string;
+}
+
+function extractSize(name: string): string {
+  // Try ⌀ or Ø diameter notation: ⌀57×3.5 or Ø12
+  const diam = name.match(/[⌀Ø∅](\d[\d.,×xх\s]*\d|\d+)/);
+  if (diam) return diam[0];
+  // Try WxHxT: 40×40×2 or 40x40x2
+  const wxh = name.match(/\d+[×xх]\d+(?:[×xх]\d+)?/);
+  if (wxh) return wxh[0];
+  // Try ДУ size: ДУ 25
+  const du = name.match(/ДУ\s*\d+/i);
+  if (du) return du[0].replace(/\s+/, " ");
+  // Try single dimension like "12мм" or "3,5мм"
+  const dim = name.match(/\d+(?:[.,]\d+)?\s*мм/);
+  if (dim) return dim[0];
+  return "";
+}
+
+function getSupplierName(product: any): string {
+  if (product.supplier?.company_name) return product.supplier.company_name;
+  const fromPriceItem = product.price_items?.find((pi: any) => pi.supplier?.company_name);
+  if (fromPriceItem) return fromPriceItem.supplier.company_name;
+  // Check if linked to mc.ru supplier
+  if (product.supplier_id === MC_SUPPLIER_ID) return "mc.ru";
+  const mcPriceItem = product.price_items?.find((pi: any) => pi.supplier_id === MC_SUPPLIER_ID);
+  if (mcPriceItem) return "mc.ru";
+  return "—";
 }
 
 function getBestPrice(product: any): { base: number; discount: number | null; unit: string } | null {
@@ -53,7 +82,7 @@ export default function CatalogProductTable({ products, categorySlug }: ProductT
                   </Link>
                 </td>
                 <td className="px-4 py-3 text-sm text-muted-foreground">
-                  {product.dimensions || "—"}
+                  {product.dimensions || extractSize(product.name) || "—"}
                 </td>
                 <td className="px-4 py-3 text-sm text-muted-foreground">
                   {product.gost || "—"}
@@ -86,7 +115,7 @@ export default function CatalogProductTable({ products, categorySlug }: ProductT
                   </span>
                 </td>
                 <td className="px-4 py-3 text-sm text-muted-foreground">
-                  {product.supplier?.company_name || "—"}
+                  {getSupplierName(product)}
                 </td>
                 <td className="px-4 py-3">
                   <Link

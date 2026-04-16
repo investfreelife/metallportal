@@ -8,8 +8,7 @@ const products = [
     yourPrice: 48500,
     unit: "т",
     stock: "В НАЛИЧИИ",
-    image:
-      "https://images.unsplash.com/photo-1565008576549-57569a49371d?w=400&q=80",
+    image: "https://loremflickr.com/400/300/rebar,steel,construction",
   },
   {
     name: "Труба профильная 40×40×2",
@@ -18,8 +17,7 @@ const products = [
     yourPrice: 62000,
     unit: "т",
     stock: "В НАЛИЧИИ",
-    image:
-      "https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=400&q=80",
+    image: "https://loremflickr.com/400/300/steel,pipe,tube,metal",
   },
   {
     name: "Лист г/к 3мм 1500×6000",
@@ -28,8 +26,7 @@ const products = [
     yourPrice: 54000,
     unit: "т",
     stock: "В НАЛИЧИИ",
-    image:
-      "https://images.unsplash.com/photo-1564424224827-cd24c93f95fd?w=400&q=80",
+    image: "https://loremflickr.com/400/300/steel,sheet,plate,metal",
   },
   {
     name: "Швеллер 10П ГОСТ",
@@ -38,8 +35,7 @@ const products = [
     yourPrice: 59500,
     unit: "т",
     stock: "В НАЛИЧИИ",
-    image:
-      "https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=400&q=80",
+    image: "https://loremflickr.com/400/300/steel,beam,channel,metal",
   },
   {
     name: "Уголок равнополочный 50×50×5",
@@ -48,8 +44,7 @@ const products = [
     yourPrice: 52000,
     unit: "т",
     stock: "В НАЛИЧИИ",
-    image:
-      "https://images.unsplash.com/photo-1565008576549-57569a49371d?w=400&q=80",
+    image: "https://loremflickr.com/400/300/steel,angle,metal,industry",
   },
 ];
 

@@ -56,19 +56,22 @@ function buildSpecs(product: any): Record<string, string | null> {
   };
 }
 
-// Category image placeholders
-const CATEGORY_GRADIENTS: Record<string, string> = {
-  "truba": "from-slate-700 to-slate-900",
-  "armatura": "from-orange-900 to-slate-900",
-  "list": "from-blue-900 to-slate-900",
-  "ugolok": "from-zinc-700 to-zinc-900",
-  "balka": "from-stone-700 to-stone-900",
-  "shveller": "from-neutral-700 to-neutral-900",
+const CATEGORY_IMAGES: Record<string, string> = {
+  "truba":    "steel,pipe,tube,industrial",
+  "armatura": "rebar,steel,construction,concrete",
+  "list":     "steel,sheet,plate,metal",
+  "ugolok":   "steel,angle,metal,industry",
+  "balka":    "steel,beam,girder,construction",
+  "shveller": "steel,channel,beam,metal",
+  "profnast": "corrugated,metal,sheet,roof",
+  "setka":    "metal,mesh,wire,steel",
+  "polosa":   "steel,strip,metal,flat",
 };
 
-function getCategoryGradient(slug: string): string {
-  const key = Object.keys(CATEGORY_GRADIENTS).find((k) => slug.includes(k));
-  return key ? CATEGORY_GRADIENTS[key] : "from-slate-700 to-slate-900";
+function getCategoryImage(slug: string): string {
+  const key = Object.keys(CATEGORY_IMAGES).find((k) => slug.includes(k));
+  const query = key ? CATEGORY_IMAGES[key] : "steel,metal,industrial,warehouse";
+  return `https://loremflickr.com/800/600/${query}`;
 }
 
 export default async function ProductPage({ params }: Props) {
@@ -92,7 +95,7 @@ export default async function ProductPage({ params }: Props) {
   const parentCategory = (product.category as any)?.parent;
   const categoryName = (product.category as any)?.name;
   const categorySlug = (product.category as any)?.slug || params.category;
-  const gradient = getCategoryGradient(categorySlug);
+  const fallbackImage = getCategoryImage(categorySlug);
 
   const specs = buildSpecs(product);
 
@@ -181,21 +184,13 @@ export default async function ProductPage({ params }: Props) {
           {/* LEFT — 58% */}
           <div className="flex-1 min-w-0 space-y-6">
             {/* Product image */}
-            <div className={`rounded-lg overflow-hidden bg-gradient-to-br ${gradient} h-64 lg:h-80 flex items-center justify-center`}>
-              {product.image_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={product.image_url}
-                  alt={product.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="text-center text-white/60 space-y-2 p-8">
-                  <div className="text-5xl">🏗️</div>
-                  <p className="text-sm font-medium text-white/80">{product.name}</p>
-                  {product.gost && <p className="text-xs text-white/50">{product.gost}</p>}
-                </div>
-              )}
+            <div className="rounded-lg overflow-hidden h-64 lg:h-80">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={product.image_url || fallbackImage}
+                alt={product.name}
+                className="w-full h-full object-cover"
+              />
             </div>
 
             {/* Tabs */}

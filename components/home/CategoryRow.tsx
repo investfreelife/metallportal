@@ -3,23 +3,19 @@ import { ArrowRight } from "lucide-react";
 const categories = [
   {
     title: "Трубы и профиль",
-    image:
-      "https://images.unsplash.com/photo-1565008576549-57569a49371d?w=600&q=80",
+    image: "https://loremflickr.com/600/400/steel,pipe,tube,industrial",
   },
   {
     title: "Арматура и сетка",
-    image:
-      "https://images.unsplash.com/photo-1565008576549-57569a49371d?w=600&q=80",
+    image: "https://loremflickr.com/600/400/rebar,steel,mesh,construction",
   },
   {
     title: "Ворота и калитки",
-    image:
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",
+    image: "https://loremflickr.com/600/400/gate,fence,metal,steel",
   },
   {
     title: "Навесы и козырьки",
-    image:
-      "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&q=80",
+    image: "https://loremflickr.com/600/400/canopy,metal,awning,roof",
   },
 ];
 

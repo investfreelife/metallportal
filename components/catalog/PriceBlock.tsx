@@ -31,6 +31,8 @@ export default function PriceBlock({ priceItems, unit, weightPerMeter, productNa
   const pricePerUnit = bestItem ? Number(bestItem.discount_price ?? bestItem.base_price) : null;
   const inStock = priceItems.some((p) => p.in_stock);
 
+  const isPiece = unit === "шт" || unit === "штука";
+
   // Calculator
   const qtyNum = parseFloat(qty) || 0;
   let totalRub = 0;
@@ -38,18 +40,22 @@ export default function PriceBlock({ priceItems, unit, weightPerMeter, productNa
   let tons = 0;
 
   if (pricePerUnit && qtyNum > 0) {
-    const isTon = unit === "т" || unit === "тонна";
-    const pricePerTon = isTon ? pricePerUnit : null;
-    const pricePerMeter = !isTon ? pricePerUnit : null;
-
-    if (calcMode === "meters") {
-      meters = qtyNum;
-      tons = weightPerMeter ? (qtyNum * weightPerMeter) / 1000 : 0;
-      totalRub = pricePerMeter ? qtyNum * pricePerMeter : pricePerTon && tons ? tons * pricePerTon : 0;
+    if (isPiece) {
+      totalRub = qtyNum * pricePerUnit;
     } else {
-      tons = qtyNum;
-      meters = weightPerMeter && weightPerMeter > 0 ? (qtyNum * 1000) / weightPerMeter : 0;
-      totalRub = pricePerTon ? qtyNum * pricePerTon : pricePerMeter && meters ? meters * pricePerMeter : 0;
+      const isTon = unit === "т" || unit === "тонна";
+      const pricePerTon = isTon ? pricePerUnit : null;
+      const pricePerMeter = !isTon ? pricePerUnit : null;
+
+      if (calcMode === "meters") {
+        meters = qtyNum;
+        tons = weightPerMeter ? (qtyNum * weightPerMeter) / 1000 : 0;
+        totalRub = pricePerMeter ? qtyNum * pricePerMeter : pricePerTon && tons ? tons * pricePerTon : 0;
+      } else {
+        tons = qtyNum;
+        meters = weightPerMeter && weightPerMeter > 0 ? (qtyNum * 1000) / weightPerMeter : 0;
+        totalRub = pricePerTon ? qtyNum * pricePerTon : pricePerMeter && meters ? meters * pricePerMeter : 0;
+      }
     }
   }
 
@@ -96,36 +102,38 @@ export default function PriceBlock({ priceItems, unit, weightPerMeter, productNa
             <span>Калькулятор</span>
           </div>
 
-          {/* Toggle mode */}
-          <div className="flex bg-muted rounded p-0.5">
-            <button
-              onClick={() => setCalcMode("meters")}
-              className={`flex-1 py-1.5 text-xs font-medium rounded transition-all ${
-                calcMode === "meters" ? "bg-gold text-black" : "text-muted-foreground"
-              }`}
-            >
-              Метры
-            </button>
-            <button
-              onClick={() => setCalcMode("tons")}
-              className={`flex-1 py-1.5 text-xs font-medium rounded transition-all ${
-                calcMode === "tons" ? "bg-gold text-black" : "text-muted-foreground"
-              }`}
-            >
-              Тонны
-            </button>
-          </div>
+          {/* Toggle mode — only for non-piece units */}
+          {!isPiece && (
+            <div className="flex bg-muted rounded p-0.5">
+              <button
+                onClick={() => setCalcMode("meters")}
+                className={`flex-1 py-1.5 text-xs font-medium rounded transition-all ${
+                  calcMode === "meters" ? "bg-gold text-black" : "text-muted-foreground"
+                }`}
+              >
+                Метры
+              </button>
+              <button
+                onClick={() => setCalcMode("tons")}
+                className={`flex-1 py-1.5 text-xs font-medium rounded transition-all ${
+                  calcMode === "tons" ? "bg-gold text-black" : "text-muted-foreground"
+                }`}
+              >
+                Тонны
+              </button>
+            </div>
+          )}
 
           <div className="flex gap-2 items-center">
             <input
               type="number"
               value={qty}
               onChange={(e) => setQty(e.target.value)}
-              placeholder={calcMode === "meters" ? "м.п." : "тонн"}
+              placeholder={isPiece ? "шт" : calcMode === "meters" ? "м.п." : "тонн"}
               className="w-full bg-card border border-border rounded px-3 py-2 text-sm outline-none focus:border-gold"
             />
             <span className="text-xs text-muted-foreground whitespace-nowrap">
-              {calcMode === "meters" ? "м.п." : "тонн"}
+              {isPiece ? "шт" : calcMode === "meters" ? "м.п." : "тонн"}
             </span>
           </div>
 
@@ -135,13 +143,13 @@ export default function PriceBlock({ priceItems, unit, weightPerMeter, productNa
                 <span className="text-muted-foreground">Сумма:</span>
                 <span className="font-bold text-gold">{Math.round(totalRub).toLocaleString("ru-RU")} ₽</span>
               </div>
-              {meters > 0 && calcMode === "tons" && (
+              {!isPiece && meters > 0 && calcMode === "tons" && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Длина:</span>
                   <span>{Math.round(meters)} м.п.</span>
                 </div>
               )}
-              {tons > 0 && calcMode === "meters" && (
+              {!isPiece && tons > 0 && calcMode === "meters" && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Вес:</span>
                   <span>{tons.toFixed(3)} т</span>

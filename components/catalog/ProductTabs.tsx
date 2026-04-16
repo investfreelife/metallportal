@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Star } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Star, ChevronRight } from "lucide-react";
 
 interface PriceItem {
   id: string;
@@ -28,11 +28,24 @@ type Tab = (typeof TABS)[number];
 
 export default function ProductTabs({ description, gost, steel_grade, material, specs, priceItems, unit }: ProductTabsProps) {
   const [active, setActive] = useState<Tab>("Описание");
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const [showScrollHint, setShowScrollHint] = useState(false);
+
+  useEffect(() => {
+    const el = tabsRef.current;
+    if (!el) return;
+    const check = () => setShowScrollHint(el.scrollWidth > el.clientWidth && el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+    check();
+    el.addEventListener("scroll", check);
+    window.addEventListener("resize", check);
+    return () => { el.removeEventListener("scroll", check); window.removeEventListener("resize", check); };
+  }, []);
 
   return (
     <div>
       {/* Tab nav */}
-      <div className="flex border-b border-border overflow-x-auto">
+      <div className="relative">
+      <div ref={tabsRef} className="flex border-b border-border overflow-x-auto scrollbar-none">
         {TABS.map((tab) => (
           <button
             key={tab}
@@ -51,6 +64,12 @@ export default function ProductTabs({ description, gost, steel_grade, material, 
             )}
           </button>
         ))}
+      </div>
+      {showScrollHint && (
+        <div className="absolute right-0 top-0 h-full flex items-center pr-1 bg-gradient-to-l from-card via-card/80 to-transparent pointer-events-none w-10">
+          <ChevronRight size={16} className="text-muted-foreground ml-auto" />
+        </div>
+      )}
       </div>
 
       {/* Tab content */}

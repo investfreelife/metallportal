@@ -5,29 +5,25 @@ const categories = [
     title: "Металлопрокат",
     subtitle: "Трубы · Арматура · Лист · Балки · Уголок",
     link: "1200+ позиций →",
-    image:
-      "https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=800&q=80",
+    image: "https://loremflickr.com/800/600/steel,pipe,industrial,metal",
   },
   {
     title: "Готовые конструкции",
     subtitle: "Ангары · Склады · Навесы · Каркасы зданий",
     link: "Подобрать конструкцию →",
-    image:
-      "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80",
+    image: "https://loremflickr.com/800/600/warehouse,steel,building,hangar",
   },
   {
     title: "Заборы и ограждения",
     subtitle: "Профнастил · Сетка · Ворота · Калитки · Рабица",
     link: "Смотреть каталог →",
-    image:
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+    image: "https://loremflickr.com/800/600/fence,metal,gate,steel",
   },
   {
     title: "Быстровозводимые здания",
     subtitle: "Модульные здания · Склады · Ангары · Павильоны",
     link: "Рассчитать стоимость →",
-    image:
-      "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=80",
+    image: "https://loremflickr.com/800/600/industrial,construction,building,factory",
   },
 ];
 

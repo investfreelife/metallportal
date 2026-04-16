@@ -245,10 +245,12 @@ async function main() {
   const offset     = args.offset   ? parseInt(args.offset)   : 0;
   const dryRun     = args["dry-run"] === "true";
   const failedOnly = args["failed-only"] === "true";
+  const filterMode = args["filter"] ?? "";
   const BATCH      = 15;
 
   if (dryRun) console.log("🔍 DRY RUN — nothing will be written to DB\n");
   if (failedOnly) console.log("🔁 FAILED-ONLY — re-processing products with no gost AND no steel_grade\n");
+  if (filterMode === "short_names") console.log("🔤 SHORT-NAMES — re-processing products with short code-like names\n");
 
   console.log("Building category index...");
   const categoryIndex = await buildCategoryIndex();
@@ -262,6 +264,12 @@ async function main() {
 
   if (failedOnly) {
     query = query.is("gost", null).is("steel_grade", null);
+  } else if (filterMode === "short_names") {
+    // Products with code-like names: start with "ДУ", "кл А", "Ст", or short raw codes
+    query = query.or(
+      "name.ilike.ДУ%,name.ilike.кл А%,name.ilike.Ст3%,name.ilike.Ст20%," +
+      "name.ilike.Ст45%,name.ilike.09Г2С%"
+    );
   } else {
     const end = offset + (limit ?? 99999) - 1;
     query = query.range(offset, end);
