@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:push": "npx supabase db push",
+    "db:reset": "npx supabase db reset --linked",
+    "db:migrate": "npx supabase migration new",
+    "db:diff": "npx supabase db diff --linked",
+    "db:status": "npx supabase migration list --linked"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
@@ -23,6 +28,7 @@
     "eslint": "^8.56.0",
     "eslint-config-next": "14.2.3",
     "postcss": "^8.4.33",
+    "supabase": "^2.91.3",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3"
   }
