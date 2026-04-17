@@ -49,6 +49,7 @@ const supabase = createClient(
 );
 
 const BATCH_SIZE = 10;
+const CONCURRENCY = 5;
 
 // ---------------------------------------------------------------------------
 // Category slug → article code mapping
@@ -452,15 +453,12 @@ async function main() {
   const batchCount = Math.ceil(total / BATCH_SIZE);
   console.log(`\nFound ${total} products → ${batchCount} batches of ${BATCH_SIZE}\n`);
 
-  // 4. Process batches
+  // 4. Process batches with concurrency
   let totalSaved = 0;
   let totalFailed = 0;
   const startTime = Date.now();
 
-  for (let i = 0; i < total; i += BATCH_SIZE) {
-    const batchNum = Math.floor(i / BATCH_SIZE) + 1;
-    const batch = products.slice(i, i + BATCH_SIZE);
-
+  async function processBatch(batchNum: number, batch: ProductRow[]): Promise<void> {
     console.log(`\n── Batch ${batchNum}/${batchCount} (${batch.length} items) ──`);
 
     const userMessage = `Сгенерируй SEO карточки для ${batch.length} товаров:\n\n` +
@@ -470,7 +468,7 @@ async function main() {
       const cards = await callOpenRouter(systemPrompt, userMessage);
 
       if (cards.length !== batch.length) {
-        console.warn(`  ⚠ Expected ${batch.length} items, got ${cards.length}`);
+        console.warn(`  ⚠ Batch ${batchNum}: expected ${batch.length} items, got ${cards.length}`);
       }
 
       const { saved, failed } = await saveBatch(batch, cards, dryRun);
@@ -479,18 +477,25 @@ async function main() {
 
       const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
       const rate = (totalSaved / parseFloat(elapsed) * 60).toFixed(0);
-      console.log(`  ✓ saved=${saved} failed=${failed} | total=${totalSaved}/${total} | ${elapsed}s | ~${rate}/min`);
+      console.log(`  ✓ Batch ${batchNum}: saved=${saved} failed=${failed} | total=${totalSaved}/${total} | ${elapsed}s | ~${rate}/min`);
     } catch (err) {
       const e = err as any;
-      console.error(`  ✗ batch error: ${e.message}`);
+      console.error(`  ✗ Batch ${batchNum} error: ${e.message}`);
       if (e.cause) console.error(`    cause: ${e.cause}`);
       totalFailed += batch.length;
     }
+  }
 
-    // Pause between batches (rate limit)
-    if (i + BATCH_SIZE < total) {
-      await new Promise((r) => setTimeout(r, 800));
-    }
+  // Build all batches
+  const batches: { num: number; items: ProductRow[] }[] = [];
+  for (let i = 0; i < total; i += BATCH_SIZE) {
+    batches.push({ num: Math.floor(i / BATCH_SIZE) + 1, items: products.slice(i, i + BATCH_SIZE) });
+  }
+
+  // Run with limited concurrency
+  for (let i = 0; i < batches.length; i += CONCURRENCY) {
+    const window = batches.slice(i, i + CONCURRENCY);
+    await Promise.all(window.map(({ num, items }) => processBatch(num, items)));
   }
 
   // 5. Summary
