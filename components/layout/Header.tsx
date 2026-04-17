@@ -39,6 +39,17 @@ const NAV_ITEMS = [
       ]},
     ],
   },
+  {
+    label: "Готовые конструкции",
+    icon: "🏗️",
+    href: "/catalog/konstruktsii",
+    children: [
+      { label: "Ангары", href: "/catalog/konstruktsii/angary" },
+      { label: "Навесы и козырьки", href: "/catalog/konstruktsii/navesy" },
+      { label: "Склады и цеха", href: "/catalog/konstruktsii/sklady" },
+      { label: "Каркасы зданий", href: "/catalog/konstruktsii/karkasy" },
+    ],
+  },
 ] as const;
 
 type NavItem = typeof NAV_ITEMS[number];
