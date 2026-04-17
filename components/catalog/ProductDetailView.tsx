@@ -140,6 +140,9 @@ export default function ProductDetailView({ product, priceItems, related, basePa
             unit={product.unit}
             weightPerMeter={product.weight_per_meter ? Number(product.weight_per_meter) : null}
             productName={product.name}
+            productId={product.id}
+            productSlug={product.slug}
+            productImageUrl={product.image_url}
           />
         </div>
       </div>

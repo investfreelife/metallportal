@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { CheckSquare, Square } from "lucide-react";
+import { CheckSquare, Square, ShoppingCart, Check } from "lucide-react";
 import PhotoEditable from "@/components/admin/PhotoEditable";
+import { useCart } from "@/contexts/CartContext";
 
 interface ProductCardProps {
   product: any;
@@ -24,6 +25,8 @@ function getBestPrice(product: any): { base: number; discount: number | null } |
 
 export default function CatalogProductCard({ product, productBasePath, isSelected = false, onToggle }: ProductCardProps) {
   const [editMode, setEditMode] = useState(false);
+  const [added, setAdded] = useState(false);
+  const { addItem } = useCart();
   const price = getBestPrice(product);
   const inStock = product.price_items?.some((pi: any) => pi.in_stock) ?? false;
 
@@ -111,6 +114,21 @@ export default function CatalogProductCard({ product, productBasePath, isSelecte
         </p>
       </div>
       </Link>
+      {!editMode && (
+        <button
+          onClick={e => {
+            e.preventDefault();
+            addItem({ id: product.id, name: product.name, slug: product.slug, unit: product.unit ?? null, price: price ? (price.discount ?? price.base) : null, image_url: product.image_url ?? null });
+            setAdded(true);
+            setTimeout(() => setAdded(false), 1800);
+          }}
+          className={`mt-2 w-full flex items-center justify-center gap-1.5 py-1.5 rounded text-xs font-semibold transition-all ${
+            added ? "bg-emerald-500/20 text-emerald-500" : "bg-gold/10 hover:bg-gold text-gold hover:text-black"
+          }`}>
+          {added ? <Check size={13} /> : <ShoppingCart size={13} />}
+          {added ? "Добавлено" : "В корзину"}
+        </button>
+      )}
     </div>
   );
 }

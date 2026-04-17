@@ -1,0 +1,206 @@
+"use client";
+import { useState } from "react";
+import Link from "next/link";
+import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, Package, Check, ExternalLink } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
+
+export default function CartPage() {
+  const { items, count, removeItem, updateQty, clearCart } = useCart();
+
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [comment, setComment] = useState("");
+  const [consent, setConsent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+  const [err, setErr] = useState("");
+
+  const total = items.reduce((s, i) => s + (i.price ?? 0) * i.quantity, 0);
+  const hasPrice = items.some(i => i.price !== null);
+
+  const handleOrder = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErr("");
+    if (!name.trim()) { setErr("Введите имя"); return; }
+    if (!phone.trim()) { setErr("Введите телефон"); return; }
+    if (!consent) { setErr("Подтвердите согласие на обработку данных"); return; }
+    setSubmitting(true);
+
+    const res = await fetch("/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name, phone, email, comment,
+        items: items.map(i => ({ id: i.id, name: i.name, qty: i.quantity, unit: i.unit, price: i.price })),
+      }),
+    });
+    const json = await res.json();
+    setSubmitting(false);
+    if (!res.ok) { setErr(json.error || "Ошибка отправки"); return; }
+    clearCart();
+    setDone(true);
+  };
+
+  if (done) {
+    return (
+      <div className="container-main py-20 flex flex-col items-center text-center gap-6">
+        <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center">
+          <Check size={32} className="text-emerald-500" />
+        </div>
+        <h1 className="text-2xl font-bold text-foreground">Заказ отправлен!</h1>
+        <p className="text-muted-foreground max-w-md">
+          Мы получили вашу заявку и свяжемся с вами в ближайшее время для уточнения деталей.
+        </p>
+        <Link href="/catalog" className="mt-4 px-8 py-3 bg-gold hover:bg-yellow-400 text-black font-bold rounded-lg transition-all">
+          Продолжить покупки
+        </Link>
+      </div>
+    );
+  }
+
+  if (items.length === 0) {
+    return (
+      <div className="container-main py-20 flex flex-col items-center text-center gap-6">
+        <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+          <ShoppingCart size={32} className="text-muted-foreground" />
+        </div>
+        <h1 className="text-2xl font-bold text-foreground">Корзина пуста</h1>
+        <p className="text-muted-foreground">Добавьте товары из каталога</p>
+        <Link href="/catalog" className="mt-2 px-8 py-3 bg-gold hover:bg-yellow-400 text-black font-bold rounded-lg transition-all flex items-center gap-2">
+          Перейти в каталог <ArrowRight size={16} />
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container-main py-8">
+      <div className="flex items-center gap-3 mb-8">
+        <ShoppingCart size={24} className="text-gold" />
+        <h1 className="text-2xl font-bold text-foreground">Корзина</h1>
+        <span className="text-muted-foreground text-sm">({count} позиций)</span>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Items list */}
+        <div className="flex-1 space-y-3">
+          {items.map(item => (
+            <div key={item.id} className="bg-card border border-border rounded-xl p-4 flex gap-4 items-center">
+              {/* Image */}
+              <div className="w-14 h-14 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                {item.image_url
+                  ? <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                  : <div className="w-full h-full flex items-center justify-center text-2xl opacity-30"><Package size={24} /></div>}
+              </div>
+
+              {/* Info */}
+              <div className="flex-1 min-w-0">
+                <Link href={`/catalog`} className="text-sm font-semibold text-foreground hover:text-gold transition-colors line-clamp-2">
+                  {item.name}
+                </Link>
+                {item.price !== null
+                  ? <p className="text-gold font-bold text-sm mt-0.5">{item.price.toLocaleString("ru-RU")} ₽/{item.unit}</p>
+                  : <p className="text-muted-foreground text-xs mt-0.5">Цена по запросу</p>}
+              </div>
+
+              {/* Qty */}
+              <div className="flex items-center gap-1 flex-shrink-0">
+                <button onClick={() => updateQty(item.id, item.quantity - 1)}
+                  className="w-7 h-7 rounded border border-border flex items-center justify-center hover:border-gold hover:text-gold transition-all">
+                  <Minus size={12} />
+                </button>
+                <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
+                <button onClick={() => updateQty(item.id, item.quantity + 1)}
+                  className="w-7 h-7 rounded border border-border flex items-center justify-center hover:border-gold hover:text-gold transition-all">
+                  <Plus size={12} />
+                </button>
+                <span className="text-xs text-muted-foreground ml-1">{item.unit}</span>
+              </div>
+
+              {/* Row total */}
+              {item.price !== null && (
+                <div className="text-right flex-shrink-0 w-24">
+                  <p className="font-bold text-foreground">{(item.price * item.quantity).toLocaleString("ru-RU")} ₽</p>
+                </div>
+              )}
+
+              <button onClick={() => removeItem(item.id)} className="text-muted-foreground hover:text-red-400 transition-colors flex-shrink-0 p-1">
+                <Trash2 size={16} />
+              </button>
+            </div>
+          ))}
+
+          {/* Total */}
+          {hasPrice && (
+            <div className="flex justify-between items-center py-3 border-t border-border">
+              <span className="text-muted-foreground text-sm">Итого (предварительно):</span>
+              <span className="text-xl font-bold text-gold">{total.toLocaleString("ru-RU")} ₽</span>
+            </div>
+          )}
+        </div>
+
+        {/* Order form */}
+        <div className="w-full lg:w-[380px] flex-shrink-0">
+          <div className="bg-card border border-border rounded-xl p-6 sticky top-[160px]">
+            <h2 className="text-lg font-bold text-foreground mb-5">Оформить заказ</h2>
+
+            <form onSubmit={handleOrder} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1.5">
+                  Имя <span className="text-red-400">*</span>
+                </label>
+                <input value={name} onChange={e => setName(e.target.value)} placeholder="Иван Петров"
+                  className="w-full bg-input border border-border rounded-lg px-3 py-2.5 text-sm text-foreground outline-none focus:border-gold transition-colors" />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1.5">
+                  Телефон <span className="text-red-400">*</span>
+                </label>
+                <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="+7 (999) 000-00-00" type="tel"
+                  className="w-full bg-input border border-border rounded-lg px-3 py-2.5 text-sm text-foreground outline-none focus:border-gold transition-colors" />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
+                <input value={email} onChange={e => setEmail(e.target.value)} placeholder="email@example.com" type="email"
+                  className="w-full bg-input border border-border rounded-lg px-3 py-2.5 text-sm text-foreground outline-none focus:border-gold transition-colors" />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1.5">Комментарий</label>
+                <textarea value={comment} onChange={e => setComment(e.target.value)} rows={2} placeholder="Объём, сроки, нарезка..."
+                  className="w-full bg-input border border-border rounded-lg px-3 py-2.5 text-sm text-foreground outline-none focus:border-gold transition-colors resize-none" />
+              </div>
+
+              {/* Consent */}
+              <label className="flex items-start gap-2.5 cursor-pointer">
+                <div onClick={() => setConsent(v => !v)}
+                  className={`mt-0.5 w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center transition-all ${
+                    consent ? "bg-gold border-gold" : "border-border hover:border-gold"
+                  }`}>
+                  {consent && <Check size={10} className="text-black" />}
+                </div>
+                <span className="text-xs text-muted-foreground leading-relaxed">
+                  Я согласен на обработку{" "}
+                  <Link href="/privacy" target="_blank" className="text-gold hover:underline inline-flex items-center gap-0.5">
+                    персональных данных <ExternalLink size={10} />
+                  </Link>
+                </span>
+              </label>
+
+              {err && <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">{err}</p>}
+
+              <button type="submit" disabled={submitting}
+                className="w-full flex items-center justify-center gap-2 bg-gold hover:bg-yellow-400 disabled:opacity-50 text-black font-bold py-3 rounded-lg transition-all">
+                {submitting ? "Отправляю..." : "Отправить заказ"}
+                {!submitting && <ArrowRight size={16} />}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

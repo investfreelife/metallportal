@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Search, Mic, ChevronDown, FileUp, Menu, X } from "lucide-react";
+import { Search, Mic, ChevronDown, FileUp, Menu, X, ShoppingCart } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import ThemeToggle from "@/components/ThemeToggle";
+import { useCart } from "@/contexts/CartContext";
 
 const NAV_ITEMS = [
   {
@@ -168,7 +169,11 @@ export default function Header() {
             <span className="text-xs">Доставка по России</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/account" className="text-xs hover:text-gold transition-colors">Личный кабинет</Link>
+            <Link href="/cart" className="relative flex items-center gap-1.5 text-xs hover:text-gold transition-colors group">
+              <ShoppingCart size={14} className="group-hover:text-gold" />
+              <CartCount />
+              <span>Корзина</span>
+            </Link>
             <Link href="/supplier" className="text-xs text-gold hover:text-yellow-300 transition-colors">Стать поставщиком</Link>
           </div>
         </div>
@@ -197,6 +202,10 @@ export default function Header() {
           </div>
 
           <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
+            <Link href="/cart" className="relative p-2 hover:text-gold transition-colors">
+              <ShoppingCart size={20} />
+              <CartCount />
+            </Link>
             <ThemeToggle />
             <button className="flex items-center gap-2 border-2 border-gold text-foreground hover:bg-gold/10 px-4 h-11 font-semibold rounded transition-all text-sm">
               <FileUp size={16} />
@@ -269,5 +278,15 @@ export default function Header() {
         </div>
       )}
     </header>
+  );
+}
+
+function CartCount() {
+  const { count } = useCart();
+  if (count === 0) return null;
+  return (
+    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-gold text-black text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none pointer-events-none">
+      {count > 99 ? "99+" : count}
+    </span>
   );
 }

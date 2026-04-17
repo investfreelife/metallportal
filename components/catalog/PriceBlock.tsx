@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { ShoppingCart, PhoneCall, FileUp, Calculator } from "lucide-react";
+import { ShoppingCart, PhoneCall, FileUp, Calculator, Check } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
 
 interface PriceBlockProps {
   priceItems: Array<{
@@ -13,11 +14,16 @@ interface PriceBlockProps {
   unit?: string;
   weightPerMeter?: number | null;
   productName: string;
+  productId?: string;
+  productSlug?: string;
+  productImageUrl?: string | null;
 }
 
-export default function PriceBlock({ priceItems, unit, weightPerMeter, productName }: PriceBlockProps) {
+export default function PriceBlock({ priceItems, unit, weightPerMeter, productName, productId, productSlug, productImageUrl }: PriceBlockProps) {
   const [calcMode, setCalcMode] = useState<"meters" | "tons">("meters");
   const [qty, setQty] = useState<string>("100");
+  const [added, setAdded] = useState(false);
+  const { addItem } = useCart();
 
   // Best price
   const bestItem = priceItems.length
@@ -162,9 +168,18 @@ export default function PriceBlock({ priceItems, unit, weightPerMeter, productNa
 
       {/* Action buttons */}
       <div className="space-y-2">
-        <button className="w-full flex items-center justify-center gap-2 bg-gold hover:bg-yellow-400 text-black font-bold py-3 rounded-lg transition-all">
-          <ShoppingCart size={18} />
-          В корзину
+        <button
+          onClick={() => {
+            if (!productId || !productSlug) return;
+            addItem({ id: productId, name: productName, slug: productSlug, unit: unit ?? null, price: pricePerUnit, image_url: productImageUrl ?? null });
+            setAdded(true);
+            setTimeout(() => setAdded(false), 2000);
+          }}
+          className={`w-full flex items-center justify-center gap-2 font-bold py-3 rounded-lg transition-all ${
+            added ? "bg-emerald-500 text-white" : "bg-gold hover:bg-yellow-400 text-black"
+          }`}>
+          {added ? <Check size={18} /> : <ShoppingCart size={18} />}
+          {added ? "Добавлено!" : "В корзину"}
         </button>
         <button className="w-full flex items-center justify-center gap-2 border-2 border-gold text-foreground hover:bg-gold/10 font-semibold py-2.5 rounded-lg transition-all">
           <PhoneCall size={16} />
