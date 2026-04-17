@@ -25,7 +25,7 @@ export default function CatalogCategoryCard({
   return (
     <div className="bg-card border border-border rounded-lg overflow-hidden hover:border-gold/40 transition-all">
       {/* Full-width image area */}
-      <PhotoEditable photoId={`category:${slug}`} className="w-full h-44 bg-muted flex items-center justify-center overflow-hidden">
+      <PhotoEditable photoId={`category:${slug}`} dimensions="640×176" className="w-full h-44 bg-muted flex items-center justify-center overflow-hidden">
         {imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={imageUrl} alt={name} className="w-full h-full object-cover" />

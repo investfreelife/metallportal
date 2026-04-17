@@ -30,9 +30,11 @@ interface Props {
   photoId: string;
   className?: string;
   children: React.ReactNode;
+  /** Recommended size shown in edit mode, e.g. "700×320" */
+  dimensions?: string;
 }
 
-export default function PhotoEditable({ photoId, className = "", children }: Props) {
+export default function PhotoEditable({ photoId, className = "", children, dimensions }: Props) {
   const [editMode, setEditMode] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [done, setDone] = useState(false);
@@ -76,18 +78,28 @@ export default function PhotoEditable({ photoId, className = "", children }: Pro
     <div className={`relative ${className}`}>
       {children}
       {editMode && (
-        <label className={`absolute inset-0 z-20 flex flex-col items-center justify-center cursor-pointer transition-all ${
-          uploading || done
-            ? "bg-black/60"
-            : "bg-transparent hover:bg-[#E8B86D]/20 hover:outline hover:outline-2 hover:outline-dashed hover:outline-[#E8B86D]"
-        }`}>
-          {uploading && <Loader2 size={22} className="text-[#E8B86D] animate-spin" />}
+        <label
+          className={`absolute inset-0 z-20 flex flex-col items-center justify-center cursor-pointer transition-all group/edit ${
+            uploading || done ? "bg-black/60" : "bg-transparent hover:bg-black/50"
+          }`}
+          onClick={e => { e.preventDefault(); e.stopPropagation(); }}
+        >
+          {uploading && <Loader2 size={24} className="text-[#E8B86D] animate-spin" />}
           {done && <span className="text-green-400 font-bold text-sm">✓ Сохранено!</span>}
           {!uploading && !done && (
-            <span className="text-[#E8B86D] font-bold text-xs opacity-0 group-hover:opacity-100 transition-opacity select-none px-2 py-1 rounded bg-black/40">
-              📷 Вставить фото
-            </span>
+            <div className="flex flex-col items-center gap-1.5 opacity-0 group-hover/edit:opacity-100 transition-opacity select-none">
+              <span className="text-[#E8B86D] font-bold text-sm px-3 py-1.5 rounded-lg bg-black/60 border border-[#E8B86D]/40">
+                📷 Вставить фото
+              </span>
+              {dimensions && (
+                <span className="text-white/70 text-xs px-2 py-1 rounded bg-black/60 font-mono">
+                  {dimensions} px
+                </span>
+              )}
+            </div>
           )}
+          {/* Dashed border in edit mode */}
+          <span className="absolute inset-0 border-2 border-dashed border-[#E8B86D] opacity-0 group-hover/edit:opacity-100 pointer-events-none transition-opacity rounded-[inherit]" />
           <input
             type="file"
             accept="image/jpeg,image/png,image/webp"

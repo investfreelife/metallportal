@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { getSiteSettings } from "@/lib/settings";
 import { supabase } from "@/lib/supabase";
+import PhotoEditable from "@/components/admin/PhotoEditable";
 
 const CARD_HREFS = [
   "/catalog/metalloprokat",
@@ -44,9 +45,15 @@ export default async function Hero() {
           {cards.map((card, index) => (
             <Link key={index} href={card.href}
               className="relative h-80 rounded overflow-hidden group cursor-pointer shadow-md hover:shadow-xl transition-all">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={card.image} alt={card.title} className="absolute inset-0 w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+              <PhotoEditable
+                photoId={`category:${["metalloprokat","konstruktsii"][index]}`}
+                dimensions="1400×320"
+                className="absolute inset-0"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={card.image} alt={card.title} className="w-full h-full object-cover" />
+              </PhotoEditable>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent pointer-events-none" />
               <div className="relative h-full p-8 flex flex-col justify-end text-white">
                 <h2 className="text-3xl font-bold mb-2">{card.title}</h2>
                 <p className="text-white/90 mb-4 text-base leading-relaxed">{card.sub}</p>
