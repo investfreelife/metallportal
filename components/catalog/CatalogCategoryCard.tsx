@@ -34,6 +34,7 @@ export default function CatalogCategoryCard({
         ) : (
           <span className="text-5xl opacity-40">{icon || "📦"}</span>
         )}
+        <div className="photo-edit-overlay">📷 Вставить фото</div>
       </div>
 
       {/* Info */}

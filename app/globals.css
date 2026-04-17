@@ -93,27 +93,26 @@
   outline: 2px dashed #e8b86d !important;
   outline-offset: 2px;
   cursor: crosshair !important;
-  position: relative;
 }
 
-.photo-edit-mode [data-photo-id]::after {
-  content: "📷 Заменить фото";
+.photo-edit-mode [data-photo-id] .photo-edit-overlay {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(232, 184, 109, 0.15);
+  background: rgba(232, 184, 109, 0.0);
   color: #e8b86d;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   opacity: 0;
-  transition: opacity 0.15s;
+  transition: opacity 0.15s, background 0.15s;
   pointer-events: none;
-  border-radius: inherit;
+  z-index: 10;
 }
 
-.photo-edit-mode [data-photo-id]:hover::after {
+.photo-edit-mode [data-photo-id]:hover .photo-edit-overlay {
   opacity: 1;
+  background: rgba(232, 184, 109, 0.25);
 }

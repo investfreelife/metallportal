@@ -91,15 +91,33 @@ export default function AdminBar() {
       }
 
       // 2. Save to DB
-      await fetch("/api/admin/save-photo", {
+      const saveRes = await fetch("/api/admin/save-photo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ photoId, url }),
       });
+      const saveJson = await saveRes.json();
+      if (!saveJson.ok) {
+        alert("❌ Ошибка сохранения в базу: " + (saveJson.error ?? "неизвестная ошибка"));
+        setUploading(false);
+        return;
+      }
 
-      // 3. Update DOM immediately
-      const img = target.tagName === "IMG" ? target : target.querySelector("img");
-      if (img) (img as HTMLImageElement).src = url;
+      // 3. Update DOM immediately (works even if no <img> existed before)
+      const existingImg = target.tagName === "IMG"
+        ? target as HTMLImageElement
+        : target.querySelector("img");
+      if (existingImg) {
+        existingImg.src = url;
+      } else {
+        // No img existed (was showing icon) — inject one
+        target.innerHTML = "";
+        const newImg = document.createElement("img");
+        newImg.src = url;
+        newImg.alt = "";
+        newImg.style.cssText = "width:100%;height:100%;object-fit:cover;display:block;";
+        target.appendChild(newImg);
+      }
 
       setUploading(false);
       setSaved(true);
