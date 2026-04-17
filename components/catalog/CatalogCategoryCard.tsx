@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PhotoEditable from "@/components/admin/PhotoEditable";
 
 interface CategoryCardProps {
   name: string;
@@ -24,18 +25,14 @@ export default function CatalogCategoryCard({
   return (
     <div className="bg-card border border-border rounded-lg overflow-hidden hover:border-gold/40 transition-all">
       {/* Full-width image area */}
-      <div
-        className="w-full h-44 bg-muted flex items-center justify-center overflow-hidden relative"
-        data-photo-id={`category:${slug}`}
-      >
+      <PhotoEditable photoId={`category:${slug}`} className="w-full h-44 bg-muted flex items-center justify-center overflow-hidden">
         {imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
         ) : (
           <span className="text-5xl opacity-40">{icon || "📦"}</span>
         )}
-        <div className="photo-edit-overlay">📷 Вставить фото</div>
-      </div>
+      </PhotoEditable>
 
       {/* Info */}
       <div className="p-4">

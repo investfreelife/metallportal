@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { Upload, CheckCircle, AlertCircle, ExternalLink, Loader2 } from "lucide-react";
+import { Upload, CheckCircle, AlertCircle, ExternalLink, Loader2, CheckSquare, Square, Layers } from "lucide-react";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -42,67 +42,53 @@ function compressImage(file: File, maxPx: number, quality: number): Promise<File
   });
 }
 
-function PhotoCard({ cat, onUpdated }: { cat: Category; onUpdated: () => void }) {
+function PhotoCard({
+  cat, onUpdated, selected, onToggle,
+}: {
+  cat: Category; onUpdated: () => void; selected: boolean; onToggle: (id: string) => void;
+}) {
   const [uploading, setUploading] = useState(false);
   const [status, setStatus] = useState<"idle" | "ok" | "err">("idle");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = async (file: File) => {
     const allowed = ["image/jpeg", "image/png", "image/webp"];
-    if (!allowed.includes(file.type)) {
-      alert("❌ Только JPG, PNG или WebP. Другие форматы не принимаются.");
-      return;
-    }
-    if (file.size > 8 * 1024 * 1024) {
-      alert("❌ Файл больше 8 МБ. Уменьшите изображение перед загрузкой.");
-      return;
-    }
-    setUploading(true);
-    setStatus("idle");
-
+    if (!allowed.includes(file.type)) { alert("❌ Только JPG, PNG или WebP."); return; }
+    if (file.size > 8 * 1024 * 1024) { alert("❌ Файл больше 8 МБ."); return; }
+    setUploading(true); setStatus("idle");
     let uploadFile: File = file;
     try { uploadFile = await compressImage(file, 1200, 0.85); } catch {}
-
     const fd = new FormData();
-    fd.append("file", uploadFile);
-    fd.append("folder", "categories");
+    fd.append("file", uploadFile); fd.append("folder", "categories");
     const res = await fetch("/api/admin/upload-image", { method: "POST", body: fd });
     const json = await res.json();
     if (json.url) {
       await supabase.from("categories").update({ image_url: json.url }).eq("id", cat.id);
-      setStatus("ok");
-      onUpdated();
-    } else {
-      setStatus("err");
-    }
+      setStatus("ok"); onUpdated();
+    } else { setStatus("err"); }
     setUploading(false);
   };
 
   return (
-    <div className="bg-[#16213e] rounded-xl overflow-hidden border border-white/10 hover:border-[#E8B86D]/40 transition-all group">
+    <div className={`bg-[#16213e] rounded-xl overflow-hidden border transition-all group ${
+      selected ? "border-[#E8B86D] ring-2 ring-[#E8B86D]/40" : "border-white/10 hover:border-[#E8B86D]/40"
+    }`}>
       {/* Photo preview */}
       <div className="relative h-44 bg-[#0d0d1a] overflow-hidden">
         {cat.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={cat.image_url}
-            alt={cat.name}
-            className="w-full h-full object-cover"
-          />
+          <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center text-white/20">
             <div className="text-4xl mb-2">📷</div>
             <span className="text-xs">Нет фото</span>
           </div>
         )}
-
-        {/* Upload overlay */}
+        {/* Upload overlay (individual) */}
         <label className={`absolute inset-0 flex flex-col items-center justify-center cursor-pointer transition-all ${
           uploading ? "bg-black/70" : "bg-black/0 group-hover:bg-black/50"
         }`}>
-          {uploading ? (
-            <Loader2 size={28} className="text-[#E8B86D] animate-spin" />
-          ) : (
+          {uploading ? <Loader2 size={28} className="text-[#E8B86D] animate-spin" /> : (
             <>
               <Upload size={24} className="text-white opacity-0 group-hover:opacity-100 transition-opacity mb-1" />
               <span className="text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity font-medium">
@@ -110,42 +96,24 @@ function PhotoCard({ cat, onUpdated }: { cat: Category; onUpdated: () => void })
               </span>
             </>
           )}
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            disabled={uploading}
-            onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
-          />
+          <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp"
+            className="hidden" disabled={uploading}
+            onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
         </label>
-
-        {/* Status badge */}
-        {status === "ok" && (
-          <div className="absolute top-2 right-2 bg-green-500 rounded-full p-1">
-            <CheckCircle size={14} className="text-white" />
-          </div>
-        )}
-        {status === "err" && (
-          <div className="absolute top-2 right-2 bg-red-500 rounded-full p-1">
-            <AlertCircle size={14} className="text-white" />
-          </div>
-        )}
+        {status === "ok" && <div className="absolute top-2 right-2 bg-green-500 rounded-full p-1"><CheckCircle size={14} className="text-white" /></div>}
+        {status === "err" && <div className="absolute top-2 right-2 bg-red-500 rounded-full p-1"><AlertCircle size={14} className="text-white" /></div>}
       </div>
-
-      {/* Info */}
-      <div className="p-3 flex items-center justify-between">
-        <div>
-          <div className="text-white text-sm font-medium">{cat.name}</div>
-          <div className="text-white/30 text-xs mt-0.5">{cat.slug}</div>
+      {/* Info + checkbox */}
+      <div className="p-3 flex items-center gap-2">
+        <button onClick={() => onToggle(cat.id)} className="flex-shrink-0 text-[#E8B86D] hover:scale-110 transition-transform">
+          {selected ? <CheckSquare size={18} /> : <Square size={18} className="text-white/30 hover:text-[#E8B86D]" />}
+        </button>
+        <div className="flex-1 min-w-0">
+          <div className="text-white text-sm font-medium truncate">{cat.name}</div>
+          <div className="text-white/30 text-xs">{cat.slug}</div>
         </div>
-        <a
-          href={`/catalog/${cat.slug}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="p-1.5 text-white/20 hover:text-[#E8B86D] transition-colors"
-          title="Посмотреть на сайте"
-        >
+        <a href={`/catalog/${cat.slug}`} target="_blank" rel="noopener noreferrer"
+          className="p-1.5 text-white/20 hover:text-[#E8B86D] transition-colors flex-shrink-0">
           <ExternalLink size={14} />
         </a>
       </div>
@@ -157,6 +125,43 @@ export default function PhotosPage() {
   const [cats, setCats] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "no-photo" | "has-photo">("all");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [groupUploading, setGroupUploading] = useState(false);
+  const groupInputRef = useRef<HTMLInputElement>(null);
+
+  const toggleSelect = (id: string) => setSelected(prev => {
+    const next = new Set(prev);
+    next.has(id) ? next.delete(id) : next.add(id);
+    return next;
+  });
+
+  const selectAll = (ids: string[]) => setSelected(prev => {
+    const next = new Set(prev);
+    ids.forEach(id => next.add(id));
+    return next;
+  });
+
+  const clearSelect = () => setSelected(new Set());
+
+  const handleGroupUpload = async (file: File) => {
+    if (selected.size === 0) return;
+    const allowed = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowed.includes(file.type)) { alert("❌ Только JPG, PNG или WebP."); return; }
+    if (file.size > 8 * 1024 * 1024) { alert("❌ Файл больше 8 МБ."); return; }
+    setGroupUploading(true);
+    let uploadFile = file;
+    try { uploadFile = await compressImage(file, 1200, 0.85); } catch {}
+    const fd = new FormData();
+    fd.append("file", uploadFile); fd.append("folder", "categories");
+    const upRes = await fetch("/api/admin/upload-image", { method: "POST", body: fd });
+    const { url } = await upRes.json();
+    if (!url) { alert("❌ Ошибка загрузки"); setGroupUploading(false); return; }
+    const ids = Array.from(selected);
+    await supabase.from("categories").update({ image_url: url }).in("id", ids);
+    setGroupUploading(false);
+    setSelected(new Set());
+    load();
+  };
 
   const load = async () => {
     const { data } = await supabase
@@ -197,6 +202,28 @@ export default function PhotosPage() {
         )}
       </div>
 
+      {/* Group upload bar */}
+      {selected.size > 0 && (
+        <div className="flex items-center gap-3 mb-6 p-4 bg-[#E8B86D]/10 border border-[#E8B86D]/30 rounded-xl">
+          <Layers size={16} className="text-[#E8B86D] flex-shrink-0" />
+          <span className="text-[#E8B86D] text-sm font-medium flex-1">
+            Выбрано: {selected.size} {selected.size === 1 ? "раздел" : selected.size < 5 ? "раздела" : "разделов"}
+          </span>
+          <label className={`flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-sm cursor-pointer transition-all ${
+            groupUploading ? "bg-white/10 text-white/40" : "bg-[#E8B86D] text-black hover:bg-yellow-400"
+          }`}>
+            {groupUploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
+            {groupUploading ? "Загружаю..." : "Загрузить одно фото для всех"}
+            <input ref={groupInputRef} type="file" accept="image/jpeg,image/png,image/webp"
+              className="hidden" disabled={groupUploading}
+              onChange={e => { const f = e.target.files?.[0]; if (f) handleGroupUpload(f); }} />
+          </label>
+          <button onClick={clearSelect} className="text-white/40 hover:text-white text-sm px-3 py-2 rounded-lg hover:bg-white/5 transition-all">
+            Сбросить
+          </button>
+        </div>
+      )}
+
       {/* Filter tabs */}
       <div className="flex gap-2 mb-8">
         {([["all", "Все"], ["no-photo", "Без фото"], ["has-photo", "С фото"]] as const).map(([val, label]) => (
@@ -229,13 +256,19 @@ export default function PhotosPage() {
                       <div className="absolute -top-2 -left-2 z-10 bg-[#E8B86D] text-black text-xs font-bold px-2 py-0.5 rounded">
                         Раздел
                       </div>
-                      <PhotoCard cat={root} onUpdated={load} />
+                      <PhotoCard cat={root} onUpdated={load} selected={selected.has(root.id)} onToggle={toggleSelect} />
                     </div>
                   )}
                   {subs.map(sub => (
-                    <PhotoCard key={sub.id} cat={sub} onUpdated={load} />
+                    <PhotoCard key={sub.id} cat={sub} onUpdated={load} selected={selected.has(sub.id)} onToggle={toggleSelect} />
                   ))}
                 </div>
+                {(rootVisible || subs.length > 0) && (
+                  <button onClick={() => selectAll([...(rootVisible ? [root.id] : []), ...subs.map(s => s.id)])}
+                    className="mt-2 text-xs text-white/30 hover:text-[#E8B86D] transition-colors">
+                    Выбрать все в группе
+                  </button>
+                )}
               </div>
             );
           })}
