@@ -288,10 +288,10 @@ export default function AdminProducts() {
             className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
               catFilter === "" ? "bg-[#E8B86D] text-black" : "bg-white/5 text-white/50 hover:text-white hover:bg-white/10"
             }`}>Все</button>
-          {categories.filter(c => !c.parent_id).map(cat => (
+          {categories.map(cat => (
             <button key={cat.id} onClick={() => { setCatFilter(cat.id); setPage(0); }}
               className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
-                catFilter === cat.id ? "bg-[#E8B86D] text-black" : "bg-white/5 text-white/50 hover:text-white hover:bg-white/10"
+                catFilter === cat.id ? "bg-[#E8B86D] text-black" : cat.parent_id ? "bg-white/5 text-white/40 hover:text-white hover:bg-white/10" : "bg-white/10 text-white/60 hover:text-white hover:bg-white/15"
               }`}>{cat.name}</button>
           ))}
         </div>
