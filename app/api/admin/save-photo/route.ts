@@ -14,10 +14,10 @@ export async function POST(req: NextRequest) {
     const [type, identifier] = photoId.split(":");
 
     if (type === "category") {
-      const { error } = await supabase
-        .from("categories")
-        .update({ image_url: url })
-        .eq("slug", identifier);
+      const { error } = await supabase.from("categories").update({ image_url: url }).eq("slug", identifier);
+      if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    } else if (type === "product") {
+      const { error } = await supabase.from("products").update({ image_url: url }).eq("slug", identifier);
       if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     } else {
       return NextResponse.json({ error: "Unknown type: " + type }, { status: 400 });

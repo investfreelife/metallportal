@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PhotoEditable from "@/components/admin/PhotoEditable";
 import ProductTabs from "@/components/catalog/ProductTabs";
 import PriceBlock from "@/components/catalog/PriceBlock";
 
@@ -113,14 +114,14 @@ export default function ProductDetailView({ product, priceItems, related, basePa
 
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="flex-1 min-w-0 space-y-6">
-          <div className="rounded-lg overflow-hidden h-64 lg:h-80">
+          <PhotoEditable photoId={`product:${product.slug}`} dimensions="800×320" className="rounded-lg overflow-hidden h-64 lg:h-80">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={product.image_url || fallbackImage}
               alt={product.name}
               className="w-full h-full object-cover"
             />
-          </div>
+          </PhotoEditable>
           <div className="bg-card border border-border rounded-lg overflow-hidden">
             <ProductTabs
               description={product.description}

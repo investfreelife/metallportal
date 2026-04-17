@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PhotoEditable from "@/components/admin/PhotoEditable";
 
 interface ProductCardProps {
   product: any;
@@ -25,16 +26,18 @@ export default function CatalogProductCard({ product, productBasePath }: Product
       href={`${productBasePath}/${product.slug}`}
       className="bg-card border border-border rounded p-4 hover:border-gold hover:shadow-lg transition-all flex flex-col"
     >
-      {product.image_url && (
-        <div className="-mx-4 -mt-4 mb-3">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={product.image_url}
-            alt={product.name}
-            className="w-full h-40 object-cover rounded-t"
-          />
-        </div>
-      )}
+      <PhotoEditable
+        photoId={`product:${product.slug}`}
+        dimensions="320×160"
+        className="-mx-4 -mt-4 mb-3 h-40 overflow-hidden rounded-t"
+      >
+        {product.image_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full bg-muted flex items-center justify-center text-4xl opacity-20">📦</div>
+        )}
+      </PhotoEditable>
 
       <div className="mb-2">
         <span className="inline-block bg-gold/10 text-gold px-2 py-0.5 text-xs font-medium rounded">
