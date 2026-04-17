@@ -19,6 +19,7 @@ export default function AdminCategories() {
   const [editing, setEditing] = useState<Category | null>(null);
   const [saving, setSaving] = useState(false);
   const [genLoading, setGenLoading] = useState<string | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
   const [newCat, setNewCat] = useState({ name: "", slug: "", parent_id: "" });
 
@@ -143,6 +144,37 @@ export default function AdminCategories() {
                 <label className="text-xs text-white/40 uppercase tracking-wider block mb-1">Порядок</label>
                 <input type="number" value={editing.sort_order} onChange={e => setEditing(s => s ? { ...s, sort_order: Number(e.target.value) } : s)}
                   className="w-full bg-[#0d0d1a] border border-white/20 rounded px-3 py-2 text-sm text-white outline-none focus:border-[#E8B86D]" />
+              </div>
+              <div>
+                <label className="text-xs text-white/40 uppercase tracking-wider block mb-2">Фото раздела</label>
+                {editing.image_url && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={editing.image_url} alt="" className="w-full h-32 object-cover rounded-lg mb-2 border border-white/10" />
+                )}
+                <label className="flex items-center justify-center gap-2 w-full py-2.5 border-2 border-dashed border-white/20 hover:border-[#E8B86D]/60 rounded-lg cursor-pointer text-white/40 hover:text-[#E8B86D] text-sm transition-all">
+                  <Image size={14} />
+                  {uploadingPhoto ? "Загрузка..." : "Выбрать фото"}
+                  <input type="file" accept="image/*" className="hidden" disabled={uploadingPhoto}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setUploadingPhoto(true);
+                      const fd = new FormData();
+                      fd.append("file", file);
+                      fd.append("folder", "categories");
+                      const res = await fetch("/api/admin/upload-image", { method: "POST", body: fd });
+                      const json = await res.json();
+                      if (json.url) setEditing(s => s ? { ...s, image_url: json.url } : s);
+                      setUploadingPhoto(false);
+                    }}
+                  />
+                </label>
+                {editing.image_url && (
+                  <button onClick={() => setEditing(s => s ? { ...s, image_url: null } : s)}
+                    className="mt-1.5 text-xs text-red-400 hover:text-red-300 transition-colors">
+                    Удалить фото
+                  </button>
+                )}
               </div>
             </div>
             <div className="flex gap-3 mt-5">
