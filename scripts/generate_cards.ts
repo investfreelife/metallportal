@@ -49,7 +49,7 @@ const supabase = createClient(
 );
 
 const BATCH_SIZE = 10;
-const CONCURRENCY = 5;
+const CONCURRENCY = 3;
 
 // ---------------------------------------------------------------------------
 // Category slug → article code mapping
@@ -414,7 +414,7 @@ async function main() {
 
   if (limit) {
     query = query.range(offset, offset + limit - 1);
-  } else if (offset) {
+  } else {
     query = query.range(offset, offset + 99999);
   }
 
@@ -464,25 +464,35 @@ async function main() {
     const userMessage = `Сгенерируй SEO карточки для ${batch.length} товаров:\n\n` +
       batch.map((p, idx) => formatProductForPrompt(p, idx + 1)).join("\n");
 
-    try {
-      const cards = await callOpenRouter(systemPrompt, userMessage);
+    const maxRetries = 3;
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const cards = await callOpenRouter(systemPrompt, userMessage);
 
-      if (cards.length !== batch.length) {
-        console.warn(`  ⚠ Batch ${batchNum}: expected ${batch.length} items, got ${cards.length}`);
+        if (cards.length !== batch.length) {
+          console.warn(`  ⚠ Batch ${batchNum}: expected ${batch.length} items, got ${cards.length}`);
+        }
+
+        const { saved, failed } = await saveBatch(batch, cards, dryRun);
+        totalSaved += saved;
+        totalFailed += failed;
+
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+        const rate = (totalSaved / parseFloat(elapsed) * 60).toFixed(0);
+        console.log(`  ✓ Batch ${batchNum}: saved=${saved} failed=${failed} | total=${totalSaved}/${total} | ${elapsed}s | ~${rate}/min`);
+        return;
+      } catch (err) {
+        const e = err as any;
+        if (attempt < maxRetries) {
+          const delay = attempt * 5000;
+          console.warn(`  ↻ Batch ${batchNum} attempt ${attempt} failed (${e.message}), retry in ${delay/1000}s...`);
+          await new Promise((r) => setTimeout(r, delay));
+        } else {
+          console.error(`  ✗ Batch ${batchNum} failed after ${maxRetries} attempts: ${e.message}`);
+          if (e.cause) console.error(`    cause: ${e.cause}`);
+          totalFailed += batch.length;
+        }
       }
-
-      const { saved, failed } = await saveBatch(batch, cards, dryRun);
-      totalSaved += saved;
-      totalFailed += failed;
-
-      const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-      const rate = (totalSaved / parseFloat(elapsed) * 60).toFixed(0);
-      console.log(`  ✓ Batch ${batchNum}: saved=${saved} failed=${failed} | total=${totalSaved}/${total} | ${elapsed}s | ~${rate}/min`);
-    } catch (err) {
-      const e = err as any;
-      console.error(`  ✗ Batch ${batchNum} error: ${e.message}`);
-      if (e.cause) console.error(`    cause: ${e.cause}`);
-      totalFailed += batch.length;
     }
   }
 
