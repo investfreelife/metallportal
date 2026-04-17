@@ -78,10 +78,9 @@ function NavDropdown({
   }, [onClose]);
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative" onMouseLeave={onClose}>
       <div
         onMouseEnter={onOpen}
-        onMouseLeave={() => {}}
         className="flex items-center text-sm py-2 whitespace-nowrap"
       >
         <Link
@@ -102,7 +101,6 @@ function NavDropdown({
 
       {open && (
         <div
-          onMouseLeave={onClose}
           className={`absolute top-full left-0 z-50 bg-background border border-border rounded-lg shadow-2xl p-5 ${
             mega ? "min-w-[520px]" : "min-w-[260px]"
           }`}
