@@ -228,7 +228,7 @@ async function callOpenRouter(
       "Authorization": `Bearer ${OPENROUTER_KEY}`,
       "Content-Type": "application/json",
       "HTTP-Referer": "https://metallportal.vercel.app",
-      "X-Title": "МеталлПортал Card Generator",
+      "X-Title": "MetallPortal Card Generator",
     },
     body: JSON.stringify({
       model: "openai/gpt-4o-mini",
