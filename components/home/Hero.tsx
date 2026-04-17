@@ -6,8 +6,6 @@ import { supabase } from "@/lib/supabase";
 const CARD_HREFS = [
   "/catalog/metalloprokat",
   "/catalog/konstruktsii",
-  "/catalog/zabory",
-  "/catalog/zdaniya",
 ];
 
 const CARD_DEFAULTS = [
@@ -15,14 +13,10 @@ const CARD_DEFAULTS = [
     image: "https://loremflickr.com/800/600/steel,pipe,industrial,metal" },
   { title: "Готовые конструкции", sub: "Ангары · Склады · Навесы · Каркасы зданий", link: "Подобрать конструкцию →",
     image: "https://loremflickr.com/800/600/warehouse,steel,building,hangar" },
-  { title: "Заборы и ограждения", sub: "Профнастил · Сетка · Ворота · Калитки", link: "Смотреть каталог →",
-    image: "https://loremflickr.com/800/600/fence,metal,gate,steel" },
-  { title: "Быстровозводимые здания", sub: "Модульные · Склады · Ангары · Павильоны", link: "Рассчитать стоимость →",
-    image: "https://loremflickr.com/800/600/industrial,construction,building,factory" },
 ];
 
 async function getCategoryImages() {
-  const slugs = ["metalloprokat", "konstruktsii", "zabory", "zdaniya"];
+  const slugs = ["metalloprokat", "konstruktsii"];
   const { data } = await supabase.from("categories").select("slug, image_url").in("slug", slugs);
   if (!data) return {} as Record<string, string>;
   return Object.fromEntries(
@@ -39,7 +33,7 @@ export default async function Hero() {
     title: settings[`hero_card_${i + 1}_title`] || def.title,
     sub: settings[`hero_card_${i + 1}_sub`] || def.sub,
     link: def.link,
-    image: settings[`hero_card_${i + 1}_image`] || catImages[["metalloprokat","konstruktsii","zabory","zdaniya"][i]] || def.image,
+    image: settings[`hero_card_${i + 1}_image`] || catImages[["metalloprokat","konstruktsii"][i]] || def.image,
     href: CARD_HREFS[i],
   }));
 
