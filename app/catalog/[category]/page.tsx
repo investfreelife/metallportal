@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getCategoryBySlug, getSubcategories, getCategoryWithChildren, getProductCounts } from "@/lib/queries";
+import { getCategoryBySlug, getSubcategories, getCategoryWithChildren, getProductCounts, sumCounts } from "@/lib/queries";
+import { supabase } from "@/lib/supabase";
 import CatalogView from "@/components/catalog/CatalogView";
 import CatalogCategoryCard from "@/components/catalog/CatalogCategoryCard";
 
@@ -18,19 +19,22 @@ export default async function CategoryPage({ params }: Props) {
 
   // If category has subcategories → show cards
   if (subcategories.length > 0) {
-    const counts = await getProductCounts();
+    const [counts, { data: allCats }] = await Promise.all([
+      getProductCounts(),
+      supabase.from("categories").select("id, parent_id").eq("is_active", true),
+    ]);
+    const catList = allCats ?? [];
 
-    // For each subcategory, get its children (Level 3)
+    // For each subcategory, get its children (Level 3) with recursive counts
     const enriched = await Promise.all(
       subcategories.map(async (sub: any) => {
         const children = await getSubcategories(sub.id);
-        const childCounts = children.reduce((acc: number, c: any) => acc + (counts[c.id] || 0), 0);
         return {
           ...sub,
-          totalProducts: (counts[sub.id] || 0) + childCounts,
+          totalProducts: sumCounts(sub.id, catList, counts),
           subcategories: children.map((c: any) => ({
             ...c,
-            totalProducts: counts[c.id] || 0,
+            totalProducts: sumCounts(c.id, catList, counts),
             productCount: counts[c.id] || 0,
           })),
         };

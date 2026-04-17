@@ -3,8 +3,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
   getCategoryBySlug, getSubcategories, getCategoryWithChildren,
-  getProductBySlug, getProductPriceItems, getRelatedProducts, getProductCounts,
+  getProductBySlug, getProductPriceItems, getRelatedProducts, getProductCounts, sumCounts,
 } from "@/lib/queries";
+import { supabase } from "@/lib/supabase";
 import CatalogView from "@/components/catalog/CatalogView";
 import CatalogCategoryCard from "@/components/catalog/CatalogCategoryCard";
 import ProductDetailView from "@/components/catalog/ProductDetailView";
@@ -35,10 +36,14 @@ export default async function SubcategoryPage({ params }: Props) {
 
     // Has children → show cards
     if (subcategories.length > 0) {
-      const counts = await getProductCounts();
+      const [counts, { data: allCats }] = await Promise.all([
+        getProductCounts(),
+        supabase.from("categories").select("id, parent_id").eq("is_active", true),
+      ]);
+      const catList = allCats ?? [];
       const enriched = subcategories.map((sub: any) => ({
         ...sub,
-        totalProducts: counts[sub.id] || 0,
+        totalProducts: sumCounts(sub.id, catList, counts),
         subcategories: [],
       }));
 

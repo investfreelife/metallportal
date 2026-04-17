@@ -64,7 +64,8 @@ export async function getCategoryWithChildren(slug: string) {
     `
     )
     .in("category_id", categoryIds)
-    .eq("is_active", true);
+    .eq("is_active", true)
+    .limit(10000);
 
   if (error) {
     console.error("getCategoryWithChildren products error:", error);
@@ -112,21 +113,18 @@ export async function getRelatedProducts(categoryId: string, excludeId: string, 
 }
 
 export async function getProductCounts(): Promise<Record<string, number>> {
-  const { data: countRows, error } = await supabase
-    .from("products")
-    .select("category_id")
-    .eq("is_active", true) as { data: { category_id: string }[] | null; error: any };
+  const { data, error } = await supabase.rpc("get_product_counts");
 
   const counts: Record<string, number> = {};
-  if (!error && countRows) {
-    for (const row of countRows) {
-      counts[row.category_id] = (counts[row.category_id] || 0) + 1;
+  if (!error && data) {
+    for (const row of data as { category_id: string; count: number }[]) {
+      counts[row.category_id] = Number(row.count);
     }
   }
   return counts;
 }
 
-function sumCounts(catId: string, allCats: any[], counts: Record<string, number>): number {
+export function sumCounts(catId: string, allCats: any[], counts: Record<string, number>): number {
   const direct = counts[catId] || 0;
   const children = allCats.filter((c: any) => c.parent_id === catId);
   const childSum = children.reduce((acc: number, c: any) => acc + sumCounts(c.id, allCats, counts), 0);
