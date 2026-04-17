@@ -19,7 +19,7 @@
  */
 
 import { createClient } from "@supabase/supabase-js";
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 
 // ---------------------------------------------------------------------------
@@ -406,70 +406,72 @@ async function main() {
   console.log("Loading existing article numbers...");
   await initArticleCounters();
 
-  // 3. Fetch products
+  // 3. Fetch products (paginated to bypass Supabase 1000-row limit)
   console.log("\nFetching products...");
-  let query = supabase
-    .from("products")
-    .select(`
-      id, name, slug, gost, steel_grade, dimensions,
-      diameter, thickness, length, unit, coating, weight_per_meter,
-      article,
-      category:categories(slug),
-      price_items(base_price, discount_price)
-    `)
-    .is(noSeoText ? "seo_title" : "seo_text", null)
-    .eq("is_active", true)
-    .order("created_at");
 
+  let categoryId: string | null = null;
   if (category) {
-    // Filter by category slug
     const { data: cat } = await supabase
-      .from("categories")
-      .select("id")
-      .eq("slug", category)
-      .single();
-    if (cat) {
-      query = query.eq("category_id", cat.id);
-      console.log(`  Filtering by category: ${category}`);
-    }
+      .from("categories").select("id").eq("slug", category).single();
+    if (cat) { categoryId = cat.id; console.log(`  Filtering by category: ${category}`); }
   }
 
-  if (limit) {
-    query = query.range(offset, offset + limit - 1);
-  } else {
-    query = query.range(offset, offset + 99999);
-  }
-
-  const { data: rawProducts, error } = await query;
-  if (error) throw new Error(`Supabase fetch failed: ${error.message}`);
-  if (!rawProducts?.length) {
-    console.log("No products found (all already have seo_text?).");
-    return;
-  }
-
-  // Map to typed rows
-  const products: ProductRow[] = rawProducts.map((p: any) => {
+  function mapRow(p: any): ProductRow {
     const prices = (p.price_items || [])
       .map((pi: any) => Number(pi.discount_price ?? pi.base_price))
       .filter((n: number) => n > 0);
     return {
-      id: p.id,
-      name: p.name,
-      slug: p.slug,
-      gost: p.gost,
-      steel_grade: p.steel_grade,
-      dimensions: p.dimensions,
-      diameter: p.diameter,
-      thickness: p.thickness,
-      length: p.length,
-      unit: p.unit || "т",
-      coating: p.coating,
-      weight_per_meter: p.weight_per_meter,
+      id: p.id, name: p.name, slug: p.slug,
+      gost: p.gost, steel_grade: p.steel_grade, dimensions: p.dimensions,
+      diameter: p.diameter, thickness: p.thickness, length: p.length,
+      unit: p.unit || "т", coating: p.coating, weight_per_meter: p.weight_per_meter,
       category_slug: p.category?.slug ?? "",
       best_price: prices.length ? Math.min(...prices) : null,
       article: p.article ?? null,
     };
-  });
+  }
+
+  const SELECT = `id, name, slug, gost, steel_grade, dimensions,
+      diameter, thickness, length, unit, coating, weight_per_meter,
+      article, category:categories(slug), price_items(base_price, discount_price)`;
+
+  const products: ProductRow[] = [];
+  const PAGE = 1000;
+
+  if (limit) {
+    // Respect explicit --limit
+    const { data, error } = await supabase.from("products").select(SELECT)
+      .is(noSeoText ? "seo_title" : "seo_text", null)
+      .eq("is_active", true)
+      .order("created_at")
+      .range(offset, offset + limit - 1);
+    if (error) throw new Error(`Supabase fetch failed: ${error.message}`);
+    products.push(...(data || []).map(mapRow));
+  } else {
+    // Paginate through all products
+    let page = 0;
+    while (true) {
+      let q = supabase.from("products").select(SELECT)
+        .is(noSeoText ? "seo_title" : "seo_text", null)
+        .eq("is_active", true)
+        .order("created_at")
+        .range(offset + page * PAGE, offset + page * PAGE + PAGE - 1);
+      if (categoryId) q = q.eq("category_id", categoryId);
+      const { data, error } = await q;
+      if (error) throw new Error(`Supabase fetch failed: ${error.message}`);
+      if (!data?.length) break;
+      products.push(...data.map(mapRow));
+      process.stdout.write(`  Fetched ${products.length}...\r`);
+      if (data.length < PAGE) break;
+      page++;
+    }
+    console.log(`  Fetched ${products.length} total            `);
+  }
+
+  if (!products.length) {
+    console.log("No products found (all already processed).");
+    return;
+  }
 
   const total = products.length;
   const batchCount = Math.ceil(total / BATCH_SIZE);
@@ -538,6 +540,25 @@ async function main() {
   console.log(`  Failed: ${totalFailed}`);
   console.log(`  Total:  ${total}`);
   console.log(`${"═".repeat(55)}`);
+
+  // 6. Update PROJECT_STATUS.md
+  if (!dryRun) {
+    const { count: doneCount } = await supabase
+      .from("products").select("*", { count: "exact", head: true })
+      .not("seo_title", "is", null).eq("is_active", true);
+    const date = new Date().toISOString().slice(0, 16).replace("T", " ");
+    const statusPath = join(process.cwd(), "docs/PROJECT_STATUS.md");
+    let status = "";
+    try { status = readFileSync(statusPath, "utf-8"); } catch {}
+    const line = `SEO (title+desc): ${doneCount ?? "?"} из 12166 готово, последнее обновление: ${date}`;
+    if (status.includes("SEO (title+desc):")) {
+      status = status.replace(/SEO \(title\+desc\):.*/, line);
+    } else {
+      status = status.trimEnd() + `\n\n## SEO Progress\n${line}\n`;
+    }
+    writeFileSync(statusPath, status);
+    console.log(`\n  📊 ${line}`);
+  }
 }
 
 main().catch((err) => {
