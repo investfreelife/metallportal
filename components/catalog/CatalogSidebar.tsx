@@ -35,7 +35,7 @@ export default function CatalogSidebar({ categories }: CatalogSidebarProps) {
 function SidebarLevel1({ cat, pathname }: { cat: any; pathname: string }) {
   const href = `/catalog/${cat.slug}`;
   const isActive = pathname === href || pathname.startsWith(href + "/");
-  const [expanded, setExpanded] = useState(isActive);
+  const [expanded, setExpanded] = useState(true);
   const hasSubs = cat.subcategories?.length > 0;
 
   return (

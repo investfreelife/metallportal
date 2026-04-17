@@ -9,7 +9,7 @@ const NAV_ITEMS = [
   {
     label: "Металлопрокат",
     icon: "🔩",
-    href: "/catalog",
+    href: "/catalog/metalloprokat",
     children: [
       { label: "Трубы и профиль", href: "/catalog/truby-i-profil", children: [
         { label: "Трубы ВГП", href: "/catalog/truba-vgp" },
@@ -105,13 +105,6 @@ function NavDropdown({
             mega ? "min-w-[520px]" : "min-w-[260px]"
           }`}
         >
-          <Link
-            href={item.href}
-            onClick={onClose}
-            className="block text-sm font-semibold text-foreground hover:text-gold mb-3 pb-2 border-b border-border transition-colors"
-          >
-            Все — {item.label} →
-          </Link>
           <div className={mega ? "grid grid-cols-2 gap-x-6 gap-y-3" : "space-y-3"}>
             {item.children.map((child: any) => (
               <div key={child.href}>
