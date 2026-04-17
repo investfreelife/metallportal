@@ -1,13 +1,14 @@
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
 const categories = [
   {
     title: "Металлопрокат",
-    image: "https://loremflickr.com/600/400/steel,metal,rolled,industry",
+    image: "/images/home/metalloprokat.png",
   },
   {
     title: "Готовые конструкции",
-    image: "https://loremflickr.com/600/400/steel,construction,structure,fabrication",
+    image: "/images/home/konstrukcii.png",
   },
 ];
 
@@ -22,11 +23,11 @@ export default function CategoryRow() {
               className="relative h-48 rounded overflow-hidden group cursor-pointer shadow-md hover:shadow-lg transition-all"
             >
               {/* Background image */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={category.image}
                 alt={category.title}
-                className="absolute inset-0 w-full h-full object-cover"
+                fill
+                className="object-cover"
               />
 
               {/* Overlay */}
