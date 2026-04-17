@@ -18,16 +18,53 @@ interface Category {
   sort_order: number;
 }
 
+function compressImage(file: File, maxPx: number, quality: number): Promise<File> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let { width, height } = img;
+      if (width > maxPx || height > maxPx) {
+        if (width > height) { height = Math.round(height * maxPx / width); width = maxPx; }
+        else { width = Math.round(width * maxPx / height); height = maxPx; }
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = width; canvas.height = height;
+      canvas.getContext("2d")!.drawImage(img, 0, 0, width, height);
+      canvas.toBlob(blob => {
+        if (!blob) { reject(new Error("canvas failed")); return; }
+        resolve(new File([blob], file.name.replace(/\.[^.]+$/, ".webp"), { type: "image/webp" }));
+      }, "image/webp", quality);
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
 function PhotoCard({ cat, onUpdated }: { cat: Category; onUpdated: () => void }) {
   const [uploading, setUploading] = useState(false);
   const [status, setStatus] = useState<"idle" | "ok" | "err">("idle");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = async (file: File) => {
+    const allowed = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowed.includes(file.type)) {
+      alert("❌ Только JPG, PNG или WebP. Другие форматы не принимаются.");
+      return;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      alert("❌ Файл больше 8 МБ. Уменьшите изображение перед загрузкой.");
+      return;
+    }
     setUploading(true);
     setStatus("idle");
+
+    let uploadFile: File = file;
+    try { uploadFile = await compressImage(file, 1200, 0.85); } catch {}
+
     const fd = new FormData();
-    fd.append("file", file);
+    fd.append("file", uploadFile);
     fd.append("folder", "categories");
     const res = await fetch("/api/admin/upload-image", { method: "POST", body: fd });
     const json = await res.json();

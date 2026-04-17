@@ -2,6 +2,30 @@
 import { useState, useEffect, useCallback } from "react";
 import { Camera, X, Loader2, CheckCircle } from "lucide-react";
 
+function compressImage(file: File, maxPx: number, quality: number): Promise<File> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let { width, height } = img;
+      if (width > maxPx || height > maxPx) {
+        if (width > height) { height = Math.round(height * maxPx / width); width = maxPx; }
+        else { width = Math.round(width * maxPx / height); height = maxPx; }
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = width; canvas.height = height;
+      canvas.getContext("2d")!.drawImage(img, 0, 0, width, height);
+      canvas.toBlob(blob => {
+        if (!blob) { reject(new Error("canvas failed")); return; }
+        resolve(new File([blob], file.name.replace(/\.[^.]+$/, ".webp"), { type: "image/webp" }));
+      }, "image/webp", quality);
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
 export default function AdminBar() {
   const [session, setSession] = useState<{ name: string; role: string } | null>(null);
   const [editMode, setEditMode] = useState(false);
@@ -28,19 +52,43 @@ export default function AdminBar() {
 
     const input = document.createElement("input");
     input.type = "file";
-    input.accept = "image/*";
+    input.accept = "image/jpeg,image/png,image/webp";
     input.onchange = async () => {
       const file = input.files?.[0];
       if (!file) return;
+
+      // ── Validate format
+      const allowed = ["image/jpeg", "image/png", "image/webp"];
+      if (!allowed.includes(file.type)) {
+        alert("❌ Неверный формат. Загружайте только JPG, PNG или WebP.");
+        return;
+      }
+
+      // ── Validate size (max 8MB before compression)
+      if (file.size > 8 * 1024 * 1024) {
+        alert("❌ Файл слишком большой (максимум 8 МБ). Уменьшите изображение.");
+        return;
+      }
+
       setUploading(true);
+
+      // ── Compress & resize via canvas → WebP max 1200px, 85% quality
+      let uploadFile: File = file;
+      try {
+        uploadFile = await compressImage(file, 1200, 0.85);
+      } catch { /* use original if canvas fails */ }
 
       // 1. Upload file
       const fd = new FormData();
-      fd.append("file", file);
+      fd.append("file", uploadFile);
       fd.append("folder", "site");
       const upRes = await fetch("/api/admin/upload-image", { method: "POST", body: fd });
-      const { url } = await upRes.json();
-      if (!url) { setUploading(false); return; }
+      const { url, error } = await upRes.json();
+      if (!url) {
+        alert("❌ Ошибка загрузки: " + (error ?? "неизвестная ошибка"));
+        setUploading(false);
+        return;
+      }
 
       // 2. Save to DB
       await fetch("/api/admin/save-photo", {
