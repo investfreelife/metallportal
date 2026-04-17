@@ -9,6 +9,7 @@ const NAV_ADMIN = [
   { href: "/admin", icon: LayoutDashboard, label: "Дашборд" },
   { href: "/admin/homepage", icon: Home, label: "Главная" },
   { href: "/admin/categories", icon: Tag, label: "Категории" },
+  { href: "/admin/photos", icon: Image, label: "Фото разделов" },
   { href: "/admin/menu", icon: Menu, label: "Меню" },
   { href: "/admin/products", icon: Package, label: "Товары" },
   { href: "/admin/users", icon: Users, label: "Пользователи" },
@@ -16,8 +17,9 @@ const NAV_ADMIN = [
 ];
 
 const NAV_DESIGNER = [
-  { href: "/admin/categories", icon: Image, label: "Фото разделов" },
+  { href: "/admin/photos", icon: Image, label: "Фото разделов" },
 ];
+
 
 export default function AdminSidebar() {
   const path = usePathname();
