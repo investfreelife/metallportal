@@ -74,8 +74,12 @@ export default function PhotoEditable({ photoId, className = "", children, dimen
     setTimeout(() => { setDone(false); window.location.reload(); }, 1200);
   };
 
+  // Don't add `relative` if className already contains a position (absolute/fixed/sticky)
+  const hasPosition = /\b(absolute|fixed|sticky)\b/.test(className);
+  const outerClass = hasPosition ? className : `relative ${className}`;
+
   return (
-    <div className={`relative ${className}`}>
+    <div className={outerClass}>
       {children}
       {editMode && (
         <label
