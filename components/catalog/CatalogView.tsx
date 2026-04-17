@@ -1,10 +1,42 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import Link from "next/link";
-import { LayoutGrid, List, ChevronDown, ChevronUp } from "lucide-react";
+import { LayoutGrid, List, ChevronDown, ChevronUp, Upload, Loader2, Layers } from "lucide-react";
 import CatalogProductTable from "./ProductTable";
 import CatalogProductCard from "./ProductCard";
+
+async function compressAndUpload(file: File): Promise<string | null> {
+  const allowed = ["image/jpeg", "image/png", "image/webp"];
+  if (!allowed.includes(file.type)) { alert("❌ Только JPG, PNG или WebP"); return null; }
+  if (file.size > 8 * 1024 * 1024) { alert("❌ Файл больше 8 МБ"); return null; }
+  const compressed: File = await new Promise<File>((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let { width, height } = img;
+      const maxPx = 1200;
+      if (width > maxPx || height > maxPx) {
+        if (width > height) { height = Math.round(height * maxPx / width); width = maxPx; }
+        else { width = Math.round(width * maxPx / height); height = maxPx; }
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = width; canvas.height = height;
+      canvas.getContext("2d")!.drawImage(img, 0, 0, width, height);
+      canvas.toBlob(blob => {
+        if (!blob) { reject(new Error("canvas failed")); return; }
+        resolve(new File([blob], file.name.replace(/\.[^.]+$/, ".webp"), { type: "image/webp" }));
+      }, "image/webp", 0.85);
+    };
+    img.onerror = reject; img.src = url;
+  }).catch((): File => file);
+  const fd = new FormData();
+  fd.append("file", compressed); fd.append("folder", "products");
+  const res = await fetch("/api/admin/upload-image", { method: "POST", body: fd });
+  const { url } = await res.json();
+  return url || null;
+}
 
 interface CatalogViewProps {
   category: any;
@@ -94,6 +126,42 @@ export default function CatalogView({ category, subcategories, products, categor
   const [sortBy, setSortBy] = useState("price_asc");
   const [page, setPage] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(true);
+  const [editMode, setEditMode] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [groupUploading, setGroupUploading] = useState(false);
+  const groupInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const on = (e as CustomEvent<boolean>).detail;
+      setEditMode(on);
+      if (!on) setSelected(new Set());
+    };
+    window.addEventListener("photoEditMode", handler);
+    return () => window.removeEventListener("photoEditMode", handler);
+  }, []);
+
+  const toggleSelect = (id: string) => setSelected(prev => {
+    const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n;
+  });
+
+  const handleGroupUpload = async (file: File) => {
+    if (selected.size === 0) return;
+    setGroupUploading(true);
+    const url = await compressAndUpload(file);
+    if (url) {
+      await Promise.all(Array.from(selected).map(id =>
+        fetch("/api/admin/save-photo", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ photoId: `product:${products.find((p: any) => p.id === id)?.slug}`, url }),
+        })
+      ));
+      setSelected(new Set());
+      window.location.reload();
+    }
+    setGroupUploading(false);
+  };
 
   const update = (partial: Partial<FilterState>) => { setFilters(f => ({ ...f, ...partial })); setPage(1); };
   const reset = () => { setFilters(defaultFilters); setActiveSub(""); setPage(1); };
@@ -319,11 +387,38 @@ export default function CatalogView({ category, subcategories, products, categor
             ) : viewMode === "table" ? (
               <CatalogProductTable products={paginatedProducts} productBasePath={resolvedProductBasePath} />
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                {paginatedProducts.map((product: any) => (
-                  <CatalogProductCard key={product.id} product={product} productBasePath={resolvedProductBasePath} />
-                ))}
-              </div>
+              <>
+                {/* Group upload bar */}
+                {editMode && selected.size > 0 && (
+                  <div className="flex items-center gap-3 mb-4 p-3 bg-gold/10 border border-gold/30 rounded-xl">
+                    <Layers size={15} className="text-gold flex-shrink-0" />
+                    <span className="text-gold text-sm font-medium flex-1">Выбрано: {selected.size} товаров</span>
+                    <label className={`flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-sm cursor-pointer ${
+                      groupUploading ? "bg-muted text-muted-foreground" : "bg-gold text-black hover:bg-yellow-400"
+                    }`}>
+                      {groupUploading ? <Loader2 size={13} className="animate-spin" /> : <Upload size={13} />}
+                      {groupUploading ? "Загружаю..." : "Одно фото для всех"}
+                      <input ref={groupInputRef} type="file" accept="image/jpeg,image/png,image/webp"
+                        className="hidden" disabled={groupUploading}
+                        onChange={e => { const f = e.target.files?.[0]; if (f) handleGroupUpload(f); }} />
+                    </label>
+                    <button onClick={() => setSelected(new Set())} className="text-muted-foreground hover:text-foreground text-sm px-2">
+                      Сбросить
+                    </button>
+                  </div>
+                )}
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {paginatedProducts.map((product: any) => (
+                    <CatalogProductCard
+                      key={product.id}
+                      product={product}
+                      productBasePath={resolvedProductBasePath}
+                      isSelected={selected.has(product.id)}
+                      onToggle={editMode ? toggleSelect : undefined}
+                    />
+                  ))}
+                </div>
+              </>
             )}
 
             {/* Pagination */}

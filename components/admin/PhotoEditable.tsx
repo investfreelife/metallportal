@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Loader2 } from "lucide-react";
 
 function compressImage(file: File, maxPx: number, quality: number): Promise<File> {
@@ -38,6 +38,7 @@ export default function PhotoEditable({ photoId, className = "", children, dimen
   const [editMode, setEditMode] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [done, setDone] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handler = (e: Event) => setEditMode((e as CustomEvent<boolean>).detail);
@@ -82,36 +83,43 @@ export default function PhotoEditable({ photoId, className = "", children, dimen
     <div className={outerClass}>
       {children}
       {editMode && (
-        <label
-          className={`absolute inset-0 z-20 flex flex-col items-center justify-center cursor-pointer transition-all group/edit ${
-            uploading || done ? "bg-black/60" : "bg-transparent hover:bg-black/50"
-          }`}
-          onClick={e => { e.preventDefault(); e.stopPropagation(); }}
-        >
-          {uploading && <Loader2 size={24} className="text-[#E8B86D] animate-spin" />}
-          {done && <span className="text-green-400 font-bold text-sm">✓ Сохранено!</span>}
-          {!uploading && !done && (
-            <div className="flex flex-col items-center gap-1.5 opacity-0 group-hover/edit:opacity-100 transition-opacity select-none">
-              <span className="text-[#E8B86D] font-bold text-sm px-3 py-1.5 rounded-lg bg-black/60 border border-[#E8B86D]/40">
-                📷 Вставить фото
-              </span>
-              {dimensions && (
-                <span className="text-white/70 text-xs px-2 py-1 rounded bg-black/60 font-mono">
-                  {dimensions} px
+        <>
+          {/* Clickable overlay — div, not label, so preventDefault doesn't block file dialog */}
+          <div
+            className={`absolute inset-0 z-20 flex flex-col items-center justify-center cursor-pointer transition-all group/edit ${
+              uploading || done ? "bg-black/60" : "bg-transparent hover:bg-black/50"
+            }`}
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (!uploading && !done) inputRef.current?.click();
+            }}
+          >
+            {uploading && <Loader2 size={24} className="text-[#E8B86D] animate-spin" />}
+            {done && <span className="text-green-400 font-bold text-sm">✓ Сохранено!</span>}
+            {!uploading && !done && (
+              <div className="flex flex-col items-center gap-1.5 opacity-0 group-hover/edit:opacity-100 transition-opacity select-none pointer-events-none">
+                <span className="text-[#E8B86D] font-bold text-sm px-3 py-1.5 rounded-lg bg-black/60 border border-[#E8B86D]/40">
+                  📷 Вставить фото
                 </span>
-              )}
-            </div>
-          )}
-          {/* Dashed border in edit mode */}
-          <span className="absolute inset-0 border-2 border-dashed border-[#E8B86D] opacity-0 group-hover/edit:opacity-100 pointer-events-none transition-opacity rounded-[inherit]" />
+                {dimensions && (
+                  <span className="text-white/70 text-xs px-2 py-1 rounded bg-black/60 font-mono">
+                    {dimensions} px
+                  </span>
+                )}
+              </div>
+            )}
+            <span className="absolute inset-0 border-2 border-dashed border-[#E8B86D] opacity-0 group-hover/edit:opacity-100 pointer-events-none transition-opacity rounded-[inherit]" />
+          </div>
           <input
+            ref={inputRef}
             type="file"
             accept="image/jpeg,image/png,image/webp"
             className="hidden"
             disabled={uploading}
             onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
           />
-        </label>
+        </>
       )}
     </div>
   );
