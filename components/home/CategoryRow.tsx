@@ -2,20 +2,12 @@ import { ArrowRight } from "lucide-react";
 
 const categories = [
   {
-    title: "Трубы и профиль",
-    image: "https://loremflickr.com/600/400/steel,pipe,tube,industrial",
+    title: "Металлопрокат",
+    image: "https://loremflickr.com/600/400/steel,metal,rolled,industry",
   },
   {
-    title: "Арматура и сетка",
-    image: "https://loremflickr.com/600/400/rebar,steel,mesh,construction",
-  },
-  {
-    title: "Ворота и калитки",
-    image: "https://loremflickr.com/600/400/gate,fence,metal,steel",
-  },
-  {
-    title: "Навесы и козырьки",
-    image: "https://loremflickr.com/600/400/canopy,metal,awning,roof",
+    title: "Готовые конструкции",
+    image: "https://loremflickr.com/600/400/steel,construction,structure,fabrication",
   },
 ];
 
@@ -23,7 +15,7 @@ export default function CategoryRow() {
   return (
     <section className="bg-background py-5">
       <div className="container-main">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           {categories.map((category, index) => (
             <div
               key={index}
