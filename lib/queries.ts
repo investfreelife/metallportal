@@ -149,13 +149,15 @@ export async function getFullCategoryTree(): Promise<any[]> {
       .filter((c: any) => (parentId ? c.parent_id === parentId : !c.parent_id))
       .map((c: any) => {
         const children = buildLevel(c.id);
+        const totalProducts = sumCounts(c.id, cats, counts);
         return {
           ...c,
           productCount: counts[c.id] || 0,
-          totalProducts: sumCounts(c.id, cats, counts),
-          subcategories: children,
+          totalProducts,
+          subcategories: children.filter((ch: any) => ch.totalProducts > 0),
         };
-      });
+      })
+      .filter((c: any) => c.totalProducts > 0);
 
   return buildLevel(null);
 }

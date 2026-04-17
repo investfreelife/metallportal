@@ -41,11 +41,13 @@ export default async function SubcategoryPage({ params }: Props) {
         supabase.from("categories").select("id, parent_id").eq("is_active", true),
       ]);
       const catList = allCats ?? [];
-      const enriched = subcategories.map((sub: any) => ({
-        ...sub,
-        totalProducts: sumCounts(sub.id, catList, counts),
-        subcategories: [],
-      }));
+      const enriched = subcategories
+        .map((sub: any) => ({
+          ...sub,
+          totalProducts: sumCounts(sub.id, catList, counts),
+          subcategories: [],
+        }))
+        .filter((sub: any) => sub.totalProducts > 0);
 
       return (
         <div>
