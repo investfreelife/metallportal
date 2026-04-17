@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
 
 function compressImage(file: File, maxPx: number, quality: number): Promise<File> {
   return new Promise((resolve, reject) => {
@@ -46,6 +46,18 @@ export default function PhotoEditable({ photoId, className = "", children, dimen
     return () => window.removeEventListener("photoEditMode", handler);
   }, []);
 
+  const handleDelete = async () => {
+    if (!confirm("Удалить фото?")) return;
+    const res = await fetch("/api/admin/save-photo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ photoId, url: "" }),
+    });
+    const json = await res.json();
+    if (json.ok) window.location.reload();
+    else alert("❌ Ошибка: " + json.error);
+  };
+
   const handleFile = async (file: File) => {
     const allowed = ["image/jpeg", "image/png", "image/webp"];
     if (!allowed.includes(file.type)) { alert("❌ Только JPG, PNG или WebP"); return; }
@@ -80,9 +92,10 @@ export default function PhotoEditable({ photoId, className = "", children, dimen
   const outerClass = hasPosition ? className : `relative ${className}`;
 
   return (
-    <div className={outerClass}>
+    <div className={`${outerClass} group/photo`}>
       {children}
       {editMode && (
+        <>
         <label
           className={`absolute inset-0 z-20 flex flex-col items-center justify-center cursor-pointer transition-all group/edit ${
             uploading || done ? "bg-black/60" : "bg-transparent hover:bg-black/50"
@@ -113,6 +126,14 @@ export default function PhotoEditable({ photoId, className = "", children, dimen
             onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
           />
         </label>
+        <button
+          onClick={e => { e.stopPropagation(); handleDelete(); }}
+          className="absolute top-1 right-1 z-30 bg-black/70 hover:bg-red-600 rounded p-1 text-white/50 hover:text-white transition-all opacity-0 group-hover/photo:opacity-100"
+          title="Удалить фото"
+        >
+          <Trash2 size={11} />
+        </button>
+        </>
       )}
     </div>
   );

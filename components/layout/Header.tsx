@@ -168,7 +168,7 @@ export default function Header() {
             <span className="text-xs">Доставка по России</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="text-xs hover:text-gold transition-colors">Войти</Link>
+            <Link href="/account" className="text-xs hover:text-gold transition-colors">Личный кабинет</Link>
             <Link href="/supplier" className="text-xs text-gold hover:text-yellow-300 transition-colors">Стать поставщиком</Link>
           </div>
         </div>

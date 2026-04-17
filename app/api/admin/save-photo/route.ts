@@ -9,15 +9,16 @@ const supabase = createClient(
 export async function POST(req: NextRequest) {
   try {
     const { photoId, url } = await req.json();
-    if (!photoId || !url) return NextResponse.json({ error: "Missing params" }, { status: 400 });
+    if (!photoId) return NextResponse.json({ error: "Missing photoId" }, { status: 400 });
 
     const [type, identifier] = photoId.split(":");
+    const imageUrl = url === "" ? null : url;
 
     if (type === "category") {
-      const { error } = await supabase.from("categories").update({ image_url: url }).eq("slug", identifier);
+      const { error } = await supabase.from("categories").update({ image_url: imageUrl }).eq("slug", identifier);
       if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     } else if (type === "product") {
-      const { error } = await supabase.from("products").update({ image_url: url }).eq("slug", identifier);
+      const { error } = await supabase.from("products").update({ image_url: imageUrl }).eq("slug", identifier);
       if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     } else {
       return NextResponse.json({ error: "Unknown type: " + type }, { status: 400 });

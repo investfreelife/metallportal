@@ -1,18 +1,59 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { Search, Edit2, RefreshCw, Download, CheckSquare, Square, Upload, Layers, Image as ImageIcon, Loader2 } from "lucide-react";
+import { Search, Edit2, RefreshCw, Download, CheckSquare, Square, Upload, Layers, Image as ImageIcon, Loader2, Percent, Trash2 } from "lucide-react";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+interface Category { id: string; name: string; slug: string; parent_id: string | null; }
+interface PriceItem { id: string; base_price: number; discount_price: number | null; }
 interface Product {
   id: string; name: string; slug: string; gost: string | null;
   steel_grade: string | null; unit: string | null; description: string | null;
   image_url: string | null; category_id: string;
   category?: { name: string; slug: string };
+  price_items?: PriceItem[];
+}
+
+function InlineEdit({ id, field, value, type = "text", options, onSave }: {
+  id: string; field: string; value: string | null;
+  type?: "text" | "number" | "select";
+  options?: { id: string; name: string }[];
+  onSave: (id: string, field: string, value: string) => Promise<void>;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [val, setVal] = useState(value ?? "");
+  useEffect(() => { setVal(value ?? ""); }, [value]);
+  const save = async () => {
+    setEditing(false);
+    if (val !== (value ?? "")) await onSave(id, field, val);
+  };
+  if (!editing) {
+    return (
+      <span onClick={() => { setVal(value ?? ""); setEditing(true); }}
+        className="cursor-pointer inline-flex items-center gap-1 group/cell hover:text-white transition-colors" title="Нажмите для редактирования">
+        <span className="text-white/60">{value || <span className="text-white/20 text-xs italic">—</span>}</span>
+        <span className="opacity-0 group-hover/cell:opacity-60 text-white/30 text-xs">✎</span>
+      </span>
+    );
+  }
+  if (type === "select" && options) {
+    return (
+      <select value={val} onChange={e => setVal(e.target.value)} onBlur={save} autoFocus
+        className="bg-[#0d0d1a] border border-[#E8B86D]/60 rounded px-2 py-0.5 text-xs text-white outline-none w-full max-w-[180px]">
+        <option value="">— не задано —</option>
+        {options.map(o => <option key={o.id} value={o.id}>{o.name}</option>)}
+      </select>
+    );
+  }
+  return (
+    <input type={type} value={val} onChange={e => setVal(e.target.value)}
+      onBlur={save} onKeyDown={e => { if (e.key === "Enter") save(); if (e.key === "Escape") setEditing(false); }}
+      autoFocus className="bg-[#0d0d1a] border border-[#E8B86D]/60 rounded px-2 py-0.5 text-xs text-white outline-none w-full min-w-[80px]" />
+  );
 }
 
 function compressImage(file: File, maxPx: number, quality: number): Promise<File> {
@@ -41,8 +82,10 @@ function compressImage(file: File, maxPx: number, quality: number): Promise<File
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [catFilter, setCatFilter] = useState("");
   const [editing, setEditing] = useState<Product | null>(null);
   const [saving, setSaving] = useState(false);
   const [genLoading, setGenLoading] = useState<string | null>(null);
@@ -50,6 +93,8 @@ export default function AdminProducts() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [groupUploading, setGroupUploading] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [markup, setMarkup] = useState("");
+  const [markupApplying, setMarkupApplying] = useState(false);
   const groupInputRef = useRef<HTMLInputElement>(null);
   const [page, setPage] = useState(0);
   const PAGE_SIZE = 50;
@@ -96,17 +141,57 @@ export default function AdminProducts() {
     setUploadingPhoto(false);
   };
 
+  const saveField = async (id: string, field: string, value: string) => {
+    if (field === "price") {
+      const price = parseFloat(value);
+      if (!isNaN(price) && price >= 0) {
+        await supabase.from("price_items").update({ base_price: price }).eq("product_id", id);
+        setProducts(prev => prev.map(p => p.id !== id ? p : { ...p, price_items: p.price_items?.map(pi => ({ ...pi, base_price: price })) }));
+      }
+    } else {
+      await supabase.from("products").update({ [field]: value || null }).eq("id", id);
+      if (field === "category_id") {
+        const cat = categories.find(c => c.id === value);
+        setProducts(prev => prev.map(p => p.id !== id ? p : { ...p, [field]: value, category: cat ? { name: cat.name, slug: cat.slug } : p.category }));
+      } else {
+        setProducts(prev => prev.map(p => p.id !== id ? p : { ...p, [field]: value }));
+      }
+    }
+  };
+
+  const applyMarkup = async () => {
+    const pct = parseFloat(markup);
+    if (isNaN(pct) || pct <= 0 || selected.size === 0) return;
+    setMarkupApplying(true);
+    for (const productId of Array.from(selected)) {
+      const { data: items } = await supabase.from("price_items").select("id, base_price").eq("product_id", productId);
+      if (items) {
+        for (const item of items) {
+          const newPrice = Math.round(item.base_price * (1 + pct / 100) * 100) / 100;
+          await supabase.from("price_items").update({ base_price: newPrice }).eq("id", item.id);
+        }
+      }
+    }
+    setSelected(new Set()); setMarkup(""); setMarkupApplying(false); load();
+  };
+
   const load = useCallback(async () => {
     setLoading(true);
-    let q = supabase.from("products").select("id, name, slug, gost, steel_grade, unit, description, image_url, category_id, category:categories(name, slug)")
+    let q = supabase.from("products").select("id, name, slug, gost, steel_grade, unit, description, image_url, category_id, category:categories(name, slug), price_items(id, base_price, discount_price)")
       .order("name").range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
     if (search) q = q.ilike("name", `%${search}%`);
+    if (catFilter) q = q.eq("category_id", catFilter);
     const { data } = await q;
     setProducts((data as unknown as Product[]) ?? []);
     setLoading(false);
-  }, [page, search]);
+  }, [page, search, catFilter]);
 
   useEffect(() => { load(); }, [load]);
+
+  useEffect(() => {
+    supabase.from("categories").select("id, name, slug, parent_id").order("name")
+      .then(({ data }) => setCategories(data ?? []));
+  }, []);
 
   const saveEdit = async () => {
     if (!editing) return;
@@ -150,18 +235,49 @@ export default function AdminProducts() {
       </div>
 
       {selected.size > 0 && (
-        <div className="flex items-center gap-3 mb-4 p-4 bg-[#E8B86D]/10 border border-[#E8B86D]/30 rounded-xl">
+        <div className="flex items-center gap-3 mb-4 p-4 bg-[#E8B86D]/10 border border-[#E8B86D]/30 rounded-xl flex-wrap gap-y-2">
           <Layers size={16} className="text-[#E8B86D] flex-shrink-0" />
-          <span className="text-[#E8B86D] text-sm font-medium flex-1">Выбрано: {selected.size} товаров</span>
-          <label className={`flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-sm cursor-pointer ${
+          <span className="text-[#E8B86D] text-sm font-medium">Выбрано: {selected.size}</span>
+
+          {/* Group photo */}
+          <label className={`flex items-center gap-2 px-3 py-2 rounded-lg font-bold text-sm cursor-pointer ${
             groupUploading ? "bg-white/10 text-white/40" : "bg-[#E8B86D] text-black hover:bg-yellow-400"
           }`}>
-            {groupUploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
-            {groupUploading ? "Загружаю..." : "Одно фото для всех выбранных"}
+            {groupUploading ? <Loader2 size={13} className="animate-spin" /> : <Upload size={13} />}
+            {groupUploading ? "Загружаю..." : "Одно фото всем"}
             <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden"
               disabled={groupUploading} onChange={e => { const f = e.target.files?.[0]; if (f) handleGroupUpload(f); }} />
           </label>
-          <button onClick={() => setSelected(new Set())} className="text-white/40 hover:text-white text-sm px-3 py-2 rounded-lg hover:bg-white/5">Сбросить</button>
+
+          {/* Markup */}
+          <div className="flex items-center gap-2 ml-auto">
+            <Percent size={13} className="text-white/40" />
+            <input value={markup} onChange={e => setMarkup(e.target.value)} placeholder="Наценка %"
+              type="number" min="0" step="0.1"
+              className="bg-[#0d0d1a] border border-white/20 rounded px-3 py-1.5 text-sm text-white w-28 outline-none focus:border-[#E8B86D]" />
+            <button onClick={applyMarkup} disabled={!markup || markupApplying || selected.size === 0}
+              className="px-4 py-1.5 bg-blue-600/80 hover:bg-blue-600 text-white text-sm rounded-lg font-medium disabled:opacity-30 transition-all">
+              {markupApplying ? <Loader2 size={13} className="animate-spin inline" /> : "Применить наценку"}
+            </button>
+          </div>
+
+          <button onClick={() => setSelected(new Set())} className="text-white/40 hover:text-white text-sm px-3 py-1.5 rounded-lg hover:bg-white/5">Сбросить</button>
+        </div>
+      )}
+
+      {/* Category filter */}
+      {categories.length > 0 && (
+        <div className="flex gap-2 mb-3 flex-wrap">
+          <button onClick={() => { setCatFilter(""); setPage(0); }}
+            className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+              catFilter === "" ? "bg-[#E8B86D] text-black" : "bg-white/5 text-white/50 hover:text-white hover:bg-white/10"
+            }`}>Все</button>
+          {categories.filter(c => !c.parent_id).map(cat => (
+            <button key={cat.id} onClick={() => { setCatFilter(cat.id); setPage(0); }}
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                catFilter === cat.id ? "bg-[#E8B86D] text-black" : "bg-white/5 text-white/50 hover:text-white hover:bg-white/10"
+              }`}>{cat.name}</button>
+          ))}
         </div>
       )}
 
@@ -187,9 +303,10 @@ export default function AdminProducts() {
                 <th className="px-4 py-3 w-12">Фото</th>
                 <th className="text-left px-4 py-3">Название</th>
                 <th className="text-left px-4 py-3">Категория</th>
-                <th className="text-left px-4 py-3">ГОСТ</th>
+                <th className="text-left px-4 py-3">ГОСТ / Марка</th>
                 <th className="text-left px-4 py-3">Ед.</th>
-                <th className="px-4 py-3 w-24"></th>
+                <th className="text-left px-4 py-3">Цена ₽</th>
+                <th className="px-4 py-3 w-20"></th>
               </tr>
             </thead>
             <tbody>
@@ -216,12 +333,32 @@ export default function AdminProducts() {
                     </label>
                   </td>
                   <td className="px-4 py-2.5">
-                    <div className="text-white font-medium line-clamp-1">{p.name}</div>
-                    <div className="text-white/30 text-xs">{p.steel_grade || ""}</div>
+                    <div className="font-medium">
+                      <InlineEdit id={p.id} field="name" value={p.name} onSave={saveField} />
+                    </div>
+                    <div className="mt-0.5">
+                      <InlineEdit id={p.id} field="steel_grade" value={p.steel_grade} onSave={saveField} />
+                    </div>
                   </td>
-                  <td className="px-4 py-2.5 text-white/40 text-xs">{(p.category as any)?.name}</td>
-                  <td className="px-4 py-2.5 text-white/40 text-xs">{p.gost}</td>
-                  <td className="px-4 py-2.5 text-white/40 text-xs">{p.unit}</td>
+                  <td className="px-4 py-2.5 text-xs">
+                    <InlineEdit id={p.id} field="category_id" value={p.category_id}
+                      type="select"
+                      options={categories.map(c => ({ id: c.id, name: c.name }))}
+                      onSave={saveField} />
+                  </td>
+                  <td className="px-4 py-2.5 text-xs">
+                    <InlineEdit id={p.id} field="gost" value={p.gost} onSave={saveField} />
+                  </td>
+                  <td className="px-4 py-2.5 text-xs">
+                    <InlineEdit id={p.id} field="unit" value={p.unit} onSave={saveField} />
+                  </td>
+                  <td className="px-4 py-2.5 text-xs">
+                    {p.price_items && p.price_items.length > 0 ? (
+                      <InlineEdit id={p.id} field="price"
+                        value={String(Math.min(...p.price_items.map(pi => pi.base_price)))}
+                        type="number" onSave={saveField} />
+                    ) : <span className="text-white/20 italic text-xs">—</span>}
+                  </td>
                   <td className="px-4 py-2.5">
                     <div className="flex items-center gap-1">
                       <button onClick={() => generateImage(p)} disabled={genLoading === p.id}
@@ -229,7 +366,7 @@ export default function AdminProducts() {
                         {genLoading === p.id ? <RefreshCw size={12} className="animate-spin" /> : "✨"}
                       </button>
                       <button onClick={() => setEditing(p)}
-                        className="p-1.5 rounded text-white/20 hover:text-white transition-colors">
+                        className="p-1.5 rounded text-white/20 hover:text-white transition-colors" title="Описание">
                         <Edit2 size={12} />
                       </button>
                     </div>
