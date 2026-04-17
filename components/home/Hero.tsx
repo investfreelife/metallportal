@@ -10,9 +10,9 @@ const CARD_HREFS = [
 
 const CARD_DEFAULTS = [
   { title: "Металлопрокат", sub: "Трубы · Арматура · Лист · Балки · Уголок", link: "1200+ позиций →",
-    image: "https://loremflickr.com/800/600/steel,pipe,industrial,metal" },
+    image: "/images/home/metalloprokat.png" },
   { title: "Готовые конструкции", sub: "Ангары · Склады · Навесы · Каркасы зданий", link: "Подобрать конструкцию →",
-    image: "https://loremflickr.com/800/600/warehouse,steel,building,hangar" },
+    image: "/images/home/konstrukcii.png" },
 ];
 
 async function getCategoryImages() {
