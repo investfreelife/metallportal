@@ -22,51 +22,53 @@ export default function CatalogCategoryCard({
   const cardHref = `${basePath}/${slug}`;
 
   return (
-    <div className="bg-card border border-border rounded-lg p-5 hover:border-gold/40 transition-all">
-      <div className="flex gap-4 mb-4">
-        <div
-          className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-muted flex items-center justify-center"
-          data-photo-id={`category:${slug}`}
-        >
-          {imageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
-          ) : (
-            <span className="text-3xl">{icon || "📦"}</span>
-          )}
-        </div>
+    <div className="bg-card border border-border rounded-lg overflow-hidden hover:border-gold/40 transition-all">
+      {/* Full-width image area */}
+      <div
+        className="w-full h-44 bg-muted flex items-center justify-center overflow-hidden relative"
+        data-photo-id={`category:${slug}`}
+      >
+        {imageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
+        ) : (
+          <span className="text-5xl opacity-40">{icon || "📦"}</span>
+        )}
+      </div>
 
-        <div className="flex-1 min-w-0">
+      {/* Info */}
+      <div className="p-4">
+        <div className="flex items-start justify-between gap-2 mb-3">
           <Link
             href={cardHref}
-            className="text-lg font-bold text-foreground hover:text-gold transition-colors block truncate"
+            className="text-base font-bold text-foreground hover:text-gold transition-colors leading-tight"
           >
             {name}
           </Link>
           {totalProducts > 0 && (
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs text-muted-foreground whitespace-nowrap flex-shrink-0 mt-0.5">
               {totalProducts} {totalProducts === 1 ? "позиция" : totalProducts < 5 ? "позиции" : "позиций"}
             </span>
           )}
         </div>
-      </div>
 
-      {subcategories.length > 0 && (
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
-          {subcategories.map((sub: any) => (
-            <Link
-              key={sub.id}
-              href={`${cardHref}/${sub.slug}`}
-              className="flex items-baseline gap-1 text-sm text-muted-foreground hover:text-gold hover:underline transition-colors truncate"
-            >
-              <span className="truncate">{sub.name}</span>
-              {sub.totalProducts > 0 && (
-                <span className="text-xs flex-shrink-0 opacity-60">{sub.totalProducts}</span>
-              )}
-            </Link>
-          ))}
-        </div>
-      )}
+        {subcategories.length > 0 && (
+          <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+            {subcategories.map((sub: any) => (
+              <Link
+                key={sub.id}
+                href={`${cardHref}/${sub.slug}`}
+                className="flex items-baseline gap-1 text-sm text-muted-foreground hover:text-gold hover:underline transition-colors truncate"
+              >
+                <span className="truncate">{sub.name}</span>
+                {sub.totalProducts > 0 && (
+                  <span className="text-xs flex-shrink-0 opacity-60">{sub.totalProducts}</span>
+                )}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
