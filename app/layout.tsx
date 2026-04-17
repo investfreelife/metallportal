@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ThemeProvider from "@/components/ThemeProvider";
+import AdminBar from "@/components/admin/AdminBar";
 
 export const metadata: Metadata = {
   title: "МЕТАЛЛПОРТАЛ — Маркетплейс металлопродукции",
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           {children}
           <Footer />
+          <AdminBar />
         </ThemeProvider>
       </body>
     </html>

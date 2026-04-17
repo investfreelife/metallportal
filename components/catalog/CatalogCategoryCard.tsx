@@ -24,7 +24,10 @@ export default function CatalogCategoryCard({
   return (
     <div className="bg-card border border-border rounded-lg p-5 hover:border-gold/40 transition-all">
       <div className="flex gap-4 mb-4">
-        <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-muted flex items-center justify-center">
+        <div
+          className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-muted flex items-center justify-center"
+          data-photo-id={`category:${slug}`}
+        >
           {imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
