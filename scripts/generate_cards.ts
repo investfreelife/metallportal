@@ -10,10 +10,11 @@
  * Cost: ~$0.001 per product, 12166 products ≈ $12 total.
  *
  * Usage:
- *   npx tsx scripts/generate_cards.ts              # all without seo_text
- *   npx tsx scripts/generate_cards.ts --limit=100  # first N
- *   npx tsx scripts/generate_cards.ts --offset=500 # skip first N
- *   npx tsx scripts/generate_cards.ts --dry-run    # print, don't save
+ *   npx tsx scripts/generate_cards.ts                    # all: title+desc+seo_text
+ *   npx tsx scripts/generate_cards.ts --no-seo-text      # fast: title+desc only
+ *   npx tsx scripts/generate_cards.ts --limit=100        # first N
+ *   npx tsx scripts/generate_cards.ts --offset=500       # skip first N
+ *   npx tsx scripts/generate_cards.ts --dry-run          # print, don't save
  *   npx tsx scripts/generate_cards.ts --category=truby-vgp  # one category
  */
 
@@ -48,8 +49,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const BATCH_SIZE = 10;
-const CONCURRENCY = 3;
+const BATCH_SIZE = 20;
+const CONCURRENCY = 5;
 
 // ---------------------------------------------------------------------------
 // Category slug → article code mapping
@@ -127,13 +128,12 @@ function loadSeoRules(): string {
 // ---------------------------------------------------------------------------
 // System prompt (cached across batches)
 // ---------------------------------------------------------------------------
-function buildSystemPrompt(seoRules: string): string {
-  return `Ты — SEO-копирайтер интернет-магазина металлопроката МеталлПортал (metallportal.vercel.app).
-Генерируй контент для карточек товаров на русском языке.
-
-${seoRules}
-
-Для каждого товара из входного списка сформируй JSON-объект с полями:
+function buildSystemPrompt(seoRules: string, noSeoText: boolean): string {
+  const fieldsBlock = noSeoText
+    ? `Для каждого товара из входного списка сформируй JSON-объект с полями:
+- seo_title: SEO заголовок для <title>, СТРОГО до 60 символов. Формат: "{Название} купить в Москве | МеталлПортал"
+- seo_description: Мета-описание, СТРОГО до 155 символов. Формат: "Купить {название} по цене от {цена} ₽/{ед}. Склад в Москве. Доставка по РФ. Сертификаты."`
+    : `Для каждого товара из входного списка сформируй JSON-объект с полями:
 - seo_title: SEO заголовок для <title>, СТРОГО до 60 символов. Формат: "{Название} купить в Москве | МеталлПортал"
 - seo_description: Мета-описание, СТРОГО до 155 символов. Формат: "Купить {название} по цене от {цена} ₽/{ед}. Склад в Москве. Доставка по РФ. Сертификаты."
 - seo_text: Полный SEO текст карточки товара в формате HTML (400-500 слов). Структура:
@@ -144,9 +144,18 @@ ${seoRules}
   <h3>Как купить {название} в МеталлПортал</h3>
   <p>Оформите заказ на сайте или позвоните. Доставка по Москве и всей России. Самовывоз со склада: г. Москва, Походный проезд, 16. Работаем Пн-Пт 8:00-20:00, Сб 9:00-17:00.</p>
   <h3>Почему МеталлПортал</h3>
-  <ul><li>Собственный склад в Москве</li><li>Сертификаты качества на всю продукцию</li><li>Оптовые и розничные цены</li><li>Резка в размер, доставка по РФ</li></ul>
+  <ul><li>Собственный склад в Москве</li><li>Сертификаты качества на всю продукцию</li><li>Оптовые и розничные цены</li><li>Резка в размер, доставка по РФ</li></ul>`;
 
-Правила:
+  const rules = noSeoText
+    ? `Правила:
+1. Отвечай ТОЛЬКО валидным JSON: {"items": [...]}
+2. Количество объектов в items = количеству товаров во входных данных
+3. Порядок объектов совпадает с порядком входных данных
+4. Все тексты на русском языке
+5. Используй конкретные характеристики товара из входных данных
+6. Ключевые слова для SEO: "купить", "цена", "в Москве", "со склада", "ГОСТ"
+7. Не выдумывай цены — пиши "по запросу" или "уточняйте"`
+    : `Правила:
 1. Отвечай ТОЛЬКО валидным JSON: {"items": [...]}
 2. Количество объектов в items = количеству товаров во входных данных
 3. Порядок объектов совпадает с порядком входных данных
@@ -155,6 +164,15 @@ ${seoRules}
 6. Используй конкретные характеристики товара (ГОСТ, размеры, марка стали) из входных данных
 7. Ключевые слова для SEO: "купить", "цена", "в Москве", "со склада", "ГОСТ", "{название} оптом"
 8. Не выдумывай цены — пиши "по запросу" или "уточняйте"`;
+
+  return `Ты — SEO-копирайтер интернет-магазина металлопроката МеталлПортал (metallportal.vercel.app).
+Генерируй контент для карточек товаров на русском языке.
+
+${seoRules}
+
+${fieldsBlock}
+
+${rules}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -181,7 +199,7 @@ interface ProductRow {
 interface GeneratedCard {
   seo_title: string;
   seo_description: string;
-  seo_text: string;
+  seo_text?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -323,19 +341,21 @@ async function saveBatch(
       console.log(`    article:     ${article}`);
       console.log(`    seo_title:   ${card.seo_title} (${card.seo_title.length} chars)`);
       console.log(`    seo_desc:    ${card.seo_description.slice(0, 80)}...`);
-      console.log(`    seo_text:    ${card.seo_text.slice(0, 100)}...`);
+      if (card.seo_text) console.log(`    seo_text:    ${card.seo_text.slice(0, 100)}...`);
       saved++;
       continue;
     }
 
+    const updateData: Record<string, unknown> = {
+      seo_title: card.seo_title,
+      seo_description: card.seo_description,
+      article,
+    };
+    if (card.seo_text !== undefined) updateData.seo_text = card.seo_text;
+
     const { error } = await supabase
       .from("products")
-      .update({
-        seo_title: card.seo_title,
-        seo_description: card.seo_description,
-        seo_text: card.seo_text,
-        article,
-      })
+      .update(updateData)
       .eq("id", p.id);
 
     if (error) {
@@ -363,21 +383,23 @@ async function main() {
       })
   );
 
-  const limit    = args.limit    ? parseInt(args.limit)    : undefined;
-  const offset   = args.offset   ? parseInt(args.offset)   : 0;
-  const dryRun   = args["dry-run"] === "true";
-  const category = args.category ?? "";
+  const limit      = args.limit    ? parseInt(args.limit)    : undefined;
+  const offset     = args.offset   ? parseInt(args.offset)   : 0;
+  const dryRun     = args["dry-run"] === "true";
+  const noSeoText  = args["no-seo-text"] === "true";
+  const category   = args.category ?? "";
 
   console.log("═══════════════════════════════════════════════════");
   console.log("  МеталлПортал — SEO Card Generator");
   console.log("═══════════════════════════════════════════════════\n");
 
   if (dryRun) console.log("🔍 DRY RUN — nothing will be written to DB\n");
+  if (noSeoText) console.log("⚡ LITE MODE — generating seo_title + seo_description only\n");
 
   // 1. Load SEO rules
   console.log("Loading SEO rules from docs/SEO_RULES.md...");
   const seoRules = loadSeoRules();
-  const systemPrompt = buildSystemPrompt(seoRules);
+  const systemPrompt = buildSystemPrompt(seoRules, noSeoText);
   console.log(`  System prompt: ${systemPrompt.length} chars (will be cached)\n`);
 
   // 2. Init article counters
@@ -395,7 +417,7 @@ async function main() {
       category:categories(slug),
       price_items(base_price, discount_price)
     `)
-    .is("seo_text", null)
+    .is(noSeoText ? "seo_title" : "seo_text", null)
     .eq("is_active", true)
     .order("created_at");
 
