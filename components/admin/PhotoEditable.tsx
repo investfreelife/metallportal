@@ -83,34 +83,27 @@ export default function PhotoEditable({ photoId, className = "", children, dimen
     <div className={outerClass}>
       {children}
       {editMode && (
-        <>
-          {/* Clickable overlay — div, not label, so preventDefault doesn't block file dialog */}
-          <div
-            className={`absolute inset-0 z-20 flex flex-col items-center justify-center cursor-pointer transition-all group/edit ${
-              uploading || done ? "bg-black/60" : "bg-transparent hover:bg-black/50"
-            }`}
-            onClick={e => {
-              e.preventDefault();
-              e.stopPropagation();
-              if (!uploading && !done) inputRef.current?.click();
-            }}
-          >
-            {uploading && <Loader2 size={24} className="text-[#E8B86D] animate-spin" />}
-            {done && <span className="text-green-400 font-bold text-sm">✓ Сохранено!</span>}
-            {!uploading && !done && (
-              <div className="flex flex-col items-center gap-1.5 opacity-0 group-hover/edit:opacity-100 transition-opacity select-none pointer-events-none">
-                <span className="text-[#E8B86D] font-bold text-sm px-3 py-1.5 rounded-lg bg-black/60 border border-[#E8B86D]/40">
-                  📷 Вставить фото
+        <label
+          className={`absolute inset-0 z-20 flex flex-col items-center justify-center cursor-pointer transition-all group/edit ${
+            uploading || done ? "bg-black/60" : "bg-transparent hover:bg-black/50"
+          }`}
+          onClick={e => e.stopPropagation()}
+        >
+          {uploading && <Loader2 size={24} className="text-[#E8B86D] animate-spin" />}
+          {done && <span className="text-green-400 font-bold text-sm">✓ Сохранено!</span>}
+          {!uploading && !done && (
+            <div className="flex flex-col items-center gap-1.5 opacity-0 group-hover/edit:opacity-100 transition-opacity select-none pointer-events-none">
+              <span className="text-[#E8B86D] font-bold text-sm px-3 py-1.5 rounded-lg bg-black/60 border border-[#E8B86D]/40">
+                📷 Вставить фото
+              </span>
+              {dimensions && (
+                <span className="text-white/70 text-xs px-2 py-1 rounded bg-black/60 font-mono">
+                  {dimensions} px
                 </span>
-                {dimensions && (
-                  <span className="text-white/70 text-xs px-2 py-1 rounded bg-black/60 font-mono">
-                    {dimensions} px
-                  </span>
-                )}
-              </div>
-            )}
-            <span className="absolute inset-0 border-2 border-dashed border-[#E8B86D] opacity-0 group-hover/edit:opacity-100 pointer-events-none transition-opacity rounded-[inherit]" />
-          </div>
+              )}
+            </div>
+          )}
+          <span className="absolute inset-0 border-2 border-dashed border-[#E8B86D] opacity-0 group-hover/edit:opacity-100 pointer-events-none transition-opacity rounded-[inherit]" />
           <input
             ref={inputRef}
             type="file"
@@ -119,7 +112,7 @@ export default function PhotoEditable({ photoId, className = "", children, dimen
             disabled={uploading}
             onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
           />
-        </>
+        </label>
       )}
     </div>
   );
