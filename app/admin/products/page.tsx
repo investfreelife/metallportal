@@ -159,6 +159,18 @@ export default function AdminProducts() {
     }
   };
 
+  const deleteProduct = async (product: Product) => {
+    if (!confirm(`Удалить "${product.name}"?`)) return;
+    await supabase.from("products").delete().eq("id", product.id);
+    setProducts(prev => prev.filter(p => p.id !== product.id));
+  };
+
+  const deleteSelected = async () => {
+    if (!confirm(`Удалить ${selected.size} товаров? Это действие необратимо.`)) return;
+    await supabase.from("products").delete().in("id", Array.from(selected));
+    setSelected(new Set()); load();
+  };
+
   const applyMarkup = async () => {
     const pct = parseFloat(markup);
     if (isNaN(pct) || pct <= 0 || selected.size === 0) return;
@@ -261,6 +273,10 @@ export default function AdminProducts() {
             </button>
           </div>
 
+          <button onClick={deleteSelected}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-red-600/80 hover:bg-red-600 text-white text-sm rounded-lg font-medium transition-all">
+            <Trash2 size={13} /> Удалить {selected.size}
+          </button>
           <button onClick={() => setSelected(new Set())} className="text-white/40 hover:text-white text-sm px-3 py-1.5 rounded-lg hover:bg-white/5">Сбросить</button>
         </div>
       )}
@@ -368,6 +384,10 @@ export default function AdminProducts() {
                       <button onClick={() => setEditing(p)}
                         className="p-1.5 rounded text-white/20 hover:text-white transition-colors" title="Описание">
                         <Edit2 size={12} />
+                      </button>
+                      <button onClick={() => deleteProduct(p)}
+                        className="p-1.5 rounded text-white/10 hover:text-red-400 transition-colors" title="Удалить товар">
+                        <Trash2 size={12} />
                       </button>
                     </div>
                   </td>
