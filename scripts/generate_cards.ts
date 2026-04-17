@@ -48,7 +48,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const BATCH_SIZE = 50;
+const BATCH_SIZE = 10;
 
 // ---------------------------------------------------------------------------
 // Category slug → article code mapping
@@ -174,6 +174,7 @@ interface ProductRow {
   weight_per_meter: number | null;
   category_slug: string;
   best_price: number | null;
+  article: string | null;
 }
 
 interface GeneratedCard {
@@ -223,6 +224,7 @@ async function callOpenRouter(
   userMessage: string
 ): Promise<GeneratedCard[]> {
   const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    signal: AbortSignal.timeout(300000),
     method: "POST",
     headers: {
       "Authorization": `Bearer ${OPENROUTER_KEY}`,
@@ -313,7 +315,7 @@ async function saveBatch(
     const card = cards[i];
     if (!card) { failed++; continue; }
 
-    const article = generateArticle(p.category_slug);
+    const article = p.article ?? generateArticle(p.category_slug);
 
     if (dryRun) {
       console.log(`\n  [DRY] ${p.name}`);
@@ -388,6 +390,7 @@ async function main() {
     .select(`
       id, name, slug, gost, steel_grade, dimensions,
       diameter, thickness, length, unit, coating, weight_per_meter,
+      article,
       category:categories(slug),
       price_items(base_price, discount_price)
     `)
@@ -441,6 +444,7 @@ async function main() {
       weight_per_meter: p.weight_per_meter,
       category_slug: p.category?.slug ?? "",
       best_price: prices.length ? Math.min(...prices) : null,
+      article: p.article ?? null,
     };
   });
 
@@ -477,7 +481,9 @@ async function main() {
       const rate = (totalSaved / parseFloat(elapsed) * 60).toFixed(0);
       console.log(`  ✓ saved=${saved} failed=${failed} | total=${totalSaved}/${total} | ${elapsed}s | ~${rate}/min`);
     } catch (err) {
-      console.error(`  ✗ batch error: ${(err as Error).message}`);
+      const e = err as any;
+      console.error(`  ✗ batch error: ${e.message}`);
+      if (e.cause) console.error(`    cause: ${e.cause}`);
       totalFailed += batch.length;
     }
 
