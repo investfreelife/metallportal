@@ -39,49 +39,6 @@ const NAV_ITEMS = [
       ]},
     ],
   },
-  {
-    label: "Конструкции",
-    icon: "🏗️",
-    href: "/catalog/konstruktsii",
-    children: [
-      { label: "Металлоконструкции", href: "/catalog/metallokonstruktsii" },
-      { label: "Фермы", href: "/catalog/fermy" },
-      { label: "Колонны и стойки", href: "/catalog/kolonny" },
-      { label: "Подсистемы фасадов", href: "/catalog/fasady" },
-    ],
-  },
-  {
-    label: "Заборы",
-    icon: "🚧",
-    href: "/catalog/zabory",
-    children: [
-      { label: "Профнастил", href: "/catalog/profnastil" },
-      { label: "Секционные заборы", href: "/catalog/sekcionnye-zabory" },
-      { label: "Сетка рабица", href: "/catalog/setka-rabica" },
-      { label: "Столбы и крепёж", href: "/catalog/stolby-krepyozh" },
-    ],
-  },
-  {
-    label: "Здания",
-    icon: "🏪",
-    href: "/catalog/zdaniya",
-    children: [
-      { label: "Ангары", href: "/catalog/angary" },
-      { label: "Навесы", href: "/catalog/navesy" },
-      { label: "Склады", href: "/catalog/sklady" },
-    ],
-  },
-  {
-    label: "На заказ",
-    icon: "⚙️",
-    href: "/catalog/zakaz",
-    children: [
-      { label: "Сварные конструкции", href: "/catalog/svarnye-konstruktsii" },
-      { label: "Лазерная резка", href: "/catalog/lazernaya-rezka" },
-      { label: "Гибка металла", href: "/catalog/gibka-metalla" },
-      { label: "Покраска металла", href: "/catalog/pokraska-metalla" },
-    ],
-  },
 ] as const;
 
 type NavItem = typeof NAV_ITEMS[number];
