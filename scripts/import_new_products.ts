@@ -173,6 +173,78 @@ interface Product {
   prices: number[];
 }
 
+// ── Listovoy prokat parser ──
+const LISTOVOY_MAP: Record<string, string> = {
+  "Лист г/к": "list-g-k",
+  "Лист оцинкованный": "list-otsinkovannyy",
+  "Лист х/к": "list-kh-k",
+  "Просечно-вытяжной лист (ПВЛ)": "prosechno-vytyazhnoy-list-pvl",
+  "Лист рифленый": "list-riflenyy",
+};
+
+function parseListovoy(filePath: string): RawRow[] {
+  const text = readFileSync(filePath, "utf-8");
+  const lines = text.split("\n").filter(l => l.trim());
+  const rows: RawRow[] = [];
+
+  for (const line of lines) {
+    const cols = line.split("\t");
+    if (cols.length < 12) continue;
+    const group = cols[1].trim();
+    if (group === "Группа каталога") continue;
+
+    const catSlug = LISTOVOY_MAP[group];
+    if (!catSlug) { console.warn(`  Unknown listovoy group: "${group}"`); continue; }
+
+    const name = cols[4].trim();
+    const thickness = parseFloat(cols[5]) || null;
+    const length = cols[6].trim();
+    const gost = cols[8].trim();
+    const unit = cols[9].trim();
+    const price = parseFloat(cols[10]) || 0;
+    const desc = cols[11]?.trim() || "";
+    const steelGrade = cols[3]?.trim() || "";
+
+    rows.push({ name, description: desc, gost, unit, price, diameter: null, thickness, length, steelGrade, categorySlug: catSlug });
+  }
+  return rows;
+}
+
+// ── Nerzhaveika parser ──
+const NERZHAVEIKA_MAP: Record<string, string> = {
+  "Нержавеющие трубы": "truby-nerzhaveyushchie",
+  "Лист нержавеющий": "list-nerzhaveyushchiy",
+  "Круг, квадрат, шестигранник": "krug-kvadrat-shestigrannik",
+  "Проволока нержавеющая": "provoloka-nerzhaveyushchaya",
+};
+
+function parseNerzhaveika(filePath: string): RawRow[] {
+  const text = readFileSync(filePath, "utf-8");
+  const lines = text.split("\n").filter(l => l.trim());
+  const rows: RawRow[] = [];
+
+  for (const line of lines) {
+    const cols = line.split("\t");
+    if (cols.length < 12) continue;
+    const group = cols[1].trim();
+    if (group === "Группа каталога" || !group) continue;
+
+    const catSlug = NERZHAVEIKA_MAP[group];
+    if (!catSlug) { console.warn(`  Unknown nerzhaveika group: "${group}"`); continue; }
+
+    const name = cols[4].trim();
+    const thickness = parseFloat(cols[5]) || null;
+    const gost = cols[8].trim();
+    const unit = cols[9].trim();
+    const price = parseFloat(cols[10]) || 0;
+    const desc = cols[11]?.trim() || "";
+    const steelGrade = cols[3]?.trim() || "";
+
+    rows.push({ name, description: desc, gost, unit, price, diameter: null, thickness, length: cols[6]?.trim() || "", steelGrade, categorySlug: catSlug });
+  }
+  return rows;
+}
+
 async function main() {
   console.log("═══════════════════════════════════════════════════");
   console.log("  МеталлПортал — Import New Products");
@@ -181,6 +253,8 @@ async function main() {
   // Parse files
   const sortovoyPath = "/Users/sergey/Desktop/металл/мои наработки и информация/товары/sortovojprokat_processed.txt";
   const trubyPath = "/Users/sergey/Desktop/металл/мои наработки и информация/товары/truby_pricelist.txt";
+  const listovoyPath = "/Users/sergey/Desktop/металл/мои наработки и информация/товары/listovojprokat_processed.txt";
+  const nerzhaveikaPath = "/Users/sergey/Desktop/металл/мои наработки и информация/товары/nerzhaveika_processed.txt";
 
   console.log("Parsing sortovojprokat_processed.txt...");
   const sortovoyRows = parseSortovoy(sortovoyPath);
@@ -190,12 +264,35 @@ async function main() {
   const trubyRows = parseTruby(trubyPath);
   console.log(`  ${trubyRows.length} rows`);
 
-  const allRows = [...sortovoyRows, ...trubyRows];
+  console.log("Parsing listovojprokat_processed.txt...");
+  const listovoyRows = parseListovoy(listovoyPath);
+  console.log(`  ${listovoyRows.length} rows`);
+
+  console.log("Parsing nerzhaveika_processed.txt...");
+  const nerzhaveikaRows = parseNerzhaveika(nerzhaveikaPath);
+  console.log(`  ${nerzhaveikaRows.length} rows`);
+
+  const allRows = [...sortovoyRows, ...trubyRows, ...listovoyRows, ...nerzhaveikaRows];
   console.log(`\nTotal rows: ${allRows.length}`);
+
+  // ── Dupe check: remove rows whose name already exists in DB ──
+  console.log("\nChecking for already-imported products...");
+  const { data: existingNames } = await supabase
+    .from("products")
+    .select("name");
+  const existingNameSet = new Set((existingNames ?? []).map((p: any) => p.name));
+  const newRows = allRows.filter(r => !existingNameSet.has(r.name));
+  const skipped = allRows.length - newRows.length;
+  if (skipped > 0) console.log(`  Skipping ${skipped} already-imported rows`);
+  if (newRows.length === 0) {
+    console.log("\n⚠️  СТОП: все товары из этих файлов уже импортированы в БД!");
+    process.exit(0);
+  }
+  console.log(`  New rows to import: ${newRows.length}`);
 
   // Group by product name → deduplicate
   const productMap = new Map<string, Product>();
-  for (const row of allRows) {
+  for (const row of newRows) {
     const existing = productMap.get(row.name);
     if (existing) {
       existing.prices.push(row.price);

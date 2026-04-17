@@ -54,40 +54,62 @@ const NAV_ITEMS = [
 
 type NavItem = typeof NAV_ITEMS[number];
 
-function NavDropdown({ item, mega }: { item: NavItem; mega?: boolean }) {
-  const [open, setOpen] = useState(false);
+function NavDropdown({
+  item,
+  mega,
+  open,
+  onOpen,
+  onClose,
+}: {
+  item: NavItem;
+  mega?: boolean;
+  open: boolean;
+  onOpen: () => void;
+  onClose: () => void;
+}) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      if (ref.current && !ref.current.contains(e.target as Node)) onClose();
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, []);
+  }, [onClose]);
 
   return (
     <div ref={ref} className="relative">
-      <button
-        onMouseEnter={() => setOpen(true)}
-        onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 hover:text-gold transition-colors text-sm py-2 whitespace-nowrap"
+      <div
+        onMouseEnter={onOpen}
+        onMouseLeave={() => {}}
+        className="flex items-center text-sm py-2 whitespace-nowrap"
       >
-        <span>{item.icon}</span>
-        <span>{item.label}</span>
-        <ChevronDown size={14} className={`transition-transform ${open ? "rotate-180" : ""}`} />
-      </button>
+        <Link
+          href={item.href}
+          onClick={onClose}
+          className="flex items-center gap-1.5 hover:text-gold transition-colors pr-1"
+        >
+          <span>{item.icon}</span>
+          <span>{item.label}</span>
+        </Link>
+        <button
+          onClick={() => open ? onClose() : onOpen()}
+          className="hover:text-gold transition-colors px-1"
+        >
+          <ChevronDown size={14} className={`transition-transform ${open ? "rotate-180" : ""}`} />
+        </button>
+      </div>
 
       {open && (
         <div
-          onMouseLeave={() => setOpen(false)}
+          onMouseLeave={onClose}
           className={`absolute top-full left-0 z-50 bg-background border border-border rounded-lg shadow-2xl p-5 ${
             mega ? "min-w-[520px]" : "min-w-[260px]"
           }`}
         >
           <Link
             href={item.href}
-            onClick={() => setOpen(false)}
+            onClick={onClose}
             className="block text-sm font-semibold text-foreground hover:text-gold mb-3 pb-2 border-b border-border transition-colors"
           >
             Все — {item.label} →
@@ -97,7 +119,7 @@ function NavDropdown({ item, mega }: { item: NavItem; mega?: boolean }) {
               <div key={child.href}>
                 <Link
                   href={child.href}
-                  onClick={() => setOpen(false)}
+                  onClick={onClose}
                   className="block text-sm font-medium text-foreground hover:text-gold transition-colors mb-1"
                 >
                   {child.label}
@@ -108,7 +130,7 @@ function NavDropdown({ item, mega }: { item: NavItem; mega?: boolean }) {
                       <Link
                         key={sub.href}
                         href={sub.href}
-                        onClick={() => setOpen(false)}
+                        onClick={onClose}
                         className="block text-xs text-muted-foreground hover:text-gold transition-colors py-0.5"
                       >
                         {sub.label}
@@ -128,6 +150,7 @@ function NavDropdown({ item, mega }: { item: NavItem; mega?: boolean }) {
 export default function Header() {
   const [mode, setMode] = useState<"b2c" | "b2b">("b2c");
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [openNav, setOpenNav] = useState<string | null>(null);
 
   return (
     <header className="sticky top-0 z-50 w-full">
@@ -203,7 +226,14 @@ export default function Header() {
       <div style={{ backgroundColor: "var(--nav-bg)", color: "var(--nav-text)" }}>
         <div className="container-main hidden lg:flex items-center gap-4 xl:gap-6 h-11">
           {NAV_ITEMS.map((item, i) => (
-            <NavDropdown key={item.href} item={item} mega={i === 0} />
+            <NavDropdown
+              key={item.href}
+              item={item}
+              mega={i === 0}
+              open={openNav === item.href}
+              onOpen={() => setOpenNav(item.href)}
+              onClose={() => setOpenNav(null)}
+            />
           ))}
           <Link href="/catalog" className="ml-auto text-xs hover:text-gold transition-colors opacity-60">
             Весь каталог →
