@@ -63,8 +63,14 @@ function PhotoCard({
     const res = await fetch("/api/admin/upload-image", { method: "POST", body: fd });
     const json = await res.json();
     if (json.url) {
-      await supabase.from("categories").update({ image_url: json.url }).eq("id", cat.id);
-      setStatus("ok"); onUpdated();
+      const saveRes = await fetch("/api/admin/save-photo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ photoId: `category:${cat.slug}`, url: json.url }),
+      });
+      const saveJson = await saveRes.json();
+      if (saveJson.ok) { setStatus("ok"); onUpdated(); }
+      else { setStatus("err"); alert("❌ Ошибка сохранения: " + saveJson.error); }
     } else { setStatus("err"); }
     setUploading(false);
   };
@@ -156,8 +162,15 @@ export default function PhotosPage() {
     const upRes = await fetch("/api/admin/upload-image", { method: "POST", body: fd });
     const { url } = await upRes.json();
     if (!url) { alert("❌ Ошибка загрузки"); setGroupUploading(false); return; }
-    const ids = Array.from(selected);
-    await supabase.from("categories").update({ image_url: url }).in("id", ids);
+    // Save to each selected category via API (uses service role key)
+    const slugs = cats.filter(c => selected.has(c.id)).map(c => c.slug);
+    await Promise.all(slugs.map(slug =>
+      fetch("/api/admin/save-photo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ photoId: `category:${slug}`, url }),
+      })
+    ));
     setGroupUploading(false);
     setSelected(new Set());
     load();
