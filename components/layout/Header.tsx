@@ -47,12 +47,19 @@ const NAV_ITEMS = [
     href: "/catalog/gotovye-konstruktsii",
     children: [
       { label: "Ангары", href: "/catalog/angary" },
-      { label: "Навесы", href: "/catalog/navesy" },
-      { label: "Козырьки", href: "/catalog/kozyrki" },
+      { label: "Навесы", href: "/catalog/navesy", children: [
+        { label: "С хозблоком", href: "/catalog/navesy/navesy-s-hozblokom" },
+        { label: "Для автомобиля", href: "/catalog/navesy/navesy-dlya-avtomobilya" },
+        { label: "Для парковок", href: "/catalog/navesy/navesy-dlya-parkovok" },
+        { label: "Беседки", href: "/catalog/navesy/navesy-besedka" },
+        { label: "Для дачи", href: "/catalog/navesy/navesy-dlya-dachi" },
+        { label: "Для гаража", href: "/catalog/navesy/navesy-dlya-garazha" },
+        { label: "Для террасы", href: "/catalog/navesy/navesy-dlya-terrasy" },
+        { label: "К дому", href: "/catalog/navesy/navesy-k-domu" },
+      ]},
       { label: "Склады и цеха", href: "/catalog/sklady-i-tseha" },
+      { label: "Козырьки", href: "/catalog/kozyrki" },
       { label: "Каркасы зданий", href: "/catalog/karkasy-zdaniy" },
-      { label: "Заборы и ограждения", href: "/catalog/gotovye-konstruktsii" },
-      { label: "Ворота и калитки", href: "/catalog/gotovye-konstruktsii" },
     ],
   },
 ] as const;
