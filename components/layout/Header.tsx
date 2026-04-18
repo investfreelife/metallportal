@@ -50,6 +50,8 @@ const NAV_ITEMS = [
       { label: "Навесы и козырьки", href: "/catalog/navesy-i-kozyrki" },
       { label: "Склады и цеха", href: "/catalog/sklady-i-tseha" },
       { label: "Каркасы зданий", href: "/catalog/karkasy-zdaniy" },
+      { label: "Заборы и ограждения", href: "/catalog/gotovye-konstruktsii" },
+      { label: "Ворота и калитки", href: "/catalog/gotovye-konstruktsii" },
     ],
   },
 ] as const;
