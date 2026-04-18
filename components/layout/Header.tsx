@@ -47,7 +47,8 @@ const NAV_ITEMS = [
     href: "/catalog/gotovye-konstruktsii",
     children: [
       { label: "Ангары", href: "/catalog/angary" },
-      { label: "Навесы и козырьки", href: "/catalog/navesy-i-kozyrki" },
+      { label: "Навесы", href: "/catalog/navesy" },
+      { label: "Козырьки", href: "/catalog/kozyrki" },
       { label: "Склады и цеха", href: "/catalog/sklady-i-tseha" },
       { label: "Каркасы зданий", href: "/catalog/karkasy-zdaniy" },
       { label: "Заборы и ограждения", href: "/catalog/gotovye-konstruktsii" },

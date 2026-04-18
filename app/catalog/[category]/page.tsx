@@ -122,6 +122,79 @@ export default async function CategoryPage({ params }: Props) {
           </>
         )}
 
+        {params.category === "navesy" && (
+          <>
+            <section className="mt-16 pt-10 border-t border-border">
+              <h2 className="text-3xl font-bold text-foreground mb-5">Металлические навесы на заказ — МеталлПортал</h2>
+              <p className="text-muted-foreground leading-relaxed mb-10 max-w-4xl">
+                МеталлПортал изготавливает и устанавливает металлические навесы любой сложности. Собственное производство,
+                стальной каркас из профильной трубы, кровля из поликарбоната, профнастила или металлочерепицы.
+                Гарантия качества. Монтаж под ключ.
+              </p>
+
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-2xl">🏠</span>
+                <h3 className="text-2xl font-bold text-foreground">Виды навесов по материалу кровли</h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-10">
+                {[
+                  "Поликарбонат — прочный, лёгкий, пропускает свет",
+                  "Профнастил — долговечный, защита от влаги и снега",
+                  "Металлочерепица — красота и прочность в одном решении",
+                  "Монолитный поликарбонат — максимум защиты от УФ и осадков",
+                  "Мягкая кровля — комфорт и надёжная защита от осадков",
+                  "Сэндвич-панели — тепло- и шумоизоляция для закрытых зон",
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3 border border-border rounded-lg p-3 bg-card">
+                    <CheckCircle size={18} className="text-gold flex-shrink-0" />
+                    <span className="text-sm text-foreground">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="mt-8">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-2xl">🚗</span>
+                <h3 className="text-2xl font-bold text-foreground">Готовые решения</h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
+                {[
+                  "Навесы для парковки автомобилей — защита от осадков и солнца",
+                  "Навесы для бассейна — уютная зона у воды в любую погоду",
+                  "Навесы для веранды — дополнительное жилое пространство",
+                  "Навесы для игровых площадок — безопасный отдых детей",
+                  "Архитектурные навесы — вписываются в стиль дома или офиса",
+                  "Промышленные навесы — для складов, цехов и погрузочных зон",
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3 border border-border rounded-lg p-3 bg-card">
+                    <CheckCircle size={18} className="text-gold flex-shrink-0" />
+                    <span className="text-sm text-foreground">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="mt-8">
+              <div className="bg-muted/40 rounded-xl p-5 space-y-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">⚡</span>
+                  <h3 className="text-xl font-bold text-foreground">Что входит в стоимость</h3>
+                </div>
+                <p className="text-muted-foreground leading-relaxed">
+                  В стоимость навеса входит: <strong className="text-foreground">стальной каркас</strong> из профильной
+                  трубы на сварных стойках, высококачественное покрытие кровли (поликарбонат 3–5 мм или профнастил),
+                  антикоррозийная обработка и порошковое окрашивание в цвет RAL по выбору.
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  Экспертный монтаж от специалистов. Расчёт КП за 1 рабочий день. Доставка и установка по всей России.
+                  Работаем с юридическими и физическими лицами, полный пакет документов.
+                </p>
+              </div>
+            </section>
+          </>
+        )}
+
         {params.category === "metalloprokat" && (
           <>
             <section className="mt-16 pt-10 border-t border-border">
