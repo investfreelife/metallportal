@@ -118,6 +118,50 @@ function RangeFilter({ label, unit, minVal, maxVal, onMinChange, onMaxChange }: 
   );
 }
 
+function FiltersContent({ filters, filterOptions, update, reset, hasActiveFilters, onApply }: {
+  filters: FilterState;
+  filterOptions: { steelGrades: string[]; gosts: string[]; coatings: string[]; suppliers: string[]; regions: string[]; units: string[] };
+  update: (p: Partial<FilterState>) => void;
+  reset: () => void;
+  hasActiveFilters: boolean;
+  onApply?: () => void;
+}) {
+  return (
+    <div className="space-y-4">
+      <SelectFilter label="Марка стали" value={filters.steelGrade} options={filterOptions.steelGrades} onChange={(v) => update({ steelGrade: v })} />
+      <SelectFilter label="ГОСТ" value={filters.gost} options={filterOptions.gosts} onChange={(v) => update({ gost: v })} />
+      <SelectFilter label="Покрытие" value={filters.coating} options={filterOptions.coatings} onChange={(v) => update({ coating: v })} />
+      <SelectFilter label="Единица" value={filters.unit} options={filterOptions.units} onChange={(v) => update({ unit: v })} />
+      <SelectFilter label="Поставщик" value={filters.supplier} options={filterOptions.suppliers} onChange={(v) => update({ supplier: v })} />
+      <SelectFilter label="Регион" value={filters.region} options={filterOptions.regions} onChange={(v) => update({ region: v })} />
+      <RangeFilter label="Цена" unit="₽/т" minVal={filters.priceMin} maxVal={filters.priceMax}
+        onMinChange={(v) => update({ priceMin: v })} onMaxChange={(v) => update({ priceMax: v })} />
+      <RangeFilter label="Диаметр" unit="мм" minVal={filters.diameterMin} maxVal={filters.diameterMax}
+        onMinChange={(v) => update({ diameterMin: v })} onMaxChange={(v) => update({ diameterMax: v })} />
+      <RangeFilter label="Толщина" unit="мм" minVal={filters.thicknessMin} maxVal={filters.thicknessMax}
+        onMinChange={(v) => update({ thicknessMin: v })} onMaxChange={(v) => update({ thicknessMax: v })} />
+      <label className="flex items-center gap-3 cursor-pointer">
+        <div className="relative flex-shrink-0">
+          <input type="checkbox" checked={filters.inStock} onChange={(e) => update({ inStock: e.target.checked })} className="sr-only peer" />
+          <div className="w-10 h-5 bg-muted rounded-full peer-checked:bg-gold transition-colors" />
+          <div className="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5" />
+        </div>
+        <span className="text-sm">В наличии</span>
+      </label>
+      {hasActiveFilters && (
+        <button onClick={reset} className="w-full text-xs text-muted-foreground hover:text-gold border border-border rounded py-1.5 transition-colors">
+          Сбросить все фильтры
+        </button>
+      )}
+      {onApply && (
+        <button onClick={onApply} className="w-full bg-gold hover:bg-yellow-400 text-black font-semibold py-2 rounded-lg text-sm transition-all">
+          Применить
+        </button>
+      )}
+    </div>
+  );
+}
+
 export default function CatalogView({ category, subcategories, products, categorySlug, activeSubSlug, productBasePath }: CatalogViewProps) {
   const resolvedProductBasePath = productBasePath ?? `/catalog/${categorySlug}`;
   const [viewMode, setViewMode] = useState<"table" | "cards">("table");
@@ -126,6 +170,7 @@ export default function CatalogView({ category, subcategories, products, categor
   const [sortBy, setSortBy] = useState("price_asc");
   const [page, setPage] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(true);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [groupUploading, setGroupUploading] = useState(false);
@@ -301,8 +346,14 @@ export default function CatalogView({ category, subcategories, products, categor
         )}
 
         {/* Sort + View toggle */}
-        <div className="flex items-center justify-between gap-4 mb-4">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between gap-4 mb-4 flex-wrap">
+          <div className="flex items-center gap-3 flex-wrap">
+            <button
+              onClick={() => setMobileFiltersOpen(true)}
+              className="lg:hidden flex items-center gap-2 px-3 py-1.5 border border-border rounded text-sm hover:border-gold transition-colors"
+            >
+              <ChevronDown size={14} /> Фильтры{hasActiveFilters ? <span className="ml-1 w-2 h-2 rounded-full bg-gold inline-block" /> : null}
+            </button>
             <span className="text-sm text-muted-foreground">
               Найдено: <strong className="text-foreground">{filteredProducts.length}</strong> позиций
             </span>
@@ -328,10 +379,24 @@ export default function CatalogView({ category, subcategories, products, categor
           </div>
         </div>
 
+        {/* Mobile filter drawer */}
+        {mobileFiltersOpen && (
+          <>
+            <div className="lg:hidden fixed inset-0 bg-black/60 z-50" onClick={() => setMobileFiltersOpen(false)} />
+            <div className="lg:hidden fixed left-0 top-0 bottom-0 w-[300px] z-50 bg-background overflow-y-auto shadow-2xl p-4 flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-bold text-foreground">Фильтры</h3>
+                <button onClick={() => setMobileFiltersOpen(false)} className="text-muted-foreground hover:text-foreground p-1"><ChevronUp size={20} /></button>
+              </div>
+              <FiltersContent filters={filters} filterOptions={filterOptions} update={update} reset={reset} hasActiveFilters={hasActiveFilters} onApply={() => setMobileFiltersOpen(false)} />
+            </div>
+          </>
+        )}
+
         {/* Main: filters + products */}
         <div className="flex gap-6">
-          {/* Filters sidebar */}
-          <aside className="w-64 flex-shrink-0">
+          {/* Filters sidebar — desktop only */}
+          <aside className="w-64 flex-shrink-0 hidden lg:block">
             <div className="bg-card border border-border rounded-lg p-4 sticky top-[150px]">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-bold uppercase tracking-wider">Фильтры</h3>
@@ -339,39 +404,8 @@ export default function CatalogView({ category, subcategories, products, categor
                   {filtersOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                 </button>
               </div>
-
               {filtersOpen && (
-                <div className="space-y-4">
-                  <SelectFilter label="Марка стали" value={filters.steelGrade} options={filterOptions.steelGrades} onChange={(v) => update({ steelGrade: v })} />
-                  <SelectFilter label="ГОСТ" value={filters.gost} options={filterOptions.gosts} onChange={(v) => update({ gost: v })} />
-                  <SelectFilter label="Покрытие" value={filters.coating} options={filterOptions.coatings} onChange={(v) => update({ coating: v })} />
-                  <SelectFilter label="Единица" value={filters.unit} options={filterOptions.units} onChange={(v) => update({ unit: v })} />
-                  <SelectFilter label="Поставщик" value={filters.supplier} options={filterOptions.suppliers} onChange={(v) => update({ supplier: v })} />
-                  <SelectFilter label="Регион" value={filters.region} options={filterOptions.regions} onChange={(v) => update({ region: v })} />
-
-                  <RangeFilter label="Цена" unit="₽/т" minVal={filters.priceMin} maxVal={filters.priceMax}
-                    onMinChange={(v) => update({ priceMin: v })} onMaxChange={(v) => update({ priceMax: v })} />
-                  <RangeFilter label="Диаметр" unit="мм" minVal={filters.diameterMin} maxVal={filters.diameterMax}
-                    onMinChange={(v) => update({ diameterMin: v })} onMaxChange={(v) => update({ diameterMax: v })} />
-                  <RangeFilter label="Толщина" unit="мм" minVal={filters.thicknessMin} maxVal={filters.thicknessMax}
-                    onMinChange={(v) => update({ thicknessMin: v })} onMaxChange={(v) => update({ thicknessMax: v })} />
-
-                  {/* In stock */}
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <div className="relative flex-shrink-0">
-                      <input type="checkbox" checked={filters.inStock} onChange={(e) => update({ inStock: e.target.checked })} className="sr-only peer" />
-                      <div className="w-10 h-5 bg-muted rounded-full peer-checked:bg-gold transition-colors" />
-                      <div className="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5" />
-                    </div>
-                    <span className="text-sm">В наличии</span>
-                  </label>
-
-                  {hasActiveFilters && (
-                    <button onClick={reset} className="w-full text-xs text-muted-foreground hover:text-gold border border-border rounded py-1.5 transition-colors">
-                      Сбросить все фильтры
-                    </button>
-                  )}
-                </div>
+                <FiltersContent filters={filters} filterOptions={filterOptions} update={update} reset={reset} hasActiveFilters={hasActiveFilters} />
               )}
             </div>
           </aside>

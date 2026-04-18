@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 
@@ -11,28 +11,60 @@ interface CatalogSidebarProps {
 
 export default function CatalogSidebar({ categories }: CatalogSidebarProps) {
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const SidebarContent = () => (
+    <div className="bg-card border border-border rounded-lg overflow-hidden">
+      <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+        <Link href="/catalog" className="text-sm font-bold uppercase tracking-wider hover:text-gold transition-colors">
+          Каталог
+        </Link>
+        <button onClick={() => setMobileOpen(false)} className="lg:hidden text-muted-foreground hover:text-foreground p-1">
+          <X size={18} />
+        </button>
+      </div>
+      <nav className="py-1">
+        {categories.map((cat: any) => (
+          <SidebarLevel1 key={cat.id} cat={cat} pathname={pathname} onNavigate={() => setMobileOpen(false)} />
+        ))}
+      </nav>
+    </div>
+  );
 
   return (
-    <aside className="w-[280px] flex-shrink-0 hidden lg:block">
-      <div className="sticky top-[150px] max-h-[calc(100vh-180px)] overflow-y-auto scrollbar-none">
-        <div className="bg-card border border-border rounded-lg overflow-hidden">
-          <div className="px-4 py-3 border-b border-border">
-            <Link href="/catalog" className="text-sm font-bold uppercase tracking-wider hover:text-gold transition-colors">
-              Каталог
-            </Link>
-          </div>
-          <nav className="py-1">
-            {categories.map((cat: any) => (
-              <SidebarLevel1 key={cat.id} cat={cat} pathname={pathname} />
-            ))}
-          </nav>
+    <>
+      {/* Desktop sidebar */}
+      <aside className="w-[280px] flex-shrink-0 hidden lg:block">
+        <div className="sticky top-[150px] max-h-[calc(100vh-180px)] overflow-y-auto scrollbar-none">
+          <SidebarContent />
         </div>
-      </div>
-    </aside>
+      </aside>
+
+      {/* Mobile trigger button */}
+      <button
+        onClick={() => setMobileOpen(true)}
+        className="lg:hidden fixed bottom-20 left-4 z-40 flex items-center gap-2 bg-gold text-black font-bold text-sm px-4 py-2.5 rounded-full shadow-lg"
+      >
+        <Menu size={16} />
+        Каталог
+      </button>
+
+      {/* Mobile drawer */}
+      {mobileOpen && (
+        <>
+          <div className="lg:hidden fixed inset-0 bg-black/60 z-50" onClick={() => setMobileOpen(false)} />
+          <div className="lg:hidden fixed left-0 top-0 bottom-0 w-[300px] z-50 bg-background overflow-y-auto shadow-2xl animate-in slide-in-from-left duration-200">
+            <div className="p-4">
+              <SidebarContent />
+            </div>
+          </div>
+        </>
+      )}
+    </>
   );
 }
 
-function SidebarLevel1({ cat, pathname }: { cat: any; pathname: string }) {
+function SidebarLevel1({ cat, pathname, onNavigate }: { cat: any; pathname: string; onNavigate?: () => void }) {
   const href = `/catalog/${cat.slug}`;
   const isActive = pathname === href || pathname.startsWith(href + "/");
   const [expanded, setExpanded] = useState(true);
@@ -47,7 +79,7 @@ function SidebarLevel1({ cat, pathname }: { cat: any; pathname: string }) {
         onClick={() => hasSubs && setExpanded((o: boolean) => !o)}
       >
         <span className="text-sm flex-shrink-0 w-5 text-center">{cat.icon || "📦"}</span>
-        <Link href={href} className="flex-1 text-sm truncate" onClick={(e) => e.stopPropagation()}>
+        <Link href={href} className="flex-1 text-sm truncate" onClick={(e) => { e.stopPropagation(); onNavigate?.(); }}>
           {cat.name}
         </Link>
         {cat.totalProducts > 0 && (
@@ -65,7 +97,7 @@ function SidebarLevel1({ cat, pathname }: { cat: any; pathname: string }) {
       {expanded && hasSubs && (
         <div className="bg-muted/20">
           {cat.subcategories.map((sub: any) => (
-            <SidebarLevel2 key={sub.id} sub={sub} parentSlug={cat.slug} pathname={pathname} />
+            <SidebarLevel2 key={sub.id} sub={sub} parentSlug={cat.slug} pathname={pathname} onNavigate={onNavigate} />
           ))}
         </div>
       )}
@@ -73,7 +105,7 @@ function SidebarLevel1({ cat, pathname }: { cat: any; pathname: string }) {
   );
 }
 
-function SidebarLevel2({ sub, parentSlug, pathname }: { sub: any; parentSlug: string; pathname: string }) {
+function SidebarLevel2({ sub, parentSlug, pathname, onNavigate }: { sub: any; parentSlug: string; pathname: string; onNavigate?: () => void }) {
   const href = `/catalog/${parentSlug}/${sub.slug}`;
   const isActive = pathname === href || pathname.startsWith(href + "/");
   const [expanded, setExpanded] = useState(isActive);
@@ -87,7 +119,7 @@ function SidebarLevel2({ sub, parentSlug, pathname }: { sub: any; parentSlug: st
         }`}
         onClick={() => hasSubs && setExpanded((o: boolean) => !o)}
       >
-        <Link href={href} className="flex-1 text-sm truncate" onClick={(e) => e.stopPropagation()}>
+        <Link href={href} className="flex-1 text-sm truncate" onClick={(e) => { e.stopPropagation(); onNavigate?.(); }}>
           {sub.name}
         </Link>
         {sub.totalProducts > 0 && (
