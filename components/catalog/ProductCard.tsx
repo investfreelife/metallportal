@@ -102,7 +102,8 @@ export default function CatalogProductCard({ product, productBasePath, isSelecte
               </span>
             )}
             <span className="text-lg font-bold text-gold">
-              {(price.discount ?? price.base).toLocaleString("ru-RU")} ₽/{product.unit}
+              {product.unit === "м²" ? "от " : ""}
+              {(price.discount ?? price.base).toLocaleString("ru-RU")} ₽{product.unit === "м²" ? ` за ${product.unit}` : `/${product.unit}`}
             </span>
           </div>
         ) : (
