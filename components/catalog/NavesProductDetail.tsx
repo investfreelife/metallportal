@@ -1,9 +1,10 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Shield, Wrench, Star, FileText, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, Shield, Wrench, Star, FileText, ChevronLeft, ChevronRight, CheckCircle } from "lucide-react";
 import NavesOrderModal from "./NavesOrderModal";
 import PhotoEditable from "@/components/admin/PhotoEditable";
+import CategoryCallbackCTA from "@/components/catalog/CategoryCallbackCTA";
 
 const FEATURES = [
   { icon: Wrench, title: "Долговечность", desc: "Стальной каркас из профильной трубы по ГОСТ 30245-2003. Антикоррозийная обработка и порошковое окрашивание. Срок службы — свыше 30 лет." },
@@ -216,6 +217,73 @@ export default function NavesProductDetail({ product, related, basePath }: Props
           </div>
         </section>
       )}
+
+      {/* SEO */}
+      <section className="mt-16 pt-10 border-t border-border">
+        <h2 className="text-3xl font-bold text-foreground mb-5">{product.name} — купить в Москве | МеталлПортал</h2>
+        <p className="text-muted-foreground leading-relaxed mb-8 max-w-4xl">
+          МеталлПортал изготавливает <strong className="text-foreground">{product.name.toLowerCase()}</strong> на заказ
+          по вашим размерам. Собственный завод, металлокаркас из профильной трубы по ГОСТ, кровля из качественных материалов.
+          Монтаж «под ключ», гарантия 10 лет, расчёт стоимости за 1 рабочий день.
+        </p>
+
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-2xl">✅</span>
+          <h3 className="text-2xl font-bold text-foreground">Преимущества</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-10">
+          {[
+            "Собственный завод — цены без посредников и торговых наценок",
+            "Металлопрокат собственного производства по ГОСТ 30245-2003",
+            "Любые размеры — стандартные и нестандартные формы",
+            "Антикоррозийная обработка и порошковое окрашивание RAL",
+            "Монтаж за 1–3 рабочих дня для стандартных конструкций",
+            "Гарантия 10 лет на каркас и антикоррозийное покрытие",
+            "Бесплатный выезд замерщика в день обращения",
+            "Работаем с юрлицами и физлицами, НДС, все документы",
+          ].map((item, i) => (
+            <div key={i} className="flex items-center gap-3 border border-border rounded-lg p-3 bg-card">
+              <CheckCircle size={18} className="text-gold flex-shrink-0" />
+              <span className="text-sm text-foreground">{item}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-2xl">📐</span>
+          <h3 className="text-2xl font-bold text-foreground">Как рассчитать стоимость</h3>
+        </div>
+        <div className="bg-muted/40 rounded-xl p-5 mb-8 max-w-4xl">
+          <p className="text-muted-foreground leading-relaxed mb-3">
+            Стоимость рассчитывается по площади кровли (длина × ширина). Цена указана за 1 м² готовой конструкции
+            с установкой. В неё входят: металлокаркас, кровельное покрытие, антикоррозийная обработка, доставка и монтаж.
+          </p>
+          <p className="text-muted-foreground leading-relaxed">
+            Для точного расчёта оставьте заявку — менеджер уточнит параметры и подготовит КП в течение 1 рабочего дня.
+            Выезд замерщика бесплатно.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 mb-6">
+          <span className="text-2xl">❓</span>
+          <h3 className="text-2xl font-bold text-foreground">Часто задаваемые вопросы</h3>
+        </div>
+        <div className="space-y-4 max-w-4xl">
+          {[
+            { q: "Сколько стоит монтаж?", a: "Монтаж включён в цену за м². Дополнительно оплачивается только фундамент (если требуется) и доставка за пределы Москвы и МО." },
+            { q: "Какой срок изготовления?", a: "Стандартный навес — 5–10 рабочих дней с момента оплаты аванса. Сроки уточняются при расчёте КП." },
+            { q: "Нужно ли разрешение на строительство?", a: "Для навесов до 50 м² на частном участке разрешение не требуется. Для коммерческих объектов помогаем с документацией." },
+            { q: "Можно заказать нестандартный размер?", a: "Да, изготавливаем по любым размерам — угловые, П-образные, арочные, с изломом кровли. Рассчитаем за 1 день." },
+          ].map((item, i) => (
+            <div key={i} className="border border-border rounded-lg p-4 bg-card">
+              <p className="font-bold text-foreground mb-2 text-sm">{item.q}</p>
+              <p className="text-muted-foreground text-sm leading-relaxed">{item.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <CategoryCallbackCTA />
     </>
   );
 }

@@ -3,6 +3,8 @@ import PhotoEditable from "@/components/admin/PhotoEditable";
 import ProductTabs from "@/components/catalog/ProductTabs";
 import PriceBlock from "@/components/catalog/PriceBlock";
 import NavesProductDetail from "@/components/catalog/NavesProductDetail";
+import { CheckCircle } from "lucide-react";
+import CategoryCallbackCTA from "@/components/catalog/CategoryCallbackCTA";
 
 function buildSpecs(product: any): Record<string, string | null> {
   return {
@@ -180,6 +182,76 @@ export default function ProductDetailView({ product, priceItems, related, basePa
             })}
           </div>
         </section>
+      )}
+
+      {!basePath.includes("metalloprokat") && (
+        <>
+          <section className="mt-16 pt-10 border-t border-border">
+            <h2 className="text-3xl font-bold text-foreground mb-5">{product.name} — купить в Москве | МеталлПортал</h2>
+            <p className="text-muted-foreground leading-relaxed mb-8 max-w-4xl">
+              МеталлПортал производит и поставляет <strong className="text-foreground">{product.name.toLowerCase()}</strong> по всей России.
+              Собственное производство, контроль качества на каждом этапе, конкурентные цены без посредников.
+              Полный пакет документов, работаем с юридическими и физическими лицами.
+            </p>
+
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-2xl">✅</span>
+              <h3 className="text-2xl font-bold text-foreground">Почему выбирают МеталлПортал</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-10">
+              {[
+                "Собственный завод — цены без посредников и торговых наценок",
+                "Металлопрокат собственного производства по ГОСТ",
+                "Изготовление по любым размерам и чертежам заказчика",
+                "Антикоррозийная обработка и порошковое окрашивание RAL",
+                "Монтаж «под ключ» аттестованными бригадами",
+                "Гарантия 10 лет на сварные соединения и покрытие",
+                "Бесплатный выезд замерщика в день обращения",
+                "Работаем с юрлицами и физлицами, НДС, все документы",
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-3 border border-border rounded-lg p-3 bg-card">
+                  <CheckCircle size={18} className="text-gold flex-shrink-0" />
+                  <span className="text-sm text-foreground">{item}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+              {[
+                { n: "01", title: "Заявка", desc: "Менеджер перезвонит за 15 минут и уточнит параметры заказа." },
+                { n: "02", title: "КП за 1 день", desc: "Коммерческое предложение с ценой, сроками и условиями." },
+                { n: "03", title: "Производство", desc: "Изготовление на заводе с контролем качества." },
+                { n: "04", title: "Доставка", desc: "Доставка по Москве, МО и всей России. Монтаж под ключ." },
+              ].map((p, i) => (
+                <div key={i} className="bg-card border border-border rounded-lg p-4">
+                  <div className="text-3xl font-black text-gold/30 mb-2">{p.n}</div>
+                  <p className="font-bold text-foreground mb-1">{p.title}</p>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{p.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-3 mb-6">
+              <span className="text-2xl">❓</span>
+              <h3 className="text-2xl font-bold text-foreground">Часто задаваемые вопросы</h3>
+            </div>
+            <div className="space-y-4 max-w-4xl">
+              {[
+                { q: "Как сделать заказ?", a: "Оставьте заявку на сайте или позвоните. Менеджер уточнит параметры и подготовит КП в течение 1 рабочего дня." },
+                { q: "Есть ли доставка по России?", a: "Да, доставляем собственным транспортом по Москве и МО, в регионы — через транспортные компании-партнёры." },
+                { q: "Можно заказать по индивидуальным размерам?", a: "Да, изготавливаем по чертежам и техническому заданию заказчика. Расчёт за 1 рабочий день." },
+                { q: "Какие документы предоставляете?", a: "Договор, счёт, товарная накладная, акт выполненных работ, сертификаты на материалы. Работаем с НДС." },
+              ].map((item, i) => (
+                <div key={i} className="border border-border rounded-lg p-4 bg-card">
+                  <p className="font-bold text-foreground mb-2 text-sm">{item.q}</p>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{item.a}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <CategoryCallbackCTA />
+        </>
       )}
     </div>
   );
