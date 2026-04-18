@@ -3,6 +3,7 @@ import { CheckCircle } from "lucide-react";
 import { getSubcategories, getCategoryBySlug, getProductCounts, sumCounts } from "@/lib/queries";
 import { supabase } from "@/lib/supabase";
 import CatalogCategoryCard from "@/components/catalog/CatalogCategoryCard";
+import PhotoEditable from "@/components/admin/PhotoEditable";
 
 export const revalidate = 60;
 
@@ -46,21 +47,35 @@ export default async function NavesyPage() {
         кровля — поликарбонат, профнастил или металлочерепица. Собственное производство, гарантия 10 лет.
       </p>
 
-      {/* Subcategory cards */}
+      {/* Catalog grid — screenshot style */}
       {enriched.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-16">
-          {enriched.map((sub: any) => (
-            <CatalogCategoryCard
-              key={sub.id}
-              name={sub.name}
-              slug={sub.slug}
-              icon={sub.icon}
-              imageUrl={sub.image_url}
-              totalProducts={sub.totalProducts}
-              subcategories={sub.subcategories}
-              basePath="/catalog/navesy"
-            />
-          ))}
+        <div className="mb-16">
+          <h2 className="text-5xl lg:text-6xl font-black text-foreground leading-none mb-8">
+            каталог<br />навесов
+          </h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            {enriched.map((sub: any) => (
+              <Link
+                key={sub.id}
+                href={`/catalog/navesy/${sub.slug}`}
+                className="group block"
+              >
+                <PhotoEditable
+                  photoId={`category:${sub.slug}`}
+                  dimensions="400×280"
+                  className="w-full aspect-[4/3] bg-muted rounded overflow-hidden mb-2 flex items-center justify-center"
+                >
+                  {sub.image_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={sub.image_url} alt={sub.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                  ) : (
+                    <span className="text-4xl opacity-20">🏠</span>
+                  )}
+                </PhotoEditable>
+                <p className="text-sm font-medium text-foreground group-hover:text-gold transition-colors">{sub.name}</p>
+              </Link>
+            ))}
+          </div>
         </div>
       )}
 
