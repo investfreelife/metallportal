@@ -89,7 +89,7 @@ function NavDropdown({
           href={item.href}
           onClick={onClose}
           className={`flex items-center gap-1.5 transition-colors pr-1 ${
-            (item as any).highlight ? "text-gold hover:text-yellow-300" : "hover:text-gold"
+            "hover:text-gold"
           }`}
         >
           <span>{item.icon}</span>
