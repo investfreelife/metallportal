@@ -1,11 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+async function dbUpdate(table: string, col: string, matchCol: string, matchVal: string, value: string | null) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${matchCol}=eq.${encodeURIComponent(matchVal)}`, {
+    method: "PATCH",
+    headers: {
+      "apikey": SERVICE_KEY,
+      "Authorization": `Bearer ${SERVICE_KEY}`,
+      "Content-Type": "application/json",
+      "Prefer": "return=minimal",
+    },
+    body: JSON.stringify({ [col]: value }),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`DB update failed (${res.status}): ${text}`);
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,14 +30,10 @@ export async function POST(req: NextRequest) {
     const imageUrl = url === "" ? null : url;
 
     if (type === "category") {
-      const { error } = await supabase.from("categories").update({ image_url: imageUrl }).eq("slug", identifier);
-      if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-      // Bust ISR cache for all catalog pages so the new photo shows immediately
+      await dbUpdate("categories", "image_url", "slug", identifier, imageUrl);
       revalidatePath("/catalog", "layout");
     } else if (type === "product") {
-      const { error } = await supabase.from("products").update({ image_url: imageUrl }).eq("slug", identifier);
-      if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-      // Bust ISR cache for the product's parent pages
+      await dbUpdate("products", "image_url", "slug", identifier, imageUrl);
       revalidatePath("/catalog", "layout");
     } else {
       return NextResponse.json({ error: "Unknown type: " + type }, { status: 400 });
