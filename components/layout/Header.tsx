@@ -44,12 +44,12 @@ const NAV_ITEMS = [
     label: "Готовые конструкции",
     icon: "🏗️",
     highlight: true,
-    href: "/catalog/konstruktsii",
+    href: "/catalog",
     children: [
-      { label: "Ангары", href: "/catalog/konstruktsii/angary" },
-      { label: "Навесы и козырьки", href: "/catalog/konstruktsii/navesy" },
-      { label: "Склады и цеха", href: "/catalog/konstruktsii/sklady" },
-      { label: "Каркасы зданий", href: "/catalog/konstruktsii/karkasy" },
+      { label: "Ангары", href: "/catalog" },
+      { label: "Навесы и козырьки", href: "/catalog" },
+      { label: "Склады и цеха", href: "/catalog" },
+      { label: "Каркасы зданий", href: "/catalog" },
     ],
   },
 ] as const;
