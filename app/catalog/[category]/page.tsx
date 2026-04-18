@@ -428,6 +428,10 @@ export default async function CategoryPage({ params }: Props) {
   const result = await getCategoryWithChildren(params.category);
   if (!result) return notFound();
 
+  const CARDS_DEFAULT = new Set([
+    "angary", "navesy", "sklady-i-tseha", "kozyrki", "karkasy-zdaniy",
+  ]);
+
   return (
     <CatalogView
       category={result.category}
@@ -435,6 +439,7 @@ export default async function CategoryPage({ params }: Props) {
       products={result.products}
       categorySlug={params.category}
       productBasePath={`/catalog/${params.category}`}
+      defaultView={CARDS_DEFAULT.has(params.category) ? "cards" : "table"}
     />
   );
 }

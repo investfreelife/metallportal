@@ -104,6 +104,7 @@ export default async function SubcategoryPage({ params }: Props) {
       const isParkovka = params.subcategory === "navesy-dlya-parkovok";
       const isBesedka = params.subcategory === "navesy-besedka";
       const isDacha = params.subcategory === "navesy-dlya-dachi";
+      const isNavesy = params.category === "navesy";
       return (
         <div>
           <CatalogView
@@ -112,7 +113,7 @@ export default async function SubcategoryPage({ params }: Props) {
             products={result.products}
             categorySlug={params.subcategory}
             productBasePath={`/catalog/${params.category}/${params.subcategory}`}
-            defaultView={isHozblok || isAvto || isParkovka || isBesedka || isDacha ? "cards" : "table"}
+            defaultView={isNavesy || isHozblok || isAvto || isParkovka || isBesedka || isDacha ? "cards" : "table"}
           />
 
           {isHozblok && (
