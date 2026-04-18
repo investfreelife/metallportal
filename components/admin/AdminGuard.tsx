@@ -16,7 +16,7 @@ export interface AdminSession {
 export function getAdminSession(): AdminSession | null {
   if (typeof window === "undefined") return null;
   try {
-    const raw = sessionStorage.getItem("admin_session");
+    const raw = localStorage.getItem("admin_session");
     return raw ? JSON.parse(raw) : null;
   } catch { return null; }
 }
@@ -29,7 +29,7 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    const stored = sessionStorage.getItem("admin_session");
+    const stored = localStorage.getItem("admin_session");
     setSession(stored ? JSON.parse(stored) : null);
   }, []);
 
@@ -51,7 +51,7 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
       return;
     }
     const s: AdminSession = { login: data.login, name: data.name, role: data.role };
-    sessionStorage.setItem("admin_session", JSON.stringify(s));
+    localStorage.setItem("admin_session", JSON.stringify(s));
     setSession(s);
     setSubmitting(false);
   };

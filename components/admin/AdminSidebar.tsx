@@ -66,7 +66,7 @@ export default function AdminSidebar() {
       </nav>
       <div className="p-3 border-t border-white/10">
         <button
-          onClick={() => { sessionStorage.removeItem("admin_session"); window.location.href = "/admin"; }}
+          onClick={() => { localStorage.removeItem("admin_session"); window.location.href = "/admin"; }}
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/40 hover:text-white hover:bg-white/5 w-full transition-all"
         >
           <LogOut size={16} />

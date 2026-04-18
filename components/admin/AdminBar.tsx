@@ -8,7 +8,7 @@ export default function AdminBar() {
 
   useEffect(() => {
     try {
-      const raw = sessionStorage.getItem("admin_session");
+      const raw = localStorage.getItem("admin_session");
       if (raw) setSession(JSON.parse(raw));
     } catch {}
   }, []);
