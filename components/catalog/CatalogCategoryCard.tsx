@@ -1,3 +1,5 @@
+"use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import PhotoEditable from "@/components/admin/PhotoEditable";
@@ -22,11 +24,18 @@ export default function CatalogCategoryCard({
   basePath,
 }: CategoryCardProps) {
   const cardHref = `${basePath}/${slug}`;
+  const [editMode, setEditMode] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: Event) => setEditMode((e as CustomEvent<boolean>).detail);
+    window.addEventListener("photoEditMode", handler);
+    return () => window.removeEventListener("photoEditMode", handler);
+  }, []);
 
   return (
     <div className="bg-card border border-border rounded-lg overflow-hidden hover:border-gold/40 transition-all">
-      {/* Full-width image area — clickable */}
-      <Link href={cardHref} className="block w-full h-44 bg-muted overflow-hidden">
+      {/* Full-width image area — clickable (disabled in edit mode) */}
+      <Link href={cardHref} className="block w-full h-44 bg-muted overflow-hidden" onClick={e => { if (editMode) e.preventDefault(); }}>
         <PhotoEditable photoId={`category:${slug}`} dimensions="640×176" className="w-full h-full flex items-center justify-center">
           {imageUrl ? (
             <div className="relative w-full h-full">

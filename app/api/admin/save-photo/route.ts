@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { revalidatePath } from "next/cache";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -17,9 +18,13 @@ export async function POST(req: NextRequest) {
     if (type === "category") {
       const { error } = await supabase.from("categories").update({ image_url: imageUrl }).eq("slug", identifier);
       if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+      // Bust ISR cache for all catalog pages so the new photo shows immediately
+      revalidatePath("/catalog", "layout");
     } else if (type === "product") {
       const { error } = await supabase.from("products").update({ image_url: imageUrl }).eq("slug", identifier);
       if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+      // Bust ISR cache for the product's parent pages
+      revalidatePath("/catalog", "layout");
     } else {
       return NextResponse.json({ error: "Unknown type: " + type }, { status: 400 });
     }
