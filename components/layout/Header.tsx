@@ -226,7 +226,7 @@ export default function Header() {
       </div>
 
       {/* Desktop nav */}
-      <div style={{ backgroundColor: "var(--topbar-bg)", color: "var(--nav-text)" }}>
+      <div style={{ backgroundColor: "var(--topbar-bg)", color: "var(--topbar-text)" }}>
         <div className="container-main hidden lg:flex items-center gap-4 xl:gap-6 h-11">
           {NAV_ITEMS.map((item, i) => (
             <NavDropdown
