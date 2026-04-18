@@ -46,8 +46,7 @@ export default async function SubcategoryPage({ params }: Props) {
           ...sub,
           totalProducts: sumCounts(sub.id, catList, counts),
           subcategories: [],
-        }))
-        .filter((sub: any) => sub.totalProducts > 0);
+        }));
 
       return (
         <div>
