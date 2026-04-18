@@ -102,7 +102,7 @@ export default async function SubcategoryPage({ params }: Props) {
       const isHozblok = params.subcategory === "navesy-s-hozblokom";
       const isAvto = params.subcategory === "navesy-dlya-avtomobilya";
       const isParkovka = params.subcategory === "navesy-dlya-parkovok";
-      const isBesedka = params.subcategory === "navesy-besedki";
+      const isBesedka = params.subcategory === "navesy-besedka";
       return (
         <div>
           <CatalogView
