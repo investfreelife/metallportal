@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { Search, Edit2, RefreshCw, Download, CheckSquare, Square, Upload, Layers, Image as ImageIcon, Loader2, Percent, Trash2 } from "lucide-react";
+import { Search, Edit2, RefreshCw, Download, CheckSquare, Square, Upload, Layers, Image as ImageIcon, Loader2, Percent, Trash2, ChevronDown, ChevronRight, X } from "lucide-react";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -80,6 +80,90 @@ function compressImage(file: File, maxPx: number, quality: number): Promise<File
   });
 }
 
+function CatFilterDropdowns({ categories, filterPath, openDD, setOpenDD, onSelect, onClear }: {
+  categories: Category[];
+  filterPath: Category[];
+  openDD: number | null;
+  setOpenDD: (n: number | null) => void;
+  onSelect: (path: Category[], catId: string) => void;
+  onClear: () => void;
+}) {
+  const childrenOf = (id: string | null) => categories.filter(c => c.parent_id === id);
+
+  // Build dropdown levels
+  const levels: { items: Category[]; selected: Category | null; idx: number }[] = [
+    { items: childrenOf(null), selected: filterPath[0] ?? null, idx: 0 },
+  ];
+  for (let i = 0; i < filterPath.length; i++) {
+    const ch = childrenOf(filterPath[i].id);
+    if (ch.length === 0) break;
+    levels.push({ items: ch, selected: filterPath[i + 1] ?? null, idx: i + 1 });
+  }
+
+  const selectAt = (levelIdx: number, cat: Category) => {
+    const newPath = [...filterPath.slice(0, levelIdx), cat];
+    onSelect(newPath, cat.id);
+  };
+  const clearFrom = (levelIdx: number) => {
+    if (levelIdx === 0) { onClear(); return; }
+    const newPath = filterPath.slice(0, levelIdx);
+    onSelect(newPath, newPath[newPath.length - 1]?.id ?? "");
+  };
+
+  return (
+    <div className="flex items-center gap-1 flex-wrap bg-[#16213e] rounded-xl px-4 py-2.5 border border-white/5 mb-3">
+      <span className="text-white/30 text-xs mr-1">Категория:</span>
+      {filterPath.length > 0 && (
+        <button onClick={onClear} className="px-2 py-1 rounded text-xs text-white/30 hover:text-white transition-colors">
+          Все
+        </button>
+      )}
+      {levels.map((level, idx) => {
+        const ref = { current: null as HTMLDivElement | null };
+        const isOpen = openDD === idx;
+        return (
+          <div key={idx} className="flex items-center gap-0.5">
+            {idx > 0 && <ChevronRight size={12} className="text-white/20 mx-0.5" />}
+            <div className="relative" ref={r => { ref.current = r; }}>
+              <button
+                onClick={() => setOpenDD(isOpen ? null : idx)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  level.selected ? "bg-[#E8B86D] text-black" : "border border-white/10 text-white/60 hover:border-[#E8B86D]/50 hover:text-white"
+                }`}
+              >
+                {level.selected ? level.selected.name : (idx === 0 ? "Раздел" : "Подраздел")}
+                <ChevronDown size={11} className={`transition-transform ${isOpen ? "rotate-180" : ""}`} />
+              </button>
+              {level.selected && (
+                <button onClick={e => { e.stopPropagation(); clearFrom(idx); }}
+                  className="ml-0.5 p-0.5 rounded text-white/30 hover:text-white transition-colors">
+                  <X size={11} />
+                </button>
+              )}
+              {isOpen && (
+                <div
+                  className="absolute top-full left-0 mt-1 min-w-[190px] bg-[#16213e] border border-white/10 rounded-xl shadow-2xl z-50 max-h-64 overflow-y-auto"
+                  onMouseLeave={() => setOpenDD(null)}
+                >
+                  {level.items.map(cat => (
+                    <button key={cat.id} onClick={() => { selectAt(level.idx, cat); setOpenDD(null); }}
+                      className={`w-full text-left px-4 py-2 text-xs transition-colors hover:bg-[#E8B86D]/10 flex items-center justify-between gap-2 ${
+                        level.selected?.id === cat.id ? "text-[#E8B86D]" : "text-white"
+                      }`}>
+                      <span>{cat.name}</span>
+                      {categories.some(c => c.parent_id === cat.id) && <ChevronRight size={10} className="text-white/20" />}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -98,6 +182,8 @@ export default function AdminProducts() {
   const groupInputRef = useRef<HTMLInputElement>(null);
   const [page, setPage] = useState(0);
   const PAGE_SIZE = 50;
+  const [filterPath, setFilterPath] = useState<Category[]>([]); // cascading category filter
+  const [openDD, setOpenDD] = useState<number | null>(null);
 
   const toggleSelect = (id: string) => setSelected(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
   const toggleAll = () => setSelected(prev => prev.size === products.length ? new Set() : new Set(products.map(p => p.id)));
@@ -281,20 +367,16 @@ export default function AdminProducts() {
         </div>
       )}
 
-      {/* Category filter */}
+      {/* Category filter — cascading dropdowns */}
       {categories.length > 0 && (
-        <div className="flex gap-2 mb-3 flex-wrap">
-          <button onClick={() => { setCatFilter(""); setPage(0); }}
-            className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
-              catFilter === "" ? "bg-[#E8B86D] text-black" : "bg-white/5 text-white/50 hover:text-white hover:bg-white/10"
-            }`}>Все</button>
-          {categories.map(cat => (
-            <button key={cat.id} onClick={() => { setCatFilter(cat.id); setPage(0); }}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
-                catFilter === cat.id ? "bg-[#E8B86D] text-black" : cat.parent_id ? "bg-white/5 text-white/40 hover:text-white hover:bg-white/10" : "bg-white/10 text-white/60 hover:text-white hover:bg-white/15"
-              }`}>{cat.name}</button>
-          ))}
-        </div>
+        <CatFilterDropdowns
+          categories={categories}
+          filterPath={filterPath}
+          openDD={openDD}
+          setOpenDD={setOpenDD}
+          onSelect={(path, catId) => { setFilterPath(path); setCatFilter(catId); setPage(0); }}
+          onClear={() => { setFilterPath([]); setCatFilter(""); setPage(0); }}
+        />
       )}
 
       <div className="relative mb-4">
