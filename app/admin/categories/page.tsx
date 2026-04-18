@@ -1,7 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { Edit2, Plus, RefreshCw, Eye, EyeOff, Image } from "lucide-react";
+import { Edit2, Plus, RefreshCw, Eye, EyeOff, Image, ChevronDown, ChevronRight, X } from "lucide-react";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -13,6 +13,49 @@ interface Category {
   sort_order: number; is_active: boolean; image_url: string | null; icon?: string;
 }
 
+function LevelDropdown({ items, selected, onSelect, onClear, placeholder }: {
+  items: Category[]; selected: Category | null;
+  onSelect: (c: Category) => void; onClear: () => void; placeholder: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, []);
+  return (
+    <div ref={ref} className="relative flex items-center">
+      <button onClick={() => setOpen(o => !o)}
+        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+          selected ? "bg-[#E8B86D] text-black" : "bg-[#16213e] border border-white/10 text-white/70 hover:border-[#E8B86D]/50 hover:text-white"
+        }`}>
+        {selected ? selected.name : placeholder}
+        <ChevronDown size={13} className={`transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {selected && (
+        <button onClick={e => { e.stopPropagation(); onClear(); }}
+          className="ml-1 p-1 rounded text-white/30 hover:text-white transition-colors">
+          <X size={12} />
+        </button>
+      )}
+      {open && (
+        <div className="absolute top-full left-0 mt-1 min-w-[200px] bg-[#16213e] border border-white/10 rounded-xl shadow-2xl z-50 max-h-72 overflow-y-auto">
+          {items.map(cat => (
+            <button key={cat.id} onClick={() => { onSelect(cat); setOpen(false); }}
+              className={`w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-[#E8B86D]/10 flex items-center justify-between gap-3 ${
+                selected?.id === cat.id ? "text-[#E8B86D]" : "text-white"
+              }`}>
+              <span>{cat.name}</span>
+              {!cat.is_active && <span className="text-white/20 text-xs">скрыта</span>}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AdminCategories() {
   const [cats, setCats] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,6 +65,7 @@ export default function AdminCategories() {
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
   const [newCat, setNewCat] = useState({ name: "", slug: "", parent_id: "" });
+  const [path, setPath] = useState<Category[]>([]); // drill-down path
 
   const load = async () => {
     setLoading(true);
@@ -29,7 +73,6 @@ export default function AdminCategories() {
     setCats(data ?? []);
     setLoading(false);
   };
-
   useEffect(() => { load(); }, []);
 
   const saveEdit = async () => {
@@ -39,9 +82,7 @@ export default function AdminCategories() {
       name: editing.name, slug: editing.slug,
       sort_order: editing.sort_order, is_active: editing.is_active, image_url: editing.image_url,
     }).eq("id", editing.id);
-    setSaving(false);
-    setEditing(null);
-    load();
+    setSaving(false); setEditing(null); load();
   };
 
   const toggleActive = async (cat: Category) => {
@@ -51,48 +92,91 @@ export default function AdminCategories() {
 
   const addCategory = async () => {
     if (!newCat.name || !newCat.slug) return;
+    const parentId = newCat.parent_id || (path.length > 0 ? path[path.length - 1].id : null);
     await supabase.from("categories").insert({
       name: newCat.name, slug: newCat.slug,
-      parent_id: newCat.parent_id || null, is_active: true, sort_order: 999,
+      parent_id: parentId || null, is_active: true, sort_order: 999,
     });
     setNewCat({ name: "", slug: "", parent_id: "" });
-    setShowAdd(false);
-    load();
+    setShowAdd(false); load();
   };
 
   const generateImage = async (cat: Category) => {
     setGenLoading(cat.id);
     try {
       const res = await fetch("/api/generate-image", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ categoryId: cat.id, productName: cat.name, category: cat.slug }),
       });
       const data = await res.json();
-      if (data.imageUrl) {
-        await supabase.from("categories").update({ image_url: data.imageUrl }).eq("id", cat.id);
-        load();
-      }
+      if (data.imageUrl) { await supabase.from("categories").update({ image_url: data.imageUrl }).eq("id", cat.id); load(); }
     } catch { }
     setGenLoading(null);
   };
 
-  const rootCats = cats.filter(c => !c.parent_id);
-  const childCats = cats.filter(c => c.parent_id);
+  const childrenOf = (id: string | null) => cats.filter(c => c.parent_id === (id ?? null));
+  const hasChildren = (cat: Category) => cats.some(c => c.parent_id === cat.id);
+
+  // Build dropdown levels: always show level 0, then each subsequent level if parent selected
+  const dropdownLevels: { items: Category[]; selected: Category | null; levelIdx: number }[] = [
+    { items: childrenOf(null), selected: path[0] ?? null, levelIdx: 0 },
+  ];
+  for (let i = 0; i < path.length; i++) {
+    const children = childrenOf(path[i].id);
+    if (children.length === 0) break;
+    dropdownLevels.push({ items: children, selected: path[i + 1] ?? null, levelIdx: i + 1 });
+  }
+
+  const displayedItems = path.length > 0 ? childrenOf(path[path.length - 1].id) : childrenOf(null);
+
+  const selectAtLevel = (levelIdx: number, cat: Category) => setPath(prev => [...prev.slice(0, levelIdx), cat]);
+  const clearFromLevel = (levelIdx: number) => setPath(prev => prev.slice(0, levelIdx));
 
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-white">Категории</h1>
+        <div>
+          <h1 className="text-2xl font-bold text-white">Категории</h1>
+          {path.length > 0 && (
+            <div className="flex items-center gap-1 mt-1 text-xs text-white/30">
+              <button onClick={() => setPath([])} className="hover:text-white transition-colors">Корень</button>
+              {path.map((cat, i) => (
+                <span key={i} className="flex items-center gap-1">
+                  <ChevronRight size={10} />
+                  <button onClick={() => clearFromLevel(i + 1)} className="hover:text-white transition-colors">{cat.name}</button>
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
         <button onClick={() => setShowAdd(true)}
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#E8B86D] hover:bg-yellow-400 text-black font-bold text-sm">
           <Plus size={14} /> Добавить
         </button>
       </div>
 
+      {/* Cascading dropdowns */}
+      <div className="flex items-center gap-1 flex-wrap bg-[#16213e] rounded-xl px-4 py-3 border border-white/5 mb-6">
+        <span className="text-white/30 text-xs mr-2">Уровень:</span>
+        {dropdownLevels.map((level, idx) => (
+          <div key={idx} className="flex items-center gap-1">
+            {idx > 0 && <ChevronRight size={13} className="text-white/20 mx-0.5" />}
+            <LevelDropdown
+              items={level.items}
+              selected={level.selected}
+              onSelect={(cat) => selectAtLevel(level.levelIdx, cat)}
+              onClear={() => clearFromLevel(level.levelIdx)}
+              placeholder={idx === 0 ? "Раздел 1-го уровня" : `Раздел ${idx + 1}-го уровня`}
+            />
+          </div>
+        ))}
+      </div>
+
       {showAdd && (
         <div className="bg-[#16213e] rounded-xl p-5 border border-[#E8B86D]/30 mb-6">
-          <h3 className="text-white font-semibold mb-4">Новая категория</h3>
+          <h3 className="text-white font-semibold mb-4">
+            Новая категория{path.length > 0 ? ` → в «${path[path.length - 1].name}»` : " (корневая)"}
+          </h3>
           <div className="grid grid-cols-3 gap-3 mb-3">
             <input value={newCat.name} onChange={e => setNewCat(s => ({ ...s, name: e.target.value }))}
               placeholder="Название" className="bg-[#0d0d1a] border border-white/20 rounded px-3 py-2 text-sm text-white outline-none focus:border-[#E8B86D]" />
@@ -113,17 +197,16 @@ export default function AdminCategories() {
 
       {loading ? (
         <div className="text-white/40 text-center py-10">Загрузка...</div>
+      ) : displayedItems.length === 0 ? (
+        <div className="text-white/20 text-center py-10 text-sm">Нет подкатегорий на этом уровне</div>
       ) : (
-        <div className="space-y-2">
-          {rootCats.map(root => (
-            <div key={root.id}>
-              <CategoryRow cat={root} onEdit={setEditing} onToggle={toggleActive} onGenerate={generateImage} genLoading={genLoading} isRoot />
-              {childCats.filter(c => c.parent_id === root.id).map(child => (
-                <div key={child.id} className="ml-8">
-                  <CategoryRow cat={child} onEdit={setEditing} onToggle={toggleActive} onGenerate={generateImage} genLoading={genLoading} />
-                </div>
-              ))}
-            </div>
+        <div className="space-y-1.5">
+          {displayedItems.map(cat => (
+            <CategoryRow key={cat.id} cat={cat} onEdit={setEditing} onToggle={toggleActive}
+              onGenerate={generateImage} genLoading={genLoading}
+              hasChildren={hasChildren(cat)}
+              onDrillDown={hasChildren(cat) ? () => selectAtLevel(path.length, cat) : undefined}
+            />
           ))}
         </div>
       )}
@@ -193,14 +276,13 @@ export default function AdminCategories() {
   );
 }
 
-function CategoryRow({ cat, onEdit, onToggle, onGenerate, genLoading, isRoot = false }: {
+function CategoryRow({ cat, onEdit, onToggle, onGenerate, genLoading, hasChildren, onDrillDown }: {
   cat: Category; onEdit: (c: Category) => void; onToggle: (c: Category) => void;
-  onGenerate: (c: Category) => void; genLoading: string | null; isRoot?: boolean;
+  onGenerate: (c: Category) => void; genLoading: string | null;
+  hasChildren?: boolean; onDrillDown?: () => void;
 }) {
   return (
-    <div className={`flex items-center gap-4 p-3 rounded-lg border mb-1 ${
-      isRoot ? "bg-[#16213e] border-white/10" : "bg-[#16213e]/50 border-white/5"
-    }`}>
+    <div className="flex items-center gap-4 p-3 rounded-lg border bg-[#16213e] border-white/10">
       {cat.image_url ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={cat.image_url} alt={cat.name} className="w-10 h-10 rounded object-cover flex-shrink-0" />
@@ -226,6 +308,13 @@ function CategoryRow({ cat, onEdit, onToggle, onGenerate, genLoading, isRoot = f
           className="p-1.5 rounded text-white/30 hover:text-white transition-colors">
           <Edit2 size={14} />
         </button>
+        {hasChildren && onDrillDown && (
+          <button onClick={onDrillDown}
+            className="flex items-center gap-1 px-2 py-1 rounded text-xs text-white/30 hover:text-[#E8B86D] hover:bg-[#E8B86D]/10 transition-all border border-white/5"
+            title="Войти в подкатегории">
+            <ChevronRight size={13} />
+          </button>
+        )}
       </div>
     </div>
   );
