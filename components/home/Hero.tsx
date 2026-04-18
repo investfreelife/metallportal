@@ -6,7 +6,7 @@ import PhotoEditable from "@/components/admin/PhotoEditable";
 
 const CARD_HREFS = [
   "/catalog/metalloprokat",
-  "/catalog/konstruktsii",
+  "/catalog/gotovye-konstruktsii",
 ];
 
 const CARD_DEFAULTS = [
