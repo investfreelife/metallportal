@@ -103,6 +103,7 @@ export default async function SubcategoryPage({ params }: Props) {
       const isAvto = params.subcategory === "navesy-dlya-avtomobilya";
       const isParkovka = params.subcategory === "navesy-dlya-parkovok";
       const isBesedka = params.subcategory === "navesy-besedka";
+      const isDacha = params.subcategory === "navesy-dlya-dachi";
       return (
         <div>
           <CatalogView
@@ -111,7 +112,7 @@ export default async function SubcategoryPage({ params }: Props) {
             products={result.products}
             categorySlug={params.subcategory}
             productBasePath={`/catalog/${params.category}/${params.subcategory}`}
-            defaultView={isHozblok || isAvto || isParkovka || isBesedka ? "cards" : "table"}
+            defaultView={isHozblok || isAvto || isParkovka || isBesedka || isDacha ? "cards" : "table"}
           />
 
           {isHozblok && (
@@ -607,6 +608,132 @@ export default async function SubcategoryPage({ params }: Props) {
                       "Гарантия 10 лет на каркас и антикоррозийное покрытие",
                       "Проектная документация и согласование",
                       "Работа с юрлицами, НДС, полный пакет документов",
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-3 border border-border rounded-lg p-3 bg-card/60">
+                        <CheckCircle size={18} className="text-gold flex-shrink-0" />
+                        <span className="text-sm text-foreground">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            </>
+          )}
+
+          {isDacha && (
+            <>
+              <section className="mt-16 pt-10 border-t border-border">
+                <h2 className="text-3xl font-bold text-foreground mb-5">Навесы для дачи — МеталлПортал</h2>
+                <p className="text-muted-foreground leading-relaxed mb-10 max-w-4xl">
+                  МеталлПортал производит навесы для дачи и загородного дома с 2012 года. Металлический каркас
+                  с деревянными элементами или полностью металлический — на выбор. Кровля из поликарбоната,
+                  профнастила или металлочерепицы. Монтаж «под ключ», гарантия 10 лет.
+                </p>
+
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-2xl">🌳</span>
+                  <h3 className="text-2xl font-bold text-foreground">Виды дачных навесов</h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-10">
+                  {[
+                    "Арочный навес — плавная кровля, снег сам сскальзывает, максимальная защита",
+                    "Двускатный навес — классический вид, отличный водоотвод",
+                    "Односкатный навес — бюджетный вариант, быстрый монтаж",
+                    "Четырёхскатный навес — защита со всех сторон, премиум-сегмент",
+                    "Полуарочный навес — оригинальный дизайн, современный стиль",
+                    "Консольный навес — без опор под машиной, удобный въезд",
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-3 border border-border rounded-lg p-3 bg-card">
+                      <CheckCircle size={18} className="text-gold flex-shrink-0" />
+                      <span className="text-sm text-foreground">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="mt-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-2xl">🔩</span>
+                  <h3 className="text-2xl font-bold text-foreground">Виды кровли</h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                  {[
+                    { title: "Поликарбонат сотовый", desc: "От 6 500 ₽/м². Пропускает свет, снег скатывается сам. 15–20 лет." },
+                    { title: "Профнастил", desc: "От 7 200 ₽/м². Надёжный, не требует ухода. 25–40 лет. Любой цвет RAL." },
+                    { title: "Металлочерепица", desc: "От 7 500 ₽/м². Эстетика под черепицу — идеально для дачи и коттеджа." },
+                    { title: "Консольный", desc: "От 10 000 ₽/м². Без опор под навесом — удобный въезд и манёвр." },
+                    { title: "Четырёхскатный", desc: "От 9 300 ₽/м². Защита со всех сторон. Премиальный вид." },
+                    { title: "Плоский", desc: "От 11 500 ₽/м². Современный минималистичный стиль для коттеджей." },
+                  ].map((m, i) => (
+                    <div key={i} className="bg-card border border-border rounded-lg p-4">
+                      <p className="font-bold text-foreground mb-1 text-sm">{m.title}</p>
+                      <p className="text-muted-foreground text-xs leading-relaxed">{m.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="mt-8">
+                <div className="bg-muted/40 rounded-xl p-5 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">⚡</span>
+                    <h3 className="text-xl font-bold text-foreground">Что входит в стоимость</h3>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {[
+                      "Разработка проекта и рабочего чертежа",
+                      "Металлокаркас из профильной трубы по ГОСТ",
+                      "Кровельное покрытие на выбор",
+                      "Антикоррозийная обработка и порошковое окрашивание",
+                      "Доставка на объект по всей России",
+                      "Монтаж «под ключ» сертифицированной бригадой",
+                      "Гарантийный паспорт на 10 лет",
+                      "Бесплатный выезд замерщика в день обращения",
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-3 p-1">
+                        <CheckCircle size={15} className="text-gold flex-shrink-0" />
+                        <span className="text-sm text-foreground">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Расчёт за <strong className="text-foreground">1 рабочий день</strong>. Работаем с юрлицами и физлицами. НДС, все документы.
+                  </p>
+                </div>
+              </section>
+
+              <section className="mt-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="text-2xl">📋</span>
+                  <h3 className="text-2xl font-bold text-foreground">Как заказать навес для дачи</h3>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {[
+                    { n: "01", title: "Заявка", desc: "Менеджер перезвонит за 15 минут и уточнит размеры, кровлю и сроки." },
+                    { n: "02", title: "Проект за 1 день", desc: "КП с ценой, эскизом и 3D-визуализацией. Бесплатный выезд замерщика." },
+                    { n: "03", title: "Производство", desc: "Изготовление каркаса и кровли на заводе. Контроль качества." },
+                    { n: "04", title: "Монтаж", desc: "Доставка и установка «под ключ». Акт и гарантийный паспорт на 10 лет." },
+                  ].map((p, i) => (
+                    <div key={i} className="bg-card border border-border rounded-lg p-4">
+                      <div className="text-3xl font-black text-gold/30 mb-2">{p.n}</div>
+                      <p className="font-bold text-foreground mb-1">{p.title}</p>
+                      <p className="text-muted-foreground text-sm leading-relaxed">{p.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="mt-8">
+                <div className="bg-muted/40 rounded-xl p-5 space-y-3">
+                  <h3 className="text-xl font-bold text-foreground">Почему выбирают МеталлПортал</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {[
+                      "Собственный завод — цены без посредников",
+                      "Металлопрокат собственного производства по ГОСТ",
+                      "Изготовление по любым размерам и чертежам",
+                      "Гарантия 10 лет на каркас и антикоррозийное покрытие",
+                      "Бесплатный выезд замерщика в день обращения",
+                      "Работа с юрлицами и физлицами, НДС, все документы",
                     ].map((item, i) => (
                       <div key={i} className="flex items-center gap-3 border border-border rounded-lg p-3 bg-card/60">
                         <CheckCircle size={18} className="text-gold flex-shrink-0" />
