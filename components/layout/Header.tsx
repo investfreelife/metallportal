@@ -43,6 +43,7 @@ const NAV_ITEMS = [
   {
     label: "Готовые конструкции",
     icon: "🏗️",
+    highlight: true,
     href: "/catalog/konstruktsii",
     children: [
       { label: "Ангары", href: "/catalog/konstruktsii/angary" },
@@ -62,7 +63,7 @@ function NavDropdown({
   onOpen,
   onClose,
 }: {
-  item: NavItem;
+  item: NavItem & { highlight?: boolean };
   mega?: boolean;
   open: boolean;
   onOpen: () => void;
@@ -87,7 +88,9 @@ function NavDropdown({
         <Link
           href={item.href}
           onClick={onClose}
-          className="flex items-center gap-1.5 hover:text-gold transition-colors pr-1"
+          className={`flex items-center gap-1.5 transition-colors pr-1 ${
+            (item as any).highlight ? "text-gold hover:text-yellow-300" : "hover:text-gold"
+          }`}
         >
           <span>{item.icon}</span>
           <span>{item.label}</span>
