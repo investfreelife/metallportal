@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import PhotoEditable from "@/components/admin/PhotoEditable";
 
 interface CategoryCardProps {
@@ -24,15 +25,25 @@ export default function CatalogCategoryCard({
 
   return (
     <div className="bg-card border border-border rounded-lg overflow-hidden hover:border-gold/40 transition-all">
-      {/* Full-width image area */}
-      <PhotoEditable photoId={`category:${slug}`} dimensions="640×176" className="w-full h-44 bg-muted flex items-center justify-center overflow-hidden">
-        {imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
-        ) : (
-          <span className="text-5xl opacity-40">{icon || "📦"}</span>
-        )}
-      </PhotoEditable>
+      {/* Full-width image area — clickable */}
+      <Link href={cardHref} className="block w-full h-44 bg-muted overflow-hidden">
+        <PhotoEditable photoId={`category:${slug}`} dimensions="640×176" className="w-full h-full flex items-center justify-center">
+          {imageUrl ? (
+            <div className="relative w-full h-full">
+              <Image
+                src={imageUrl}
+                alt={name}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover hover:scale-105 transition-transform duration-300"
+                quality={80}
+              />
+            </div>
+          ) : (
+            <span className="text-5xl opacity-40">{icon || "📦"}</span>
+          )}
+        </PhotoEditable>
+      </Link>
 
       {/* Info */}
       <div className="p-4">
