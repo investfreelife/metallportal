@@ -58,7 +58,7 @@ export default async function CategoryPage({ params }: Props) {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {enriched.filter((sub: any) => sub.totalProducts > 0).map((sub: any) => (
+          {enriched.map((sub: any) => (
             <CatalogCategoryCard
               key={sub.id}
               name={sub.name}
@@ -71,6 +71,56 @@ export default async function CategoryPage({ params }: Props) {
             />
           ))}
         </div>
+
+        {params.category === "gotovye-konstruktsii" && (
+          <>
+            <section className="mt-16 pt-10 border-t border-border">
+              <h2 className="text-3xl font-bold text-foreground mb-5">Готовые металлоконструкции — МеталлПортал</h2>
+              <p className="text-muted-foreground leading-relaxed mb-10 max-w-4xl">
+                МеталлПортал производит и поставляет готовые металлоконструкции для строительства промышленных,
+                коммерческих и сельскохозяйственных объектов по всей России. Полный цикл — от проектирования до монтажа под ключ.
+              </p>
+
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-2xl">🏗️</span>
+                <h3 className="text-2xl font-bold text-foreground">Что мы производим</h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-10">
+                {[
+                  "Ангары арочные и каркасные — пролёт 6–60 м",
+                  "Навесы для автомобилей, веранд и входных групп",
+                  "Склады и производственные цеха под ключ",
+                  "Каркасы зданий — жилые и коммерческие",
+                  "Сетчатые и сварные ограждения периметра",
+                  "Ворота откатные, распашные, секционные",
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3 border border-border rounded-lg p-3 bg-card">
+                    <CheckCircle size={18} className="text-gold flex-shrink-0" />
+                    <span className="text-sm text-foreground">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="mt-8">
+              <div className="bg-muted/40 rounded-xl p-5 space-y-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">⚡</span>
+                  <h3 className="text-xl font-bold text-foreground">Сроки и гарантии</h3>
+                </div>
+                <p className="text-muted-foreground leading-relaxed">
+                  Типовой ангар 18×36 м монтируется за <strong className="text-foreground">5 рабочих дней</strong>.
+                  Все конструкции покрыты грунт-эмалью или оцинкованы горячим методом.
+                  Гарантия на сварные швы и антикоррозийное покрытие — <strong className="text-foreground">10 лет</strong>.
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  Расчёт стоимости и КП — в течение 1 рабочего дня. Доставка по России собственным транспортом.
+                  Работаем с юридическими и физическими лицами, полный пакет документов.
+                </p>
+              </div>
+            </section>
+          </>
+        )}
 
         {params.category === "metalloprokat" && (
           <>
