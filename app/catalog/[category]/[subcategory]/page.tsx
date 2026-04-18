@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import {
   getCategoryBySlug, getSubcategories, getCategoryWithChildren,
   getProductBySlug, getProductPriceItems, getRelatedProducts, getProductCounts, sumCounts,
@@ -24,7 +24,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `${product.name} цена купить в Москве | МеталлПортал` };
 }
 
+const DEDICATED_PAGES: Record<string, string> = {
+  navesy: "/catalog/navesy",
+  kozyrki: "/catalog/kozyrki",
+};
+
 export default async function SubcategoryPage({ params }: Props) {
+  if (DEDICATED_PAGES[params.subcategory]) {
+    redirect(DEDICATED_PAGES[params.subcategory]);
+  }
+
   // Look up parent category for breadcrumbs
   const parentCategory = await getCategoryBySlug(params.category);
 
