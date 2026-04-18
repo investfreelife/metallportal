@@ -204,7 +204,13 @@ export default function AdminProducts() {
   const handleRowPhoto = async (product: Product, file: File) => {
     setPhotoUploading(product.id);
     const url = await uploadPhoto(file);
-    if (url) { await supabase.from("products").update({ image_url: url }).eq("id", product.id); load(); }
+    if (url) {
+      await fetch("/api/admin/save-photo", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ photoId: `product:${product.slug}`, url }),
+      });
+      load();
+    }
     setPhotoUploading(null);
   };
 
@@ -213,7 +219,13 @@ export default function AdminProducts() {
     setGroupUploading(true);
     const url = await uploadPhoto(file);
     if (url) {
-      await supabase.from("products").update({ image_url: url }).in("id", Array.from(selected));
+      const slugs = products.filter(p => selected.has(p.id)).map(p => p.slug);
+      await Promise.all(slugs.map(slug =>
+        fetch("/api/admin/save-photo", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ photoId: `product:${slug}`, url }),
+        })
+      ));
       setSelected(new Set()); load();
     }
     setGroupUploading(false);
@@ -313,6 +325,12 @@ export default function AdminProducts() {
       name: editing.name, gost: editing.gost, steel_grade: editing.steel_grade,
       unit: editing.unit, description: editing.description,
     }).eq("id", editing.id);
+    if (editing.image_url !== products.find(p => p.id === editing.id)?.image_url) {
+      await fetch("/api/admin/save-photo", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ photoId: `product:${editing.slug}`, url: editing.image_url ?? "" }),
+      });
+    }
     setSaving(false); setEditing(null); load();
   };
 
