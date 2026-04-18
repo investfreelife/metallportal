@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { CheckCircle } from "lucide-react";
+import CategoryCallbackCTA from "@/components/catalog/CategoryCallbackCTA";
 import {
   getCategoryBySlug, getSubcategories, getCategoryWithChildren,
   getProductBySlug, getProductPriceItems, getRelatedProducts, getProductCounts, sumCounts,
@@ -236,6 +237,8 @@ export default async function SubcategoryPage({ params }: Props) {
               </section>
             </>
           )}
+
+          <CategoryCallbackCTA />
         </div>
       );
     }

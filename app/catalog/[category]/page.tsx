@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import CatalogView from "@/components/catalog/CatalogView";
 import CatalogCategoryCard from "@/components/catalog/CatalogCategoryCard";
 import { CheckCircle } from "lucide-react";
+import CategoryCallbackCTA from "@/components/catalog/CategoryCallbackCTA";
 
 export const revalidate = 60;
 
@@ -417,6 +418,8 @@ export default async function CategoryPage({ params }: Props) {
             </section>
           </>
         )}
+
+        <CategoryCallbackCTA />
       </div>
     );
   }
