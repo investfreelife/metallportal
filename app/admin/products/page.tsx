@@ -273,16 +273,31 @@ export default function AdminProducts() {
     setSelected(new Set()); setMarkup(""); setMarkupApplying(false); load();
   };
 
+  // Collect all descendant category IDs (including the category itself)
+  const getAllDescendantIds = useCallback((rootId: string): string[] => {
+    const result: string[] = [rootId];
+    const queue = [rootId];
+    while (queue.length > 0) {
+      const parentId = queue.shift()!;
+      const children = categories.filter(c => c.parent_id === parentId);
+      for (const child of children) { result.push(child.id); queue.push(child.id); }
+    }
+    return result;
+  }, [categories]);
+
   const load = useCallback(async () => {
     setLoading(true);
     let q = supabase.from("products").select("id, name, slug, gost, steel_grade, unit, description, image_url, category_id, category:categories(name, slug), price_items(id, base_price, discount_price)")
       .order("name").range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
     if (search) q = q.ilike("name", `%${search}%`);
-    if (catFilter) q = q.eq("category_id", catFilter);
+    if (catFilter) {
+      const ids = getAllDescendantIds(catFilter);
+      q = ids.length === 1 ? q.eq("category_id", catFilter) : q.in("category_id", ids);
+    }
     const { data } = await q;
     setProducts((data as unknown as Product[]) ?? []);
     setLoading(false);
-  }, [page, search, catFilter]);
+  }, [page, search, catFilter, getAllDescendantIds]);
 
   useEffect(() => { load(); }, [load]);
 
