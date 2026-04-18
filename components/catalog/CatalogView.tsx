@@ -46,6 +46,7 @@ interface CatalogViewProps {
   categorySlug: string;
   activeSubSlug?: string;
   productBasePath?: string; // e.g. "/catalog/metalloprokat/truby-i-profil"
+  defaultView?: "table" | "cards";
 }
 
 export interface FilterState {
@@ -163,9 +164,9 @@ function FiltersContent({ filters, filterOptions, update, reset, hasActiveFilter
   );
 }
 
-export default function CatalogView({ category, subcategories, products, categorySlug, activeSubSlug, productBasePath }: CatalogViewProps) {
+export default function CatalogView({ category, subcategories, products, categorySlug, activeSubSlug, productBasePath, defaultView = "table" }: CatalogViewProps) {
   const resolvedProductBasePath = productBasePath ?? `/catalog/${categorySlug}`;
-  const [viewMode, setViewMode] = useState<"table" | "cards">("table");
+  const [viewMode, setViewMode] = useState<"table" | "cards">(defaultView);
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
   const [activeSub, setActiveSub] = useState<string>(activeSubSlug || "");
   const [sortBy, setSortBy] = useState("price_asc");
