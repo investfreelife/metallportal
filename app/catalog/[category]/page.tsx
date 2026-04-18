@@ -7,7 +7,7 @@ import CatalogCategoryCard from "@/components/catalog/CatalogCategoryCard";
 import { CheckCircle } from "lucide-react";
 import CategoryCallbackCTA from "@/components/catalog/CategoryCallbackCTA";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 interface Props {
   params: { category: string };

@@ -11,6 +11,7 @@ interface ProductCardProps {
   productBasePath: string;
   isSelected?: boolean;
   onToggle?: (id: string) => void;
+  priority?: boolean;
 }
 
 function getBestPrice(product: any): { base: number; discount: number | null } | null {
@@ -24,7 +25,7 @@ function getBestPrice(product: any): { base: number; discount: number | null } |
   return { base: best.base_price, discount: best.discount_price };
 }
 
-export default function CatalogProductCard({ product, productBasePath, isSelected = false, onToggle }: ProductCardProps) {
+export default function CatalogProductCard({ product, productBasePath, isSelected = false, onToggle, priority = false }: ProductCardProps) {
   const [editMode, setEditMode] = useState(false);
   const [added, setAdded] = useState(false);
   const { addItem } = useCart();
@@ -68,7 +69,9 @@ export default function CatalogProductCard({ product, productBasePath, isSelecte
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
               className="object-cover"
-              loading="lazy"
+              quality={80}
+              priority={priority}
+              loading={priority ? undefined : "lazy"}
             />
           </div>
         ) : (

@@ -429,13 +429,14 @@ export default function CatalogView({ category, subcategories, products, categor
                   </div>
                 )}
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                  {paginatedProducts.map((product: any) => (
+                  {paginatedProducts.map((product: any, index: number) => (
                     <CatalogProductCard
                       key={product.id}
                       product={product}
                       productBasePath={resolvedProductBasePath}
                       isSelected={selected.has(product.id)}
                       onToggle={editMode ? toggleSelect : undefined}
+                      priority={index < 6}
                     />
                   ))}
                 </div>

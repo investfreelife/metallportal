@@ -12,7 +12,7 @@ import CatalogView from "@/components/catalog/CatalogView";
 import CatalogCategoryCard from "@/components/catalog/CatalogCategoryCard";
 import ProductDetailView from "@/components/catalog/ProductDetailView";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 interface Props {
   params: { category: string; subcategory: string };

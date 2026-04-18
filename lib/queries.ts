@@ -57,15 +57,16 @@ export async function getCategoryWithChildren(slug: string) {
     .from("products")
     .select(
       `
-      *,
+      id, name, slug, image_url, unit, dimensions, gost, steel_grade,
+      diameter, thickness, coating, material,
       category:categories(id, name, slug),
-      supplier:suppliers!left(id, company_name, region, city, rating),
-      price_items(*, supplier:suppliers!left(id, company_name, region, city, rating, is_verified))
+      price_items(base_price, discount_price, in_stock,
+        supplier:suppliers!left(id, company_name, region, city))
     `
     )
     .in("category_id", categoryIds)
     .eq("is_active", true)
-    .limit(10000);
+    .limit(5000);
 
   if (error) {
     console.error("getCategoryWithChildren products error:", error);
