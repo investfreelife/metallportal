@@ -55,13 +55,13 @@ export default function CatalogProductTable({ products, productBasePath }: Produ
       <table className="w-full text-left">
         <thead>
           <tr className="border-b border-border text-xs uppercase tracking-wider text-muted-foreground">
-            <th className="px-4 py-3 font-medium">Название</th>
-            <th className="px-4 py-3 font-medium">Размер</th>
-            <th className="px-4 py-3 font-medium">ГОСТ</th>
-            <th className="px-4 py-3 font-medium">Цена/ед</th>
-            <th className="px-4 py-3 font-medium">Наличие</th>
-            <th className="px-4 py-3 font-medium">Поставщик</th>
-            <th className="px-4 py-3 font-medium"></th>
+            <th className="px-3 py-2.5 font-medium">Название</th>
+            <th className="px-3 py-2.5 font-medium hidden sm:table-cell">Размер</th>
+            <th className="px-3 py-2.5 font-medium hidden md:table-cell">ГОСТ</th>
+            <th className="px-3 py-2.5 font-medium">Цена/ед</th>
+            <th className="px-3 py-2.5 font-medium hidden sm:table-cell">Наличие</th>
+            <th className="px-3 py-2.5 font-medium hidden lg:table-cell">Поставщик</th>
+            <th className="px-3 py-2.5 font-medium"></th>
           </tr>
         </thead>
         <tbody>
@@ -73,21 +73,21 @@ export default function CatalogProductTable({ products, productBasePath }: Produ
                 key={product.id}
                 className="border-b border-border hover:bg-background/50 transition-colors"
               >
-                <td className="px-4 py-3">
+                <td className="px-3 py-2.5">
                   <Link
                     href={`${productBasePath}/${product.slug}`}
-                    className="text-sm font-medium text-foreground hover:text-gold transition-colors"
+                    className="text-sm font-medium text-foreground hover:text-gold transition-colors line-clamp-2"
                   >
                     {product.name}
                   </Link>
                 </td>
-                <td className="px-4 py-3 text-sm text-muted-foreground">
+                <td className="px-3 py-2.5 text-sm text-muted-foreground hidden sm:table-cell">
                   {product.dimensions || extractSize(product.name) || "—"}
                 </td>
-                <td className="px-4 py-3 text-sm text-muted-foreground">
+                <td className="px-3 py-2.5 text-sm text-muted-foreground hidden md:table-cell">
                   {product.gost || "—"}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-3 py-2.5">
                   {price ? (
                     <div>
                       {price.discount && (
@@ -103,7 +103,7 @@ export default function CatalogProductTable({ products, productBasePath }: Produ
                     <span className="text-sm text-muted-foreground">По запросу</span>
                   )}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-3 py-2.5 hidden sm:table-cell">
                   <span
                     className={`inline-block text-xs font-medium px-2 py-1 rounded ${
                       inStock
@@ -114,13 +114,13 @@ export default function CatalogProductTable({ products, productBasePath }: Produ
                     {inStock ? "В наличии" : "Под заказ"}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-sm text-muted-foreground">
+                <td className="px-3 py-2.5 text-sm text-muted-foreground hidden lg:table-cell">
                   {getSupplierName(product)}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-3 py-2.5">
                   <Link
                     href={`${productBasePath}/${product.slug}`}
-                    className="text-xs border border-gold text-gold hover:bg-gold hover:text-primary-foreground font-medium px-3 py-1.5 rounded transition-all"
+                    className="text-xs border border-gold text-gold hover:bg-gold hover:text-primary-foreground font-medium px-3 py-1.5 rounded transition-all whitespace-nowrap"
                   >
                     Подробнее
                   </Link>
