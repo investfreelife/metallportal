@@ -9,24 +9,9 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <section className="bg-background py-5">
-        <div className="container-main">
-          <p className="text-muted-foreground text-base leading-relaxed max-w-3xl">
-            МеталлПортал — крупная металлоторговая компания с собственным производством. Поставляем трубы, арматуру, листы, балки и профиль со склада. Изготавливаем металлоконструкции любой сложности под заказ — быстро, точно, с документами.
-          </p>
-        </div>
-      </section>
       <TrustCounters />
       <ProductGrid />
       <CategoryRow />
-      <section className="bg-background py-10">
-        <div className="container-main">
-          <h2 className="text-2xl font-bold text-foreground mb-4">Металлопрокат и изготовление конструкций — для частных лиц и бизнеса</h2>
-          <p className="text-muted-foreground text-base leading-relaxed max-w-3xl">
-            МеталлПортал — это полный цикл: от подбора нужной позиции до изготовления готового изделия и доставки на объект. Работаем с частными мастерами, строительными бригадами, производственными предприятиями и крупными застройщиками.
-          </p>
-        </div>
-      </section>
       <HowItWorks />
       <CTASection />
       <section className="bg-card py-10">
