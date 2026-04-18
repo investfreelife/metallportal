@@ -18,6 +18,7 @@ const NAV_ADMIN = [
 
 const NAV_DESIGNER = [
   { href: "/admin/photos", icon: Image, label: "Фото разделов" },
+  { href: "/admin/products", icon: Package, label: "Товары" },
 ];
 
 
