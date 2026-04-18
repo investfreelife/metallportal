@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { LayoutGrid, List, ChevronDown, ChevronUp, Upload, Loader2, Layers } from "lucide-react";
 import CatalogProductTable from "./ProductTable";
 import CatalogProductCard from "./ProductCard";
+import { useSetCatalogFilters } from "@/contexts/CatalogFiltersContext";
 
 async function compressAndUpload(file: File): Promise<string | null> {
   const allowed = ["image/jpeg", "image/png", "image/webp"];
@@ -171,6 +172,7 @@ export default function CatalogView({ category, subcategories, products, categor
   const [page, setPage] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(true);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const setFiltersSlot = useSetCatalogFilters();
   const [editMode, setEditMode] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [groupUploading, setGroupUploading] = useState(false);
@@ -208,8 +210,8 @@ export default function CatalogView({ category, subcategories, products, categor
     setGroupUploading(false);
   };
 
-  const update = (partial: Partial<FilterState>) => { setFilters(f => ({ ...f, ...partial })); setPage(1); };
-  const reset = () => { setFilters(defaultFilters); setActiveSub(""); setPage(1); };
+  const update = useCallback((partial: Partial<FilterState>) => { setFilters(f => ({ ...f, ...partial })); setPage(1); }, []);
+  const reset = useCallback(() => { setFilters(defaultFilters); setActiveSub(""); setPage(1); }, []);
 
   const filterOptions = useMemo(() => {
     const steelGrades = new Set<string>();
@@ -300,6 +302,20 @@ export default function CatalogView({ category, subcategories, products, categor
   const paginatedProducts = sortedProducts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
   const hasActiveFilters = Object.entries(filters).some(([k, v]) => k === "inStock" ? v : v !== 0 && v !== "");
 
+  useEffect(() => {
+    setFiltersSlot(
+      <FiltersContent
+        filters={filters}
+        filterOptions={filterOptions}
+        update={update}
+        reset={reset}
+        hasActiveFilters={hasActiveFilters}
+      />
+    );
+    return () => setFiltersSlot(null);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters, filterOptions, hasActiveFilters]);
+
   return (
     <div>
         {/* Breadcrumb */}
@@ -379,39 +395,9 @@ export default function CatalogView({ category, subcategories, products, categor
           </div>
         </div>
 
-        {/* Mobile filter drawer */}
-        {mobileFiltersOpen && (
-          <>
-            <div className="lg:hidden fixed inset-0 bg-black/60 z-50" onClick={() => setMobileFiltersOpen(false)} />
-            <div className="lg:hidden fixed left-0 top-0 bottom-0 w-[300px] z-50 bg-background overflow-y-auto shadow-2xl p-4 flex flex-col gap-4">
-              <div className="flex items-center justify-between">
-                <h3 className="font-bold text-foreground">Фильтры</h3>
-                <button onClick={() => setMobileFiltersOpen(false)} className="text-muted-foreground hover:text-foreground p-1"><ChevronUp size={20} /></button>
-              </div>
-              <FiltersContent filters={filters} filterOptions={filterOptions} update={update} reset={reset} hasActiveFilters={hasActiveFilters} onApply={() => setMobileFiltersOpen(false)} />
-            </div>
-          </>
-        )}
-
-        {/* Main: filters + products */}
-        <div className="flex gap-6">
-          {/* Filters sidebar — desktop only */}
-          <aside className="w-64 flex-shrink-0 hidden lg:block">
-            <div className="bg-card border border-border rounded-lg p-4 sticky top-[150px]">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-bold uppercase tracking-wider">Фильтры</h3>
-                <button onClick={() => setFiltersOpen(o => !o)} className="text-muted-foreground hover:text-foreground">
-                  {filtersOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                </button>
-              </div>
-              {filtersOpen && (
-                <FiltersContent filters={filters} filterOptions={filterOptions} update={update} reset={reset} hasActiveFilters={hasActiveFilters} />
-              )}
-            </div>
-          </aside>
-
-          {/* Products */}
-          <main className="flex-1 min-w-0">
+        {/* Main: products only (filters are in left sidebar via context) */}
+        <div>
+          <main className="min-w-0">
             {paginatedProducts.length === 0 ? (
               <div className="text-center py-20 text-muted-foreground">
                 <p className="text-lg mb-2">Нет товаров по выбранным фильтрам</p>

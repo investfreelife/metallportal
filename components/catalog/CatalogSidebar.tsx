@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronRight, Menu, X } from "lucide-react";
+import { ChevronRight, Menu, X, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { useCatalogFiltersContent } from "@/contexts/CatalogFiltersContext";
 
 interface CatalogSidebarProps {
   categories: any[];
@@ -12,20 +13,23 @@ interface CatalogSidebarProps {
 export default function CatalogSidebar({ categories }: CatalogSidebarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const filtersContent = useCatalogFiltersContent();
 
-  const SidebarContent = () => (
+  const NavBlock = ({ onNavigate }: { onNavigate?: () => void }) => (
     <div className="bg-card border border-border rounded-lg overflow-hidden">
       <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-        <Link href="/catalog" className="text-sm font-bold uppercase tracking-wider hover:text-gold transition-colors">
+        <Link href="/catalog" className="text-sm font-bold uppercase tracking-wider hover:text-gold transition-colors" onClick={onNavigate}>
           Каталог
         </Link>
-        <button onClick={() => setMobileOpen(false)} className="lg:hidden text-muted-foreground hover:text-foreground p-1">
-          <X size={18} />
-        </button>
+        {onNavigate && (
+          <button onClick={onNavigate} className="lg:hidden text-muted-foreground hover:text-foreground p-1">
+            <X size={18} />
+          </button>
+        )}
       </div>
       <nav className="py-1">
         {categories.map((cat: any) => (
-          <SidebarLevel1 key={cat.id} cat={cat} pathname={pathname} onNavigate={() => setMobileOpen(false)} />
+          <SidebarLevel1 key={cat.id} cat={cat} pathname={pathname} onNavigate={onNavigate} />
         ))}
       </nav>
     </div>
@@ -35,27 +39,45 @@ export default function CatalogSidebar({ categories }: CatalogSidebarProps) {
     <>
       {/* Desktop sidebar */}
       <aside className="w-[280px] flex-shrink-0 hidden lg:block">
-        <div className="sticky top-[150px] max-h-[calc(100vh-180px)] overflow-y-auto scrollbar-none">
-          <SidebarContent />
+        <div className="sticky top-[150px] max-h-[calc(100vh-180px)] overflow-y-auto scrollbar-none space-y-4">
+          <NavBlock />
+          {filtersContent && (
+            <div className="bg-card border border-border rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <SlidersHorizontal size={14} className="text-muted-foreground" />
+                <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Фильтры</h3>
+              </div>
+              {filtersContent}
+            </div>
+          )}
         </div>
       </aside>
 
-      {/* Mobile trigger button */}
+      {/* Mobile trigger */}
       <button
         onClick={() => setMobileOpen(true)}
         className="lg:hidden fixed bottom-20 left-4 z-40 flex items-center gap-2 bg-gold text-black font-bold text-sm px-4 py-2.5 rounded-full shadow-lg"
       >
         <Menu size={16} />
-        Каталог
+        {filtersContent ? "Каталог + Фильтры" : "Каталог"}
       </button>
 
-      {/* Mobile drawer */}
+      {/* Mobile drawer — catalog nav + filters together */}
       {mobileOpen && (
         <>
-          <div className="lg:hidden fixed inset-0 bg-black/60 z-50" onClick={() => setMobileOpen(false)} />
-          <div className="lg:hidden fixed left-0 top-0 bottom-0 w-[300px] z-50 bg-background overflow-y-auto shadow-2xl animate-in slide-in-from-left duration-200">
-            <div className="p-4">
-              <SidebarContent />
+          <div className="fixed inset-0 bg-black/60 z-50 lg:hidden" onClick={() => setMobileOpen(false)} />
+          <div className="fixed left-0 top-0 bottom-0 w-[300px] z-50 bg-background overflow-y-auto shadow-2xl lg:hidden">
+            <div className="p-4 space-y-4">
+              <NavBlock onNavigate={() => setMobileOpen(false)} />
+              {filtersContent && (
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <SlidersHorizontal size={14} className="text-muted-foreground" />
+                    <h3 className="text-sm font-bold text-foreground">Фильтры</h3>
+                  </div>
+                  {filtersContent}
+                </div>
+              )}
             </div>
           </div>
         </>
