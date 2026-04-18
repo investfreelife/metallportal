@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { CheckSquare, Square, ShoppingCart, Check } from "lucide-react";
 import PhotoEditable from "@/components/admin/PhotoEditable";
 import { useCart } from "@/contexts/CartContext";
@@ -60,8 +61,16 @@ export default function CatalogProductCard({ product, productBasePath, isSelecte
         className="-mx-4 -mt-4 mb-3 h-40 overflow-hidden rounded-t"
       >
         {product.image_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+          <div className="relative w-full h-full">
+            <Image
+              src={product.image_url}
+              alt={product.name}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+              className="object-cover"
+              loading="lazy"
+            />
+          </div>
         ) : (
           <div className="w-full h-full bg-muted flex items-center justify-center text-4xl opacity-20">📦</div>
         )}
