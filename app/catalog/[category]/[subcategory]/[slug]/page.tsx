@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import {
   getCategoryBySlug, getCategoryWithChildren,
   getProductBySlug, getProductPriceItems, getRelatedProducts,
@@ -12,6 +12,18 @@ export const revalidate = 60;
 interface Props {
   params: { category: string; subcategory: string; slug: string };
 }
+
+// Slugs that have canonical pages at /catalog/[subcategory]/[slug]
+const CANONICAL_REDIRECTS: Record<string, string> = {
+  "navesy-besedka":          "/catalog/navesy/navesy-besedka",
+  "navesy-dlya-dachi":       "/catalog/navesy/navesy-dlya-dachi",
+  "navesy-dlya-avtomobilya": "/catalog/navesy/navesy-dlya-avtomobilya",
+  "navesy-dlya-parkovok":    "/catalog/navesy/navesy-dlya-parkovok",
+  "navesy-s-hozblokom":      "/catalog/navesy/navesy-s-hozblokom",
+  "navesy-dlya-garazha":     "/catalog/navesy/navesy-dlya-garazha",
+  "navesy-dlya-terrasy":     "/catalog/navesy/navesy-dlya-terrasy",
+  "navesy-k-domu":           "/catalog/navesy/navesy-k-domu",
+};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cat = await getCategoryBySlug(params.slug);
@@ -26,6 +38,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function SlugPage({ params }: Props) {
+  // Redirect canonical navesy subcategory pages
+  if (CANONICAL_REDIRECTS[params.slug]) {
+    redirect(CANONICAL_REDIRECTS[params.slug]);
+  }
+
   // 1. Check if slug is a category
   const category = await getCategoryBySlug(params.slug);
 
