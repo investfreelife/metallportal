@@ -2,6 +2,7 @@ import Link from "next/link";
 import PhotoEditable from "@/components/admin/PhotoEditable";
 import ProductTabs from "@/components/catalog/ProductTabs";
 import PriceBlock from "@/components/catalog/PriceBlock";
+import NavesProductDetail from "@/components/catalog/NavesProductDetail";
 
 function buildSpecs(product: any): Record<string, string | null> {
   return {
@@ -42,6 +43,10 @@ interface ProductDetailViewProps {
 }
 
 export default function ProductDetailView({ product, priceItems, related, basePath }: ProductDetailViewProps) {
+  if (product.unit === "м²") {
+    return <NavesProductDetail product={{ ...product, price_items: priceItems }} related={related} basePath={basePath} />;
+  }
+
   const categorySlug = (product.category as any)?.slug || "";
   const fallbackImage = getCategoryImage(categorySlug);
   const specs = buildSpecs(product);
