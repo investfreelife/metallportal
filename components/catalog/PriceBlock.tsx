@@ -171,7 +171,16 @@ export default function PriceBlock({ priceItems, unit, weightPerMeter, productNa
         <button
           onClick={() => {
             if (!productId || !productSlug) return;
-            addItem({ id: productId, name: productName, slug: productSlug, unit: unit ?? null, price: pricePerUnit, image_url: productImageUrl ?? null });
+            addItem({
+              id: productId,
+              name: productName,
+              slug: productSlug,
+              unit: unit ?? null,
+              price: pricePerUnit,
+              image_url: productImageUrl ?? null,
+              meters: !isPiece && calcMode === "meters" && meters > 0 ? Math.round(meters) : undefined,
+              tons: !isPiece && tons > 0 ? parseFloat(tons.toFixed(4)) : undefined,
+            });
             setAdded(true);
             setTimeout(() => setAdded(false), 2000);
           }}
@@ -179,7 +188,13 @@ export default function PriceBlock({ priceItems, unit, weightPerMeter, productNa
             added ? "bg-emerald-500 text-white" : "bg-gold hover:bg-yellow-400 text-black"
           }`}>
           {added ? <Check size={18} /> : <ShoppingCart size={18} />}
-          {added ? "Добавлено!" : "В корзину"}
+          {added
+            ? "Добавлено!"
+            : !isPiece && calcMode === "meters" && meters > 0
+              ? `В корзину (${Math.round(meters)} м.п.)`
+              : !isPiece && calcMode === "tons" && tons > 0
+                ? `В корзину (${tons.toFixed(3)} т)`
+                : "В корзину"}
         </button>
         <button className="w-full flex items-center justify-center gap-2 border-2 border-gold text-foreground hover:bg-gold/10 font-semibold py-2.5 rounded-lg transition-all">
           <PhoneCall size={16} />

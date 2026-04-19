@@ -9,6 +9,8 @@ export interface CartItem {
   price: number | null;
   quantity: number;
   image_url: string | null;
+  meters?: number;
+  tons?: number;
 }
 
 interface CartContextValue {

@@ -16,7 +16,9 @@ export default function CartPage() {
   const [done, setDone] = useState(false);
   const [err, setErr] = useState("");
 
-  const total = items.reduce((s, i) => s + (i.price ?? 0) * i.quantity, 0);
+  const itemTotal = (i: typeof items[0]) =>
+    i.tons ? (i.price ?? 0) * i.tons * i.quantity : (i.price ?? 0) * i.quantity;
+  const total = items.reduce((s, i) => s + itemTotal(i), 0);
   const hasPrice = items.some(i => i.price !== null);
 
   const handleOrder = async (e: React.FormEvent) => {
@@ -32,7 +34,15 @@ export default function CartPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name, phone, email, comment,
-        items: items.map(i => ({ id: i.id, name: i.name, qty: i.quantity, unit: i.unit, price: i.price })),
+        items: items.map(i => ({
+            id: i.id,
+            name: i.name,
+            qty: i.tons ? parseFloat((i.tons * i.quantity).toFixed(4)) : i.quantity,
+            unit: i.unit,
+            price: i.price,
+            ...(i.meters ? { meters: Math.round(i.meters * i.quantity) } : {}),
+            total: Math.round(itemTotal(i)),
+          })),
       }),
     });
     const json = await res.json();
@@ -102,9 +112,20 @@ export default function CartPage() {
                 {item.price !== null
                   ? <p className="text-gold font-bold text-sm mt-0.5">{item.price.toLocaleString("ru-RU")} ₽/{item.unit}</p>
                   : <p className="text-muted-foreground text-xs mt-0.5">Цена по запросу</p>}
+                {/* Show meters + tons breakdown */}
+                {item.meters && item.tons && (
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {Math.round(item.meters * item.quantity).toLocaleString("ru-RU")} м.п.
+                    {" ≈ "}
+                    {(item.tons * item.quantity).toFixed(3)} т
+                  </p>
+                )}
+                {!item.meters && item.tons && (
+                  <p className="text-xs text-muted-foreground mt-0.5">{(item.tons * item.quantity).toFixed(3)} т</p>
+                )}
               </div>
 
-              {/* Qty */}
+              {/* Qty (lots) */}
               <div className="flex items-center gap-1 flex-shrink-0">
                 <button onClick={() => updateQty(item.id, item.quantity - 1)}
                   className="w-7 h-7 rounded border border-border flex items-center justify-center hover:border-gold hover:text-gold transition-all">
@@ -115,13 +136,13 @@ export default function CartPage() {
                   className="w-7 h-7 rounded border border-border flex items-center justify-center hover:border-gold hover:text-gold transition-all">
                   <Plus size={12} />
                 </button>
-                <span className="text-xs text-muted-foreground ml-1">{item.unit}</span>
+                {!item.tons && <span className="text-xs text-muted-foreground ml-1">{item.unit}</span>}
               </div>
 
               {/* Row total */}
               {item.price !== null && (
                 <div className="text-right flex-shrink-0 w-24">
-                  <p className="font-bold text-foreground">{(item.price * item.quantity).toLocaleString("ru-RU")} ₽</p>
+                  <p className="font-bold text-foreground">{Math.round(itemTotal(item)).toLocaleString("ru-RU")} ₽</p>
                 </div>
               )}
 
