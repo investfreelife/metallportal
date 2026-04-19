@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import HomeProductCard from "./HomeProductCard";
 
-const SHOWN = 8;
+const SHOWN = 4;
 
 function pickProducts(pool: any[], searches: string[]): any[] {
   if (!pool.length) return [];
