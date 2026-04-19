@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, Mic, Loader2, ArrowRight, ShoppingCart, Check } from "lucide-react";
+import { Search, Mic, Loader2, ArrowRight, ShoppingCart, Check, X } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 
 interface SearchResult {
@@ -18,7 +18,13 @@ interface SearchResult {
   href: string;
 }
 
-export default function SearchBar() {
+interface SearchBarProps {
+  className?: string;
+  autoFocus?: boolean;
+  onClose?: () => void;
+}
+
+export default function SearchBar({ className, autoFocus, onClose }: SearchBarProps = {}) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -115,7 +121,7 @@ export default function SearchBar() {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative flex-1 max-w-3xl hidden sm:block">
+    <div ref={containerRef} className={className ?? "relative flex-1 max-w-3xl hidden sm:block"}>
       <div className="relative flex items-center bg-card border-2 border-gold rounded h-11 lg:h-12">
         <Search className="absolute left-3 text-muted-foreground" size={18} />
         <input
@@ -125,16 +131,24 @@ export default function SearchBar() {
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           onFocus={() => { if (results.length > 0) setOpen(true); }}
-          placeholder="Найдите металл: арматура 12мм, труба 40х40, лист 3мм..."
-          className="w-full h-full bg-transparent pl-10 pr-12 text-sm text-foreground placeholder:text-muted-foreground outline-none"
+          placeholder="Найдите металл: арматура 12мм, труба 40х40..."
+          className="w-full h-full bg-transparent pl-10 pr-20 text-sm text-foreground placeholder:text-muted-foreground outline-none"
           autoComplete="off"
+          autoFocus={autoFocus}
         />
-        <button
-          onClick={() => handleSubmit()}
-          className="absolute right-1 w-9 h-9 flex items-center justify-center bg-gold hover:bg-yellow-400 rounded transition-colors"
-        >
-          {loading ? <Loader2 className="animate-spin text-black" size={15} /> : <Mic className="text-black" size={16} />}
-        </button>
+        <div className="absolute right-1 flex items-center gap-1">
+          {onClose && (
+            <button onClick={onClose} className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
+              <X size={16} />
+            </button>
+          )}
+          <button
+            onClick={() => handleSubmit()}
+            className="w-9 h-9 flex items-center justify-center bg-gold hover:bg-yellow-400 rounded transition-colors"
+          >
+            {loading ? <Loader2 className="animate-spin text-black" size={15} /> : <Mic className="text-black" size={16} />}
+          </button>
+        </div>
       </div>
 
       {/* Dropdown */}

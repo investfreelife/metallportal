@@ -154,6 +154,7 @@ export default function Header() {
   const [mode, setMode] = useState<"b2c" | "b2b">("b2c");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openNav, setOpenNav] = useState<string | null>(null);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   return (
     <header className="sticky top-0 z-50 w-full">
       {/* Top bar */}
@@ -215,6 +216,9 @@ export default function Header() {
           </div>
 
           <div className="ml-auto lg:hidden flex items-center gap-1">
+            <button className="p-2 hover:text-gold transition-colors" onClick={() => { setMobileSearchOpen(true); setMobileOpen(false); }}>
+              <Search size={20} />
+            </button>
             <ThemeToggle />
             <button className="p-2" onClick={() => setMobileOpen((o) => !o)}>
               {mobileOpen ? <X size={22} /> : <Menu size={22} />}
@@ -242,15 +246,21 @@ export default function Header() {
         </div>
       </div>
 
+      {/* Mobile search bar */}
+      {mobileSearchOpen && (
+        <div className="lg:hidden bg-background border-b border-border px-3 py-2">
+          <SearchBar
+            className="relative w-full"
+            autoFocus
+            onClose={() => setMobileSearchOpen(false)}
+          />
+        </div>
+      )}
+
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="lg:hidden bg-background border-b border-border shadow-xl">
           <div className="container-main py-4 space-y-1 max-h-[70vh] overflow-y-auto">
-            <div className="relative mb-3">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
-              <input type="text" placeholder="Поиск..."
-                className="w-full bg-card border border-border rounded h-10 pl-9 pr-3 text-sm outline-none focus:border-gold" />
-            </div>
             {NAV_ITEMS.map((item) => (
               <div key={item.href} className="pb-2">
                 <Link
