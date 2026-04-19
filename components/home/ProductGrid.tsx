@@ -63,10 +63,12 @@ export default function ProductGrid() {
       <section className="bg-background py-8">
         <div className="container-main">
           <h2 className="text-2xl font-bold text-foreground mb-5">Популярные позиции сегодня</h2>
-          <div className="grid grid-flow-col auto-cols-fr gap-3">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="bg-card border border-border rounded h-72 animate-pulse" />
-            ))}
+          <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 pb-2 sm:pb-0 scrollbar-none">
+            <div className="flex gap-3 sm:grid sm:grid-flow-col sm:auto-cols-fr">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="w-[170px] flex-shrink-0 sm:w-auto bg-card border border-border rounded h-72 animate-pulse" />
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -81,22 +83,25 @@ export default function ProductGrid() {
         <h2 className="text-2xl font-bold text-foreground mb-5">
           Популярные позиции сегодня
         </h2>
-        <div className="grid grid-flow-col auto-cols-fr gap-3">
-          {products.map((product) => (
-            <HomeProductCard
-              key={product.id}
-              productId={product.id}
-              name={product.name}
-              category={product.categoryName}
-              basePrice={product.basePrice}
-              yourPrice={product.yourPrice}
-              unit={product.unit}
-              image={product.image_url ?? undefined}
-              imageUrl={product.image_url}
-              href={product.href}
-              isConstruction={product.rootCatSlug === "gotovye-konstruktsii"}
-            />
-          ))}
+        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 pb-2 sm:pb-0 scrollbar-none">
+          <div className="flex gap-3 sm:grid sm:grid-flow-col sm:auto-cols-fr">
+            {products.map((product) => (
+              <div key={product.id} className="w-[170px] flex-shrink-0 sm:w-auto">
+                <HomeProductCard
+                  productId={product.id}
+                  name={product.name}
+                  category={product.categoryName}
+                  basePrice={product.basePrice}
+                  yourPrice={product.yourPrice}
+                  unit={product.unit}
+                  image={product.image_url ?? undefined}
+                  imageUrl={product.image_url}
+                  href={product.href}
+                  isConstruction={product.rootCatSlug === "gotovye-konstruktsii"}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
