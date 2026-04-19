@@ -51,10 +51,11 @@ async function getPopularProducts() {
         id: p.id,
         name: p.name,
         slug: p.slug,
-        image: p.image_url ?? undefined,
+        image_url: p.image_url ?? null,
         unit: p.unit ?? "т",
         category: rootCat?.name ?? cat?.name ?? "",
         rootCatId: rootCat?.id ?? cat?.id ?? "",
+        rootCatSlug: rootCat?.slug ?? cat?.slug ?? "",
         basePrice: pi.base_price,
         yourPrice: pi.discount_price ?? Math.round(pi.base_price * 0.93),
         href,
@@ -66,7 +67,7 @@ async function getPopularProducts() {
   const result: typeof enriched = [];
   // First pass: with images
   for (const p of enriched) {
-    if (p.image && !seen.has(p.rootCatId)) {
+    if (p.image_url && !seen.has(p.rootCatId)) {
       seen.add(p.rootCatId);
       result.push(p);
     }
@@ -94,18 +95,20 @@ export default async function ProductGrid() {
           Популярные позиции сегодня
         </h2>
 
-        <div className="flex gap-4 overflow-x-auto pb-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {products.map((product) => (
             <HomeProductCard
               key={product.id}
+              productId={product.id}
               name={product.name}
               category={product.category}
               basePrice={product.basePrice}
               yourPrice={product.yourPrice}
               unit={product.unit}
-              stock="В НАЛИЧИИ"
-              image={product.image}
+              image={product.image_url ?? undefined}
+              imageUrl={product.image_url}
               href={product.href}
+              isConstruction={product.rootCatSlug === "gotovye-konstruktsii"}
             />
           ))}
         </div>
