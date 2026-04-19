@@ -153,7 +153,7 @@ export default function SearchBar({ className, autoFocus, onClose }: SearchBarPr
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute top-full left-0 mt-1 w-screen sm:w-[640px] max-w-[100vw] bg-background border border-border rounded-lg shadow-2xl z-[100] overflow-hidden">
+        <div className="absolute top-full left-0 right-0 sm:right-auto sm:w-[640px] mt-1 bg-background border border-border rounded-lg shadow-2xl z-[100] overflow-hidden">
           {loading && results.length === 0 && (
             <div className="px-4 py-3 text-sm text-muted-foreground flex items-center gap-2">
               <Loader2 size={14} className="animate-spin" /> Поиск...
