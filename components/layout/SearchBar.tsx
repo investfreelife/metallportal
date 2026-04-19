@@ -4,7 +4,8 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, Mic, Loader2, ArrowRight } from "lucide-react";
+import { Search, Mic, Loader2, ArrowRight, ShoppingCart, Check } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
 
 interface SearchResult {
   id: string;
@@ -23,10 +24,20 @@ export default function SearchBar() {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [addedId, setAddedId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const router = useRouter();
+  const { addItem } = useCart();
+
+  const handleAddToCart = (e: React.MouseEvent, item: SearchResult) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addItem({ id: item.id, name: item.name, slug: item.slug, unit: item.unit, price: item.price, image_url: item.image_url });
+    setAddedId(item.id);
+    setTimeout(() => setAddedId(null), 1500);
+  };
 
   const saveSearch = useCallback((q: string) => {
     const trimmed = q.trim();
@@ -128,7 +139,7 @@ export default function SearchBar() {
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-lg shadow-2xl z-[100] overflow-hidden">
+        <div className="absolute top-full left-0 mt-1 w-full min-w-[480px] lg:min-w-0 bg-background border border-border rounded-lg shadow-2xl z-[100] overflow-hidden">
           {loading && results.length === 0 && (
             <div className="px-4 py-3 text-sm text-muted-foreground flex items-center gap-2">
               <Loader2 size={14} className="animate-spin" /> Поиск...
@@ -146,7 +157,7 @@ export default function SearchBar() {
               key={item.id}
               href={item.href}
               onClick={() => { saveSearch(query); setOpen(false); }}
-              className={`flex items-center gap-3 px-4 py-2.5 border-b border-border last:border-0 transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2 border-b border-border last:border-0 transition-colors ${
                 i === activeIndex ? "bg-gold/10" : "hover:bg-muted/60"
               }`}
             >
@@ -155,26 +166,39 @@ export default function SearchBar() {
                 {item.image_url ? (
                   <Image src={item.image_url} alt={item.name} width={40} height={40} className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-muted-foreground text-lg">📦</div>
+                  <div className="w-full h-full flex items-center justify-center text-muted-foreground text-base">📦</div>
                 )}
               </div>
 
-              {/* Info */}
+              {/* Name + category */}
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium text-foreground truncate">{item.name}</div>
-                <div className="text-xs text-muted-foreground truncate">{item.categoryName}</div>
+                <div className="text-sm font-medium text-foreground leading-snug line-clamp-2">{item.name}</div>
+                <div className="text-xs text-muted-foreground mt-0.5">{item.categoryName}</div>
               </div>
 
               {/* Price */}
-              <div className="text-right flex-shrink-0">
+              <div className="flex-shrink-0 text-right mr-1">
                 {item.price ? (
-                  <div className="text-sm font-bold text-gold">
+                  <div className="text-sm font-bold text-gold whitespace-nowrap">
                     {item.price.toLocaleString("ru-RU")} ₽/{item.unit}
                   </div>
                 ) : (
-                  <div className="text-xs text-muted-foreground">По запросу</div>
+                  <div className="text-xs text-muted-foreground whitespace-nowrap">По запросу</div>
                 )}
               </div>
+
+              {/* Cart button */}
+              <button
+                onClick={(e) => handleAddToCart(e, item)}
+                title="В корзину"
+                className={`flex-shrink-0 w-8 h-8 rounded flex items-center justify-center transition-all ${
+                  addedId === item.id
+                    ? "bg-green-500 text-white"
+                    : "bg-gold/10 hover:bg-gold text-gold hover:text-black"
+                }`}
+              >
+                {addedId === item.id ? <Check size={14} /> : <ShoppingCart size={14} />}
+              </button>
             </Link>
           ))}
 
