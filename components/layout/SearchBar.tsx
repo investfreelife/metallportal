@@ -139,7 +139,7 @@ export default function SearchBar() {
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute top-full left-0 mt-1 w-full min-w-[480px] lg:min-w-0 bg-background border border-border rounded-lg shadow-2xl z-[100] overflow-hidden">
+        <div className="absolute top-full left-0 mt-1 w-screen sm:w-[640px] max-w-[100vw] bg-background border border-border rounded-lg shadow-2xl z-[100] overflow-hidden">
           {loading && results.length === 0 && (
             <div className="px-4 py-3 text-sm text-muted-foreground flex items-center gap-2">
               <Loader2 size={14} className="animate-spin" /> Поиск...
@@ -162,28 +162,28 @@ export default function SearchBar() {
               }`}
             >
               {/* Thumbnail */}
-              <div className="w-10 h-10 rounded bg-muted flex-shrink-0 overflow-hidden">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded bg-muted flex-shrink-0 overflow-hidden">
                 {item.image_url ? (
                   <Image src={item.image_url} alt={item.name} width={40} height={40} className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-muted-foreground text-base">📦</div>
+                  <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">📦</div>
                 )}
               </div>
 
-              {/* Name + category */}
+              {/* Name + category — takes all available space */}
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium text-foreground leading-snug line-clamp-2">{item.name}</div>
-                <div className="text-xs text-muted-foreground mt-0.5">{item.categoryName}</div>
+                <div className="text-xs sm:text-sm font-medium text-foreground leading-snug break-words">{item.name}</div>
+                <div className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">{item.categoryName}</div>
               </div>
 
               {/* Price */}
-              <div className="flex-shrink-0 text-right mr-1">
+              <div className="flex-shrink-0 text-right">
                 {item.price ? (
-                  <div className="text-sm font-bold text-gold whitespace-nowrap">
+                  <div className="text-xs sm:text-sm font-bold text-gold whitespace-nowrap">
                     {item.price.toLocaleString("ru-RU")} ₽/{item.unit}
                   </div>
                 ) : (
-                  <div className="text-xs text-muted-foreground whitespace-nowrap">По запросу</div>
+                  <div className="text-[10px] sm:text-xs text-muted-foreground whitespace-nowrap">По запросу</div>
                 )}
               </div>
 
@@ -191,13 +191,13 @@ export default function SearchBar() {
               <button
                 onClick={(e) => handleAddToCart(e, item)}
                 title="В корзину"
-                className={`flex-shrink-0 w-8 h-8 rounded flex items-center justify-center transition-all ${
+                className={`flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded flex items-center justify-center transition-all ${
                   addedId === item.id
                     ? "bg-green-500 text-white"
                     : "bg-gold/10 hover:bg-gold text-gold hover:text-black"
                 }`}
               >
-                {addedId === item.id ? <Check size={14} /> : <ShoppingCart size={14} />}
+                {addedId === item.id ? <Check size={13} /> : <ShoppingCart size={13} />}
               </button>
             </Link>
           ))}
