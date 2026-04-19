@@ -1,3 +1,6 @@
+import Link from "next/link";
+import Image from "next/image";
+
 interface HomeProductCardProps {
   name: string;
   category: string;
@@ -6,6 +9,7 @@ interface HomeProductCardProps {
   unit: string;
   stock: string;
   image?: string;
+  href?: string;
 }
 
 export default function HomeProductCard({
@@ -16,20 +20,17 @@ export default function HomeProductCard({
   unit,
   stock,
   image,
+  href,
 }: HomeProductCardProps) {
   const isInStock = stock === "В НАЛИЧИИ";
 
+  const Wrapper = href ? Link : "div";
   return (
-    <div className="bg-card border border-border rounded p-4 hover:shadow-lg transition-all flex-shrink-0 w-64">
+    <Wrapper href={href as string} className="bg-card border border-border rounded p-4 hover:shadow-lg transition-all flex-shrink-0 w-64 block">
       {/* Product image */}
       {image && (
-        <div className="mb-3 -mx-4 -mt-4">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={image}
-            alt={name}
-            className="w-full h-40 object-cover rounded-t"
-          />
+        <div className="mb-3 -mx-4 -mt-4 relative h-40">
+          <Image src={image} alt={name} fill className="object-cover rounded-t" sizes="256px" />
         </div>
       )}
 
@@ -69,9 +70,9 @@ export default function HomeProductCard({
       </div>
 
       {/* CTA Button */}
-      <button className="w-full border-2 border-gold text-foreground hover:bg-gold hover:text-foreground font-medium py-2 rounded transition-all">
+      <div className="w-full border-2 border-gold text-foreground hover:bg-gold hover:text-foreground font-medium py-2 rounded transition-all text-center text-sm">
         Получить цену
-      </button>
-    </div>
+      </div>
+    </Wrapper>
   );
 }

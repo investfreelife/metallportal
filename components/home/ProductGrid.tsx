@@ -1,54 +1,92 @@
 import HomeProductCard from "./HomeProductCard";
 
-const products = [
-  {
-    name: "Арматура А500С ⌀12мм",
-    category: "Арматура",
-    basePrice: 52000,
-    yourPrice: 48500,
-    unit: "т",
-    stock: "В НАЛИЧИИ",
-    image: "https://loremflickr.com/400/300/rebar,steel,construction",
-  },
-  {
-    name: "Труба профильная 40×40×2",
-    category: "Трубы",
-    basePrice: 68000,
-    yourPrice: 62000,
-    unit: "т",
-    stock: "В НАЛИЧИИ",
-    image: "https://loremflickr.com/400/300/steel,pipe,tube,metal",
-  },
-  {
-    name: "Лист г/к 3мм 1500×6000",
-    category: "Листы",
-    basePrice: 58000,
-    yourPrice: 54000,
-    unit: "т",
-    stock: "В НАЛИЧИИ",
-    image: "https://loremflickr.com/400/300/steel,sheet,plate,metal",
-  },
-  {
-    name: "Швеллер 10П ГОСТ",
-    category: "Балки",
-    basePrice: 64000,
-    yourPrice: 59500,
-    unit: "т",
-    stock: "В НАЛИЧИИ",
-    image: "https://loremflickr.com/400/300/steel,beam,channel,metal",
-  },
-  {
-    name: "Уголок равнополочный 50×50×5",
-    category: "Уголок",
-    basePrice: 56000,
-    yourPrice: 52000,
-    unit: "т",
-    stock: "В НАЛИЧИИ",
-    image: "https://loremflickr.com/400/300/steel,angle,metal,industry",
-  },
-];
+export const revalidate = 3600;
 
-export default function ProductGrid() {
+async function getPopularProducts() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+  // Fetch products that have prices, with category info
+  const res = await fetch(
+    `${url}/rest/v1/products?select=id,name,slug,image_url,unit,category_id&order=name&limit=500`,
+    { headers: { apikey: key, Authorization: `Bearer ${key}` }, next: { revalidate: 3600 } }
+  );
+  const products: any[] = await res.json();
+
+  // Fetch all price_items
+  const piRes = await fetch(
+    `${url}/rest/v1/price_items?select=product_id,base_price,discount_price&order=base_price.asc`,
+    { headers: { apikey: key, Authorization: `Bearer ${key}` }, next: { revalidate: 3600 } }
+  );
+  const priceItems: any[] = await piRes.json();
+
+  // Fetch categories
+  const catRes = await fetch(
+    `${url}/rest/v1/categories?select=id,name,slug,parent_id&is_active=eq.true`,
+    { headers: { apikey: key, Authorization: `Bearer ${key}` }, next: { revalidate: 3600 } }
+  );
+  const categories: any[] = await catRes.json();
+
+  // Build category map
+  const catMap = Object.fromEntries(categories.map((c: any) => [c.id, c]));
+
+  // Build price map: product_id → first price_item
+  const priceMap: Record<string, any> = {};
+  for (const pi of priceItems) {
+    if (!priceMap[pi.product_id]) priceMap[pi.product_id] = pi;
+  }
+
+  // Build enriched products
+  const enriched = products
+    .filter((p: any) => priceMap[p.id]) // must have price
+    .map((p: any) => {
+      const cat = catMap[p.category_id];
+      const rootCat = cat?.parent_id ? catMap[cat.parent_id] : cat;
+      const pi = priceMap[p.id];
+      // Build URL: /catalog/[root-slug]/[cat-slug]/[product-slug] or /catalog/[cat-slug]/[product-slug]
+      const href = cat?.parent_id
+        ? `/catalog/${rootCat?.slug}/${cat.slug}/${p.slug}`
+        : `/catalog/${cat?.slug}/${p.slug}`;
+      return {
+        id: p.id,
+        name: p.name,
+        slug: p.slug,
+        image: p.image_url ?? undefined,
+        unit: p.unit ?? "т",
+        category: rootCat?.name ?? cat?.name ?? "",
+        rootCatId: rootCat?.id ?? cat?.id ?? "",
+        basePrice: pi.base_price,
+        yourPrice: pi.discount_price ?? Math.round(pi.base_price * 0.93),
+        href,
+      };
+    });
+
+  // Pick one product per root category, prefer those with images
+  const seen = new Set<string>();
+  const result: typeof enriched = [];
+  // First pass: with images
+  for (const p of enriched) {
+    if (p.image && !seen.has(p.rootCatId)) {
+      seen.add(p.rootCatId);
+      result.push(p);
+    }
+  }
+  // Second pass: without images (fill up to 8)
+  for (const p of enriched) {
+    if (!seen.has(p.rootCatId)) {
+      seen.add(p.rootCatId);
+      result.push(p);
+    }
+  }
+
+  return result.slice(0, 8);
+}
+
+export default async function ProductGrid() {
+  const products = await getPopularProducts();
+
+  if (!products.length) return null;
+
   return (
     <section className="bg-background py-8">
       <div className="container-main">
@@ -57,8 +95,18 @@ export default function ProductGrid() {
         </h2>
 
         <div className="flex gap-4 overflow-x-auto pb-2">
-          {products.map((product, index) => (
-            <HomeProductCard key={index} {...product} />
+          {products.map((product) => (
+            <HomeProductCard
+              key={product.id}
+              name={product.name}
+              category={product.category}
+              basePrice={product.basePrice}
+              yourPrice={product.yourPrice}
+              unit={product.unit}
+              stock="В НАЛИЧИИ"
+              image={product.image}
+              href={product.href}
+            />
           ))}
         </div>
       </div>
