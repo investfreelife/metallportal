@@ -53,8 +53,8 @@ async function getPopularProducts() {
         slug: p.slug,
         image_url: p.image_url ?? null,
         unit: p.unit ?? "т",
-        category: rootCat?.name ?? cat?.name ?? "",
-        rootCatId: rootCat?.id ?? cat?.id ?? "",
+        category: cat?.name ?? "",
+        groupKey: cat?.id ?? "",  // group by direct category for diversity
         rootCatSlug: rootCat?.slug ?? cat?.slug ?? "",
         basePrice: pi.base_price,
         yourPrice: pi.discount_price ?? Math.round(pi.base_price * 0.93),
@@ -62,20 +62,20 @@ async function getPopularProducts() {
       };
     });
 
-  // Pick one product per root category, prefer those with images
+  // Pick one product per direct category, prefer those with images
   const seen = new Set<string>();
   const result: typeof enriched = [];
   // First pass: with images
   for (const p of enriched) {
-    if (p.image_url && !seen.has(p.rootCatId)) {
-      seen.add(p.rootCatId);
+    if (p.image_url && !seen.has(p.groupKey)) {
+      seen.add(p.groupKey);
       result.push(p);
     }
   }
-  // Second pass: without images (fill up to 8)
+  // Second pass: without images
   for (const p of enriched) {
-    if (!seen.has(p.rootCatId)) {
-      seen.add(p.rootCatId);
+    if (!seen.has(p.groupKey)) {
+      seen.add(p.groupKey);
       result.push(p);
     }
   }
