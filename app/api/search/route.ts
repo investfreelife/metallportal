@@ -4,6 +4,7 @@ export const runtime = "edge";
 
 export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get("q")?.trim() ?? "";
+  const limit = Math.min(Number(req.nextUrl.searchParams.get("limit") ?? "10"), 100);
   if (q.length < 2) return NextResponse.json([]);
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -46,7 +47,7 @@ export async function GET(req: NextRequest) {
     }
 
     const prodRes = await fetch(
-      `${url}/rest/v1/products?select=id,name,slug,image_url,unit,category_id,price_items(base_price,discount_price)&${searchFilter}&limit=10&order=name.asc`,
+      `${url}/rest/v1/products?select=id,name,slug,image_url,unit,category_id,price_items(base_price,discount_price)&${searchFilter}&limit=${limit}&order=name.asc`,
       { headers: h }
     );
     const products: any[] = await prodRes.json();
