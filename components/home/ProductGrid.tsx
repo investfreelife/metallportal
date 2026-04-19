@@ -5,82 +5,49 @@ export const revalidate = 3600;
 async function getPopularProducts() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  const h = { apikey: key, Authorization: `Bearer ${key}` };
+  const opts = { headers: h, next: { revalidate: 3600 } };
 
-  // Fetch products that have prices, with category info
-  const res = await fetch(
-    `${url}/rest/v1/products?select=id,name,slug,image_url,unit,category_id&order=name&limit=500`,
-    { headers: { apikey: key, Authorization: `Bearer ${key}` }, next: { revalidate: 3600 } }
-  );
-  const products: any[] = await res.json();
-
-  // Fetch all price_items
-  const piRes = await fetch(
-    `${url}/rest/v1/price_items?select=product_id,base_price,discount_price&order=base_price.asc`,
-    { headers: { apikey: key, Authorization: `Bearer ${key}` }, next: { revalidate: 3600 } }
-  );
-  const priceItems: any[] = await piRes.json();
-
-  // Fetch categories
-  const catRes = await fetch(
-    `${url}/rest/v1/categories?select=id,name,slug,parent_id&is_active=eq.true`,
-    { headers: { apikey: key, Authorization: `Bearer ${key}` }, next: { revalidate: 3600 } }
-  );
+  // Fetch all active categories
+  const catRes = await fetch(`${url}/rest/v1/categories?select=id,name,slug,parent_id&is_active=eq.true`, opts);
   const categories: any[] = await catRes.json();
 
-  // Build category map
   const catMap = Object.fromEntries(categories.map((c: any) => [c.id, c]));
+  const rootIds = new Set(categories.filter((c: any) => !c.parent_id).map((c: any) => c.id));
 
-  // Build price map: product_id → first price_item
-  const priceMap: Record<string, any> = {};
-  for (const pi of priceItems) {
-    if (!priceMap[pi.product_id]) priceMap[pi.product_id] = pi;
-  }
+  // Level-2 categories (direct children of roots) — these are the main sections
+  const level2 = categories.filter((c: any) => c.parent_id && rootIds.has(c.parent_id));
 
-  // Build enriched products
-  const enriched = products
-    .filter((p: any) => priceMap[p.id]) // must have price
-    .map((p: any) => {
-      const cat = catMap[p.category_id];
-      const rootCat = cat?.parent_id ? catMap[cat.parent_id] : cat;
-      const pi = priceMap[p.id];
-      // Build URL: /catalog/[root-slug]/[cat-slug]/[product-slug] or /catalog/[cat-slug]/[product-slug]
-      const href = cat?.parent_id
-        ? `/catalog/${rootCat?.slug}/${cat.slug}/${p.slug}`
-        : `/catalog/${cat?.slug}/${p.slug}`;
-      return {
-        id: p.id,
-        name: p.name,
-        slug: p.slug,
-        image_url: p.image_url ?? null,
-        unit: p.unit ?? "т",
-        category: cat?.name ?? "",
-        groupKey: cat?.id ?? "",  // group by direct category for diversity
-        rootCatSlug: rootCat?.slug ?? cat?.slug ?? "",
-        basePrice: pi.base_price,
-        yourPrice: pi.discount_price ?? Math.round(pi.base_price * 0.93),
-        href,
-      };
-    });
+  // For each level-2 category fetch 1 product with price using !inner join
+  const rows = await Promise.all(
+    level2.map(async (cat: any) => {
+      try {
+        const res = await fetch(
+          `${url}/rest/v1/products?select=id,name,slug,image_url,unit,price_items!inner(base_price,discount_price)&category_id=eq.${cat.id}&order=name&limit=1`,
+          opts
+        );
+        const data: any[] = await res.json();
+        if (!Array.isArray(data) || !data.length) return null;
+        const p = data[0];
+        const pi = Array.isArray(p.price_items) ? p.price_items[0] : null;
+        if (!pi) return null;
+        const root = catMap[cat.parent_id];
+        return {
+          id: p.id,
+          name: p.name,
+          image_url: p.image_url ?? null,
+          unit: p.unit ?? "т",
+          category: cat.name,
+          rootCatSlug: root?.slug ?? cat.slug,
+          basePrice: Number(pi.base_price),
+          yourPrice: pi.discount_price ? Number(pi.discount_price) : Math.round(Number(pi.base_price) * 0.93),
+          href: `/catalog/${root?.slug}/${cat.slug}/${p.slug}`,
+        };
+      } catch { return null; }
+    })
+  );
 
-  // Pick one product per direct category, prefer those with images
-  const seen = new Set<string>();
-  const result: typeof enriched = [];
-  // First pass: with images
-  for (const p of enriched) {
-    if (p.image_url && !seen.has(p.groupKey)) {
-      seen.add(p.groupKey);
-      result.push(p);
-    }
-  }
-  // Second pass: without images
-  for (const p of enriched) {
-    if (!seen.has(p.groupKey)) {
-      seen.add(p.groupKey);
-      result.push(p);
-    }
-  }
-
-  return result.slice(0, 8);
+  return rows.filter(Boolean).slice(0, 8) as NonNullable<(typeof rows)[0]>[];
 }
 
 export default async function ProductGrid() {
