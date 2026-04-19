@@ -32,10 +32,21 @@ export async function GET(req: NextRequest) {
       return slugs;
     };
 
-    // Search products
-    const encoded = encodeURIComponent(`%${q}%`);
+    // Split query into words and build AND ilike filter
+    // "арм 12" → name ILIKE '%арм%' AND name ILIKE '%12%'
+    const words = q.split(/\s+/).filter((w) => w.length > 0);
+    let searchFilter: string;
+    if (words.length === 1) {
+      searchFilter = `name=ilike.${encodeURIComponent("%" + words[0] + "%")}`;
+    } else {
+      const conditions = words
+        .map((w) => `name.ilike.${encodeURIComponent("%" + w + "%")}`)
+        .join(",");
+      searchFilter = `and=(${conditions})`;
+    }
+
     const prodRes = await fetch(
-      `${url}/rest/v1/products?select=id,name,slug,image_url,unit,category_id,price_items(base_price,discount_price)&name=ilike.${encoded}&limit=10&order=name.asc`,
+      `${url}/rest/v1/products?select=id,name,slug,image_url,unit,category_id,price_items(base_price,discount_price)&${searchFilter}&limit=10&order=name.asc`,
       { headers: h }
     );
     const products: any[] = await prodRes.json();
