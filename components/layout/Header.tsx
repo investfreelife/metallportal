@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Search, Mic, ChevronDown, FileUp, Menu, X, ShoppingCart } from "lucide-react";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { Search, ChevronDown, FileUp, Menu, X, ShoppingCart } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useCart } from "@/contexts/CartContext";
+import SearchBar from "@/components/layout/SearchBar";
 
 const NAV_ITEMS = [
   {
@@ -153,18 +154,6 @@ export default function Header() {
   const [mode, setMode] = useState<"b2c" | "b2b">("b2c");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openNav, setOpenNav] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const saveSearch = useCallback((q: string) => {
-    const trimmed = q.trim();
-    if (!trimmed) return;
-    try {
-      const prev: string[] = JSON.parse(localStorage.getItem("search_recent") ?? "[]");
-      const next = [trimmed, ...prev.filter(x => x !== trimmed)].slice(0, 10);
-      localStorage.setItem("search_recent", JSON.stringify(next));
-    } catch {}
-  }, []);
-
   return (
     <header className="sticky top-0 z-50 w-full">
       {/* Top bar */}
@@ -208,22 +197,7 @@ export default function Header() {
             <span className="text-lg lg:text-2xl font-bold text-foreground">МЕТАЛЛПОРТАЛ</span>
           </Link>
 
-          <div className="flex-1 max-w-3xl hidden sm:block">
-            <div className="relative flex items-center bg-card border-2 border-gold rounded h-11 lg:h-12">
-              <Search className="absolute left-3 text-muted-foreground" size={18} />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                onKeyDown={e => { if (e.key === "Enter") saveSearch(searchQuery); }}
-                placeholder="Найдите металл: арматура 12мм, труба 40х40, лист 3мм..."
-                className="w-full h-full bg-transparent pl-10 pr-12 text-sm text-foreground placeholder:text-muted-foreground outline-none"
-              />
-              <button className="absolute right-1 w-9 h-9 flex items-center justify-center bg-gold hover:bg-yellow-400 rounded transition-colors">
-                <Mic className="text-black" size={16} />
-              </button>
-            </div>
-          </div>
+          <SearchBar />
 
           <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
             <Link href="/cart" className="relative p-2 hover:text-gold transition-colors">
