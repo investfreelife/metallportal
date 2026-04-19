@@ -226,9 +226,12 @@ export default function Header() {
             </button>
           </div>
 
-          <button className="ml-auto lg:hidden p-2" onClick={() => setMobileOpen((o) => !o)}>
-            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
+          <div className="ml-auto lg:hidden flex items-center gap-1">
+            <ThemeToggle />
+            <button className="p-2" onClick={() => setMobileOpen((o) => !o)}>
+              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
         </div>
       </div>
 
