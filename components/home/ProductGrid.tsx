@@ -63,7 +63,7 @@ export default function ProductGrid() {
       <section className="bg-background py-8">
         <div className="container-main">
           <h2 className="text-2xl font-bold text-foreground mb-5">Популярные позиции сегодня</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          <div className="grid grid-flow-col auto-cols-fr gap-3">
             {Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="bg-card border border-border rounded h-72 animate-pulse" />
             ))}
@@ -81,7 +81,7 @@ export default function ProductGrid() {
         <h2 className="text-2xl font-bold text-foreground mb-5">
           Популярные позиции сегодня
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div className="grid grid-flow-col auto-cols-fr gap-3">
           {products.map((product) => (
             <HomeProductCard
               key={product.id}
