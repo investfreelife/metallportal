@@ -70,9 +70,9 @@ export default function CatalogCategoryCard({
           )}
         </div>
 
-        {subcategories.length > 0 && (
+        {subcategories.filter((s: any) => s.totalProducts > 0).length > 0 && (
           <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-            {subcategories.map((sub: any) => (
+            {subcategories.filter((sub: any) => sub.totalProducts > 0).map((sub: any) => (
               <Link
                 key={sub.id}
                 href={`${cardHref}/${sub.slug}`}

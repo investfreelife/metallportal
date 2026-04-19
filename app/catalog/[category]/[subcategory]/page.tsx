@@ -79,7 +79,7 @@ export default async function SubcategoryPage({ params }: Props) {
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {enriched.map((sub: any) => (
+            {enriched.filter((sub: any) => sub.totalProducts > 0).map((sub: any) => (
               <CatalogCategoryCard
                 key={sub.id}
                 name={sub.name}
