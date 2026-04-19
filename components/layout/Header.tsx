@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Search, Mic, ChevronDown, FileUp, Menu, X, ShoppingCart } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useCart } from "@/contexts/CartContext";
 
@@ -153,6 +153,17 @@ export default function Header() {
   const [mode, setMode] = useState<"b2c" | "b2b">("b2c");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openNav, setOpenNav] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const saveSearch = useCallback((q: string) => {
+    const trimmed = q.trim();
+    if (!trimmed) return;
+    try {
+      const prev: string[] = JSON.parse(localStorage.getItem("search_recent") ?? "[]");
+      const next = [trimmed, ...prev.filter(x => x !== trimmed)].slice(0, 10);
+      localStorage.setItem("search_recent", JSON.stringify(next));
+    } catch {}
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full">
@@ -202,6 +213,9 @@ export default function Header() {
               <Search className="absolute left-3 text-muted-foreground" size={18} />
               <input
                 type="text"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter") saveSearch(searchQuery); }}
                 placeholder="Найдите металл: арматура 12мм, труба 40х40, лист 3мм..."
                 className="w-full h-full bg-transparent pl-10 pr-12 text-sm text-foreground placeholder:text-muted-foreground outline-none"
               />
