@@ -18,19 +18,18 @@ async function getPopularProducts() {
   // Level-2 categories (direct children of roots) — these are the main sections
   const level2 = categories.filter((c: any) => c.parent_id && rootIds.has(c.parent_id));
 
-  // For each level-2 category fetch 1 product with price using !inner join
+  // For each level-2 category fetch 1 product (any product, with optional price)
   const rows = await Promise.all(
     level2.map(async (cat: any) => {
       try {
         const res = await fetch(
-          `${url}/rest/v1/products?select=id,name,slug,image_url,unit,price_items!inner(base_price,discount_price)&category_id=eq.${cat.id}&order=name&limit=1`,
+          `${url}/rest/v1/products?select=id,name,slug,image_url,unit,price_items(base_price,discount_price)&category_id=eq.${cat.id}&order=name&limit=1`,
           opts
         );
         const data: any[] = await res.json();
         if (!Array.isArray(data) || !data.length) return null;
         const p = data[0];
-        const pi = Array.isArray(p.price_items) ? p.price_items[0] : null;
-        if (!pi) return null;
+        const pi = Array.isArray(p.price_items) && p.price_items.length ? p.price_items[0] : null;
         const root = catMap[cat.parent_id];
         return {
           id: p.id,
@@ -39,8 +38,8 @@ async function getPopularProducts() {
           unit: p.unit ?? "т",
           category: cat.name,
           rootCatSlug: root?.slug ?? cat.slug,
-          basePrice: Number(pi.base_price),
-          yourPrice: pi.discount_price ? Number(pi.discount_price) : Math.round(Number(pi.base_price) * 0.93),
+          basePrice: pi ? Number(pi.base_price) : null,
+          yourPrice: pi ? (pi.discount_price ? Number(pi.discount_price) : Math.round(Number(pi.base_price) * 0.93)) : null,
           href: `/catalog/${root?.slug}/${cat.slug}/${p.slug}`,
         };
       } catch { return null; }

@@ -9,8 +9,8 @@ interface HomeProductCardProps {
   productId: string;
   name: string;
   category: string;
-  basePrice: number;
-  yourPrice: number;
+  basePrice: number | null;
+  yourPrice: number | null;
   unit: string;
   image?: string;
   href?: string;
@@ -73,12 +73,20 @@ export default function HomeProductCard({
 
       {/* Pricing */}
       <div className="mb-3">
-        <div className="text-xs text-muted-foreground line-through">
-          {basePrice.toLocaleString("ru-RU")} ₽/{unit}
-        </div>
-        <div className="text-xl font-bold text-gold">
-          {yourPrice.toLocaleString("ru-RU")} ₽/{unit}
-        </div>
+        {yourPrice ? (
+          <>
+            {basePrice && basePrice !== yourPrice && (
+              <div className="text-xs text-muted-foreground line-through">
+                {basePrice.toLocaleString("ru-RU")} ₽/{unit}
+              </div>
+            )}
+            <div className="text-xl font-bold text-gold">
+              {yourPrice.toLocaleString("ru-RU")} ₽/{unit}
+            </div>
+          </>
+        ) : (
+          <div className="text-sm text-muted-foreground">По запросу</div>
+        )}
       </div>
 
       {/* CTA Button */}
