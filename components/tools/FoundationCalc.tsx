@@ -1,9 +1,17 @@
 "use client";
 import { useState, useMemo } from "react";
-import { ShoppingCart, Check, Loader2 } from "lucide-react";
+import { ShoppingCart, Check } from "lucide-react";
 import { ARMATURA_DIAMETERS } from "@/lib/metalCalc";
-import { useProductPrice, calcTotalRub } from "@/hooks/useProductPrice";
+import { calcTotalRub, type ProductHit } from "@/hooks/useProductPrice";
 import { useCart } from "@/contexts/CartContext";
+import ToolSearchBox from "./ToolSearchBox";
+
+const Step = ({ n, title, hint }: { n: number; title: string; hint: string }) => (
+  <div className="flex items-center gap-3 mb-3">
+    <span className="w-7 h-7 rounded-full bg-gold text-black text-xs font-black flex items-center justify-center flex-shrink-0">{n}</span>
+    <div><p className="font-semibold text-sm text-foreground">{title}</p><p className="text-xs text-muted-foreground">{hint}</p></div>
+  </div>
+);
 
 const ARMATURA_WPM: Record<number, number> = {
   6:0.222, 8:0.395, 10:0.617, 12:0.888, 14:1.208, 16:1.578,
@@ -44,7 +52,7 @@ export default function FoundationCalc() {
 
   const activeDiam = fType === "plita" ? plateDiam : fType === "stolb" ? pillarDiam : diam;
   const priceQuery = `арматура ${activeDiam}`;
-  const { product, loading: priceLoading } = useProductPrice(priceQuery);
+  const [product, setProduct] = useState<ProductHit | null>(null);
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
 
@@ -104,17 +112,21 @@ export default function FoundationCalc() {
 
   return (
     <div className="space-y-5">
-      <div className="flex gap-1 bg-muted rounded-lg p-1 w-fit">
+      <div>
+        <Step n={1} title="Выберите тип фундамента" hint="Ленточный — для дома, Плита — для пристройках, Столбчатый — для заборов" />
+        <div className="flex gap-1 bg-muted rounded-lg p-1 w-fit">
         {tabs.map(tab => (
           <button key={tab.v} onClick={() => setFType(tab.v)}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${fType === tab.v ? "bg-gold text-black" : "text-muted-foreground hover:text-foreground"}`}>
             {tab.l}
           </button>
         ))}
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
         <div className="space-y-3">
+          <Step n={2} title="Введите параметры фундамента" hint="Размеры, диаметр арматуры и шаг раскладки" />
           {fType === "lenta" && <>
             <div className="grid grid-cols-2 gap-3">
               <div><label className={lbl}>Периметр стен (м)</label><input type="number" value={perimeter} onChange={e => setPerimeter(e.target.value)} className={inp} min={0} /></div>
@@ -180,53 +192,57 @@ export default function FoundationCalc() {
           </>}
         </div>
 
-        <div className="bg-background border border-gold/30 rounded-xl p-5 flex flex-col justify-between gap-4">
-          {result ? (
-            <>
-              <div className="space-y-3">
-                <div className="flex justify-between text-sm border-b border-border pb-2">
+        <div className="space-y-4">
+          <div>
+            <Step n={3} title="Найдите арматуру в каталоге" hint="Выберите позицию, чтобы сразу увидеть цену за тонну" />
+            <ToolSearchBox
+              placeholder={`Например: арматура ${activeDiam} А500С`}
+              initialQuery={priceQuery}
+              selected={product}
+              onSelect={p => setProduct(p)}
+              onClear={() => setProduct(null)}
+            />
+          </div>
+
+          <div className="bg-background border border-gold/30 rounded-xl p-4 space-y-3">
+            <Step n={4} title="Результат расчёта" hint="Количество арматуры для вашего фундамента" />
+            {result ? (
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Погонных метров</span>
                   <span className="font-bold">{result.total.toFixed(1)} м.п.</span>
                 </div>
-                <div className="flex justify-between text-sm border-b border-border pb-2">
-                  <span className="text-muted-foreground">Итого (с запасом 10%)</span>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Арматура ⌀{result.d} · {ARMATURA_WPM[result.d]} кг/м</span>
+                </div>
+                <div className="flex justify-between border-t border-border pt-2">
+                  <span className="text-muted-foreground text-sm">Итого (с запасом 10%)</span>
                   <span className="text-2xl font-bold text-gold">{(result.tons * 1.1).toFixed(3)} т</span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Цена за тонну</span>
-                  <span className="font-medium">
-                    {priceLoading ? <Loader2 size={14} className="animate-spin inline" /> : product?.price ? `${product.price.toLocaleString("ru-RU")} ₽/т` : "По запросу"}
-                  </span>
-                </div>
                 {product?.price && (
-                  <div className="flex justify-between">
+                  <div className="flex justify-between border-t border-border pt-2">
                     <span className="text-muted-foreground text-sm">К оплате</span>
-                    <span className="text-xl font-black text-emerald-500">
-                      {Math.round(calcTotalRub(product, result.tons * 1.1, result.total * 1.1)).toLocaleString("ru-RU")} ₽
-                    </span>
+                    <span className="text-xl font-black text-emerald-500">{Math.round(calcTotalRub(product, result.tons * 1.1, result.total * 1.1)).toLocaleString("ru-RU")} ₽</span>
                   </div>
                 )}
-                <p className="text-xs text-muted-foreground">Арматура ⌀{result.d} мм · {ARMATURA_WPM[result.d]} кг/м</p>
               </div>
-              <button
-                onClick={() => {
-                  if (!product?.id) return;
-                  const tons = parseFloat((result.tons * 1.1).toFixed(4));
-                  addItem({ id: product.id, name: product.name, slug: product.slug, unit: product.unit, price: product.price, image_url: product.image_url, tons });
-                  setAdded(true); setTimeout(() => setAdded(false), 2000);
-                }}
-                disabled={!product?.id}
-                className={`flex items-center justify-center gap-2 w-full font-bold py-3 rounded-lg transition-all disabled:opacity-40 ${
-                  added ? "bg-emerald-500 text-white" : "bg-gold hover:bg-yellow-400 text-black"
-                }`}
-              >
-                {added ? <Check size={16} /> : <ShoppingCart size={16} />}
-                {added ? "Добавлено!" : `В корзину (${(result.tons * 1.1).toFixed(3)} т)`}
-              </button>
-            </>
-          ) : (
-            <p className="text-muted-foreground text-sm text-center py-8">Заполните параметры</p>
-          )}
+            ) : <p className="text-muted-foreground text-sm text-center py-4">Заполните параметры</p>}
+            <button
+              onClick={() => {
+                if (!product?.id || !result) return;
+                const tons = parseFloat((result.tons * 1.1).toFixed(4));
+                addItem({ id: product.id, name: product.name, slug: product.slug, unit: product.unit, price: product.price, image_url: product.image_url, tons });
+                setAdded(true); setTimeout(() => setAdded(false), 2000);
+              }}
+              disabled={!product?.id || !result}
+              className={`flex items-center justify-center gap-2 w-full font-bold py-3 rounded-lg transition-all disabled:opacity-40 ${
+                added ? "bg-emerald-500 text-white" : "bg-gold hover:bg-yellow-400 text-black"
+              }`}
+            >
+              {added ? <Check size={16} /> : <ShoppingCart size={16} />}
+              {added ? "Добавлено!" : result ? `В корзину (${(result.tons * 1.1).toFixed(3)} т)` : "Сначала найдите товар"}
+            </button>
+          </div>
         </div>
       </div>
     </div>

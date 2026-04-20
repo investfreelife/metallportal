@@ -1,9 +1,17 @@
 "use client";
-import { useState } from "react";
-import { ShoppingCart, Check, Loader2 } from "lucide-react";
+import { useState, useMemo } from "react";
+import { ShoppingCart, Check } from "lucide-react";
 import { weightPerMeter, searchQuery, ARMATURA_DIAMETERS, BALKA_SIZES, SHVELLER_SIZES, type MetalType, type MetalDims } from "@/lib/metalCalc";
-import { useProductPrice, calcTotalRub } from "@/hooks/useProductPrice";
+import { calcTotalRub, type ProductHit } from "@/hooks/useProductPrice";
 import { useCart } from "@/contexts/CartContext";
+import ToolSearchBox from "./ToolSearchBox";
+
+const Step = ({ n, title, hint }: { n: number; title: string; hint: string }) => (
+  <div className="flex items-center gap-3 mb-3">
+    <span className="w-7 h-7 rounded-full bg-gold text-black text-xs font-black flex items-center justify-center flex-shrink-0">{n}</span>
+    <div><p className="font-semibold text-sm text-foreground">{title}</p><p className="text-xs text-muted-foreground">{hint}</p></div>
+  </div>
+);
 
 const TYPES: { value: MetalType; label: string }[] = [
   { value: "armatura", label: "Арматура" },
@@ -31,26 +39,23 @@ export default function WeightCalc() {
   const [b, setB] = useState("40");
   const [size, setSize] = useState("20");
   const [length, setLength] = useState("6");
+  const [product, setProduct] = useState<ProductHit | null>(null);
+  const [added, setAdded] = useState(false);
+  const { addItem } = useCart();
 
-  const dims: MetalDims = {
-    d: parseFloat(d) || 0,
-    D: parseFloat(D) || 0,
-    t: parseFloat(t) || 0,
-    a: parseFloat(a) || 0,
-    b: parseFloat(b) || 0,
-    size: parseFloat(size) || 0,
-  };
+  const dims: MetalDims = useMemo(() => ({
+    d: parseFloat(d) || 0, D: parseFloat(D) || 0, t: parseFloat(t) || 0,
+    a: parseFloat(a) || 0, b: parseFloat(b) || 0, size: parseFloat(size) || 0,
+  }), [d, D, t, a, b, size]);
 
   const wpm = weightPerMeter(type, dims);
   const L = parseFloat(length) || 0;
   const totalKg = wpm * L;
   const totalTons = totalKg / 1000;
   const q = searchQuery(type, dims);
+  const isSheet = type === "list";
 
-  const { product, loading: priceLoading } = useProductPrice(q);
-  const totalRub = calcTotalRub(product, totalTons, L);
-  const { addItem } = useCart();
-  const [added, setAdded] = useState(false);
+  const totalRub = calcTotalRub(product ?? null, totalTons, L);
 
   const handleCart = () => {
     if (!product?.id) return;
@@ -143,73 +148,75 @@ export default function WeightCalc() {
     }
   };
 
-  const isSheet = type === "list";
-
   return (
-    <div className="grid lg:grid-cols-2 gap-6">
-      <div className="space-y-4">
-        <div>
-          <label className={lbl}>Вид металлопроката</label>
-          <select value={type} onChange={e => setType(e.target.value as MetalType)} className={inp}>
-            {TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
-          </select>
-        </div>
-        {renderDims()}
-        <div>
-          <label className={lbl}>{isSheet ? "Площадь (м²)" : "Длина (м)"}</label>
-          <input type="number" value={length} onChange={e => setLength(e.target.value)} className={inp} min={0} step={0.5} />
-        </div>
-      </div>
-
-      <div className="bg-background border border-gold/30 rounded-xl p-5 space-y-4 flex flex-col justify-between">
-        <div className="space-y-3">
-          <div className="flex justify-between text-sm border-b border-border pb-3">
-            <span className="text-muted-foreground">Вес 1 {isSheet ? "м²" : "м.п."}</span>
-            <span className="font-bold">{wpm > 0 ? `${wpm} кг` : "—"}</span>
-          </div>
-          <div className="flex justify-between text-sm border-b border-border pb-3">
-            <span className="text-muted-foreground">Длина / кол-во</span>
-            <span className="font-bold">{L} {isSheet ? "м²" : "м.п."}</span>
-          </div>
-          <div className="flex justify-between text-sm border-b border-border pb-3">
-            <span className="text-muted-foreground">Итого</span>
-            <span className="font-bold text-foreground">{totalKg > 0 ? `${totalKg.toFixed(2)} кг` : "—"}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground text-sm">В тоннах</span>
-            <span className="text-2xl font-bold text-gold">{totalTons > 0 ? `${totalTons.toFixed(4)} т` : "—"}</span>
-          </div>
-        </div>
-
-        {/* Price */}
-        {product && (
-          <div className="border-t border-border pt-3 space-y-1">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Цена за тонну</span>
-              <span className="font-medium">
-                {priceLoading ? <Loader2 size={14} className="animate-spin inline" /> : product.price ? `${product.price.toLocaleString("ru-RU")} ₽/т` : "По запросу"}
-              </span>
-            </div>
-            {totalRub > 0 && (
-              <div className="flex justify-between">
-                <span className="text-muted-foreground text-sm">Итого к оплате</span>
-                <span className="text-xl font-black text-emerald-500">{Math.round(totalRub).toLocaleString("ru-RU")} ₽</span>
+    <div className="space-y-6">
+      <div className="grid lg:grid-cols-2 gap-6">
+        <div className="space-y-5">
+          <div>
+            <Step n={1} title="Выберите тип металлопроката" hint="Арматура, трубы, балки, листы и другой прокат" />
+            <div className="space-y-3">
+              <div>
+                <label className={lbl}>Вид металлопроката</label>
+                <select value={type} onChange={e => { setType(e.target.value as MetalType); setProduct(null); }} className={inp}>
+                  {TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                </select>
               </div>
-            )}
-            <p className="text-[11px] text-muted-foreground truncate">{product.name}</p>
+              {renderDims()}
+            </div>
           </div>
-        )}
 
-        <button
-          onClick={handleCart}
-          disabled={!product?.id || totalTons <= 0}
-          className={`flex items-center justify-center gap-2 w-full font-bold py-3 rounded-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
-            added ? "bg-emerald-500 text-white" : "bg-gold hover:bg-yellow-400 text-black"
-          }`}
-        >
-          {added ? <Check size={16} /> : <ShoppingCart size={16} />}
-          {added ? "Добавлено!" : totalTons > 0 ? `В корзину (${totalTons.toFixed(3)} т)` : "В корзину"}
-        </button>
+          <div>
+            <Step n={2} title={isSheet ? "Укажите площадь листа" : "Укажите длину"} hint={isSheet ? "Введите нужную площадь в м²" : "Сколько погонных метров нужно купить"} />
+            <input type="number" value={length} onChange={e => setLength(e.target.value)} className={inp} min={0} step={0.5} placeholder={isSheet ? "м²" : "м.п."} />
+          </div>
+        </div>
+
+        <div className="space-y-5">
+          <div>
+            <Step n={3} title="Найдите товар в каталоге" hint="Введите запрос — выберите нужную позицию и сразу увидите цену" />
+            <ToolSearchBox
+              placeholder={`Например: ${q || "арматура 12"}`}
+              initialQuery={q}
+              selected={product}
+              onSelect={p => setProduct(p)}
+              onClear={() => setProduct(null)}
+            />
+          </div>
+
+          <div className="bg-background border border-gold/30 rounded-xl p-4 space-y-3">
+            <Step n={4} title="Результат расчёта" hint="Вес и стоимость вашего заказа" />
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Вес 1 {isSheet ? "м²" : "м.п."}</span>
+                <span className="font-medium">{wpm > 0 ? `${wpm} кг` : "—"}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Итого кг</span>
+                <span className="font-medium">{totalKg > 0 ? `${totalKg.toFixed(2)} кг` : "—"}</span>
+              </div>
+              <div className="flex justify-between border-t border-border pt-2">
+                <span className="text-muted-foreground text-sm">Итого тонн</span>
+                <span className="text-2xl font-bold text-gold">{totalTons > 0 ? `${totalTons.toFixed(4)} т` : "—"}</span>
+              </div>
+              {product?.price && totalRub > 0 && (
+                <div className="flex justify-between border-t border-border pt-2">
+                  <span className="text-muted-foreground text-sm">К оплате</span>
+                  <span className="text-xl font-black text-emerald-500">{Math.round(totalRub).toLocaleString("ru-RU")} ₽</span>
+                </div>
+              )}
+            </div>
+            <button
+              onClick={handleCart}
+              disabled={!product?.id || totalTons <= 0}
+              className={`flex items-center justify-center gap-2 w-full font-bold py-3 rounded-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
+                added ? "bg-emerald-500 text-white" : "bg-gold hover:bg-yellow-400 text-black"
+              }`}
+            >
+              {added ? <Check size={16} /> : <ShoppingCart size={16} />}
+              {added ? "Добавлено!" : totalTons > 0 ? `В корзину (${totalTons.toFixed(3)} т)` : "Сначала найдите товар"}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
