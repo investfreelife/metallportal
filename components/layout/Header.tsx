@@ -240,6 +240,9 @@ export default function Header() {
               onClose={() => setOpenNav(null)}
             />
           ))}
+          <Link href="/tools" className="flex items-center gap-1 text-xs font-semibold text-gold hover:text-yellow-400 transition-colors border border-gold/40 hover:border-gold px-3 py-1 rounded-full">
+            🧮 Калькуляторы
+          </Link>
           <Link href="/catalog" className="ml-auto text-xs hover:text-gold transition-colors opacity-60">
             Весь каталог →
           </Link>

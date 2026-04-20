@@ -1,0 +1,178 @@
+"use client";
+import { useState } from "react";
+import Link from "next/link";
+import { Search } from "lucide-react";
+import { weightPerMeter, searchQuery, ARMATURA_DIAMETERS, BALKA_SIZES, SHVELLER_SIZES, type MetalType, type MetalDims } from "@/lib/metalCalc";
+
+const TYPES: { value: MetalType; label: string }[] = [
+  { value: "armatura", label: "Арматура" },
+  { value: "krug", label: "Круг стальной" },
+  { value: "kvadrat", label: "Квадрат стальной" },
+  { value: "shestigr", label: "Шестигранник" },
+  { value: "truba_round", label: "Труба круглая" },
+  { value: "truba_profile", label: "Труба профильная" },
+  { value: "balka", label: "Балка двутавровая" },
+  { value: "shveller", label: "Швеллер" },
+  { value: "ugolok", label: "Уголок равнополочный" },
+  { value: "polosa", label: "Полоса стальная" },
+  { value: "list", label: "Лист стальной" },
+];
+
+const inp = "w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground outline-none focus:border-gold transition-colors";
+const lbl = "block text-xs text-muted-foreground mb-1";
+
+export default function WeightCalc() {
+  const [type, setType] = useState<MetalType>("armatura");
+  const [d, setD] = useState("12");
+  const [D, setDD] = useState("108");
+  const [t, setT] = useState("4");
+  const [a, setA] = useState("60");
+  const [b, setB] = useState("40");
+  const [size, setSize] = useState("20");
+  const [length, setLength] = useState("6");
+
+  const dims: MetalDims = {
+    d: parseFloat(d) || 0,
+    D: parseFloat(D) || 0,
+    t: parseFloat(t) || 0,
+    a: parseFloat(a) || 0,
+    b: parseFloat(b) || 0,
+    size: parseFloat(size) || 0,
+  };
+
+  const wpm = weightPerMeter(type, dims);
+  const L = parseFloat(length) || 0;
+  const totalKg = wpm * L;
+  const totalTons = totalKg / 1000;
+  const q = searchQuery(type, dims);
+
+  const renderDims = () => {
+    switch (type) {
+      case "armatura":
+        return (
+          <div>
+            <label className={lbl}>Диаметр (мм)</label>
+            <select value={d} onChange={e => setD(e.target.value)} className={inp}>
+              {ARMATURA_DIAMETERS.map(v => <option key={v} value={v}>⌀{v}</option>)}
+            </select>
+          </div>
+        );
+      case "krug":
+      case "kvadrat":
+      case "shestigr":
+        return (
+          <div>
+            <label className={lbl}>{type === "shestigr" ? "Размер под ключ" : "Диаметр/сторона"} (мм)</label>
+            <input type="number" value={d} onChange={e => setD(e.target.value)} className={inp} min={1} />
+          </div>
+        );
+      case "truba_round":
+        return (
+          <div className="grid grid-cols-2 gap-3">
+            <div><label className={lbl}>Нар. диаметр D (мм)</label><input type="number" value={D} onChange={e => setDD(e.target.value)} className={inp} min={1} /></div>
+            <div><label className={lbl}>Стенка t (мм)</label><input type="number" value={t} onChange={e => setT(e.target.value)} className={inp} min={0.5} step={0.5} /></div>
+          </div>
+        );
+      case "truba_profile":
+        return (
+          <div className="grid grid-cols-3 gap-2">
+            <div><label className={lbl}>A (мм)</label><input type="number" value={a} onChange={e => setA(e.target.value)} className={inp} min={1} /></div>
+            <div><label className={lbl}>B (мм)</label><input type="number" value={b} onChange={e => setB(e.target.value)} className={inp} min={1} /></div>
+            <div><label className={lbl}>t (мм)</label><input type="number" value={t} onChange={e => setT(e.target.value)} className={inp} min={0.5} step={0.5} /></div>
+          </div>
+        );
+      case "balka":
+        return (
+          <div>
+            <label className={lbl}>Номер балки</label>
+            <select value={size} onChange={e => setSize(e.target.value)} className={inp}>
+              {BALKA_SIZES.map(v => <option key={v} value={v}>№{v}</option>)}
+            </select>
+          </div>
+        );
+      case "shveller":
+        return (
+          <div>
+            <label className={lbl}>Номер швеллера</label>
+            <select value={size} onChange={e => setSize(e.target.value)} className={inp}>
+              {SHVELLER_SIZES.map(v => <option key={v} value={v}>№{v}</option>)}
+            </select>
+          </div>
+        );
+      case "ugolok":
+        return (
+          <div className="grid grid-cols-2 gap-3">
+            <div><label className={lbl}>Полка A (мм)</label><input type="number" value={a} onChange={e => setA(e.target.value)} className={inp} min={1} /></div>
+            <div><label className={lbl}>Толщина t (мм)</label><input type="number" value={t} onChange={e => setT(e.target.value)} className={inp} min={1} /></div>
+          </div>
+        );
+      case "polosa":
+        return (
+          <div className="grid grid-cols-2 gap-3">
+            <div><label className={lbl}>Ширина (мм)</label><input type="number" value={a} onChange={e => setA(e.target.value)} className={inp} min={1} /></div>
+            <div><label className={lbl}>Толщина (мм)</label><input type="number" value={b} onChange={e => setB(e.target.value)} className={inp} min={1} /></div>
+          </div>
+        );
+      case "list":
+        return (
+          <div>
+            <label className={lbl}>Толщина листа (мм)</label>
+            <input type="number" value={t} onChange={e => setT(e.target.value)} className={inp} min={0.5} step={0.5} />
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const isSheet = type === "list";
+
+  return (
+    <div className="grid lg:grid-cols-2 gap-6">
+      <div className="space-y-4">
+        <div>
+          <label className={lbl}>Вид металлопроката</label>
+          <select value={type} onChange={e => setType(e.target.value as MetalType)} className={inp}>
+            {TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+          </select>
+        </div>
+        {renderDims()}
+        <div>
+          <label className={lbl}>{isSheet ? "Площадь (м²)" : "Длина (м)"}</label>
+          <input type="number" value={length} onChange={e => setLength(e.target.value)} className={inp} min={0} step={0.5} />
+        </div>
+      </div>
+
+      <div className="bg-background border border-gold/30 rounded-xl p-5 space-y-4 flex flex-col justify-between">
+        <div className="space-y-3">
+          <div className="flex justify-between text-sm border-b border-border pb-3">
+            <span className="text-muted-foreground">Вес 1 {isSheet ? "м²" : "м.п."}</span>
+            <span className="font-bold">{wpm > 0 ? `${wpm} кг` : "—"}</span>
+          </div>
+          <div className="flex justify-between text-sm border-b border-border pb-3">
+            <span className="text-muted-foreground">Длина / кол-во</span>
+            <span className="font-bold">{L} {isSheet ? "м²" : "м.п."}</span>
+          </div>
+          <div className="flex justify-between text-sm border-b border-border pb-3">
+            <span className="text-muted-foreground">Итого</span>
+            <span className="font-bold text-foreground">{totalKg > 0 ? `${totalKg.toFixed(2)} кг` : "—"}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground text-sm">В тоннах</span>
+            <span className="text-2xl font-bold text-gold">{totalTons > 0 ? `${totalTons.toFixed(4)} т` : "—"}</span>
+          </div>
+        </div>
+
+        {q && (
+          <Link
+            href={`/search?q=${encodeURIComponent(q)}`}
+            className="flex items-center justify-center gap-2 w-full bg-gold hover:bg-yellow-400 text-black font-bold py-3 rounded-lg transition-all"
+          >
+            <Search size={16} />
+            Найти и купить в каталоге
+          </Link>
+        )}
+      </div>
+    </div>
+  );
+}
