@@ -19,7 +19,11 @@ export default function ToolSearchBox({ placeholder = "Найти товар..."
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { setQ(initialQuery); }, [initialQuery]);
+  useEffect(() => {
+    setQ(initialQuery);
+    if (initialQuery.trim().length >= 2) search(initialQuery);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialQuery]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
