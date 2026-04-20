@@ -4,7 +4,8 @@ import ProductGrid from "@/components/home/ProductGrid";
 import CategoryRow from "@/components/home/CategoryRow";
 import HowItWorks from "@/components/home/HowItWorks";
 import CTASection from "@/components/home/CTASection";
-import { CheckCircle } from "lucide-react";
+import Link from "next/link";
+import { CheckCircle, Calculator, ArrowRight } from "lucide-react";
 
 export default function HomePage() {
   return (
@@ -12,6 +13,26 @@ export default function HomePage() {
       <Hero />
       <TrustCounters />
       <ProductGrid />
+
+      {/* Калькуляторы баннер */}
+      <section className="py-6">
+        <div className="container-main">
+          <Link href="/tools"
+            className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-gold/20 via-yellow-500/10 to-gold/20 border border-gold/40 rounded-2xl px-6 py-5 hover:border-gold transition-all group">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-gold rounded-xl flex items-center justify-center flex-shrink-0 text-2xl">🧮</div>
+              <div>
+                <p className="font-bold text-foreground text-lg leading-tight">Калькуляторы металлопроката</p>
+                <p className="text-muted-foreground text-sm">Вес · Арматура для фундамента · Сетка · Смета · Раскрой листа</p>
+              </div>
+            </div>
+            <span className="flex items-center gap-2 bg-gold group-hover:bg-yellow-400 text-black font-bold px-5 py-2.5 rounded-xl transition-all flex-shrink-0">
+              Открыть <ArrowRight size={16} />
+            </span>
+          </Link>
+        </div>
+      </section>
+
       <CategoryRow />
       <HowItWorks />
       <CTASection />
