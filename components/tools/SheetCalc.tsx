@@ -149,12 +149,12 @@ export default function SheetCalc() {
                   </div>
                   <div className="flex justify-between border-t border-border pt-2">
                     <span className="text-muted-foreground text-sm">Итого</span>
-                    <span className="text-2xl font-bold text-gold">{(result.totalWeightKg/1000).toFixed(3)} т</span>
+                    <span className="text-4xl font-black text-gold">{(result.totalWeightKg/1000).toFixed(3)} т</span>
                   </div>
                   {product?.price && (
                     <div className="flex justify-between border-t border-border pt-2">
                       <span className="text-muted-foreground text-sm">К оплате</span>
-                      <span className="text-xl font-black text-emerald-500">{Math.round(calcTotalRub(product, result.totalWeightKg / 1000, 0)).toLocaleString("ru-RU")} ₽</span>
+                      <span className="text-3xl font-black text-emerald-500">{Math.round(calcTotalRub(product, result.totalWeightKg / 1000, 0)).toLocaleString("ru-RU")} ₽</span>
                     </div>
                   )}
                 </>}
@@ -167,7 +167,7 @@ export default function SheetCalc() {
                 setAdded(true); setTimeout(() => setAdded(false), 2000);
               }}
               disabled={!product?.id || !result || result.totalWeightKg <= 0}
-              className={`flex items-center justify-center gap-2 w-full font-bold py-3 rounded-lg transition-all disabled:opacity-40 ${
+              className={`flex items-center justify-center gap-2 w-full font-semibold text-sm py-2 rounded-lg transition-all disabled:opacity-40 ${
                 added ? "bg-emerald-500 text-white" : "bg-gold hover:bg-yellow-400 text-black"
               }`}
             >

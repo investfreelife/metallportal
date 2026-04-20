@@ -196,19 +196,19 @@ export default function WeightCalc() {
               </div>
               <div className="flex justify-between border-t border-border pt-2">
                 <span className="text-muted-foreground text-sm">Итого тонн</span>
-                <span className="text-2xl font-bold text-gold">{totalTons > 0 ? `${totalTons.toFixed(4)} т` : "—"}</span>
+                <span className="text-4xl font-black text-gold">{totalTons > 0 ? `${totalTons.toFixed(4)} т` : "—"}</span>
               </div>
               {product?.price && totalRub > 0 && (
                 <div className="flex justify-between border-t border-border pt-2">
                   <span className="text-muted-foreground text-sm">К оплате</span>
-                  <span className="text-xl font-black text-emerald-500">{Math.round(totalRub).toLocaleString("ru-RU")} ₽</span>
+                  <span className="text-3xl font-black text-emerald-500">{Math.round(totalRub).toLocaleString("ru-RU")} ₽</span>
                 </div>
               )}
             </div>
             <button
               onClick={handleCart}
               disabled={!product?.id || totalTons <= 0}
-              className={`flex items-center justify-center gap-2 w-full font-bold py-3 rounded-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
+              className={`flex items-center justify-center gap-2 w-full font-semibold text-sm py-2 rounded-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
                 added ? "bg-emerald-500 text-white" : "bg-gold hover:bg-yellow-400 text-black"
               }`}
             >

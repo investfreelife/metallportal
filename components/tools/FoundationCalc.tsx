@@ -217,12 +217,12 @@ export default function FoundationCalc() {
                 </div>
                 <div className="flex justify-between border-t border-border pt-2">
                   <span className="text-muted-foreground text-sm">Итого (с запасом 10%)</span>
-                  <span className="text-2xl font-bold text-gold">{(result.tons * 1.1).toFixed(3)} т</span>
+                  <span className="text-4xl font-black text-gold">{(result.tons * 1.1).toFixed(3)} т</span>
                 </div>
                 {product?.price && (
                   <div className="flex justify-between border-t border-border pt-2">
                     <span className="text-muted-foreground text-sm">К оплате</span>
-                    <span className="text-xl font-black text-emerald-500">{Math.round(calcTotalRub(product, result.tons * 1.1, result.total * 1.1)).toLocaleString("ru-RU")} ₽</span>
+                    <span className="text-3xl font-black text-emerald-500">{Math.round(calcTotalRub(product, result.tons * 1.1, result.total * 1.1)).toLocaleString("ru-RU")} ₽</span>
                   </div>
                 )}
               </div>
@@ -235,7 +235,7 @@ export default function FoundationCalc() {
                 setAdded(true); setTimeout(() => setAdded(false), 2000);
               }}
               disabled={!product?.id || !result}
-              className={`flex items-center justify-center gap-2 w-full font-bold py-3 rounded-lg transition-all disabled:opacity-40 ${
+              className={`flex items-center justify-center gap-2 w-full font-semibold text-sm py-2 rounded-lg transition-all disabled:opacity-40 ${
                 added ? "bg-emerald-500 text-white" : "bg-gold hover:bg-yellow-400 text-black"
               }`}
             >
