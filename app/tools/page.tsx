@@ -107,25 +107,23 @@ export default function ToolsPage() {
       <section className="container-main py-12" id="calculators">
         <h2 className="text-2xl font-bold text-foreground mb-6">Онлайн-калькуляторы</h2>
 
-        {/* Tab nav — horizontal scroll on mobile */}
-        <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 mb-6 scrollbar-none">
-          <div className="flex gap-2 min-w-max">
-            {TABS.map(t => {
-              const Icon = t.icon;
-              return (
-                <button key={t.id} onClick={() => setTab(t.id)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all border ${
-                    tab === t.id
-                      ? "bg-gold text-black border-gold shadow-md"
-                      : "bg-card border-border text-muted-foreground hover:text-foreground hover:border-gold/50"
-                  }`}>
-                  <Icon size={15} />
-                  <span className="hidden sm:inline">{t.label}</span>
-                  <span className="sm:hidden">{t.short}</span>
-                </button>
-              );
-            })}
-          </div>
+        {/* Tab nav — wraps on narrow screens */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          {TABS.map(t => {
+            const Icon = t.icon;
+            return (
+              <button key={t.id} onClick={() => setTab(t.id)}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all border ${
+                  tab === t.id
+                    ? "bg-gold text-black border-gold shadow-md"
+                    : "bg-card border-border text-muted-foreground hover:text-foreground hover:border-gold/50"
+                }`}>
+                <Icon size={15} />
+                <span className="hidden xs:inline sm:inline">{t.label}</span>
+                <span className="xs:hidden sm:hidden">{t.short}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Active tab description */}

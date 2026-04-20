@@ -96,59 +96,57 @@ export default function CartPage() {
         {/* Items list */}
         <div className="flex-1 space-y-3">
           {items.map(item => (
-            <div key={item.id} className="bg-card border border-border rounded-xl p-4 flex gap-4 items-center">
-              {/* Image */}
-              <div className="w-14 h-14 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                {item.image_url
-                  ? <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
-                  : <div className="w-full h-full flex items-center justify-center text-2xl opacity-30"><Package size={24} /></div>}
-              </div>
-
-              {/* Info */}
-              <div className="flex-1 min-w-0">
-                <Link href={`/catalog`} className="text-sm font-semibold text-foreground hover:text-gold transition-colors line-clamp-2">
-                  {item.name}
-                </Link>
-                {item.price !== null
-                  ? <p className="text-gold font-bold text-sm mt-0.5">{item.price.toLocaleString("ru-RU")} ₽/{item.unit}</p>
-                  : <p className="text-muted-foreground text-xs mt-0.5">Цена по запросу</p>}
-                {/* Show meters + tons breakdown */}
-                {item.meters && item.tons && (
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {Math.round(item.meters * item.quantity).toLocaleString("ru-RU")} м.п.
-                    {" ≈ "}
-                    {(item.tons * item.quantity).toFixed(3)} т
-                  </p>
-                )}
-                {!item.meters && item.tons && (
-                  <p className="text-xs text-muted-foreground mt-0.5">{(item.tons * item.quantity).toFixed(3)} т</p>
-                )}
-              </div>
-
-              {/* Qty (lots) */}
-              <div className="flex items-center gap-1 flex-shrink-0">
-                <button onClick={() => updateQty(item.id, item.quantity - 1)}
-                  className="w-7 h-7 rounded border border-border flex items-center justify-center hover:border-gold hover:text-gold transition-all">
-                  <Minus size={12} />
-                </button>
-                <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
-                <button onClick={() => updateQty(item.id, item.quantity + 1)}
-                  className="w-7 h-7 rounded border border-border flex items-center justify-center hover:border-gold hover:text-gold transition-all">
-                  <Plus size={12} />
-                </button>
-                {!item.tons && <span className="text-xs text-muted-foreground ml-1">{item.unit}</span>}
-              </div>
-
-              {/* Row total */}
-              {item.price !== null && (
-                <div className="text-right flex-shrink-0 w-24">
-                  <p className="font-bold text-foreground">{Math.round(itemTotal(item)).toLocaleString("ru-RU")} ₽</p>
+            <div key={item.id} className="bg-card border border-border rounded-xl p-4">
+              <div className="flex gap-3 items-start">
+                {/* Image */}
+                <div className="w-14 h-14 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                  {item.image_url
+                    ? <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                    : <div className="w-full h-full flex items-center justify-center opacity-30"><Package size={24} /></div>}
                 </div>
-              )}
 
-              <button onClick={() => removeItem(item.id)} className="text-muted-foreground hover:text-red-400 transition-colors flex-shrink-0 p-1">
-                <Trash2 size={16} />
-              </button>
+                {/* Info + controls */}
+                <div className="flex-1 min-w-0">
+                  <Link href={`/catalog`} className="text-sm font-semibold text-foreground hover:text-gold transition-colors line-clamp-2">
+                    {item.name}
+                  </Link>
+                  {item.price !== null
+                    ? <p className="text-gold font-bold text-sm mt-0.5">{item.price.toLocaleString("ru-RU")} ₽/{item.unit}</p>
+                    : <p className="text-muted-foreground text-xs mt-0.5">Цена по запросу</p>}
+                  {item.meters && item.tons && (
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {Math.round(item.meters * item.quantity).toLocaleString("ru-RU")} м.п. ≈ {(item.tons * item.quantity).toFixed(3)} т
+                    </p>
+                  )}
+                  {!item.meters && item.tons && (
+                    <p className="text-xs text-muted-foreground mt-0.5">{(item.tons * item.quantity).toFixed(3)} т</p>
+                  )}
+
+                  {/* Qty + total + trash — same row under name */}
+                  <div className="flex items-center gap-2 mt-2 flex-wrap">
+                    <div className="flex items-center gap-1">
+                      <button onClick={() => updateQty(item.id, item.quantity - 1)}
+                        className="w-7 h-7 rounded border border-border flex items-center justify-center hover:border-gold hover:text-gold transition-all">
+                        <Minus size={12} />
+                      </button>
+                      <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
+                      <button onClick={() => updateQty(item.id, item.quantity + 1)}
+                        className="w-7 h-7 rounded border border-border flex items-center justify-center hover:border-gold hover:text-gold transition-all">
+                        <Plus size={12} />
+                      </button>
+                      {!item.tons && <span className="text-xs text-muted-foreground ml-1">{item.unit}</span>}
+                    </div>
+                    {item.price !== null && (
+                      <span className="font-bold text-foreground text-sm ml-auto">
+                        {Math.round(itemTotal(item)).toLocaleString("ru-RU")} ₽
+                      </span>
+                    )}
+                    <button onClick={() => removeItem(item.id)} className="text-muted-foreground hover:text-red-400 transition-colors p-1">
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           ))}
 
