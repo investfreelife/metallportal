@@ -1,98 +1,92 @@
 # 🚀 СТАРТ — МеталлПортал
+*Обновлено: 19 апреля 2026*
 
 ## Читай это первым. Всё что нужно для старта.
 
 ## Что это за проект
 Маркетплейс металлопроката и металлоконструкций.
 Цель: стать Amazon в металле для России.
-URL: metallportal.vercel.app
-Repo: github.com/investfreelife/metallportal
+URL: https://metallportal.vercel.app
+Repo: https://github.com/investfreelife/metallportal
 
 ## Стек
-- Next.js 14 + TypeScript + Tailwind
+- Next.js 14 (App Router) + TypeScript + Tailwind CSS
 - Supabase (PostgreSQL + Storage + Auth)
 - Vercel (автодеплой из GitHub main)
-- Windsurf (пишет код)
-- Claude Code (работает с БД и файлами)
-- OpenRouter (GPT-4o-mini для карточек товаров)
-- fal.ai (генерация фото)
+- Windsurf / Claude Code (пишут код)
+- OpenRouter (gpt-4o-mini для SEO карточек)
+- fal.ai (генерация фото, ключ нужно добавить)
 
-## Текущий статус (обновляй после каждого шага)
+## Текущий статус ✅
 - [x] Инфраструктура: GitHub + Vercel + Supabase
-- [x] Каталог: 3 уровня, sidebar как cstg.ru
-- [x] Карточки товаров: табы, калькулятор, SEO
-- [x] Админка: 6 страниц
+- [x] Каталог: 3 уровня, sidebar, фильтры, сортировка
+- [x] 12 166 товаров импортированы + цены заполнены
+- [x] Счётчики товаров через RPC (исправлен баг лимита 1000)
+- [x] Карточки товаров: табы, характеристики, SEO
+- [x] Калькуляторы: вес / фундамент / сетка / лист / смета
+- [x] ToolSearchBox: поиск товаров из каталога в калькуляторах
+- [x] Корзина + форма заказа (localStorage)
+- [x] Адаптивность: мобильная версия всех страниц
 - [x] Тёмная/светлая тема
-- [x] Документация в docs/
-- [x] Импорт 12166 товаров ✅ (12166 products + 12166 price_items)
-- [x] Категории проверены ✅ (все 12166 товаров в правильных leaf-категориях)
-- [x] Счётчики товаров в каталоге ✅ (server-side GROUP BY через RPC, рекурсивные суммы)
-- [ ] SEO карточки через GPT-4o-mini (скрипт готов, ожидает стабильной сети)
-- [ ] Фото через fal.ai
-- [ ] Личный кабинет покупателя
-- [ ] Кабинет поставщика
+- [x] Админка: товары, категории, настройки, фото, меню
+- [x] SEO title+description: 11 095 из 12 166 готово
+- [ ] SEO seo_text (длинные описания) — не запущено
+- [ ] Фото товаров через fal.ai — нужен FAL_KEY в .env.local
+- [ ] Личный кабинет покупателя (app/account/ — заготовка)
+- [ ] Кабинет поставщика (app/supplier/ — заготовка)
 - [ ] Telegram CRM бот
 
-## Следующая задача прямо сейчас
-Запустить SEO генерацию: npx tsx scripts/generate_cards.ts
-(~12166 карточек, ~$12, ~20 часов на gpt-4o-mini)
+## Следующие приоритеты
+1. Личный кабинет покупателя (заказы, избранное, профиль)
+2. SEO seo_text через GPT-4o-mini: `npx tsx scripts/generate_cards.ts`
+3. Фото товаров через fal.ai (добавить FAL_KEY в .env.local)
+4. Кабинет поставщика
+5. Telegram CRM бот
 
 ## Поставщик 1
 Название: Металл Комплект (mc.ru)
 ID: a2000000-0000-0000-0000-000000000001
-Файлы: /tmp/truby.csv, sortovojprokat.csv...
-Всего позиций: 12166
+Позиций: 12 166
 
-## Категории (кратко)
-metalloprokat → truby-vgp, truby-besshovnye,
-  armatura-a500, list-gk, prof-okrash...
-konstruktsii → angary, karkasy, navesy
-zabory → zab-prof, vorota-kalitki
-zdaniya → sklady-ceha, paviljony
-zakaz → lazernaya, gibka, svarka
-
-Полная структура: docs/CATALOG_STRUCTURE.md
-
-## Ключевые файлы проекта
-app/catalog/ — каталог (3 уровня)
-app/admin/ — админка
-components/catalog/ — компоненты каталога
-lib/queries.ts — запросы к Supabase
-scripts/generate_cards.ts — генерация SEO
-scripts/import_remaining.ts — импорт товаров
-data/catalog_full.json — 12166 товаров (JSON)
-supabase/schema.sql — схема БД
-
-## База данных (таблицы)
-products — товары (name, slug, article, 
-  description, gost, steel_grade, unit,
-  seo_title, seo_description, seo_text)
-categories — категории (3 уровня)
-suppliers — поставщики
-price_items — цены (base_price, discount_price,
-  in_stock, stock_quantity)
-site_settings — настройки сайта
-
-## Правила работы
-1. После каждого шага → обновить этот файл
-2. git commit docs/ после обновления
-3. Рутину делать через GPT-4o-mini (дёшево)
-4. Сложные задачи → Claude Sonnet
-5. Не держать весь контекст — читать только нужные файлы
-
-## Детальная документация
-docs/CATALOG_STRUCTURE.md — все категории
-docs/SEO_RULES.md — правила SEO карточек
-docs/AGENTS.md — описание агентов
-docs/RULES.md — правила работы
+## Ключевые файлы
+app/page.tsx              — Главная страница
+app/tools/page.tsx        — Калькуляторы (5 штук)
+app/cart/page.tsx         — Корзина
+app/catalog/              — Каталог (3 уровня)
+app/admin/                — Админка
+app/api/search/route.ts   — Поиск товаров (edge)
+components/tools/         — Все калькуляторы + ToolSearchBox
+components/catalog/       — Каталог, карточки, фильтры
+contexts/CartContext.tsx  — Глобальная корзина (localStorage)
+hooks/useProductPrice.ts  — ProductHit интерфейс + calcTotalRub()
+lib/queries.ts            — Все запросы к Supabase
+lib/metalCalc.ts          — Формулы расчёта веса (ГОСТ)
+supabase/schema.sql       — Схема БД
+scripts/generate_cards.ts — SEO генерация
+data/catalog_full.json    — 12 166 товаров (исходник)
 
 ## Как задеплоить
-git add -A && git commit -m "описание" && git push
-Vercel деплоит автоматически из main.
+git add -A && git commit -m "описание" && git push origin main
+# Vercel деплоит автоматически, ~2-4 мин
+# Проверка TypeScript: npx tsc --noEmit
 
-## Контакты и доступы
-Supabase project: tmzqirzyvmnkzfmotlcj
-Vercel project: metallportal
+## Доступы (.env.local)
+Supabase: tmzqirzyvmnkzfmotlcj
+Vercel: metallportal
 GitHub: investfreelife/metallportal
-OpenRouter: ключ в .env.local
-fal.ai: ключ нужно добавить в .env.local
+OPENROUTER_API_KEY — есть в .env.local
+FAL_KEY — нужно добавить
+
+## Детальная документация
+docs/ARCHITECTURE.md      — полная архитектура, все компоненты, API, БД
+docs/PROJECT_STATUS.md    — текущий прогресс и история изменений
+docs/CATALOG_STRUCTURE.md — структура категорий каталога
+docs/SEO_RULES.md         — правила SEO карточек товаров
+docs/AGENTS.md            — описание агентов системы
+
+## Правила для агентов
+1. Прочитай docs/PROJECT_STATUS.md перед началом
+2. После каждого изменения обнови docs/PROJECT_STATUS.md
+3. Никогда не меняй изображения, тексты, дизайн без явного запроса
+4. Проверяй TypeScript: npx tsc --noEmit
+5. Коммить и пушить после каждой задачи
