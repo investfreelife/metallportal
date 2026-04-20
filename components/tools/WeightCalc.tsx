@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
-import { Search } from "lucide-react";
+import { ShoppingCart, Check, Loader2 } from "lucide-react";
 import { weightPerMeter, searchQuery, ARMATURA_DIAMETERS, BALKA_SIZES, SHVELLER_SIZES, type MetalType, type MetalDims } from "@/lib/metalCalc";
+import { useProductPrice, calcTotalRub } from "@/hooks/useProductPrice";
+import { useCart } from "@/contexts/CartContext";
 
 const TYPES: { value: MetalType; label: string }[] = [
   { value: "armatura", label: "Арматура" },
@@ -45,6 +46,23 @@ export default function WeightCalc() {
   const totalKg = wpm * L;
   const totalTons = totalKg / 1000;
   const q = searchQuery(type, dims);
+
+  const { product, loading: priceLoading } = useProductPrice(q);
+  const totalRub = calcTotalRub(product, totalTons, L);
+  const { addItem } = useCart();
+  const [added, setAdded] = useState(false);
+
+  const handleCart = () => {
+    if (!product?.id) return;
+    addItem({
+      id: product.id, name: product.name, slug: product.slug,
+      unit: product.unit, price: product.price, image_url: product.image_url,
+      tons: totalTons > 0 ? parseFloat(totalTons.toFixed(4)) : undefined,
+      meters: !isSheet && L > 0 ? L : undefined,
+    });
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000);
+  };
 
   const renderDims = () => {
     switch (type) {
@@ -163,15 +181,35 @@ export default function WeightCalc() {
           </div>
         </div>
 
-        {q && (
-          <Link
-            href={`/search?q=${encodeURIComponent(q)}`}
-            className="flex items-center justify-center gap-2 w-full bg-gold hover:bg-yellow-400 text-black font-bold py-3 rounded-lg transition-all"
-          >
-            <Search size={16} />
-            Найти и купить в каталоге
-          </Link>
+        {/* Price */}
+        {product && (
+          <div className="border-t border-border pt-3 space-y-1">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Цена за тонну</span>
+              <span className="font-medium">
+                {priceLoading ? <Loader2 size={14} className="animate-spin inline" /> : product.price ? `${product.price.toLocaleString("ru-RU")} ₽/т` : "По запросу"}
+              </span>
+            </div>
+            {totalRub > 0 && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground text-sm">Итого к оплате</span>
+                <span className="text-xl font-black text-emerald-500">{Math.round(totalRub).toLocaleString("ru-RU")} ₽</span>
+              </div>
+            )}
+            <p className="text-[11px] text-muted-foreground truncate">{product.name}</p>
+          </div>
         )}
+
+        <button
+          onClick={handleCart}
+          disabled={!product?.id || totalTons <= 0}
+          className={`flex items-center justify-center gap-2 w-full font-bold py-3 rounded-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
+            added ? "bg-emerald-500 text-white" : "bg-gold hover:bg-yellow-400 text-black"
+          }`}
+        >
+          {added ? <Check size={16} /> : <ShoppingCart size={16} />}
+          {added ? "Добавлено!" : totalTons > 0 ? `В корзину (${totalTons.toFixed(3)} т)` : "В корзину"}
+        </button>
       </div>
     </div>
   );

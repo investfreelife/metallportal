@@ -1,8 +1,9 @@
 "use client";
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Check, Loader2 } from "lucide-react";
 import { ARMATURA_DIAMETERS } from "@/lib/metalCalc";
+import { useProductPrice, calcTotalRub } from "@/hooks/useProductPrice";
+import { useCart } from "@/contexts/CartContext";
 
 const ARMATURA_WPM: Record<number, number> = {
   6:0.222, 8:0.395, 10:0.617, 12:0.888, 14:1.208, 16:1.578,
@@ -40,6 +41,12 @@ export default function FoundationCalc() {
   const [pillarDiam, setPillarDiam] = useState("12");
   const [pillarHoopStep, setPillarHoopStep] = useState("0.3");
   const [pillarSize, setPillarSize] = useState("0.3");
+
+  const activeDiam = fType === "plita" ? plateDiam : fType === "stolb" ? pillarDiam : diam;
+  const priceQuery = `арматура ${activeDiam}`;
+  const { product, loading: priceLoading } = useProductPrice(priceQuery);
+  const { addItem } = useCart();
+  const [added, setAdded] = useState(false);
 
   const result = useMemo(() => {
     if (fType === "lenta") {
@@ -181,19 +188,41 @@ export default function FoundationCalc() {
                   <span className="text-muted-foreground">Погонных метров</span>
                   <span className="font-bold">{result.total.toFixed(1)} м.п.</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground text-sm">Итого (с запасом 10%)</span>
+                <div className="flex justify-between text-sm border-b border-border pb-2">
+                  <span className="text-muted-foreground">Итого (с запасом 10%)</span>
                   <span className="text-2xl font-bold text-gold">{(result.tons * 1.1).toFixed(3)} т</span>
                 </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Цена за тонну</span>
+                  <span className="font-medium">
+                    {priceLoading ? <Loader2 size={14} className="animate-spin inline" /> : product?.price ? `${product.price.toLocaleString("ru-RU")} ₽/т` : "По запросу"}
+                  </span>
+                </div>
+                {product?.price && (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground text-sm">К оплате</span>
+                    <span className="text-xl font-black text-emerald-500">
+                      {Math.round(calcTotalRub(product, result.tons * 1.1, result.total * 1.1)).toLocaleString("ru-RU")} ₽
+                    </span>
+                  </div>
+                )}
                 <p className="text-xs text-muted-foreground">Арматура ⌀{result.d} мм · {ARMATURA_WPM[result.d]} кг/м</p>
               </div>
-              <Link
-                href={`/search?q=${encodeURIComponent(result.label)}&limit=20`}
-                className="flex items-center justify-center gap-2 w-full bg-gold hover:bg-yellow-400 text-black font-bold py-3 rounded-lg transition-all"
+              <button
+                onClick={() => {
+                  if (!product?.id) return;
+                  const tons = parseFloat((result.tons * 1.1).toFixed(4));
+                  addItem({ id: product.id, name: product.name, slug: product.slug, unit: product.unit, price: product.price, image_url: product.image_url, tons });
+                  setAdded(true); setTimeout(() => setAdded(false), 2000);
+                }}
+                disabled={!product?.id}
+                className={`flex items-center justify-center gap-2 w-full font-bold py-3 rounded-lg transition-all disabled:opacity-40 ${
+                  added ? "bg-emerald-500 text-white" : "bg-gold hover:bg-yellow-400 text-black"
+                }`}
               >
-                <ShoppingCart size={16} />
-                Купить арматуру ⌀{result.d}
-              </Link>
+                {added ? <Check size={16} /> : <ShoppingCart size={16} />}
+                {added ? "Добавлено!" : `В корзину (${(result.tons * 1.1).toFixed(3)} т)`}
+              </button>
             </>
           ) : (
             <p className="text-muted-foreground text-sm text-center py-8">Заполните параметры</p>

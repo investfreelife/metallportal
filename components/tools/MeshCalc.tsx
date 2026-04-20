@@ -1,8 +1,9 @@
 "use client";
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Check, Loader2 } from "lucide-react";
 import { ARMATURA_DIAMETERS } from "@/lib/metalCalc";
+import { useProductPrice, calcTotalRub } from "@/hooks/useProductPrice";
+import { useCart } from "@/contexts/CartContext";
 
 const ARMATURA_WPM: Record<number, number> = {
   6:0.222, 8:0.395, 10:0.617, 12:0.888, 14:1.208, 16:1.578,
@@ -19,6 +20,10 @@ export default function MeshCalc() {
   const [diam, setDiam] = useState("12");
   const [layers, setLayers] = useState("1");
   const [reserve, setReserve] = useState("10");
+
+  const { product, loading: priceLoading } = useProductPrice(`арматура ${diam}`);
+  const { addItem } = useCart();
+  const [added, setAdded] = useState(false);
 
   const result = useMemo(() => {
     const L = parseFloat(areaL) || 0;
@@ -101,14 +106,33 @@ export default function MeshCalc() {
             <span className="text-2xl font-bold text-gold">{result.tons.toFixed(3)} т</span>
           </div>
           <p className="text-xs text-muted-foreground">Арматура ⌀{result.d} мм · {ARMATURA_WPM[result.d]} кг/м · с запасом {reserve}%</p>
+          <div className="flex justify-between text-sm border-t border-border pt-2">
+            <span className="text-muted-foreground">Цена за тонну</span>
+            <span className="font-medium">
+              {priceLoading ? <Loader2 size={14} className="animate-spin inline" /> : product?.price ? `${product.price.toLocaleString("ru-RU")} ₽/т` : "По запросу"}
+            </span>
+          </div>
+          {product?.price && (
+            <div className="flex justify-between">
+              <span className="text-muted-foreground text-sm">К оплате</span>
+              <span className="text-xl font-black text-emerald-500">{Math.round(calcTotalRub(product, result.tons, result.meters)).toLocaleString("ru-RU")} ₽</span>
+            </div>
+          )}
         </div>
-        <Link
-          href={`/search?q=${encodeURIComponent(`арматура ${result.d}`)}&limit=20`}
-          className="flex items-center justify-center gap-2 w-full bg-gold hover:bg-yellow-400 text-black font-bold py-3 rounded-lg transition-all"
+        <button
+          onClick={() => {
+            if (!product?.id) return;
+            addItem({ id: product.id, name: product.name, slug: product.slug, unit: product.unit, price: product.price, image_url: product.image_url, tons: parseFloat(result.tons.toFixed(4)), meters: result.meters });
+            setAdded(true); setTimeout(() => setAdded(false), 2000);
+          }}
+          disabled={!product?.id}
+          className={`flex items-center justify-center gap-2 w-full font-bold py-3 rounded-lg transition-all disabled:opacity-40 ${
+            added ? "bg-emerald-500 text-white" : "bg-gold hover:bg-yellow-400 text-black"
+          }`}
         >
-          <ShoppingCart size={16} />
-          Купить арматуру ⌀{result.d}
-        </Link>
+          {added ? <Check size={16} /> : <ShoppingCart size={16} />}
+          {added ? "Добавлено!" : `В корзину (${result.tons.toFixed(3)} т)`}
+        </button>
       </div>
     </div>
   );

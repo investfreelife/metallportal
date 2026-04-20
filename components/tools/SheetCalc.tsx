@@ -1,7 +1,8 @@
 "use client";
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Check, Loader2 } from "lucide-react";
+import { useProductPrice, calcTotalRub } from "@/hooks/useProductPrice";
+import { useCart } from "@/contexts/CartContext";
 
 const inp = "w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground outline-none focus:border-gold transition-colors";
 const lbl = "block text-xs text-muted-foreground mb-1";
@@ -23,6 +24,10 @@ export default function SheetCalc() {
   const [kerf, setKerf] = useState("3");
   const [need, setNeed] = useState("50");
   const [thickness, setThickness] = useState("4");
+
+  const { product, loading: priceLoading } = useProductPrice(`лист ${thickness}`);
+  const { addItem } = useCart();
+  const [added, setAdded] = useState(false);
 
   const applyPreset = (idx: string) => {
     setSheetPreset(idx);
@@ -118,13 +123,34 @@ export default function SheetCalc() {
                 </div>
               </>}
             </div>
-            <Link
-              href={`/search?q=${encodeURIComponent(`лист ${thickness}`)}&limit=20`}
-              className="flex items-center justify-center gap-2 w-full bg-gold hover:bg-yellow-400 text-black font-bold py-3 rounded-lg transition-all"
+            <div className="flex justify-between text-sm border-t border-border pt-2">
+              <span className="text-muted-foreground">Цена за тонну</span>
+              <span className="font-medium">
+                {priceLoading ? <Loader2 size={14} className="animate-spin inline" /> : product?.price ? `${product.price.toLocaleString("ru-RU")} ₽/т` : "По запросу"}
+              </span>
+            </div>
+            {product?.price && result.totalWeightKg > 0 && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground text-sm">К оплате</span>
+                <span className="text-xl font-black text-emerald-500">
+                  {Math.round(calcTotalRub(product, result.totalWeightKg / 1000, 0)).toLocaleString("ru-RU")} ₽
+                </span>
+              </div>
+            )}
+            <button
+              onClick={() => {
+                if (!product?.id || result.totalWeightKg <= 0) return;
+                addItem({ id: product.id, name: product.name, slug: product.slug, unit: product.unit, price: product.price, image_url: product.image_url, tons: parseFloat((result.totalWeightKg / 1000).toFixed(4)) });
+                setAdded(true); setTimeout(() => setAdded(false), 2000);
+              }}
+              disabled={!product?.id || result.totalWeightKg <= 0}
+              className={`flex items-center justify-center gap-2 w-full font-bold py-3 rounded-lg transition-all disabled:opacity-40 ${
+                added ? "bg-emerald-500 text-white" : "bg-gold hover:bg-yellow-400 text-black"
+              }`}
             >
-              <ShoppingCart size={16} />
-              Купить лист {thickness} мм
-            </Link>
+              {added ? <Check size={16} /> : <ShoppingCart size={16} />}
+              {added ? "Добавлено!" : result.totalWeightKg > 0 ? `В корзину (${(result.totalWeightKg/1000).toFixed(3)} т)` : "В корзину"}
+            </button>
           </>
         ) : (
           <p className="text-muted-foreground text-sm text-center py-8">Заполните размеры</p>
