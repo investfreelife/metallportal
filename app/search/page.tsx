@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -72,7 +72,7 @@ function ResultCard({ item }: { item: SearchResult }) {
   );
 }
 
-export default function SearchPage() {
+function SearchPageInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const initialQ = searchParams.get("q") ?? "";
@@ -188,5 +188,13 @@ export default function SearchPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><Loader2 size={24} className="animate-spin text-gold" /></div>}>
+      <SearchPageInner />
+    </Suspense>
   );
 }
