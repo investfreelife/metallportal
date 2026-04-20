@@ -63,6 +63,10 @@ export interface FilterState {
   thicknessMin: number;
   thicknessMax: number;
   unit: string;
+  roofShape: string;
+  roofMaterial: string;
+  reinforcement: string;
+  purpose: string;
 }
 
 const defaultFilters: FilterState = {
@@ -71,6 +75,7 @@ const defaultFilters: FilterState = {
   priceMin: 0, priceMax: 0,
   diameterMin: 0, diameterMax: 0,
   thicknessMin: 0, thicknessMax: 0,
+  roofShape: "", roofMaterial: "", reinforcement: "", purpose: "",
 };
 
 const SORT_OPTIONS = [
@@ -120,28 +125,40 @@ function RangeFilter({ label, unit, minVal, maxVal, onMinChange, onMaxChange }: 
   );
 }
 
-function FiltersContent({ filters, filterOptions, update, reset, hasActiveFilters, onApply }: {
+function FiltersContent({ filters, filterOptions, update, reset, hasActiveFilters, onApply, isNavesy }: {
   filters: FilterState;
-  filterOptions: { steelGrades: string[]; gosts: string[]; coatings: string[]; suppliers: string[]; regions: string[]; units: string[] };
+  filterOptions: { steelGrades: string[]; gosts: string[]; coatings: string[]; suppliers: string[]; regions: string[]; units: string[]; roofShapes: string[]; roofMaterials: string[]; reinforcements: string[]; purposes: string[] };
   update: (p: Partial<FilterState>) => void;
   reset: () => void;
   hasActiveFilters: boolean;
   onApply?: () => void;
+  isNavesy?: boolean;
 }) {
   return (
     <div className="space-y-4">
-      <SelectFilter label="Марка стали" value={filters.steelGrade} options={filterOptions.steelGrades} onChange={(v) => update({ steelGrade: v })} />
-      <SelectFilter label="ГОСТ" value={filters.gost} options={filterOptions.gosts} onChange={(v) => update({ gost: v })} />
-      <SelectFilter label="Покрытие" value={filters.coating} options={filterOptions.coatings} onChange={(v) => update({ coating: v })} />
-      <SelectFilter label="Единица" value={filters.unit} options={filterOptions.units} onChange={(v) => update({ unit: v })} />
-      <SelectFilter label="Поставщик" value={filters.supplier} options={filterOptions.suppliers} onChange={(v) => update({ supplier: v })} />
-      <SelectFilter label="Регион" value={filters.region} options={filterOptions.regions} onChange={(v) => update({ region: v })} />
-      <RangeFilter label="Цена" unit="₽/т" minVal={filters.priceMin} maxVal={filters.priceMax}
-        onMinChange={(v) => update({ priceMin: v })} onMaxChange={(v) => update({ priceMax: v })} />
-      <RangeFilter label="Диаметр" unit="мм" minVal={filters.diameterMin} maxVal={filters.diameterMax}
-        onMinChange={(v) => update({ diameterMin: v })} onMaxChange={(v) => update({ diameterMax: v })} />
-      <RangeFilter label="Толщина" unit="мм" minVal={filters.thicknessMin} maxVal={filters.thicknessMax}
-        onMinChange={(v) => update({ thicknessMin: v })} onMaxChange={(v) => update({ thicknessMax: v })} />
+      {isNavesy ? (
+        <>
+          <SelectFilter label="Форма кровли" value={filters.roofShape} options={filterOptions.roofShapes} onChange={(v) => update({ roofShape: v })} />
+          <SelectFilter label="Материал кровли" value={filters.roofMaterial} options={filterOptions.roofMaterials} onChange={(v) => update({ roofMaterial: v })} />
+          <SelectFilter label="Усиление" value={filters.reinforcement} options={filterOptions.reinforcements} onChange={(v) => update({ reinforcement: v })} />
+          <SelectFilter label="Назначение" value={filters.purpose} options={filterOptions.purposes} onChange={(v) => update({ purpose: v })} />
+        </>
+      ) : (
+        <>
+          <SelectFilter label="Марка стали" value={filters.steelGrade} options={filterOptions.steelGrades} onChange={(v) => update({ steelGrade: v })} />
+          <SelectFilter label="ГОСТ" value={filters.gost} options={filterOptions.gosts} onChange={(v) => update({ gost: v })} />
+          <SelectFilter label="Покрытие" value={filters.coating} options={filterOptions.coatings} onChange={(v) => update({ coating: v })} />
+          <SelectFilter label="Единица" value={filters.unit} options={filterOptions.units} onChange={(v) => update({ unit: v })} />
+          <SelectFilter label="Поставщик" value={filters.supplier} options={filterOptions.suppliers} onChange={(v) => update({ supplier: v })} />
+          <SelectFilter label="Регион" value={filters.region} options={filterOptions.regions} onChange={(v) => update({ region: v })} />
+          <RangeFilter label="Цена" unit="₽/т" minVal={filters.priceMin} maxVal={filters.priceMax}
+            onMinChange={(v) => update({ priceMin: v })} onMaxChange={(v) => update({ priceMax: v })} />
+          <RangeFilter label="Диаметр" unit="мм" minVal={filters.diameterMin} maxVal={filters.diameterMax}
+            onMinChange={(v) => update({ diameterMin: v })} onMaxChange={(v) => update({ diameterMax: v })} />
+          <RangeFilter label="Толщина" unit="мм" minVal={filters.thicknessMin} maxVal={filters.thicknessMax}
+            onMinChange={(v) => update({ thicknessMin: v })} onMaxChange={(v) => update({ thicknessMax: v })} />
+        </>
+      )}
       <label className="flex items-center gap-3 cursor-pointer">
         <div className="relative flex-shrink-0">
           <input type="checkbox" checked={filters.inStock} onChange={(e) => update({ inStock: e.target.checked })} className="sr-only peer" />
@@ -166,6 +183,7 @@ function FiltersContent({ filters, filterOptions, update, reset, hasActiveFilter
 
 export default function CatalogView({ category, subcategories, products, categorySlug, activeSubSlug, productBasePath, defaultView = "table" }: CatalogViewProps) {
   const resolvedProductBasePath = productBasePath ?? `/catalog/${categorySlug}`;
+  const isNavesy = categorySlug.startsWith("navesy");
   const [viewMode, setViewMode] = useState<"table" | "cards">(defaultView);
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
   const [activeSub, setActiveSub] = useState<string>(activeSubSlug || "");
@@ -221,6 +239,10 @@ export default function CatalogView({ category, subcategories, products, categor
     const suppliers = new Set<string>();
     const regions = new Set<string>();
     const units = new Set<string>();
+    const roofShapes = new Set<string>();
+    const roofMaterials = new Set<string>();
+    const reinforcements = new Set<string>();
+    const purposes = new Set<string>();
     products.forEach((p: any) => {
       if (p.steel_grade) steelGrades.add(p.steel_grade);
       if (p.gost) gosts.add(p.gost);
@@ -233,6 +255,26 @@ export default function CatalogView({ category, subcategories, products, categor
       const region = p.supplier?.region
         ?? p.price_items?.find((pi: any) => pi.supplier?.region)?.supplier?.region;
       if (region) regions.add(region);
+      // Navesy-specific: extract from product name and category slug
+      if (isNavesy) {
+        const n = p.name ?? "";
+        if (/односкат/i.test(n)) roofShapes.add("Односкатный");
+        if (/двускат/i.test(n)) roofShapes.add("Двускатный");
+        if (/арочн/i.test(n)) roofShapes.add("Арочный");
+        if (/полуарочн/i.test(n)) roofShapes.add("Полуарочный");
+        if (/четырёхскат|четырехскат/i.test(n)) roofShapes.add("Четырёхскатный");
+        if (/поликарбонат/i.test(n)) roofMaterials.add("Поликарбонат");
+        if (/профнастил/i.test(n)) roofMaterials.add("Профнастил");
+        if (/металлочерепиц/i.test(n)) roofMaterials.add("Металлочерепица");
+        if (/сверхусиленн/i.test(n)) reinforcements.add("Сверхусиленный");
+        else if (/усиленн/i.test(n)) reinforcements.add("Усиленный");
+        const slug = p.category?.slug ?? "";
+        if (/avtomobil/i.test(slug)) purposes.add("Для автомобиля");
+        if (/parkovk/i.test(slug)) purposes.add("Для парковки");
+        if (/besedka/i.test(slug)) purposes.add("Беседка");
+        if (/dachi/i.test(slug)) purposes.add("Для дачи");
+        if (/hozblokom/i.test(slug)) purposes.add("С хозблоком");
+      }
     });
     return {
       steelGrades: Array.from(steelGrades).sort(),
@@ -241,8 +283,12 @@ export default function CatalogView({ category, subcategories, products, categor
       suppliers: Array.from(suppliers).sort(),
       regions: Array.from(regions).sort(),
       units: Array.from(units).sort(),
+      roofShapes: Array.from(roofShapes).sort(),
+      roofMaterials: Array.from(roofMaterials).sort(),
+      reinforcements: Array.from(reinforcements).sort(),
+      purposes: Array.from(purposes).sort(),
     };
-  }, [products]);
+  }, [products, isNavesy]);
 
   // Filter by subcategory chip
   const subFilteredProducts = useMemo(() => {
@@ -278,6 +324,36 @@ export default function CatalogView({ category, subcategories, products, categor
       if (filters.diameterMax > 0 && (p.diameter ?? 999) > filters.diameterMax) return false;
       if (filters.thicknessMin > 0 && (p.thickness ?? 0) < filters.thicknessMin) return false;
       if (filters.thicknessMax > 0 && (p.thickness ?? 999) > filters.thicknessMax) return false;
+      // Navesy filters
+      const nm = p.name ?? "";
+      if (filters.roofShape) {
+        const shapeMap: Record<string, RegExp> = {
+          "Односкатный": /односкат/i, "Двускатный": /двускат/i,
+          "Арочный": /арочн/i, "Полуарочный": /полуарочн/i,
+          "Четырёхскатный": /четырёхскат|четырехскат/i,
+        };
+        if (!shapeMap[filters.roofShape]?.test(nm)) return false;
+      }
+      if (filters.roofMaterial) {
+        const matMap: Record<string, RegExp> = {
+          "Поликарбонат": /поликарбонат/i,
+          "Профнастил": /профнастил/i,
+          "Металлочерепица": /металлочерепиц/i,
+        };
+        if (!matMap[filters.roofMaterial]?.test(nm)) return false;
+      }
+      if (filters.reinforcement) {
+        if (filters.reinforcement === "Сверхусиленный" && !/сверхусиленн/i.test(nm)) return false;
+        if (filters.reinforcement === "Усиленный" && !/усиленн/i.test(nm)) return false;
+      }
+      if (filters.purpose) {
+        const slug = p.category?.slug ?? "";
+        const purposeMap: Record<string, RegExp> = {
+          "Для автомобиля": /avtomobil/i, "Для парковки": /parkovk/i,
+          "Беседка": /besedka/i, "Для дачи": /dachi/i, "С хозблоком": /hozblokom/i,
+        };
+        if (!purposeMap[filters.purpose]?.test(slug)) return false;
+      }
       return true;
     });
   }, [subFilteredProducts, filters]);
@@ -311,11 +387,12 @@ export default function CatalogView({ category, subcategories, products, categor
         update={update}
         reset={reset}
         hasActiveFilters={hasActiveFilters}
+        isNavesy={isNavesy}
       />
     );
     return () => setFiltersSlot(null);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters, filterOptions, hasActiveFilters]);
+  }, [filters, filterOptions, hasActiveFilters, isNavesy]);
 
   return (
     <div>
