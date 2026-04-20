@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
     }
 
     const prodRes = await fetch(
-      `${url}/rest/v1/products?select=id,name,slug,image_url,unit,category_id,price_items(base_price,discount_price)&${searchFilter}&limit=${limit}&order=name.asc`,
+      `${url}/rest/v1/products?select=id,name,slug,image_url,unit,weight_per_meter,category_id,price_items(base_price,discount_price)&${searchFilter}&limit=${limit}&order=name.asc`,
       { headers: h }
     );
     const products: any[] = await prodRes.json();
@@ -63,6 +63,7 @@ export async function GET(req: NextRequest) {
         slug: p.slug,
         image_url: p.image_url ?? null,
         unit: p.unit ?? "т",
+        weight_per_meter: p.weight_per_meter ?? null,
         categoryName: cat?.name ?? "",
         price: pi ? Math.round(Number(pi.discount_price ?? pi.base_price)) : null,
         href: `/catalog/${[...pathSlugs, p.slug].join("/")}`,

@@ -7,6 +7,8 @@ export interface ProductHit {
   slug: string;
   price: number | null;
   unit: string;
+  weight_per_meter: number | null;
+  categoryName: string;
   image_url: string | null;
   href: string;
 }
