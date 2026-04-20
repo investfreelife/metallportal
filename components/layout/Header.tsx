@@ -240,7 +240,7 @@ export default function Header() {
               onClose={() => setOpenNav(null)}
             />
           ))}
-          <Link href="/tools" className="flex items-center gap-1 text-xs font-semibold text-gold hover:text-yellow-400 transition-colors border border-gold/40 hover:border-gold px-3 py-1 rounded-full">
+          <Link href="/tools" className="flex items-center gap-1.5 text-xs font-bold text-black bg-gold hover:bg-yellow-400 px-3 py-1.5 rounded-full transition-all">
             🧮 Калькуляторы
           </Link>
           <Link href="/catalog" className="ml-auto text-xs hover:text-gold transition-colors opacity-60">
@@ -264,6 +264,10 @@ export default function Header() {
       {mobileOpen && (
         <div className="lg:hidden bg-background border-b border-border shadow-xl">
           <div className="container-main py-4 space-y-1 max-h-[70vh] overflow-y-auto">
+            <Link href="/tools" onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 py-3 px-3 bg-gold/10 border border-gold/30 rounded-xl text-sm font-bold text-gold mb-2">
+              🧮 Калькуляторы металлопроката
+            </Link>
             {NAV_ITEMS.map((item) => (
               <div key={item.href} className="pb-2">
                 <Link
