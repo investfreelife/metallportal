@@ -119,6 +119,46 @@ export async function POST(req: NextRequest) {
   if (text.startsWith('/start')) {
     const param = text.split(' ')[1] ?? ''
 
+    // /start manager_TOKEN — connect manager's Telegram to CRM
+    if (param.startsWith('manager_')) {
+      const linkToken = param.replace('manager_', '')
+      // Validate token
+      const { data: stored } = await supabase
+        .from('tenant_settings')
+        .select('value')
+        .eq('tenant_id', TENANT_ID)
+        .eq('key', '_manager_link_token')
+        .single()
+
+      const [storedToken, expiresAt] = (stored?.value ?? '').split('|')
+      if (!storedToken || storedToken !== linkToken || !expiresAt || new Date(expiresAt) < new Date()) {
+        await sendMessage(token, tgId, '❌ Ссылка недействительна или истекла. Сгенерируйте новую в CRM → Настройки → Telegram.')
+        return NextResponse.json({ ok: true })
+      }
+
+      // Save manager chat_id
+      await supabase.from('tenant_settings').upsert(
+        { tenant_id: TENANT_ID, key: 'CRM_MANAGER_TG_ID', value: String(tgId), updated_at: new Date().toISOString() },
+        { onConflict: 'tenant_id,key' }
+      )
+      // Invalidate link token
+      await supabase.from('tenant_settings').upsert(
+        { tenant_id: TENANT_ID, key: '_manager_link_token', value: '', updated_at: new Date().toISOString() },
+        { onConflict: 'tenant_id,key' }
+      )
+
+      await sendMessage(token, tgId,
+        `✅ <b>Telegram подключён к CRM!</b>\n\n` +
+        `👤 ${firstName}${tgUsername ? ' (@' + tgUsername + ')' : ''}\n` +
+        `🆔 Ваш Chat ID: <code>${tgId}</code>\n\n` +
+        `Теперь вы будете получать уведомления о новых лидах прямо сюда.\n\n` +
+        `Команды:\n/status — статус очереди\n/queue — список задач\n\n` +
+        `🔗 <a href="${CRM_URL}">Открыть CRM</a>`,
+        { disable_web_page_preview: true }
+      )
+      return NextResponse.json({ ok: true })
+    }
+
     // /start invite_TOKEN — activate manager account
     if (param.startsWith('invite_')) {
       const inviteToken = param.replace('invite_', '')

@@ -63,176 +63,148 @@ type BotStatus = {
 function TelegramTab() {
   const [status, setStatus] = useState<BotStatus | null>(null)
   const [loadingStatus, setLoadingStatus] = useState(true)
-  const [connecting, setConnecting] = useState(false)
-  const [result, setResult] = useState<{ ok?: boolean; error?: string; bot?: { name: string; username: string }; test_sent?: boolean } | null>(null)
+  const [generatingLink, setGeneratingLink] = useState(false)
+  const [managerLink, setManagerLink] = useState<string | null>(null)
+  const [linkExpiry, setLinkExpiry] = useState(0)
+  const [setupError, setSetupError] = useState('')
 
   async function loadStatus() {
     setLoadingStatus(true)
     const res = await fetch('/api/telegram/status')
-    const d = await res.json()
-    setStatus(d)
+    setStatus(await res.json())
     setLoadingStatus(false)
   }
 
   useEffect(() => { loadStatus() }, [])
 
-  async function connect() {
-    setConnecting(true); setResult(null)
-    const res = await fetch('/api/telegram/setup', { method: 'POST' })
+  // Countdown timer for link
+  useEffect(() => {
+    if (!linkExpiry) return
+    const t = setInterval(() => {
+      setLinkExpiry(s => {
+        if (s <= 1) { clearInterval(t); setManagerLink(null); return 0 }
+        return s - 1
+      })
+    }, 1000)
+    return () => clearInterval(t)
+  }, [linkExpiry])
+
+  async function generateLink() {
+    setGeneratingLink(true); setSetupError(''); setManagerLink(null)
+    const res = await fetch('/api/telegram/link', { method: 'POST' })
     const d = await res.json()
-    setResult(d)
-    setConnecting(false)
-    if (d.ok) loadStatus()
+    setGeneratingLink(false)
+    if (d.ok) { setManagerLink(d.link); setLinkExpiry(d.expires_in) }
+    else setSetupError(d.error ?? 'Ошибка')
   }
 
-  async function disconnect() {
-    if (!confirm('Отключить бота?')) return
-    setConnecting(true)
-    await fetch('/api/telegram/setup', { method: 'DELETE' })
-    setConnecting(false)
+  async function reconnect() {
+    setGeneratingLink(true)
+    await fetch('/api/telegram/setup', { method: 'POST' })
+    setGeneratingLink(false)
     loadStatus()
   }
 
-  const WEBHOOK_URL = 'https://metallportal-crm2.vercel.app/api/telegram/bot'
-  const BOT_LINK = status?.bot?.username ? `https://t.me/${status.bot.username}` : 'https://t.me/'
+  const managerConnected = Boolean(status?.manager_id)
 
   return (
     <div className="space-y-5">
-      {/* Status card */}
+
+      {/* Bot status */}
       <div className={`border rounded-xl p-5 ${
         loadingStatus ? 'bg-gray-900 border-gray-800'
         : status?.connected ? 'bg-emerald-500/10 border-emerald-500/30'
-        : 'bg-gray-900 border-gray-800'
+        : 'bg-amber-500/10 border-amber-500/30'
       }`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {loadingStatus ? (
-              <Loader2 className="w-5 h-5 text-gray-500 animate-spin" />
-            ) : status?.connected ? (
-              <Wifi className="w-5 h-5 text-emerald-400" />
-            ) : (
-              <WifiOff className="w-5 h-5 text-gray-500" />
-            )}
+            {loadingStatus
+              ? <Loader2 className="w-5 h-5 text-gray-500 animate-spin" />
+              : status?.connected ? <Wifi className="w-5 h-5 text-emerald-400" />
+              : <WifiOff className="w-5 h-5 text-amber-400" />
+            }
             <div>
-              <h3 className="text-white font-semibold">
-                {loadingStatus ? 'Проверяем...' : status?.connected ? `✅ Бот подключён` : '⚠️ Бот не подключён'}
-              </h3>
-              {status?.bot && (
-                <p className="text-gray-400 text-xs mt-0.5">
-                  @{status.bot.username} · {status.bot.name}
+              <p className="text-white font-semibold">
+                {loadingStatus ? 'Проверяем...'
+                  : status?.connected ? `✅ Бот активен · @${status.bot?.username}`
+                  : '⚠️ Бот не подключён к webhook'}
+              </p>
+              {managerConnected && (
+                <p className="text-emerald-400 text-xs mt-0.5">
+                  👤 Менеджер подключён · ID: {status?.manager_id}
                 </p>
               )}
             </div>
           </div>
-          <button onClick={loadStatus} disabled={loadingStatus} className="text-gray-500 hover:text-gray-300 transition-colors">
+          <button onClick={loadStatus} disabled={loadingStatus} className="text-gray-500 hover:text-gray-300">
             <RefreshCw className={`w-4 h-4 ${loadingStatus ? 'animate-spin' : ''}`} />
           </button>
         </div>
-
-        {status?.connected && (
-          <div className="mt-4 space-y-2">
-            <div className="flex gap-2 flex-wrap">
-              <a href={BOT_LINK} target="_blank"
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 text-blue-400 text-xs rounded-lg transition-colors">
-                <MessageSquare className="w-3.5 h-3.5" />
-                Открыть бота
-              </a>
-              {status.manager_id && (
-                <span className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 text-gray-400 text-xs rounded-lg">
-                  <Zap className="w-3.5 h-3.5 text-emerald-400" />
-                  Chat ID менеджера: {status.manager_id}
-                </span>
-              )}
-            </div>
-            {status.webhook?.last_error && (
-              <p className="text-red-400 text-xs">⚠️ Последняя ошибка: {status.webhook.last_error}</p>
-            )}
-          </div>
-        )}
       </div>
 
-      {/* Setup section */}
-      {!status?.connected && (
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
-          <h3 className="text-white font-semibold">Шаг 1 — Сохраните токен бота</h3>
-          <div className="bg-gray-800/60 rounded-lg p-3 text-sm text-gray-400 space-y-1.5">
-            <p>1. Напишите <a href="https://t.me/BotFather" target="_blank" className="text-blue-400 underline">@BotFather</a> → /newbot</p>
-            <p>2. Скопируйте токен вида <code className="bg-gray-700 px-1 rounded text-xs">7123456789:AAF...</code></p>
-            <p>3. Вставьте в 🔑 Интеграции → Telegram Bot Token → Сохранить</p>
-          </div>
-
-          <h3 className="text-white font-semibold">Шаг 2 — Укажите свой Chat ID</h3>
-          <div className="bg-gray-800/60 rounded-lg p-3 text-sm text-gray-400 space-y-1.5">
-            <p>1. Напишите <a href="https://t.me/userinfobot" target="_blank" className="text-blue-400 underline">@userinfobot</a> — он ответит вашим ID</p>
-            <p>2. Вставьте в 🔑 Интеграции → Chat ID менеджера → Сохранить</p>
-          </div>
-
-          <h3 className="text-white font-semibold">Шаг 3 — Нажмите «Подключить»</h3>
-        </div>
-      )}
-
-      {/* Connect / Reconnect button */}
-      <div className="flex gap-3">
-        <button
-          onClick={connect}
-          disabled={connecting}
-          className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-medium rounded-xl transition-colors"
-        >
-          {connecting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Bot className="w-4 h-4" />}
-          {status?.connected ? 'Переподключить' : 'Подключить бота'}
+      {/* Reconnect webhook if needed */}
+      {!status?.connected && !loadingStatus && (
+        <button onClick={reconnect} disabled={generatingLink}
+          className="flex items-center gap-2 px-5 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm rounded-xl transition-colors">
+          {generatingLink ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+          Зарегистрировать webhook бота
         </button>
-        {status?.connected && (
-          <button
-            onClick={disconnect}
-            disabled={connecting}
-            className="px-4 py-3 bg-gray-800 hover:bg-red-900/30 text-gray-400 hover:text-red-400 text-sm rounded-xl transition-colors"
-          >
-            Отключить
-          </button>
-        )}
-      </div>
-
-      {/* Result */}
-      {result && (
-        <div className={`border rounded-xl p-4 text-sm ${
-          result.ok ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-red-500/10 border-red-500/30'
-        }`}>
-          {result.ok ? (
-            <div className="space-y-1.5">
-              <p className="text-emerald-400 font-medium">✅ Бот успешно подключён!</p>
-              {result.bot && <p className="text-gray-400">🤖 @{result.bot.username} — {result.bot.name}</p>}
-              {result.test_sent
-                ? <p className="text-gray-400">📱 Тестовое сообщение отправлено менеджеру</p>
-                : <p className="text-amber-400">⚠️ Chat ID менеджера не задан — тест не отправлен</p>
-              }
-            </div>
-          ) : (
-            <p className="text-red-400">{result.error}</p>
-          )}
-        </div>
       )}
 
-      {/* Webhook URL info */}
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-3">
-        <h3 className="text-white font-semibold text-sm">📡 Webhook URL бота</h3>
-        <div className="flex items-center gap-2">
-          <code className="flex-1 text-xs text-emerald-400 bg-gray-950 px-3 py-2 rounded-lg break-all">{WEBHOOK_URL}</code>
-          <CopyButton text={WEBHOOK_URL} />
+      {/* Manager connection */}
+      <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
+        <div>
+          <h3 className="text-white font-semibold">
+            {managerConnected ? '✅ Менеджер подключён' : '👤 Подключить менеджера'}
+          </h3>
+          <p className="text-gray-500 text-xs mt-1">
+            {managerConnected
+              ? 'Уведомления о новых лидах и кнопки одобрения приходят в Telegram'
+              : 'После подключения уведомления о лидах и кнопки одобрения будут приходить в Telegram'}
+          </p>
         </div>
-        <p className="text-gray-600 text-xs">Бот принимает: ✅ одобрение из очереди · 💬 сообщения клиентов · 👤 активация сотрудников</p>
+
+        {!managerLink ? (
+          <button
+            onClick={generateLink}
+            disabled={generatingLink || loadingStatus}
+            className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold rounded-xl transition-colors"
+          >
+            {generatingLink ? <Loader2 className="w-4 h-4 animate-spin" /> : <Bot className="w-4 h-4" />}
+            {managerConnected ? 'Переподключить Telegram' : 'Подключить мой Telegram'}
+          </button>
+        ) : (
+          <div className="space-y-3">
+            <p className="text-gray-400 text-sm">Нажмите кнопку ниже — откроется бот, отправьте <code className="text-emerald-400">/start</code></p>
+            <div className="flex items-center gap-2">
+              <a
+                href={managerLink}
+                target="_blank"
+                className="flex-1 flex items-center justify-center gap-2 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-colors text-sm"
+              >
+                <MessageSquare className="w-4 h-4" />
+                Открыть бота и подключиться
+              </a>
+              <CopyButton text={managerLink} />
+            </div>
+            <p className="text-amber-400 text-xs">⏱ Ссылка действует {Math.floor(linkExpiry / 60)}:{String(linkExpiry % 60).padStart(2, '0')}</p>
+          </div>
+        )}
+
+        {setupError && <p className="text-red-400 text-sm">{setupError}</p>}
       </div>
 
-      {/* Manager bot link */}
+      {/* Bot link for clients */}
       {status?.bot?.username && (
-        <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-5">
-          <h3 className="text-white font-semibold mb-2">Поделитесь ботом с клиентами</h3>
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-3">
+          <h3 className="text-white font-semibold text-sm">💬 Ссылка для клиентов</h3>
           <div className="flex items-center gap-2">
             <code className="flex-1 text-sm text-blue-400 bg-gray-950 px-3 py-2 rounded-lg">
               https://t.me/{status.bot.username}
             </code>
             <CopyButton text={`https://t.me/${status.bot.username}`} />
           </div>
-          <p className="text-gray-500 text-xs mt-2">Разместите на сайте — клиенты пишут боту → сразу попадают в CRM</p>
+          <p className="text-gray-600 text-xs">Разместите на сайте — клиенты пишут боту → контакт сразу в CRM</p>
         </div>
       )}
     </div>
@@ -243,7 +215,6 @@ function TelegramTab() {
 
 function IntegrationsTab() {
   const [fields, setFields] = useState({
-    OPENROUTER_API_KEY: '', TELEGRAM_BOT_TOKEN: '', CRM_MANAGER_TG_ID: '',
     RESEND_API_KEY: '', CRM_FROM_EMAIL: '', WEBHOOK_SECRET: '',
   })
   const [savedKeys, setSavedKeys] = useState<Record<string, boolean>>({})
@@ -253,23 +224,8 @@ function IntegrationsTab() {
 
   const integrations = [
     {
-      group: '🤖 ИИ — OpenRouter',
-      desc: 'GPT-4o-mini анализирует лидов, генерирует сообщения',
-      hint: 'Получить ключ: openrouter.ai → Keys',
-      fields: [{ key: 'OPENROUTER_API_KEY', label: 'API Key', placeholder: 'sk-or-v1-...' }],
-    },
-    {
-      group: '📱 Telegram',
-      desc: 'Уведомления менеджеру с кнопками одобрения',
-      hint: '@BotFather → /newbot → получить токен; Chat ID: написать @userinfobot',
-      fields: [
-        { key: 'TELEGRAM_BOT_TOKEN', label: 'Bot Token', placeholder: '7123456789:AAF...' },
-        { key: 'CRM_MANAGER_TG_ID', label: 'Chat ID менеджера', placeholder: '123456789' },
-      ],
-    },
-    {
-      group: '📧 Email — Resend',
-      desc: 'Отправка КП, подтверждений заказов',
+      group: ' Email — Resend',
+      desc: 'Отправка КП и подтверждений заказов клиентам',
       hint: 'resend.com → API Keys → Create API Key',
       fields: [
         { key: 'RESEND_API_KEY', label: 'API Key', placeholder: 're_...' },
@@ -278,8 +234,8 @@ function IntegrationsTab() {
     },
     {
       group: '🔒 Безопасность',
-      desc: 'Защита webhook от посторонних запросов',
-      hint: 'Добавьте заголовок x-webhook-secret в форме отправки',
+      desc: 'Защита webhook от посторонних запросов на сайте',
+      hint: 'Добавьте заголовок x-webhook-secret в формах на сайте',
       fields: [{ key: 'WEBHOOK_SECRET', label: 'Webhook Secret', placeholder: 'my-secret-key-123' }],
     },
   ]
@@ -287,7 +243,7 @@ function IntegrationsTab() {
   async function save() {
     setSaving(true)
     const payload: Record<string, string> = {}
-    for (const [k, v] of Object.entries(fields)) {
+    for (const [k, v] of Object.entries(fields as Record<string, string>)) {
       if (v.trim() && !v.startsWith('••')) payload[k] = v.trim()
     }
     const res = await fetch('/api/settings', {
@@ -312,7 +268,7 @@ function IntegrationsTab() {
 
   return (
     <div className="space-y-5">
-      <p className="text-gray-500 text-sm">Вставьте ключи — они сохраняются в базе данных, не нужно трогать Vercel.</p>
+      <p className="text-gray-500 text-sm">Вставьте ключи — сохраняются в БД, Vercel трогать не нужно.</p>
 
       {integrations.map(group => (
         <div key={group.group} className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-3">
@@ -331,7 +287,7 @@ function IntegrationsTab() {
                 <div className="relative flex-1">
                   <input
                     type={show[key] ? 'text' : 'password'}
-                    value={fields[key as keyof typeof fields]}
+                    value={(fields as Record<string, string>)[key] ?? ''}
                     onChange={e => update(key, e.target.value)}
                     placeholder={placeholder}
                     className="w-full px-3.5 py-2.5 pr-10 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
