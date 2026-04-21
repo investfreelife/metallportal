@@ -87,6 +87,15 @@
   2. `CRM_MANAGER_TG_ID` → написать @userinfobot в Telegram → получить chat_id → добавить в Vercel env
   3. После добавления env → `npx vercel --prod` из `crm/`
 
+### AI CRM — Phase 4: Каналы и аналитика (20 апр 2026)
+- **`crm/src/lib/email.ts`** — Resend email (`sendEmail`, `buildProposalEmail`, `buildOrderConfirmEmail`)
+- **`crm/src/app/api/email/send/route.ts`** — POST /api/email/send (template: 'proposal'|'order_confirm')
+- **`crm/src/app/(dashboard)/analytics/page.tsx`** — Аналитика: KPI, источники, воронка, топ страницы, AI Score
+- **`crm/src/app/(dashboard)/settings/page.tsx`** — Переписан: статус всех интеграций, инструкции, трекинг-код, webhook URL
+- **Sidebar** — добавлена вкладка Аналитика (BarChart2)
+- **`crm/supabase-migration-001.sql`** — ⚠️ НУЖНО выполнить в Supabase SQL Editor
+- **Env vars нужны**: `TELEGRAM_BOT_TOKEN`, `CRM_MANAGER_TG_ID`, `RESEND_API_KEY`
+
 ## 🔄 В ПРОЦЕССЕ
 - SEO генерация: ~3900/12166 готово, скрипт крутится в фоне
   Логи: tail -f /tmp/seo_generation.log
