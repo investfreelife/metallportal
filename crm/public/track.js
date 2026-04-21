@@ -1,13 +1,19 @@
 ;(function () {
   'use strict'
 
-  var params = (document.currentScript || {}).src || ''
-  var tid = new URL(params, location.href).searchParams.get('tid')
-  if (!tid) return
+  // currentScript is null for deferred scripts — parse tid from all script tags
+  var CRM_ORIGIN = 'https://metallportal-crm2.vercel.app'
+  var ENDPOINT = CRM_ORIGIN + '/api/track'
 
-  var ENDPOINT = (document.currentScript || {}).src
-    ? new URL((document.currentScript || {}).src).origin + '/api/track'
-    : '/api/track'
+  var tid = null
+  var scripts = document.querySelectorAll('script[src*="track.js"]')
+  for (var i = 0; i < scripts.length; i++) {
+    try {
+      var t = new URL(scripts[i].src).searchParams.get('tid')
+      if (t) { tid = t; break }
+    } catch (e) {}
+  }
+  if (!tid) return
 
   // ── Session & visitor fingerprint ───────────────────────────────────────
   function uid() {
@@ -57,8 +63,9 @@
       ts: Date.now(),
     }, data || {})
 
+    var json = JSON.stringify(payload)
     if (navigator.sendBeacon) {
-      navigator.sendBeacon(ENDPOINT, JSON.stringify(payload))
+      navigator.sendBeacon(ENDPOINT, new Blob([json], { type: 'application/json' }))
     } else {
       fetch(ENDPOINT, {
         method: 'POST',

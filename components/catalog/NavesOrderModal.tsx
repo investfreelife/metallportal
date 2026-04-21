@@ -70,13 +70,16 @@ export default function NavesOrderModal({ productName, price, area, onClose }: P
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name, phone, comment,
+          name, phone, comment, type: "callback",
           date: selectedDate ? formatDate(selectedDate) : "",
           time: selectedTime,
           product: productName,
           area, price,
         }),
       });
+      if (typeof window !== "undefined" && (window as Window & { mpTrack?: (t: string, d: object) => void }).mpTrack) {
+        (window as Window & { mpTrack?: (t: string, d: object) => void }).mpTrack!("form_submit", { contact_name: name, contact_phone: phone });
+      }
     } catch {}
     setStep("done");
     setSubmitting(false);

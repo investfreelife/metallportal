@@ -6,8 +6,7 @@
  *   CRM_MANAGER_TG_ID      — manager's personal Telegram chat_id (get via @userinfobot)
  */
 
-const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
-const MANAGER_TG_ID = process.env.CRM_MANAGER_TG_ID
+import { getSetting } from './settings'
 
 const PRIORITY_EMOJI: Record<string, string> = {
   high:   '🔴',
@@ -33,6 +32,8 @@ export interface NotifyPayload {
 }
 
 export async function notifyManager(payload: NotifyPayload): Promise<boolean> {
+  const BOT_TOKEN = await getSetting('TELEGRAM_BOT_TOKEN')
+  const MANAGER_TG_ID = await getSetting('CRM_MANAGER_TG_ID')
   if (!BOT_TOKEN || !MANAGER_TG_ID) return false
 
   const emoji = PRIORITY_EMOJI[payload.priority] ?? '⚪'
@@ -84,6 +85,7 @@ export async function notifyManager(payload: NotifyPayload): Promise<boolean> {
 }
 
 export async function answerCallbackQuery(callbackQueryId: string, text: string): Promise<void> {
+  const BOT_TOKEN = await getSetting('TELEGRAM_BOT_TOKEN')
   if (!BOT_TOKEN) return
   await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/answerCallbackQuery`, {
     method: 'POST',
@@ -93,6 +95,7 @@ export async function answerCallbackQuery(callbackQueryId: string, text: string)
 }
 
 export async function editMessageText(chatId: number | string, messageId: number, text: string): Promise<void> {
+  const BOT_TOKEN = await getSetting('TELEGRAM_BOT_TOKEN')
   if (!BOT_TOKEN) return
   await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/editMessageText`, {
     method: 'POST',

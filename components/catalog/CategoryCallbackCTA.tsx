@@ -16,8 +16,11 @@ export default function CategoryCallbackCTA() {
       await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, phone }),
+        body: JSON.stringify({ name, phone, type: "callback" }),
       });
+      if (typeof window !== "undefined" && (window as Window & { mpTrack?: (t: string, d: object) => void }).mpTrack) {
+        (window as Window & { mpTrack?: (t: string, d: object) => void }).mpTrack!("form_submit", { phone, contact_name: name, contact_phone: phone });
+      }
     } catch {}
     setSent(true);
     setLoading(false);

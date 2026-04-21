@@ -48,6 +48,12 @@ export default function CartPage() {
     const json = await res.json();
     setSubmitting(false);
     if (!res.ok) { setErr(json.error || "Ошибка отправки"); return; }
+    // Fire CRM tracking event
+    if (typeof window !== "undefined" && (window as Window & { mpTrack?: (t: string, d: object) => void }).mpTrack) {
+      (window as Window & { mpTrack?: (t: string, d: object) => void }).mpTrack!("form_submit", {
+        contact_name: name, contact_phone: phone, contact_email: email, cart_value: total,
+      });
+    }
     clearCart();
     setDone(true);
   };

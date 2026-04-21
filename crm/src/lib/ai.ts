@@ -3,7 +3,8 @@
  * Analyzes new leads and generates personalized suggested actions.
  */
 
-const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY
+import { getSetting } from './settings'
+
 const REFERER = 'https://metallportal-crm2.vercel.app'
 
 interface LeadContext {
@@ -30,6 +31,7 @@ interface AIAnalysis {
 }
 
 export async function analyzeNewLead(ctx: LeadContext): Promise<AIAnalysis | null> {
+  const OPENROUTER_KEY = await getSetting('OPENROUTER_API_KEY')
   if (!OPENROUTER_KEY) return null
 
   const contactInfo = [
@@ -97,6 +99,7 @@ export async function generateWeeklyInsight(stats: {
   conversion_rate: number
   top_sources: string[]
 }): Promise<string> {
+  const OPENROUTER_KEY = await getSetting('OPENROUTER_API_KEY')
   if (!OPENROUTER_KEY) return ''
 
   const prompt = `Ты — аналитик CRM МеталлПортал. Данные за неделю:
