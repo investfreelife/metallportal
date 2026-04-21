@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { analyzeNewLead } from '@/lib/ai'
 import { notifyManager } from '@/lib/telegram'
+import { logEvent } from '@/lib/logger'
 
 /**
  * Generic webhook endpoint for forms on metallportal.ru
@@ -115,8 +116,8 @@ export async function POST(request: NextRequest) {
     })
   }
 
-  // ── Add to AI queue if new lead or order ─────────────────────────────────
-  if (contactId && (isNew || type === 'order')) {
+  // ── Add to AI queue for ALL form submissions ─────────────────────────────
+  if (contactId) {
     const priority = type === 'order' ? 'high' : 'normal'
     const actionType = type === 'order' ? 'make_call' : 'send_proposal'
 
@@ -160,7 +161,7 @@ export async function POST(request: NextRequest) {
     if (queueItem) {
       const queueId = queueItem.id
 
-      await notifyManager({
+      const notified = await notifyManager({
         queue_id: queueId,
         contact_name: name ? String(name) : null,
         contact_phone: phone ? String(phone) : null,
@@ -169,6 +170,7 @@ export async function POST(request: NextRequest) {
         ai_reasoning: reasoning + (clientMsg ? `\n\n💬 Сообщение: «${clientMsg}»` : ''),
         suggested_message: suggested,
       })
+      await logEvent('tg_notify_manager', { queueId, notified, contact: name || phone }, notified ? 'ok' : 'failed', notified ? undefined : 'CRM_MANAGER_TG_ID или TELEGRAM_BOT_TOKEN не найден')
 
       // Async: AI улучшает текст и присваивает сегмент
       ;(async () => {
@@ -218,5 +220,6 @@ export async function POST(request: NextRequest) {
     utm_campaign: utm_campaign || null,
   })
 
+  await logEvent('webhook_received', { type, name, phone, email, isNew, contactId })
   return NextResponse.json({ ok: true, contact_id: contactId, is_new: isNew })
 }

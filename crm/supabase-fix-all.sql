@@ -55,6 +55,22 @@ ALTER TABLE contacts ADD COLUMN IF NOT EXISTS telegram_chat_id TEXT;
 CREATE INDEX IF NOT EXISTS idx_contacts_phone ON contacts(phone);
 CREATE INDEX IF NOT EXISTS idx_contacts_tg_chat ON contacts(telegram_chat_id);
 
+-- 3b. SYSTEM LOGS для AI-мониторинга
+CREATE TABLE IF NOT EXISTS system_logs (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  tenant_id   UUID NOT NULL DEFAULT 'a1000000-0000-0000-0000-000000000001',
+  ts          TIMESTAMPTZ DEFAULT now(),
+  level       TEXT DEFAULT 'info',   -- info | warn | error
+  event       TEXT NOT NULL,         -- webhook_received | tg_notify_sent | ai_queue_created | etc
+  status      TEXT DEFAULT 'ok',     -- ok | failed
+  detail      JSONB DEFAULT '{}',
+  error_msg   TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_system_logs_ts ON system_logs(ts DESC);
+CREATE INDEX IF NOT EXISTS idx_system_logs_event ON system_logs(event);
+ALTER TABLE system_logs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "service_only_logs" ON system_logs USING (true) WITH CHECK (true);
+
 -- 4. РАСШИРИТЬ activities
 ALTER TABLE activities ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}';
 ALTER TABLE activities ADD COLUMN IF NOT EXISTS direction TEXT;

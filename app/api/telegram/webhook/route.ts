@@ -327,6 +327,23 @@ export async function POST(req: NextRequest) {
       "✅ Ваше сообщение получено. Менеджер ответит в ближайшее время."
     );
 
+    // Уведомить менеджера о новом сообщении от клиента
+    const managerId = await getManagerId();
+    if (managerId) {
+      const clientName = chat?.customer_name || firstName || 'Клиент';
+      await sendTelegram(managerId,
+        `💬 <b>Новое сообщение от клиента</b>\n\n👤 ${clientName} (TG)\n\n📝 <i>${text}</i>\n\n🔗 <a href="https://metallportal-crm2.vercel.app/chats">Открыть чат в CRM</a>`,
+        {
+          disable_web_page_preview: true,
+          reply_markup: {
+            inline_keyboard: [[
+              { text: '💬 Открыть чат', url: 'https://metallportal-crm2.vercel.app/chats' }
+            ]]
+          }
+        }
+      );
+    }
+
     return NextResponse.json({ ok: true });
   } catch (e: any) {
     console.error("Webhook error:", e);
