@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, Image,
-  ActivityIndicator, StyleSheet, SafeAreaView, Alert,
+  ActivityIndicator, StyleSheet, SafeAreaView, Alert, TextInput,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { supabase } from '../../../lib/supabase';
@@ -107,7 +107,20 @@ export default function ProductScreen() {
             <TouchableOpacity style={s.qtyBtn} onPress={() => setQty(Math.max(product.min_order ?? 1, qty - 1))}>
               <Text style={s.qtyBtnText}>−</Text>
             </TouchableOpacity>
-            <Text style={s.qtyVal}>{qty} {product.unit ?? 'шт'}</Text>
+            <View style={s.qtyInputWrap}>
+              <TextInput
+                style={s.qtyInput}
+                value={String(qty)}
+                onChangeText={(t) => {
+                  const n = parseFloat(t.replace(',', '.'));
+                  if (!isNaN(n) && n > 0) setQty(n);
+                  else if (t === '' || t === '0') setQty(product.min_order ?? 1);
+                }}
+                keyboardType="decimal-pad"
+                selectTextOnFocus
+              />
+              <Text style={s.qtyUnit}>{product.unit ?? 'шт'}</Text>
+            </View>
             <TouchableOpacity style={s.qtyBtn} onPress={() => setQty(qty + 1)}>
               <Text style={s.qtyBtnText}>+</Text>
             </TouchableOpacity>
@@ -155,10 +168,12 @@ const s = StyleSheet.create({
   descBlock: { backgroundColor: '#fff', borderRadius: 14, padding: 16 },
   desc: { fontSize: 14, color: '#475569', lineHeight: 22 },
   footer: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#fff', padding: 16, borderTopWidth: 1, borderTopColor: '#e2e8f0', gap: 12 },
-  qtyRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20 },
-  qtyBtn: { width: 40, height: 40, borderRadius: 20, borderWidth: 1, borderColor: '#cbd5e1', alignItems: 'center', justifyContent: 'center' },
-  qtyBtnText: { fontSize: 20, color: PRIMARY },
-  qtyVal: { fontSize: 16, fontWeight: '600', color: '#0f172a', minWidth: 60, textAlign: 'center' },
+  qtyRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12 },
+  qtyBtn: { width: 44, height: 44, borderRadius: 22, borderWidth: 1, borderColor: '#cbd5e1', alignItems: 'center', justifyContent: 'center' },
+  qtyBtnText: { fontSize: 22, color: PRIMARY },
+  qtyInputWrap: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#cbd5e1', borderRadius: 12, paddingHorizontal: 10, backgroundColor: '#fff', minWidth: 80 },
+  qtyInput: { fontSize: 18, fontWeight: '700', color: '#0f172a', paddingVertical: 8, minWidth: 40, textAlign: 'center' },
+  qtyUnit: { fontSize: 13, color: '#64748b', marginLeft: 4 },
   cartBtn: { backgroundColor: ACCENT, borderRadius: 14, paddingVertical: 16, alignItems: 'center' },
   cartBtnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
 });

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   View, Text, FlatList, TouchableOpacity,
   StyleSheet, SafeAreaView, Alert, TextInput, Modal, ScrollView, ActivityIndicator,
@@ -94,7 +94,19 @@ export default function CartScreen() {
                 <TouchableOpacity style={s.qtyBtn} onPress={() => updateQty(item.id, item.qty - 1)}>
                   <Text style={s.qtyBtnText}>−</Text>
                 </TouchableOpacity>
-                <Text style={s.qtyVal}>{item.qty} {item.unit}</Text>
+                <View style={s.qtyInputWrap}>
+                  <TextInput
+                    style={s.qtyInput}
+                    value={String(item.qty)}
+                    onChangeText={(t) => {
+                      const n = parseFloat(t.replace(',', '.'));
+                      if (!isNaN(n) && n > 0) updateQty(item.id, n);
+                    }}
+                    keyboardType="decimal-pad"
+                    selectTextOnFocus
+                  />
+                  <Text style={s.qtyUnitLabel}>{item.unit}</Text>
+                </View>
                 <TouchableOpacity style={s.qtyBtn} onPress={() => updateQty(item.id, item.qty + 1)}>
                   <Text style={s.qtyBtnText}>+</Text>
                 </TouchableOpacity>
@@ -161,10 +173,12 @@ const s = StyleSheet.create({
   itemName: { fontSize: 14, fontWeight: '500', color: '#0f172a', flex: 1, marginRight: 8 },
   removeBtn: { fontSize: 16, color: '#94a3b8' },
   cardBottom: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  qtyRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  qtyRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   qtyBtn: { width: 32, height: 32, borderRadius: 16, borderWidth: 1, borderColor: '#cbd5e1', alignItems: 'center', justifyContent: 'center' },
   qtyBtnText: { fontSize: 18, color: PRIMARY, lineHeight: 22 },
-  qtyVal: { fontSize: 14, fontWeight: '500', color: '#0f172a', minWidth: 50, textAlign: 'center' },
+  qtyInputWrap: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#cbd5e1', borderRadius: 10, paddingHorizontal: 8, backgroundColor: '#fff', minWidth: 70 },
+  qtyInput: { fontSize: 15, fontWeight: '700', color: '#0f172a', paddingVertical: 6, minWidth: 32, textAlign: 'center' },
+  qtyUnitLabel: { fontSize: 12, color: '#64748b', marginLeft: 3 },
   itemPrice: { fontSize: 16, fontWeight: '700', color: PRIMARY },
   footer: { backgroundColor: '#fff', padding: 16, borderTopWidth: 1, borderTopColor: '#e2e8f0', gap: 12 },
   totalRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
