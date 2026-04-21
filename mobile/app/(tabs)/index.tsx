@@ -1,31 +1,81 @@
-import { StyleSheet } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+  View, Text, FlatList, TouchableOpacity,
+  ActivityIndicator, StyleSheet, SafeAreaView,
+} from 'react-native';
+import { useRouter } from 'expo-router';
+import { supabase } from '../../lib/supabase';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+const PRIMARY = '#1a56db';
 
-export default function TabOneScreen() {
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  parent_id: string | null;
+}
+
+export default function CatalogScreen() {
+  const router = useRouter();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase
+      .from('categories')
+      .select('id,name,slug,parent_id')
+      .eq('is_active', true)
+      .is('parent_id', null)
+      .order('name')
+      .then(({ data }) => {
+        setCategories(data ?? []);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={s.center}>
+        <ActivityIndicator size="large" color={PRIMARY} />
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
-    </View>
+    <SafeAreaView style={s.container}>
+      <View style={s.header}>
+        <Text style={s.headerTitle}>Каталог</Text>
+      </View>
+      <FlatList
+        data={categories}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={s.list}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={s.card}
+            onPress={() => router.push(`/catalog/${item.slug}` as any)}
+          >
+            <Text style={s.cardName}>{item.name}</Text>
+            <Text style={s.arrow}>→</Text>
+          </TouchableOpacity>
+        )}
+      />
+    </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+const s = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#f8fafc' },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  header: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 12, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#e2e8f0' },
+  headerTitle: { fontSize: 22, fontWeight: '700', color: '#0f172a' },
+  list: { padding: 16, gap: 12 },
+  card: {
+    backgroundColor: '#fff', borderRadius: 14, padding: 18,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 6, shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
+  cardName: { fontSize: 16, fontWeight: '600', color: '#0f172a', flex: 1 },
+  arrow: { fontSize: 18, color: PRIMARY },
 });
