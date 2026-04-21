@@ -103,6 +103,7 @@ export async function POST(request: NextRequest) {
 
         // Create AI queue item for new lead
         if (type === 'form_submit' || type === 'webhook_order') {
+          const msg = `Добрый день${contact_name ? ', ' + contact_name : ''}! Спасибо за обращение. Подготовлю предложение и свяжусь с вами в ближайшее время.`
           await supabase.from('ai_queue').insert({
             tenant_id,
             contact_id: contactId,
@@ -110,7 +111,8 @@ export async function POST(request: NextRequest) {
             priority: 'high',
             status: 'pending',
             ai_reasoning: `Новый лид с сайта. Источник: ${utm_source || 'прямой'}. Тип обращения: ${type}.`,
-            suggested_message: `Добрый день${contact_name ? ', ' + contact_name : ''}! Спасибо за обращение. Подготовлю предложение и свяжусь с вами в ближайшее время.`,
+            content: msg,
+            suggested_message: msg,
           })
         }
       }

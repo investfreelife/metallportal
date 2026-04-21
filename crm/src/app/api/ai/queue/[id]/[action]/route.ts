@@ -27,24 +27,24 @@ export async function PATCH(
       update = { status: 'approved', approved_at: new Date().toISOString() }
       break
     case 'reject':
-      update = { status: 'rejected', rejected_at: new Date().toISOString() }
+      update = { status: 'rejected', rejected_at: new Date().toISOString(), rejection_reason: 'Отклонено менеджером' }
       break
     case 'snooze1':
       update = {
         status: 'snoozed',
-        snoozed_until: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+        auto_execute_at: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
       }
       break
     case 'snooze3':
       update = {
         status: 'snoozed',
-        snoozed_until: new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString(),
+        auto_execute_at: new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString(),
       }
       break
     case 'snooze24':
       update = {
         status: 'snoozed',
-        snoozed_until: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+        auto_execute_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
       }
       break
     default:

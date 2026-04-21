@@ -71,6 +71,22 @@
 - **Scoring**: form_submit+30, add_to_cart+25, phone_click+15, page_view+2
 - **SUPABASE_SERVICE_ROLE_KEY** добавлен в Vercel env для обхода RLS
 
+### AI CRM — Phase 3: ИИ-мозг и Telegram (20 апр 2026)
+- **`crm/src/lib/ai.ts`** — GPT-4o (via OpenRouter) анализ новых лидов
+  - `analyzeNewLead()` → reasoning, suggested_message, action_type, priority, segment
+  - `generateWeeklyInsight()` → еженедельный аналитический отчёт
+- **`crm/src/lib/telegram.ts`** — уведомления менеджеру с кнопками
+  - `notifyManager()` → отправляет карточку с кнопками ✅ ✏️ ❌ ⏰
+  - Нужны env: `TELEGRAM_BOT_TOKEN`, `CRM_MANAGER_TG_ID` (chat_id менеджера)
+- **`crm/src/app/api/ai/queue/[id]/[action]/route.ts`** — PATCH approve/reject/snooze1/3/24
+- **`crm/src/app/api/webhook/route.ts`** — обновлён: вызывает GPT-4o → обновляет ai_queue → уведомляет Telegram
+- **`app/api/telegram/webhook/route.ts`** — добавлен обработчик `callback_query` с префиксом `crm_`
+  - При нажатии кнопки → PATCH на CRM API → answerCallbackQuery → editMessageReplyMarkup
+- **⚠️ Нужно настроить**:
+  1. `TELEGRAM_BOT_TOKEN` → добавить в Vercel env CRM проекта
+  2. `CRM_MANAGER_TG_ID` → написать @userinfobot в Telegram → получить chat_id → добавить в Vercel env
+  3. После добавления env → `npx vercel --prod` из `crm/`
+
 ## 🔄 В ПРОЦЕССЕ
 - SEO генерация: ~3900/12166 готово, скрипт крутится в фоне
   Логи: tail -f /tmp/seo_generation.log

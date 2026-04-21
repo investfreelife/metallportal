@@ -117,8 +117,8 @@ export async function POST(request: NextRequest) {
 
   // ── Add to AI queue if new lead or order ─────────────────────────────────
   if (contactId && (isNew || type === 'order')) {
-    const priority = type === 'order' ? 'high' : 'medium'
-    const actionType = type === 'order' ? 'call' : 'send_proposal'
+    const priority = type === 'order' ? 'high' : 'normal'
+    const actionType = type === 'order' ? 'make_call' : 'send_proposal'
 
     const reasoning =
       type === 'order'
@@ -137,6 +137,7 @@ export async function POST(request: NextRequest) {
       priority,
       status: 'pending',
       ai_reasoning: reasoning,
+      content: suggested,
       suggested_message: suggested,
     }).select('id').single()
 
@@ -158,10 +159,14 @@ export async function POST(request: NextRequest) {
         })
 
         if (ai) {
+          const mappedPriority = ai.priority === 'medium' ? 'normal' : ai.priority
+          const mappedAction = ai.action_type === 'call' ? 'make_call' : ai.action_type === 'schedule' ? 'create_task' : ai.action_type
           await supabase.from('ai_queue').update({
             ai_reasoning: ai.reasoning,
+            content: ai.suggested_message,
             suggested_message: ai.suggested_message,
-            priority: ai.priority,
+            priority: mappedPriority,
+            action_type: mappedAction,
           }).eq('id', queueId)
 
           if (contactId) {
@@ -176,8 +181,8 @@ export async function POST(request: NextRequest) {
             queue_id: queueId,
             contact_name: name ? String(name) : null,
             contact_phone: phone ? String(phone) : null,
-            action_type: ai.action_type,
-            priority: ai.priority,
+            action_type: ai.action_type === 'call' ? 'make_call' : ai.action_type,
+            priority: ai.priority === 'medium' ? 'normal' : ai.priority,
             ai_reasoning: ai.reasoning,
             suggested_message: ai.suggested_message,
           })
