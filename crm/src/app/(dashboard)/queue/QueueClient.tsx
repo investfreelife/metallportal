@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { formatRelativeTime, getActionTypeLabel } from '@/lib/utils'
-import { CheckCircle, XCircle, Clock, Edit3, Sparkles } from 'lucide-react'
+import { CheckCircle, XCircle, Clock, Edit3, Sparkles, MessageSquarePlus } from 'lucide-react'
 
 type QueueItem = {
   id: string
@@ -39,10 +39,13 @@ export default function QueueClient({ items }: { items: QueueItem[] }) {
   const [rejectReason, setRejectReason] = useState('')
   const [processing, setProcessing] = useState<string | null>(null)
   const [localItems, setLocalItems] = useState(items)
+  const [feedbacks, setFeedbacks] = useState<Record<string, string>>({})  // itemId → feedback text
+  const [feedbackOpen, setFeedbackOpen] = useState<Record<string, boolean>>({})
 
   async function approve(item: QueueItem) {
     setProcessing(item.id)
     const finalContent = editingId === item.id ? editedContent : item.content
+    const managerFeedback = feedbacks[item.id] ?? ''
 
     // If action is email/proposal and contact has email → auto-send
     const emailActions = ['send_email', 'send_proposal', 'send_message']
@@ -59,7 +62,11 @@ export default function QueueClient({ items }: { items: QueueItem[] }) {
         }),
       })
     } else {
-      await fetch(`/api/ai/queue/${item.id}/approve`, { method: 'PATCH' })
+      await fetch(`/api/ai/queue/${item.id}/approve`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ manager_feedback: managerFeedback }),
+      })
     }
 
     setLocalItems((prev) => prev.filter((i) => i.id !== item.id))
@@ -70,7 +77,12 @@ export default function QueueClient({ items }: { items: QueueItem[] }) {
 
   async function reject(item: QueueItem) {
     setProcessing(item.id)
-    await fetch(`/api/ai/queue/${item.id}/reject`, { method: 'PATCH' })
+    const managerFeedback = feedbacks[item.id] ?? ''
+    await fetch(`/api/ai/queue/${item.id}/reject`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ manager_feedback: managerFeedback }),
+    })
     setLocalItems((prev) => prev.filter((i) => i.id !== item.id))
     setRejectingId(null)
     setRejectReason('')
@@ -176,6 +188,30 @@ export default function QueueClient({ items }: { items: QueueItem[] }) {
                     <p className="p-3.5 text-gray-300 text-sm whitespace-pre-wrap">{item.content}</p>
                   )}
                 </div>
+              </div>
+
+              {/* Обратная связь менеджера → уходит в Claude для улучшения промпта */}
+              <div className="border-t border-gray-700/50 pt-3">
+                <button
+                  onClick={() => setFeedbackOpen(f => ({ ...f, [item.id]: !f[item.id] }))}
+                  className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-purple-400 transition-colors"
+                >
+                  <MessageSquarePlus className="w-3.5 h-3.5" />
+                  {feedbackOpen[item.id] ? 'Скрыть комментарий' : 'Добавить комментарий для обучения ИИ'}
+                </button>
+                {feedbackOpen[item.id] && (
+                  <div className="mt-2 space-y-1.5">
+                    <textarea
+                      autoFocus
+                      rows={2}
+                      value={feedbacks[item.id] ?? ''}
+                      onChange={e => setFeedbacks(f => ({ ...f, [item.id]: e.target.value }))}
+                      placeholder="Напишите что не так с ответом ИИ или что нужно улучшить... Claude скорректирует промпт"
+                      className="w-full px-3 py-2 bg-purple-950/30 border border-purple-500/30 rounded-lg text-gray-300 text-sm placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 resize-none"
+                    />
+                    <p className="text-gray-600 text-xs">Комментарий отправится вместе с одобрением/отклонением</p>
+                  </div>
+                )}
               </div>
 
               {isRejecting && (

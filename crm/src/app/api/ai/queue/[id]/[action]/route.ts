@@ -16,6 +16,12 @@ export async function PATCH(
 ) {
   const { id, action } = await params
 
+  let managerFeedback: string | null = null
+  try {
+    const body = await request.json()
+    managerFeedback = body?.manager_feedback ?? null
+  } catch { /* no body — ok */ }
+
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -76,6 +82,7 @@ export async function PATCH(
         ai_priority: item.priority,
         manager_decision: action as 'approved' | 'rejected',
         manager_response_minutes: responseMinutes,
+        actual_result: managerFeedback || null,
       })
     })().catch(() => {})
   }
