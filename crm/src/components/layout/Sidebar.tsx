@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import {
   LayoutDashboard,
   Users,
@@ -22,18 +21,17 @@ const navItems = [
 ]
 
 interface SidebarProps {
-  userEmail?: string
   userName?: string
+  userLogin?: string
   pendingCount?: number
 }
 
-export default function Sidebar({ userEmail, userName, pendingCount = 0 }: SidebarProps) {
+export default function Sidebar({ userName, userLogin, pendingCount = 0 }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
 
   async function handleLogout() {
-    const supabase = createClient()
-    await supabase.auth.signOut()
+    await fetch('/api/auth/logout', { method: 'POST' })
     router.push('/login')
     router.refresh()
   }
@@ -83,15 +81,15 @@ export default function Sidebar({ userEmail, userName, pendingCount = 0 }: Sideb
         <div className="flex items-center gap-3 px-3 py-2 mb-1">
           <div className="flex items-center justify-center w-7 h-7 bg-gray-700 rounded-full flex-shrink-0">
             <span className="text-xs text-gray-300 font-medium">
-              {(userName || userEmail || '?')[0].toUpperCase()}
+              {(userName || userLogin || '?')[0].toUpperCase()}
             </span>
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-white text-xs font-medium truncate">
-              {userName || userEmail || 'Пользователь'}
+              {userName || userLogin || 'Пользователь'}
             </p>
-            {userName && (
-              <p className="text-gray-500 text-xs truncate">{userEmail}</p>
+            {userLogin && userName && (
+              <p className="text-gray-500 text-xs truncate">{userLogin}</p>
             )}
           </div>
         </div>
