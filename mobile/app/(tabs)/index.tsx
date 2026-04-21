@@ -120,25 +120,31 @@ export default function CatalogScreen() {
 
   if (loading) return <View style={s.center}><ActivityIndicator size="large" color={PRIMARY} /></View>;
 
-  if (isSearching) {
-    return (
-      <SafeAreaView style={s.container}>
-        <View style={s.searchHeader}><SearchBar value={search} onChange={setSearch} searching={searching} /></View>
-        {searching ? (
+  return (
+    <SafeAreaView style={s.container}>
+      {/* Search bar — always mounted, never unmounts */}
+      <View style={s.searchHeader}>
+        <SearchBar value={search} onChange={setSearch} searching={searching} />
+        {isSearching && (
+          <TouchableOpacity onPress={() => setSearch('')} style={s.cancelBtn}>
+            <Text style={s.cancelText}>Отмена</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+
+      {isSearching ? (
+        searching ? (
           <View style={s.center}><ActivityIndicator size="large" color={PRIMARY} /></View>
         ) : (
           <FlatList
             data={searchResults}
             keyExtractor={(item) => item.id}
             contentContainerStyle={s.list}
-            ListEmptyComponent={
-              <View style={s.center}><Text style={s.emptyText}>Ничего не найдено</Text></View>
-            }
-            ListHeaderComponent={
-              searchResults.length > 0
-                ? <Text style={s.sectionTitle2}>Найдено: {searchResults.length} товаров</Text>
-                : null
-            }
+            keyboardShouldPersistTaps="handled"
+            ListEmptyComponent={<View style={s.center}><Text style={s.emptyText}>Ничего не найдено</Text></View>}
+            ListHeaderComponent={searchResults.length > 0
+              ? <Text style={s.sectionTitle2}>Найдено: {searchResults.length} товаров</Text>
+              : null}
             renderItem={({ item }) => (
               <TouchableOpacity style={s.searchCard} onPress={() => router.push(`/catalog/product/${item.id}` as any)}>
                 {item.image_url
@@ -157,56 +163,52 @@ export default function CatalogScreen() {
               </TouchableOpacity>
             )}
           />
-        )}
-      </SafeAreaView>
-    );
-  }
-
-  return (
-    <SafeAreaView style={s.container}>
-      <FlatList
-        data={categories}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={s.list}
-        ListHeaderComponent={() => (
-          <View>
-            <View style={s.hero}>
-              <View style={s.heroBadge}><Text style={s.heroBadgeText}>🔥 Лучшие цены</Text></View>
-              <Text style={s.heroTitle}>МеталлПортал</Text>
-              <Text style={s.heroSub}>12 000+ товаров металлопроката{'\n'}от поставщиков по всей России</Text>
-              <View style={s.heroStats}>
-                <View style={s.heroStat}><Text style={s.heroStatNum}>12K+</Text><Text style={s.heroStatLabel}>товаров</Text></View>
-                <View style={s.heroStatDiv} />
-                <View style={s.heroStat}><Text style={s.heroStatNum}>50+</Text><Text style={s.heroStatLabel}>брендов</Text></View>
-                <View style={s.heroStatDiv} />
-                <View style={s.heroStat}><Text style={s.heroStatNum}>1 день</Text><Text style={s.heroStatLabel}>доставка</Text></View>
+        )
+      ) : (
+        <FlatList
+          data={categories}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={s.list}
+          keyboardShouldPersistTaps="handled"
+          ListHeaderComponent={() => (
+            <View>
+              <View style={s.hero}>
+                <View style={s.heroBadge}><Text style={s.heroBadgeText}>🔥 Лучшие цены</Text></View>
+                <Text style={s.heroTitle}>МеталлПортал</Text>
+                <Text style={s.heroSub}>12 000+ товаров металлопроката{'\n'}от поставщиков по всей России</Text>
+                <View style={s.heroStats}>
+                  <View style={s.heroStat}><Text style={s.heroStatNum}>12K+</Text><Text style={s.heroStatLabel}>товаров</Text></View>
+                  <View style={s.heroStatDiv} />
+                  <View style={s.heroStat}><Text style={s.heroStatNum}>50+</Text><Text style={s.heroStatLabel}>брендов</Text></View>
+                  <View style={s.heroStatDiv} />
+                  <View style={s.heroStat}><Text style={s.heroStatNum}>1 день</Text><Text style={s.heroStatLabel}>доставка</Text></View>
+                </View>
               </View>
+              <View style={s.section}>
+                <Text style={s.sectionTitle}>Популярные разделы</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.quickRow}>
+                  {QUICK_CATEGORIES.map((q) => (
+                    <TouchableOpacity key={q.slug} style={s.quickCard} onPress={() => router.push(`/catalog/${q.slug}` as any)}>
+                      <Text style={s.quickIcon}>{q.icon}</Text>
+                      <Text style={s.quickName}>{q.name}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+              <Text style={s.sectionTitle2}>Все категории</Text>
             </View>
-            <SearchBar value={search} onChange={setSearch} searching={searching} />
-            <View style={s.section}>
-              <Text style={s.sectionTitle}>Популярные разделы</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.quickRow}>
-                {QUICK_CATEGORIES.map((q) => (
-                  <TouchableOpacity key={q.slug} style={s.quickCard} onPress={() => router.push(`/catalog/${q.slug}` as any)}>
-                    <Text style={s.quickIcon}>{q.icon}</Text>
-                    <Text style={s.quickName}>{q.name}</Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
-            <Text style={s.sectionTitle2}>Все категории</Text>
-          </View>
-        )}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={s.card} onPress={() => router.push(`/catalog/${item.slug}` as any)}>
-            <View style={s.cardIcon}>
-              <Text style={s.cardIconText}>{CATEGORY_ICONS[item.slug] ?? CATEGORY_ICONS['default']}</Text>
-            </View>
-            <Text style={s.cardName}>{item.name}</Text>
-            <Text style={s.arrow}>›</Text>
-          </TouchableOpacity>
-        )}
-      />
+          )}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={s.card} onPress={() => router.push(`/catalog/${item.slug}` as any)}>
+              <View style={s.cardIcon}>
+                <Text style={s.cardIconText}>{CATEGORY_ICONS[item.slug] ?? CATEGORY_ICONS['default']}</Text>
+              </View>
+              <Text style={s.cardName}>{item.name}</Text>
+              <Text style={s.arrow}>›</Text>
+            </TouchableOpacity>
+          )}
+        />
+      )}
     </SafeAreaView>
   );
 }
@@ -229,7 +231,7 @@ const s = StyleSheet.create({
   heroStatLabel: { fontSize: 11, color: 'rgba(255,255,255,0.7)', marginTop: 2 },
   heroStatDiv: { width: 1, height: 30, backgroundColor: 'rgba(255,255,255,0.3)' },
 
-  searchWrap: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', marginHorizontal: 16, marginTop: 16, borderRadius: 14, paddingHorizontal: 14, gap: 8, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 3 },
+  searchWrap: { flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: '#f1f5f9', borderRadius: 12, paddingHorizontal: 12, gap: 8 },
   searchIcon: { fontSize: 16 },
   searchInput: { flex: 1, paddingVertical: 13, fontSize: 15, color: '#0f172a' },
 
@@ -241,7 +243,9 @@ const s = StyleSheet.create({
   quickIcon: { fontSize: 26, marginBottom: 6 },
   quickName: { fontSize: 11, fontWeight: '600', color: '#475569', textAlign: 'center' },
 
-  searchHeader: { backgroundColor: '#fff', paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#e2e8f0' },
+  searchHeader: { backgroundColor: '#fff', paddingHorizontal: 16, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#e2e8f0', flexDirection: 'row', alignItems: 'center', gap: 8 },
+  cancelBtn: { paddingVertical: 6, paddingHorizontal: 2 },
+  cancelText: { fontSize: 15, color: PRIMARY, fontWeight: '500' },
   searchCard: { backgroundColor: '#fff', marginHorizontal: 16, marginBottom: 10, borderRadius: 16, flexDirection: 'row', alignItems: 'center', padding: 12, gap: 12, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 5, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
   searchImg: { width: 60, height: 60, borderRadius: 10, backgroundColor: '#f1f5f9' },
   searchImgPlaceholder: { width: 60, height: 60, borderRadius: 10, backgroundColor: '#eff6ff', alignItems: 'center', justifyContent: 'center' },
