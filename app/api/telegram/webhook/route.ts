@@ -121,6 +121,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
+    // /report — AI отчёт по запросу (только менеджер)
+    if (text === '/report') {
+      const managerId = await getManagerId();
+      if (managerId && String(tgId) === String(managerId)) {
+        await sendTelegram(tgId, '⏳ Генерирую AI-отчёт...');
+        fetch(`${CRM_URL}/api/monitor/report`, { method: 'POST' }).catch(() => {});
+      }
+      return NextResponse.json({ ok: true });
+    }
+
     // /queue — список задач (только менеджер)
     if (text === '/queue') {
       const managerId = await getManagerId();
