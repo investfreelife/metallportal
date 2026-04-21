@@ -2,14 +2,12 @@ import { useEffect, useState, useRef } from 'react';
 import {
   View, Text, FlatList, TouchableOpacity, ScrollView, Image,
   ActivityIndicator, StyleSheet, SafeAreaView, TextInput,
-  Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 
 const PRIMARY = '#1a56db';
 const ACCENT = '#f97316';
-const SEARCH_API = 'https://metallportal.ru/api/search';
 
 const CATEGORY_ICONS: Record<string, string> = {
   'metalloprokat': '🏗️', 'gotovye-konstruktsii': '🏠', 'truby-stalnye': '🔩',
@@ -75,9 +73,44 @@ export default function CatalogScreen() {
     setSearching(true);
     debounceRef.current = setTimeout(async () => {
       try {
-        const res = await fetch(`${SEARCH_API}?q=${encodeURIComponent(search)}&limit=30`);
-        const data = await res.json();
-        setSearchResults(Array.isArray(data) ? data : []);
+        const words = search.trim().split(/\s+/).filter(w => w.length > 0);
+        let query = supabase
+          .from('products')
+          .select('id,name,slug,image_url,unit,category_id,price_items(base_price,discount_price)')
+          .eq('is_active', true)
+          .limit(30)
+          .order('name');
+
+        if (words.length === 1) {
+          query = query.ilike('name', `%${words[0]}%`);
+        } else {
+          words.forEach(w => { query = query.ilike('name', `%${w}%`); });
+        }
+
+        const [{ data: products }, { data: categories }] = await Promise.all([
+          query,
+          supabase.from('categories').select('id,name,slug,parent_id').eq('is_active', true).limit(300),
+        ]);
+
+        const catMap: Record<string, any> = Object.fromEntries(
+          (categories ?? []).map(c => [c.id, c])
+        );
+
+        const results: SearchResult[] = (products ?? []).map(p => {
+          const cat = catMap[p.category_id];
+          const pi = Array.isArray(p.price_items) && p.price_items.length ? p.price_items[0] : null;
+          return {
+            id: p.id,
+            name: p.name,
+            slug: p.slug,
+            image_url: p.image_url ?? null,
+            unit: p.unit ?? 'т',
+            categoryName: cat?.name ?? '',
+            price: pi ? Math.round(Number(pi.discount_price ?? pi.base_price)) : null,
+          };
+        });
+
+        setSearchResults(results);
       } catch { setSearchResults([]); }
       setSearching(false);
     }, 300);
