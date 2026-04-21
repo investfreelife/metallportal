@@ -28,6 +28,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    // Notify CRM — fire and forget (don't block order response)
+    const total = Array.isArray(items)
+      ? items.reduce((sum: number, i: { price?: number; qty?: number }) => sum + (i.price || 0) * (i.qty || 1), 0)
+      : 0
+
+    fetch('https://metallportal-crm2.vercel.app/api/webhook', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'order',
+        tenant_id: 'a1000000-0000-0000-0000-000000000001',
+        name,
+        phone,
+        email: email || null,
+        message: comment || null,
+        items,
+        total,
+      }),
+    }).catch(() => {})
+
     return NextResponse.json({ ok: true, orderId: data?.id });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });

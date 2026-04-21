@@ -60,28 +60,32 @@ export default function ChatScreen() {
         if (!chat) { setLoading(false); return; }
         setChatId(chat.id);
 
-      const { data: msgs } = await supabase
-        .from('messages')
-        .select('*')
-        .eq('chat_id', chat.id)
-        .order('created_at', { ascending: true });
+        const { data: msgs } = await supabase
+          .from('messages')
+          .select('*')
+          .eq('chat_id', chat.id)
+          .order('created_at', { ascending: true });
 
-      setMessages(msgs ?? []);
-      setLoading(false);
+        setMessages(msgs ?? []);
 
-      // Realtime подписка
-      const channel = supabase
-        .channel(`chat-${chat.id}`)
-        .on('postgres_changes', {
-          event: 'INSERT', schema: 'public', table: 'messages',
-          filter: `chat_id=eq.${chat.id}`,
-        }, (payload) => {
-          setMessages(prev => [...prev, payload.new as Message]);
-          setTimeout(() => listRef.current?.scrollToEnd({ animated: true }), 100);
-        })
-        .subscribe();
+        // Realtime подписка
+        const channel = supabase
+          .channel(`chat-${chat.id}`)
+          .on('postgres_changes', {
+            event: 'INSERT', schema: 'public', table: 'messages',
+            filter: `chat_id=eq.${chat.id}`,
+          }, (payload) => {
+            setMessages(prev => [...prev, payload.new as Message]);
+            setTimeout(() => listRef.current?.scrollToEnd({ animated: true }), 100);
+          })
+          .subscribe();
 
-      return () => { supabase.removeChannel(channel); };
+        return () => { supabase.removeChannel(channel); };
+      } catch (e: any) {
+        console.error('Chat init error:', e.message);
+      } finally {
+        setLoading(false);
+      }
     };
     init();
   }, [user?.id, profile.name]);
@@ -101,7 +105,6 @@ export default function ChatScreen() {
     await supabase.from('chats').update({
       last_message: text,
       last_message_at: new Date().toISOString(),
-      unread_count: supabase.rpc as any,
     }).eq('id', chatId);
 
     await supabase.rpc('increment_unread', { chat_id: chatId });
