@@ -42,16 +42,25 @@ export default function QueueClient({ items }: { items: QueueItem[] }) {
 
   async function approve(item: QueueItem) {
     setProcessing(item.id)
-    const supabase = createClient()
-    const content = editingId === item.id ? editedContent : undefined
-    await supabase
-      .from('ai_queue')
-      .update({
-        status: 'approved',
-        approved_at: new Date().toISOString(),
-        ...(content ? { edited_content: content } : {}),
+    const finalContent = editingId === item.id ? editedContent : item.content
+
+    // If action is email/proposal and contact has email → auto-send
+    const emailActions = ['send_email', 'send_proposal', 'send_message']
+    if (emailActions.includes(item.action_type) && item.contact?.email) {
+      await fetch('/api/email/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: item.contact.email,
+          subject: item.subject || 'Предложение от МеталлПортал',
+          html: `<p>${finalContent.replace(/\n/g, '<br>')}</p>`,
+          contact_id: item.contact.id,
+          queue_item_id: item.id,
+        }),
       })
-      .eq('id', item.id)
+    } else {
+      await fetch(`/api/ai/queue/${item.id}/approve`, { method: 'PATCH' })
+    }
 
     setLocalItems((prev) => prev.filter((i) => i.id !== item.id))
     setEditingId(null)
@@ -61,15 +70,7 @@ export default function QueueClient({ items }: { items: QueueItem[] }) {
 
   async function reject(item: QueueItem) {
     setProcessing(item.id)
-    const supabase = createClient()
-    await supabase
-      .from('ai_queue')
-      .update({
-        status: 'rejected',
-        rejection_reason: rejectReason || null,
-      })
-      .eq('id', item.id)
-
+    await fetch(`/api/ai/queue/${item.id}/reject`, { method: 'PATCH' })
     setLocalItems((prev) => prev.filter((i) => i.id !== item.id))
     setRejectingId(null)
     setRejectReason('')
@@ -78,13 +79,8 @@ export default function QueueClient({ items }: { items: QueueItem[] }) {
   }
 
   async function snooze(itemId: string, hours: number) {
-    const supabase = createClient()
-    const snoozeUntil = new Date(Date.now() + hours * 3600 * 1000).toISOString()
-    await supabase
-      .from('ai_queue')
-      .update({ auto_execute_at: snoozeUntil })
-      .eq('id', itemId)
-
+    const action = hours === 1 ? 'snooze1' : hours === 3 ? 'snooze3' : 'snooze24'
+    await fetch(`/api/ai/queue/${itemId}/${action}`, { method: 'PATCH' })
     setLocalItems((prev) => prev.filter((i) => i.id !== itemId))
     router.refresh()
   }

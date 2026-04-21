@@ -108,10 +108,10 @@ export async function POST(request: NextRequest) {
     await supabase.from('activities').insert({
       tenant_id,
       contact_id: contactId,
-      type: 'inbound',
-      title: activityTitle,
-      notes: message ? String(message) : null,
-      metadata: { form_type: type, items, total, message },
+      type: 'note',
+      direction: 'inbound',
+      subject: activityTitle,
+      body: message ? String(message) : null,
     })
   }
 

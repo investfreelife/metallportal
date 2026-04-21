@@ -1,8 +1,9 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { formatDate, getContactStatusLabel, getScoreBgColor, getScoreColor, getSegmentLabel, getActionTypeLabel } from '@/lib/utils'
+import { formatDate, getContactStatusLabel, getScoreBgColor, getScoreColor, getSegmentLabel } from '@/lib/utils'
 import Link from 'next/link'
 import { ArrowLeft, Phone, Mail, MessageCircle } from 'lucide-react'
+import AddActivityForm from './AddActivityForm'
 
 export default async function ContactDetailPage({
   params,
@@ -171,7 +172,10 @@ export default async function ContactDetailPage({
           )}
 
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-            <h2 className="text-white font-semibold text-sm mb-4">История активностей</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-white font-semibold text-sm">История активностей</h2>
+              <AddActivityForm contactId={contact.id} />
+            </div>
             {!activities || activities.length === 0 ? (
               <p className="text-gray-500 text-sm text-center py-6">Активностей пока нет</p>
             ) : (
@@ -183,7 +187,7 @@ export default async function ContactDetailPage({
                     </span>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <p className="text-gray-300 text-sm font-medium">{a.subject || a.type}</p>
+                        <p className="text-gray-300 text-sm font-medium">{a.subject || a.type.charAt(0).toUpperCase() + a.type.slice(1)}</p>
                         {a.is_ai_generated && (
                           <span className="text-xs text-purple-400 bg-purple-500/10 px-1.5 py-0.5 rounded">ИИ</span>
                         )}

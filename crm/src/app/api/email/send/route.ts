@@ -42,8 +42,9 @@ export async function POST(request: NextRequest) {
     await supabase.from('activities').insert({
       contact_id,
       type: 'email',
-      title: `Email: ${emailSubject}`,
-      notes: `Отправлено на ${to}`,
+      direction: 'outbound',
+      subject: `Email: ${emailSubject}`,
+      body: `Отправлено на ${to}`,
     })
   }
 
