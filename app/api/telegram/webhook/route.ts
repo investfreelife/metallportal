@@ -16,9 +16,80 @@ async function sendTelegram(chatId: number, text: string) {
   });
 }
 
+const CRM_URL = 'https://metallportal-crm2.vercel.app'
+
+async function handleCrmCallback(callbackQuery: {
+  id: string
+  from: { id: number }
+  message?: { message_id: number; chat: { id: number } }
+  data?: string
+}) {
+  const data = callbackQuery.data ?? ''
+  if (!data.startsWith('crm_')) return false
+
+  const [, actionRaw, queueId] = data.split('_')
+  if (!queueId) return true
+
+  // Map callback action to API action
+  const actionMap: Record<string, string> = {
+    approve: 'approve',
+    reject: 'reject',
+    edit: 'approve',    // edit opens CRM — for now treat as approve
+    snooze1: 'snooze1',
+    snooze3: 'snooze3',
+  }
+  const action = actionMap[actionRaw]
+  if (!action) return true
+
+  // Call CRM API
+  await fetch(`${CRM_URL}/api/ai/queue/${queueId}/${action}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+  }).catch(() => {})
+
+  // Answer the callback so Telegram removes the spinner
+  const labelMap: Record<string, string> = {
+    approve: '✅ Одобрено',
+    reject: '❌ Отклонено',
+    snooze1: '⏰ Отложено на 1ч',
+    snooze3: '⏰ Отложено на 3ч',
+  }
+  await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/answerCallbackQuery`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      callback_query_id: callbackQuery.id,
+      text: labelMap[action] ?? 'Готово',
+    }),
+  }).catch(() => {})
+
+  // Edit message to show status
+  if (callbackQuery.message) {
+    const statusText = labelMap[action] ?? 'Обработано'
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/editMessageReplyMarkup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: callbackQuery.message.chat.id,
+        message_id: callbackQuery.message.message_id,
+        reply_markup: { inline_keyboard: [[{ text: statusText, callback_data: 'done' }]] },
+      }),
+    }).catch(() => {})
+  }
+
+  return true
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+
+    // Handle CRM inline button callbacks
+    if (body.callback_query) {
+      const handled = await handleCrmCallback(body.callback_query)
+      if (handled) return NextResponse.json({ ok: true })
+    }
+
     const msg = body.message;
     if (!msg) return NextResponse.json({ ok: true });
 

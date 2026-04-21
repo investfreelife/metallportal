@@ -1,5 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import { analyzeNewLead } from '@/lib/ai'
+import { notifyManager } from '@/lib/telegram'
 
 /**
  * Generic webhook endpoint for forms on metallportal.ru
@@ -128,7 +130,7 @@ export async function POST(request: NextRequest) {
         ? `Добрый день${name ? ', ' + name : ''}! Ваш заказ получен. Перезвоню в течение 15 минут для подтверждения.`
         : `Добрый день${name ? ', ' + name : ''}! Получил вашу заявку. Свяжусь с вами в ближайшее время.`
 
-    await supabase.from('ai_queue').insert({
+    const { data: queueItem } = await supabase.from('ai_queue').insert({
       tenant_id,
       contact_id: contactId,
       action_type: actionType,
@@ -136,7 +138,63 @@ export async function POST(request: NextRequest) {
       status: 'pending',
       ai_reasoning: reasoning,
       suggested_message: suggested,
-    })
+    }).select('id').single()
+
+    // Async: improve with GPT-4o + send Telegram notification
+    if (queueItem) {
+      const queueId = queueItem.id
+      ;(async () => {
+        const ai = await analyzeNewLead({
+          name: name ? String(name) : null,
+          phone: phone ? String(phone) : null,
+          email: email ? String(email) : null,
+          company: company ? String(company) : null,
+          form_type: String(type),
+          message: message ? String(message) : null,
+          items: Array.isArray(items) ? items : undefined,
+          total: total ? Number(total) : null,
+          utm_source: utm_source ? String(utm_source) : null,
+          utm_campaign: utm_campaign ? String(utm_campaign) : null,
+        })
+
+        if (ai) {
+          await supabase.from('ai_queue').update({
+            ai_reasoning: ai.reasoning,
+            suggested_message: ai.suggested_message,
+            priority: ai.priority,
+          }).eq('id', queueId)
+
+          if (contactId) {
+            await supabase.from('contacts').update({
+              ai_segment: ai.segment,
+              ai_score: Math.min(100, Math.max(0, 30 + ai.score_adjustment)),
+              ai_next_action: ai.next_action_hint,
+            }).eq('id', contactId)
+          }
+
+          await notifyManager({
+            queue_id: queueId,
+            contact_name: name ? String(name) : null,
+            contact_phone: phone ? String(phone) : null,
+            action_type: ai.action_type,
+            priority: ai.priority,
+            ai_reasoning: ai.reasoning,
+            suggested_message: ai.suggested_message,
+          })
+        } else {
+          // No GPT — still notify with basic info
+          await notifyManager({
+            queue_id: queueId,
+            contact_name: name ? String(name) : null,
+            contact_phone: phone ? String(phone) : null,
+            action_type: actionType,
+            priority,
+            ai_reasoning: reasoning,
+            suggested_message: suggested,
+          })
+        }
+      })().catch(() => {})
+    }
   }
 
   // ── Log as site event ─────────────────────────────────────────────────────
