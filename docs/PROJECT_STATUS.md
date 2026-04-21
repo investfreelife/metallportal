@@ -96,6 +96,25 @@
 - **`crm/supabase-migration-001.sql`** — ⚠️ НУЖНО выполнить в Supabase SQL Editor
 - **Env vars нужны**: `TELEGRAM_BOT_TOKEN`, `CRM_MANAGER_TG_ID`, `RESEND_API_KEY`
 
+### Phase 7: Трекинг и формы — ИСПРАВЛЕНИЯ (20 апр 2026)
+**Корневые причины:**
+1. `track.js` с `defer` — `document.currentScript` = null → ENDPOINT падал на `/api/track` главного сайта (не существует)
+2. `sendBeacon` без Blob → content-type text/plain вместо application/json
+3. `/api/contact` не существовал → CategoryCallbackCTA + NavesOrderModal молча падали
+4. CTASection — кнопка Send не была подключена к API
+5. AI/Telegram ключи читались из env, не из DB
+
+**Исправления:**
+- `crm/public/track.js` — хардкод `CRM_ORIGIN = 'https://metallportal-crm2.vercel.app'`, querySelector для tid, sendBeacon с Blob
+- `app/api/contact/route.ts` — новый endpoint, пересылает в CRM webhook
+- `components/home/CTASection.tsx` — добавлена форма с phone + submit → /api/contact + mpTrack
+- `components/catalog/CategoryCallbackCTA.tsx` — добавлен mpTrack("form_submit")
+- `components/catalog/NavesOrderModal.tsx` — добавлен mpTrack("form_submit")
+- `app/cart/page.tsx` — добавлен mpTrack("form_submit") при оформлении заказа
+- `crm/src/lib/ai.ts` — OPENROUTER_KEY читается через getSetting (env → DB)
+- `crm/src/lib/telegram.ts` — BOT_TOKEN/MANAGER_TG_ID читаются через getSetting (env → DB)
+- `crm/src/app/api/track/route.ts` — ai_queue insert обёрнут в try/catch
+
 ### AI CRM — Phase 6: Settings 2.0 (20 апр 2026)
 - **`crm/supabase-migration-002.sql`** — ⚠️ ВЫПОЛНИТЬ: таблица `tenant_settings`, колонки invite в `admin_users`
 - **`crm/src/lib/settings.ts`** — `getSetting(key)` читает из env → DB; `setSetting(key, val)` пишет в DB
