@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import {
   View, Text, TextInput, TouchableOpacity,
-  KeyboardAvoidingView, Platform, Alert, ActivityIndicator, ScrollView
+  KeyboardAvoidingView, Platform, Alert, ActivityIndicator, ScrollView, StyleSheet
 } from 'react-native'
 import { Link } from 'expo-router'
 import { supabase } from '../../lib/supabase'
+
+const PRIMARY = '#1a56db'
 
 export default function RegisterScreen() {
   const [fullName, setFullName] = useState('')
@@ -39,33 +41,28 @@ export default function RegisterScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1 bg-white"
+      style={s.container}
     >
       <ScrollView
-        className="flex-1"
+        style={{ flex: 1 }}
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
       >
-        <View className="flex-1 justify-center px-6 py-10">
-          <View className="mb-8">
-            <Text className="text-2xl font-bold text-dark">Регистрация</Text>
+        <View style={s.inner}>
+          <View style={s.titleBlock}>
+            <Text style={s.title}>Регистрация</Text>
           </View>
 
-          {/* Роль */}
-          <View className="mb-6">
-            <Text className="text-sm text-slate-600 mb-2">Я являюсь</Text>
-            <View className="flex-row gap-3">
+          <View style={s.fieldWrap}>
+            <Text style={s.label}>Я являюсь</Text>
+            <View style={s.roleRow}>
               {(['buyer', 'supplier'] as const).map((r) => (
                 <TouchableOpacity
                   key={r}
                   onPress={() => setRole(r)}
-                  className={`flex-1 py-3 rounded-xl border items-center ${
-                    role === r
-                      ? 'bg-primary border-primary'
-                      : 'border-slate-300'
-                  }`}
+                  style={[s.roleBtn, role === r && s.roleBtnActive]}
                 >
-                  <Text className={role === r ? 'text-white font-medium' : 'text-slate-600'}>
+                  <Text style={role === r ? s.roleTxtActive : s.roleTxt}>
                     {r === 'buyer' ? 'Покупатель' : 'Поставщик'}
                   </Text>
                 </TouchableOpacity>
@@ -73,20 +70,20 @@ export default function RegisterScreen() {
             </View>
           </View>
 
-          <View className="mb-4">
-            <Text className="text-sm text-slate-600 mb-1">Имя / Компания</Text>
+          <View style={s.fieldWrap}>
+            <Text style={s.label}>Имя / Компания</Text>
             <TextInput
-              className="border border-slate-300 rounded-xl px-4 py-3 text-base"
+              style={s.input}
               placeholder="ООО Металл Сервис"
               value={fullName}
               onChangeText={setFullName}
             />
           </View>
 
-          <View className="mb-4">
-            <Text className="text-sm text-slate-600 mb-1">Email</Text>
+          <View style={s.fieldWrap}>
+            <Text style={s.label}>Email</Text>
             <TextInput
-              className="border border-slate-300 rounded-xl px-4 py-3 text-base"
+              style={s.input}
               placeholder="your@email.com"
               value={email}
               onChangeText={setEmail}
@@ -95,10 +92,10 @@ export default function RegisterScreen() {
             />
           </View>
 
-          <View className="mb-6">
-            <Text className="text-sm text-slate-600 mb-1">Пароль</Text>
+          <View style={s.fieldWrapLast}>
+            <Text style={s.label}>Пароль</Text>
             <TextInput
-              className="border border-slate-300 rounded-xl px-4 py-3 text-base"
+              style={s.input}
               placeholder="Минимум 6 символов"
               value={password}
               onChangeText={setPassword}
@@ -106,21 +103,17 @@ export default function RegisterScreen() {
             />
           </View>
 
-          <TouchableOpacity
-            className="bg-primary rounded-xl py-4 items-center"
-            onPress={handleRegister}
-            disabled={loading}
-          >
+          <TouchableOpacity style={s.btn} onPress={handleRegister} disabled={loading}>
             {loading
               ? <ActivityIndicator color="white" />
-              : <Text className="text-white font-semibold text-base">Создать аккаунт</Text>
+              : <Text style={s.btnText}>Создать аккаунт</Text>
             }
           </TouchableOpacity>
 
-          <View className="flex-row justify-center mt-6">
-            <Text className="text-slate-500">Уже есть аккаунт? </Text>
+          <View style={s.footer}>
+            <Text style={s.footerText}>Уже есть аккаунт? </Text>
             <Link href="/(auth)/login">
-              <Text className="text-primary font-medium">Войти</Text>
+              <Text style={s.link}>Войти</Text>
             </Link>
           </View>
         </View>
@@ -128,3 +121,33 @@ export default function RegisterScreen() {
     </KeyboardAvoidingView>
   )
 }
+
+const s = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#fff' },
+  inner: { flex: 1, justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 40 },
+  titleBlock: { marginBottom: 32 },
+  title: { fontSize: 24, fontWeight: '700', color: '#0f172a' },
+  fieldWrap: { marginBottom: 16 },
+  fieldWrapLast: { marginBottom: 24 },
+  label: { fontSize: 13, color: '#475569', marginBottom: 4 },
+  input: {
+    borderWidth: 1, borderColor: '#cbd5e1', borderRadius: 12,
+    paddingHorizontal: 16, paddingVertical: 12, fontSize: 16,
+  },
+  roleRow: { flexDirection: 'row', gap: 12 },
+  roleBtn: {
+    flex: 1, paddingVertical: 12, borderRadius: 12,
+    borderWidth: 1, borderColor: '#cbd5e1', alignItems: 'center',
+  },
+  roleBtnActive: { backgroundColor: PRIMARY, borderColor: PRIMARY },
+  roleTxt: { color: '#475569' },
+  roleTxtActive: { color: '#fff', fontWeight: '500' },
+  btn: {
+    backgroundColor: PRIMARY, borderRadius: 12,
+    paddingVertical: 16, alignItems: 'center',
+  },
+  btnText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 24 },
+  footerText: { color: '#64748b' },
+  link: { color: PRIMARY, fontWeight: '500' },
+})

@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import {
   View, Text, TextInput, TouchableOpacity,
-  KeyboardAvoidingView, Platform, Alert, ActivityIndicator
+  KeyboardAvoidingView, Platform, Alert, ActivityIndicator, StyleSheet
 } from 'react-native'
 import { Link } from 'expo-router'
 import { supabase } from '../../lib/supabase'
+
+const PRIMARY = '#1a56db'
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('')
@@ -25,20 +27,18 @@ export default function LoginScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1 bg-white"
+      style={s.container}
     >
-      <View className="flex-1 justify-center px-6">
-        {/* Логотип */}
-        <View className="mb-10">
-          <Text className="text-3xl font-bold text-primary">МеталлПортал</Text>
-          <Text className="text-slate-500 mt-1">Маркетплейс металлопроката</Text>
+      <View style={s.inner}>
+        <View style={s.logoBlock}>
+          <Text style={s.logoText}>МеталлПортал</Text>
+          <Text style={s.logoSub}>Маркетплейс металлопроката</Text>
         </View>
 
-        {/* Email */}
-        <View className="mb-4">
-          <Text className="text-sm text-slate-600 mb-1">Email</Text>
+        <View style={s.fieldWrap}>
+          <Text style={s.label}>Email</Text>
           <TextInput
-            className="border border-slate-300 rounded-xl px-4 py-3 text-base"
+            style={s.input}
             placeholder="your@email.com"
             value={email}
             onChangeText={setEmail}
@@ -48,11 +48,10 @@ export default function LoginScreen() {
           />
         </View>
 
-        {/* Пароль */}
-        <View className="mb-6">
-          <Text className="text-sm text-slate-600 mb-1">Пароль</Text>
+        <View style={s.fieldWrapLast}>
+          <Text style={s.label}>Пароль</Text>
           <TextInput
-            className="border border-slate-300 rounded-xl px-4 py-3 text-base"
+            style={s.input}
             placeholder="••••••••"
             value={password}
             onChangeText={setPassword}
@@ -60,26 +59,43 @@ export default function LoginScreen() {
           />
         </View>
 
-        {/* Кнопка входа */}
-        <TouchableOpacity
-          className="bg-primary rounded-xl py-4 items-center"
-          onPress={handleLogin}
-          disabled={loading}
-        >
+        <TouchableOpacity style={s.btn} onPress={handleLogin} disabled={loading}>
           {loading
             ? <ActivityIndicator color="white" />
-            : <Text className="text-white font-semibold text-base">Войти</Text>
+            : <Text style={s.btnText}>Войти</Text>
           }
         </TouchableOpacity>
 
-        {/* Регистрация */}
-        <View className="flex-row justify-center mt-6">
-          <Text className="text-slate-500">Нет аккаунта? </Text>
+        <View style={s.footer}>
+          <Text style={s.footerText}>Нет аккаунта? </Text>
           <Link href="/(auth)/register">
-            <Text className="text-primary font-medium">Зарегистрироваться</Text>
+            <Text style={s.link}>Зарегистрироваться</Text>
           </Link>
         </View>
       </View>
     </KeyboardAvoidingView>
   )
 }
+
+const s = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#fff' },
+  inner: { flex: 1, justifyContent: 'center', paddingHorizontal: 24 },
+  logoBlock: { marginBottom: 40 },
+  logoText: { fontSize: 28, fontWeight: '700', color: PRIMARY },
+  logoSub: { fontSize: 14, color: '#64748b', marginTop: 4 },
+  fieldWrap: { marginBottom: 16 },
+  fieldWrapLast: { marginBottom: 24 },
+  label: { fontSize: 13, color: '#475569', marginBottom: 4 },
+  input: {
+    borderWidth: 1, borderColor: '#cbd5e1', borderRadius: 12,
+    paddingHorizontal: 16, paddingVertical: 12, fontSize: 16,
+  },
+  btn: {
+    backgroundColor: PRIMARY, borderRadius: 12,
+    paddingVertical: 16, alignItems: 'center',
+  },
+  btnText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 24 },
+  footerText: { color: '#64748b' },
+  link: { color: PRIMARY, fontWeight: '500' },
+})

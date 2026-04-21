@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { Stack } from 'expo-router'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../stores/authStore'
-import '../global.css'
 
 export default function RootLayout() {
   const { setSession, fetchProfile } = useAuthStore()
