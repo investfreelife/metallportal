@@ -5,7 +5,7 @@ function hasValidSession(cookieHeader: string | null): boolean {
   const match = cookieHeader.match(/crm_session=([^;]+)/)
   if (!match) return false
   try {
-    const session = JSON.parse(atob(match[1]))
+    const session = JSON.parse(atob(decodeURIComponent(match[1])))
     return session.exp > Date.now()
   } catch {
     return false
