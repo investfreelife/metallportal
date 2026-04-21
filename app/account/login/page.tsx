@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Building2 } from "lucide-react";
 import Link from "next/link";
@@ -37,6 +37,42 @@ export default function AccountLoginPage() {
     }
   };
 
+  const tgBtnRef = useRef<HTMLDivElement>(null);
+
+  const handleTelegramAuth = async (tgUser: any) => {
+    setError(""); setLoading(true);
+    try {
+      const res = await fetch("/api/telegram/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(tgUser),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Ошибка");
+      if (data.access_token) {
+        const sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+        await sb.auth.setSession({ access_token: data.access_token, refresh_token: data.refresh_token });
+      }
+      window.location.href = "/account";
+    } catch (e: any) {
+      setError(e.message); setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const botName = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME;
+    if (!botName || !tgBtnRef.current) return;
+    (window as any).TelegramLoginCallback = handleTelegramAuth;
+    const script = document.createElement("script");
+    script.src = "https://telegram.org/js/telegram-widget.js?22";
+    script.setAttribute("data-telegram-login", botName);
+    script.setAttribute("data-size", "large");
+    script.setAttribute("data-onauth", "TelegramLoginCallback(user)");
+    script.setAttribute("data-request-access", "write");
+    script.async = true;
+    tgBtnRef.current.appendChild(script);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4 py-16">
       <div className="w-full max-w-md">
@@ -51,6 +87,23 @@ export default function AccountLoginPage() {
           <div className="flex items-center gap-2 mb-6">
             <Building2 size={20} className="text-gold" />
             <h1 className="text-xl font-bold text-foreground">Личный кабинет</h1>
+          </div>
+
+          {/* Telegram Login */}
+          <div className="mb-6">
+            <div ref={tgBtnRef} className="flex justify-center" />
+            {!process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME && (
+              <div className="flex items-center justify-center gap-2 bg-[#229ED9] hover:bg-[#1a8bbf] text-white rounded-lg py-2.5 px-4 text-sm font-medium opacity-50 cursor-not-allowed">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.25l-2.04 9.61c-.15.667-.54.833-1.095.52l-3-2.21-1.447 1.393c-.16.16-.295.295-.605.295l.215-3.053 5.56-5.023c.242-.215-.053-.334-.373-.12L7.03 14.42l-2.97-.924c-.645-.2-.658-.645.135-.954l11.59-4.47c.537-.194 1.007.13.777.178z"/></svg>
+                Войти через Telegram (настройте бота)
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center gap-3 mb-6">
+            <div className="flex-1 h-px bg-border" />
+            <span className="text-xs text-muted-foreground">или по email</span>
+            <div className="flex-1 h-px bg-border" />
           </div>
 
           {/* Tabs */}

@@ -9,7 +9,7 @@ import { useProfileStore } from '../../stores/profileStore';
 
 const PRIMARY = '#1a56db';
 const ACCENT = '#f97316';
-const API_URL = 'https://metallportal.ru/api/orders';
+const API_URL = `${process.env.EXPO_PUBLIC_API_URL ?? ''}/api/orders`;
 
 export default function CartScreen() {
   const { items, removeItem, updateQty, total, clear } = useCartStore();
