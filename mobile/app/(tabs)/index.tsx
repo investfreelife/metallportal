@@ -32,6 +32,28 @@ interface SearchResult {
   unit: string; categoryName: string; price: number | null;
 }
 
+function SearchBar({ value, onChange, searching }: {
+  value: string; onChange: (t: string) => void; searching: boolean;
+}) {
+  return (
+    <View style={s.searchWrap}>
+      <Text style={s.searchIcon}>🔍</Text>
+      <TextInput
+        style={s.searchInput}
+        placeholder="Поиск по каталогу..."
+        placeholderTextColor="#94a3b8"
+        value={value}
+        onChangeText={onChange}
+        clearButtonMode="while-editing"
+        returnKeyType="search"
+        autoCorrect={false}
+        autoCapitalize="none"
+      />
+      {searching && <ActivityIndicator size="small" color={PRIMARY} />}
+    </View>
+  );
+}
+
 export default function CatalogScreen() {
   const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
@@ -65,26 +87,10 @@ export default function CatalogScreen() {
 
   if (loading) return <View style={s.center}><ActivityIndicator size="large" color={PRIMARY} /></View>;
 
-  const SearchBar = () => (
-    <View style={s.searchWrap}>
-      <Text style={s.searchIcon}>🔍</Text>
-      <TextInput
-        style={s.searchInput}
-        placeholder="Поиск по каталогу..."
-        placeholderTextColor="#94a3b8"
-        value={search}
-        onChangeText={setSearch}
-        clearButtonMode="while-editing"
-        returnKeyType="search"
-      />
-      {searching && <ActivityIndicator size="small" color={PRIMARY} />}
-    </View>
-  );
-
   if (isSearching) {
     return (
       <SafeAreaView style={s.container}>
-        <View style={s.searchHeader}><SearchBar /></View>
+        <View style={s.searchHeader}><SearchBar value={search} onChange={setSearch} searching={searching} /></View>
         {searching ? (
           <View style={s.center}><ActivityIndicator size="large" color={PRIMARY} /></View>
         ) : (
@@ -143,7 +149,7 @@ export default function CatalogScreen() {
                 <View style={s.heroStat}><Text style={s.heroStatNum}>1 день</Text><Text style={s.heroStatLabel}>доставка</Text></View>
               </View>
             </View>
-            <SearchBar />
+            <SearchBar value={search} onChange={setSearch} searching={searching} />
             <View style={s.section}>
               <Text style={s.sectionTitle}>Популярные разделы</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.quickRow}>
