@@ -96,6 +96,23 @@
 - **`crm/supabase-migration-001.sql`** — ⚠️ НУЖНО выполнить в Supabase SQL Editor
 - **Env vars нужны**: `TELEGRAM_BOT_TOKEN`, `CRM_MANAGER_TG_ID`, `RESEND_API_KEY`
 
+### Phase 9: Критические исправления — формы и аналитика (20 апр 2026)
+**Корневая причина:** `proxy.ts` (middleware CRM) блокировал ВСЕ запросы включая `/api/*`, делая редирект 307 → `/login`. Формы и трекинг молча падали.
+
+**Исправления:**
+- `crm/src/proxy.ts` — добавлен `pathname.startsWith('/api/')` в `isPublic` → теперь все API маршруты доступны без авторизации (auth внутри каждого маршрута)
+- `app/api/contact/route.ts` — убран fire-and-forget, добавлено ожидание ответа CRM + логирование ошибок + CORS headers + валидация
+- `crm/supabase-fix-all.sql` — единый файл исправления БД (tenant_settings + колонки + RLS)
+
+**Тест после исправления:**
+```
+POST /api/webhook → {"ok":true,"contact_id":"3debd8f0...","is_new":true} ✅
+POST /api/track   → {"ok":true} ✅
+```
+
+**ВАЖНО — выполнить в Supabase SQL Editor:**
+Файл `crm/supabase-fix-all.sql` — создаёт tenant_settings, фиксирует CHECK constraints, RLS policies
+
 ### Phase 8: Telegram Bot — полная интеграция (20 апр 2026)
 **Единый webhook бота в CRM** — `crm/src/app/api/telegram/bot/route.ts`
 - CRM кнопки: `crm_approve/reject/snooze` → PATCH `/api/ai/queue/:id/:action`
