@@ -48,14 +48,17 @@
 ### AI CRM — Phase 1 (20 апр 2026)
 - **`crm/`** — отдельное Next.js 16 + React 19 + Tailwind v4 приложение в корне репо
 - **Стек**: Next.js 16, @supabase/ssr 0.10, Zustand, TanStack Query, Lucide, date-fns
-- **Авторизация**: `crm/src/proxy.ts` (Next.js 16: middleware → proxy), email/password через Supabase Auth
+- **Авторизация**: через таблицу `admin_users` (та же что на сайте) + HTTP-only cookie `crm_session`
+  - API: `POST /api/auth/login` → проверяет `admin_users` → ставит cookie
+  - `proxy.ts`: Edge Runtime, `request.cookies.get('crm_session')` — проверка наличия cookie
+  - `getSession()` в dashboard layout: полная валидация (exp, base64 decode через Buffer в Node.js)
 - **Страницы**: Login, Dashboard `/dashboard`, Contacts, Contact Detail, Deals (Kanban), Deal Detail, AI Queue, Settings
 - **Компоненты**: `Sidebar.tsx` (тёмный #0f172a, активный #1a56db), метрики, таблица контактов, канбан сделок
 - **AI Queue**: карточки с одобрением/отклонением/редактированием/откладыванием (snooze 1ч/3ч/1день)
-- **БД**: схема в `crm/supabase-schema.sql` — выполнить в Supabase SQL Editor
-- **Мульти-тенант**: все таблицы с `tenant_id`, RLS изоляция через `get_tenant_id()`
+- **БД**: схема в `crm/supabase-schema.sql` (выполнена в Supabase); таблица `admin_users` уже существует
+- **Деплой**: https://metallportal-crm2.vercel.app (логин: admin, пароль как на сайте)
+- **Архитектура**: `crm/ARCHITECTURE.md` — полная спецификация SaaS платформы (Phase 1-7)
 - **Dev**: `cd crm && npm run dev -- --port 3002`
-- **⚠️ Нужно сделать**: создать `crm/.env.local` с Supabase ключами + выполнить SQL схему + добавить себя в `crm_users`
 
 ## 🔄 В ПРОЦЕССЕ
 - SEO генерация: ~3900/12166 готово, скрипт крутится в фоне
