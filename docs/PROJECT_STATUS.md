@@ -96,6 +96,21 @@
 - **`crm/supabase-migration-001.sql`** — ⚠️ НУЖНО выполнить в Supabase SQL Editor
 - **Env vars нужны**: `TELEGRAM_BOT_TOKEN`, `CRM_MANAGER_TG_ID`, `RESEND_API_KEY`
 
+### AI CRM — Phase 6: Settings 2.0 (20 апр 2026)
+- **`crm/supabase-migration-002.sql`** — ⚠️ ВЫПОЛНИТЬ: таблица `tenant_settings`, колонки invite в `admin_users`
+- **`crm/src/lib/settings.ts`** — `getSetting(key)` читает из env → DB; `setSetting(key, val)` пишет в DB
+- **`crm/src/app/api/settings/route.ts`** — GET/POST настроек из UI (API ключи, токены)
+- **`crm/src/app/api/team/route.ts`** — GET список, POST создать, PATCH роль/статус
+- **`crm/src/app/api/team/invite/route.ts`** — создание инвайта + авто-отправка через Telegram если есть chat_id
+- **`crm/src/app/api/team/join/route.ts`** — GET/POST активация по токену
+- **`crm/src/app/(auth)/join/page.tsx`** — страница активации аккаунта по ссылке
+- **`crm/src/app/(dashboard)/settings/SettingsClient.tsx`** — полный tabbed UI:
+  - Вкладка "Интеграции": вставить API ключи прямо в CRM → сохраняется в БД
+  - Вкладка "Команда": список менеджеров + кнопки роли/вкл/выкл + инвайт
+  - Вкладка "Сайт": tracking script, webhook URL, примеры
+- **Invite flow**: создать сотрудника → ссылка `/join?token=XXX` → сотрудник устанавливает пароль → статус active
+- **Telegram auto-invite**: если указан `telegram_chat_id` → бот сам отправляет логин+пароль+ссылку
+
 ### AI CRM — Phase 5: Автоматизация (20 апр 2026)
 - **`crm/src/app/(dashboard)/contacts/[id]/AddActivityForm.tsx`** — форма добавления заметки/звонка/письма к контакту
 - **`crm/src/app/api/contacts/[id]/activity/route.ts`** — POST /api/contacts/:id/activity
