@@ -29,14 +29,45 @@ export async function POST(req: NextRequest) {
 
     // /start — регистрация / приветствие
     if (text.startsWith("/start")) {
-      const token = text.split(" ")[1]; // /start <token> для авторизации
+      const param = text.split(" ")[1] ?? "";
 
-      // Сохранить/обновить чат
+      // /start mobile_<code> — авторизация мобильного приложения
+      if (param.startsWith("mobile_")) {
+        const code = param.replace("mobile_", "");
+        const { data: authCode } = await supabase
+          .from("telegram_auth_codes")
+          .select("*")
+          .eq("code", code)
+          .single();
+
+        if (authCode && !authCode.confirmed && new Date(authCode.expires_at) > new Date()) {
+          await supabase.from("telegram_auth_codes").update({
+            confirmed: true,
+            telegram_id: tgId,
+            user_name: firstName,
+          }).eq("code", code);
+
+          // Создать профиль если нет
+          const syntheticEmail = `tg_${tgId}@telegram.metallportal.app`;
+          await supabase.auth.admin.createUser({
+            email: syntheticEmail,
+            password: `tg_${tgId}_${code.slice(0,8)}`,
+            email_confirm: true,
+            user_metadata: { full_name: firstName, telegram_id: tgId },
+          }).catch(() => {});
+
+          await sendTelegram(tgId,
+            `✅ <b>Вход выполнен!</b>\n\nВы вошли в приложение МеталлПортал.\n\nТеперь вы будете получать уведомления о статусах заказов прямо здесь 📱`
+          );
+        } else {
+          await sendTelegram(tgId, "❌ Ссылка недействительна или устарела. Попробуйте войти снова.");
+        }
+        return NextResponse.json({ ok: true });
+      }
+
+      // Обычный /start — приветствие
       const { data: existingChat } = await supabase
-        .from("chats")
-        .select("id")
-        .eq("telegram_id", tgId)
-        .single();
+        .from("chats").select("id").eq("telegram_id", tgId).single();
 
       if (!existingChat) {
         await supabase.from("chats").insert({
@@ -49,8 +80,7 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      await sendTelegram(
-        tgId,
+      await sendTelegram(tgId,
         `👋 Привет, <b>${firstName}</b>!\n\nДобро пожаловать в МеталлПортал.\n\nЗдесь вы можете:\n• Задать вопрос менеджеру\n• Узнать статус заказа\n• Получить консультацию\n\nПросто напишите ваш вопрос 👇`
       );
       return NextResponse.json({ ok: true });

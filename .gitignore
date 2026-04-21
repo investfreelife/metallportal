@@ -141,3 +141,5 @@ vite.config.ts.timestamp-*
 
 # Mobile env
 mobile/.env
+.vercel
+.env*.local
