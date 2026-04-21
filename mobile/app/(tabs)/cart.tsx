@@ -1,10 +1,11 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View, Text, FlatList, TouchableOpacity,
   StyleSheet, SafeAreaView, Alert, TextInput, Modal, ScrollView, ActivityIndicator,
 } from 'react-native';
 import { useCartStore } from '../../stores/cartStore';
 import { useOrdersStore } from '../../stores/ordersStore';
+import { useProfileStore } from '../../stores/profileStore';
 
 const PRIMARY = '#1a56db';
 const ACCENT = '#f97316';
@@ -13,12 +14,23 @@ const API_URL = 'https://metallportal.ru/api/orders';
 export default function CartScreen() {
   const { items, removeItem, updateQty, total, clear } = useCartStore();
   const addOrder = useOrdersStore((s) => s.addOrder);
+  const { profile, setProfile, loadProfile, loaded } = useProfileStore();
   const [showCheckout, setShowCheckout] = useState(false);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [comment, setComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => { loadProfile(); }, []);
+
+  useEffect(() => {
+    if (loaded && showCheckout) {
+      if (!name && profile.name) setName(profile.name);
+      if (!phone && profile.phone) setPhone(profile.phone);
+      if (!email && profile.email) setEmail(profile.email);
+    }
+  }, [showCheckout, loaded]);
 
   const handleSubmitOrder = async () => {
     if (!name.trim() || !phone.trim()) {
@@ -42,9 +54,10 @@ export default function CartScreen() {
         items: items.map((i) => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, unit: i.unit })),
         total: total(), status: 'new', createdAt: new Date().toISOString(),
       });
+      await setProfile({ name, phone, email });
       clear();
       setShowCheckout(false);
-      setName(''); setPhone(''); setEmail(''); setComment('');
+      setComment('');
       Alert.alert('Заказ принят!', `Номер заказа: ${json.orderId ?? '—'}\nМы свяжемся с вами по номеру ${phone}`);
     } catch {
       Alert.alert('Ошибка', 'Не удалось отправить заказ. Проверьте интернет.');

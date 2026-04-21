@@ -13,7 +13,7 @@ type DealRow = {
   ai_win_probability: number
   ai_recommendation: string | null
   expected_close_date: string | null
-  contact: { id: string; full_name: string | null; company_name: string | null } | null
+  contact: { id: string; full_name: string | null; company_name: string | null }[] | null
 }
 
 const STAGES = ['new', 'qualified', 'proposal', 'negotiation', 'won', 'lost'] as const
@@ -90,9 +90,9 @@ export default function DealsKanban({ deals }: { deals: DealRow[] }) {
                       className={`block p-3.5 rounded-xl border ${STAGE_COLORS[stage]} hover:bg-white/5 transition-colors`}
                     >
                       <p className="text-white text-sm font-medium leading-snug">{deal.title}</p>
-                      {deal.contact && (
+                      {deal.contact && deal.contact[0] && (
                         <p className="text-gray-400 text-xs mt-1">
-                          {deal.contact.full_name || deal.contact.company_name}
+                          {deal.contact[0].full_name || deal.contact[0].company_name}
                         </p>
                       )}
                       <div className="flex items-center justify-between mt-2.5">
