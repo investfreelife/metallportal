@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   View, Text, FlatList, TouchableOpacity,
-  ActivityIndicator, StyleSheet, SafeAreaView,
+  ActivityIndicator, StyleSheet, SafeAreaView, TextInput,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { supabase } from '../../lib/supabase';
@@ -18,6 +18,7 @@ interface Category {
 export default function CatalogScreen() {
   const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
+  const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -45,9 +46,16 @@ export default function CatalogScreen() {
     <SafeAreaView style={s.container}>
       <View style={s.header}>
         <Text style={s.headerTitle}>Каталог</Text>
+        <TextInput
+          style={s.search}
+          placeholder="Поиск категории..."
+          value={search}
+          onChangeText={setSearch}
+          clearButtonMode="while-editing"
+        />
       </View>
       <FlatList
-        data={categories}
+        data={categories.filter(c => c.name.toLowerCase().includes(search.toLowerCase()))}
         keyExtractor={(item) => item.id}
         contentContainerStyle={s.list}
         renderItem={({ item }) => (
@@ -67,8 +75,9 @@ export default function CatalogScreen() {
 const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f8fafc' },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  header: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 12, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#e2e8f0' },
+  header: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 12, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#e2e8f0', gap: 10 },
   headerTitle: { fontSize: 22, fontWeight: '700', color: '#0f172a' },
+  search: { backgroundColor: '#f1f5f9', borderRadius: 10, paddingHorizontal: 14, paddingVertical: 9, fontSize: 15, color: '#0f172a' },
   list: { padding: 16, gap: 12 },
   card: {
     backgroundColor: '#fff', borderRadius: 14, padding: 18,

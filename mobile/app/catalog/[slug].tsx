@@ -71,14 +71,15 @@ export default function CategoryScreen() {
               <Text style={s.arrow}>→</Text>
             </TouchableOpacity>
           ) : (
-            <View style={s.productCard}>
+            <TouchableOpacity style={s.productCard} onPress={() => router.push(`/catalog/product/${item.id}` as any)}>
               <Text style={s.productName}>{item.name}</Text>
               {getPrice(item as Product) !== null && (
                 <Text style={s.price}>
                   {Math.round(getPrice(item as Product)!).toLocaleString('ru-RU')} ₽
                 </Text>
               )}
-            </View>
+              <Text style={s.arrow}>→</Text>
+            </TouchableOpacity>
           )
         }
         ListEmptyComponent={
