@@ -8,6 +8,7 @@ export default function CTASection() {
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [tgLink, setTgLink] = useState("");
   const [err, setErr] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
@@ -15,12 +16,13 @@ export default function CTASection() {
     if (!message.trim() && !phone.trim()) { setErr("Опишите запрос или укажите телефон"); return; }
     setLoading(true); setErr("");
     try {
-      await fetch("/api/contact", {
+      const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone: phone || null, message, type: "quote" }),
       });
-      // Fire CRM tracking event
+      const data = await res.json();
+      if (data.tg_link) setTgLink(data.tg_link);
       if (typeof window !== "undefined" && (window as Window & { mpTrack?: (t: string, d: object) => void }).mpTrack) {
         (window as Window & { mpTrack?: (t: string, d: object) => void }).mpTrack!("form_submit", { phone, message });
       }
@@ -45,7 +47,18 @@ export default function CTASection() {
                 <Check size={28} className="text-gold" />
               </div>
               <p className="text-white font-semibold text-lg">Заявка принята!</p>
-              <p className="text-white/60 text-sm">Ответим в Telegram за 15 минут</p>
+              <p className="text-white/60 text-sm">Менеджер ответит в течение 15 минут</p>
+              {tgLink && (
+                <a
+                  href={tgLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 bg-[#229ED9] hover:bg-[#1a8bbf] text-white font-semibold px-5 py-3 rounded-xl transition-all text-sm"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L6.05 13.845l-2.97-.924c-.645-.204-.658-.645.136-.953l11.57-4.461c.537-.194 1.006.131.776.741z"/></svg>
+                  Получать ответы в Telegram
+                </a>
+              )}
             </div>
           ) : (
             <form onSubmit={handleSubmit}>

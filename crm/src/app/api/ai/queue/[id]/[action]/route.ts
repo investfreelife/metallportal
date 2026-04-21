@@ -59,7 +59,7 @@ export async function PATCH(
   }
 
   const { data: item } = await supabase.from('ai_queue')
-    .select('action_type, priority, ai_reasoning, suggested_message, content, created_at, contacts(ai_segment)')
+    .select('action_type, priority, ai_reasoning, suggested_message, content, created_at, contacts(id, ai_segment, telegram_chat_id, full_name)')
     .eq('id', id).single()
 
   const { error } = await supabase.from('ai_queue').update(update).eq('id', id)
@@ -68,11 +68,30 @@ export async function PATCH(
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
+  const contact = item?.contacts as { ai_segment?: string; telegram_chat_id?: string; full_name?: string } | null
+
+  // Отправить сообщение клиенту в Telegram при одобрении
+  if (action === 'approve' && item) {
+    const clientChatId = (contact as Record<string, string>)?.telegram_chat_id
+    const msgToClient = item.suggested_message || item.content
+    const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
+    if (clientChatId && msgToClient && BOT_TOKEN) {
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: clientChatId,
+          text: msgToClient,
+          parse_mode: 'HTML',
+        }),
+      }).catch(() => {})
+    }
+  }
+
   // Async: Claude evaluates and improves prompt (only on approve/reject)
   if (item && (action === 'approve' || action === 'reject')) {
     const createdAt = new Date(item.created_at).getTime()
     const responseMinutes = Math.round((Date.now() - createdAt) / 60000)
-    const contact = item.contacts as { ai_segment?: string } | null
     ;(async () => {
       await evaluateAndImprove({
         lead_segment: (contact as Record<string, string>)?.ai_segment ?? 'Неизвестно',

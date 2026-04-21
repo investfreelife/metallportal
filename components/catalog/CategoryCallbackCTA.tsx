@@ -7,17 +7,20 @@ export default function CategoryCallbackCTA() {
   const [phone, setPhone] = useState("");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [tgLink, setTgLink] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name || !phone) return;
     setLoading(true);
     try {
-      await fetch("/api/contact", {
+      const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, phone, type: "callback" }),
       });
+      const data = await res.json();
+      if (data.tg_link) setTgLink(data.tg_link);
       if (typeof window !== "undefined" && (window as Window & { mpTrack?: (t: string, d: object) => void }).mpTrack) {
         (window as Window & { mpTrack?: (t: string, d: object) => void }).mpTrack!("form_submit", { phone, contact_name: name, contact_phone: phone });
       }
@@ -35,6 +38,17 @@ export default function CategoryCallbackCTA() {
           </div>
           <h3 className="text-xl font-bold text-foreground">{name ? `${name}, заявка принята!` : "Заявка принята!"}</h3>
           <p className="text-muted-foreground text-sm">Менеджер свяжется с вами в течение 15 минут</p>
+          {tgLink && (
+            <a
+              href={tgLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 bg-[#229ED9] hover:bg-[#1a8bbf] text-white font-semibold px-5 py-2.5 rounded-xl transition-all text-sm"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L6.05 13.845l-2.97-.924c-.645-.204-.658-.645.136-.953l11.57-4.461c.537-.194 1.006.131.776.741z"/></svg>
+              Получать ответы в Telegram
+            </a>
+          )}
         </div>
       ) : (
         <div className="flex flex-col lg:flex-row lg:items-center gap-6">

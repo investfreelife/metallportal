@@ -176,6 +176,46 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ ok: true });
       }
 
+      // /start client_PHONE — клиент подписывается на ответы
+      if (param.startsWith("client_")) {
+        const phoneDigits = param.replace("client_", "")
+        const normalizedPhone = phoneDigits.length === 11
+          ? '+' + phoneDigits
+          : phoneDigits.length === 10
+          ? '+7' + phoneDigits
+          : '+' + phoneDigits
+
+        // Найти контакт по телефону и сохранить chat_id
+        const { data: contact } = await supabase.from('contacts')
+          .select('id, full_name, phone')
+          .eq('tenant_id', TENANT_ID)
+          .eq('phone', normalizedPhone)
+          .single()
+
+        if (contact) {
+          await supabase.from('contacts')
+            .update({ telegram_chat_id: String(tgId), updated_at: new Date().toISOString() })
+            .eq('id', contact.id)
+          await sendTelegram(tgId,
+            `✅ <b>Отлично, ${firstName || contact.full_name || 'друг'}!</b>\n\nТеперь вы будете получать ответы менеджера прямо здесь.\n\nМы рассмотрим вашу заявку и напишем в ближайшие 15 минут 💬`
+          )
+        } else {
+          // Создать новый контакт с telegram_chat_id
+          await supabase.from('contacts').insert({
+            tenant_id: TENANT_ID,
+            full_name: firstName || null,
+            phone: normalizedPhone,
+            telegram_chat_id: String(tgId),
+            source: 'telegram',
+            ai_score: 5,
+          })
+          await sendTelegram(tgId,
+            `👋 Привет, <b>${firstName}!</b>\n\nМы записали вас как нового клиента МеталлПортал.\nМенеджер свяжется с вами в ближайшее время 💬`
+          )
+        }
+        return NextResponse.json({ ok: true })
+      }
+
       // /start mobile_<code> — авторизация мобильного приложения
       if (param.startsWith("mobile_")) {
         const code = param.replace("mobile_", "");

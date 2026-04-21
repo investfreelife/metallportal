@@ -51,6 +51,9 @@ ALTER TABLE contacts ADD COLUMN IF NOT EXISTS ai_next_action TEXT;
 ALTER TABLE contacts ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}';
 ALTER TABLE contacts ADD COLUMN IF NOT EXISTS source TEXT;
 ALTER TABLE contacts ADD COLUMN IF NOT EXISTS type TEXT;
+ALTER TABLE contacts ADD COLUMN IF NOT EXISTS telegram_chat_id TEXT;
+CREATE INDEX IF NOT EXISTS idx_contacts_phone ON contacts(phone);
+CREATE INDEX IF NOT EXISTS idx_contacts_tg_chat ON contacts(telegram_chat_id);
 
 -- 4. РАСШИРИТЬ activities
 ALTER TABLE activities ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}';
