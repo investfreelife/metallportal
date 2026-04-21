@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react'
 import {
   Key, Users, Globe, Loader2, CheckCircle, Copy,
-  Plus, Trash2, Eye, EyeOff, Send, RefreshCw, Crown, UserCheck, UserX
+  Plus, Eye, EyeOff, Send, RefreshCw, UserCheck, UserX,
+  Bot, Wifi, WifiOff, MessageSquare, Zap
 } from 'lucide-react'
 
-type Tab = 'integrations' | 'team' | 'site'
+type Tab = 'integrations' | 'telegram' | 'team' | 'site'
 
 type TeamUser = {
   id: string; name: string; login: string; role: string
@@ -47,6 +48,194 @@ function CopyButton({ text }: { text: string }) {
     >
       {copied ? <CheckCircle className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
     </button>
+  )
+}
+
+// ───────────────────── Telegram tab ─────────────────────
+
+type BotStatus = {
+  connected: boolean
+  bot?: { name: string; username: string }
+  webhook?: { url: string; is_our: boolean; pending_updates: number; last_error: string }
+  manager_id?: string
+}
+
+function TelegramTab() {
+  const [status, setStatus] = useState<BotStatus | null>(null)
+  const [loadingStatus, setLoadingStatus] = useState(true)
+  const [connecting, setConnecting] = useState(false)
+  const [result, setResult] = useState<{ ok?: boolean; error?: string; bot?: { name: string; username: string }; test_sent?: boolean } | null>(null)
+
+  async function loadStatus() {
+    setLoadingStatus(true)
+    const res = await fetch('/api/telegram/status')
+    const d = await res.json()
+    setStatus(d)
+    setLoadingStatus(false)
+  }
+
+  useEffect(() => { loadStatus() }, [])
+
+  async function connect() {
+    setConnecting(true); setResult(null)
+    const res = await fetch('/api/telegram/setup', { method: 'POST' })
+    const d = await res.json()
+    setResult(d)
+    setConnecting(false)
+    if (d.ok) loadStatus()
+  }
+
+  async function disconnect() {
+    if (!confirm('Отключить бота?')) return
+    setConnecting(true)
+    await fetch('/api/telegram/setup', { method: 'DELETE' })
+    setConnecting(false)
+    loadStatus()
+  }
+
+  const WEBHOOK_URL = 'https://metallportal-crm2.vercel.app/api/telegram/bot'
+  const BOT_LINK = status?.bot?.username ? `https://t.me/${status.bot.username}` : 'https://t.me/'
+
+  return (
+    <div className="space-y-5">
+      {/* Status card */}
+      <div className={`border rounded-xl p-5 ${
+        loadingStatus ? 'bg-gray-900 border-gray-800'
+        : status?.connected ? 'bg-emerald-500/10 border-emerald-500/30'
+        : 'bg-gray-900 border-gray-800'
+      }`}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {loadingStatus ? (
+              <Loader2 className="w-5 h-5 text-gray-500 animate-spin" />
+            ) : status?.connected ? (
+              <Wifi className="w-5 h-5 text-emerald-400" />
+            ) : (
+              <WifiOff className="w-5 h-5 text-gray-500" />
+            )}
+            <div>
+              <h3 className="text-white font-semibold">
+                {loadingStatus ? 'Проверяем...' : status?.connected ? `✅ Бот подключён` : '⚠️ Бот не подключён'}
+              </h3>
+              {status?.bot && (
+                <p className="text-gray-400 text-xs mt-0.5">
+                  @{status.bot.username} · {status.bot.name}
+                </p>
+              )}
+            </div>
+          </div>
+          <button onClick={loadStatus} disabled={loadingStatus} className="text-gray-500 hover:text-gray-300 transition-colors">
+            <RefreshCw className={`w-4 h-4 ${loadingStatus ? 'animate-spin' : ''}`} />
+          </button>
+        </div>
+
+        {status?.connected && (
+          <div className="mt-4 space-y-2">
+            <div className="flex gap-2 flex-wrap">
+              <a href={BOT_LINK} target="_blank"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 text-blue-400 text-xs rounded-lg transition-colors">
+                <MessageSquare className="w-3.5 h-3.5" />
+                Открыть бота
+              </a>
+              {status.manager_id && (
+                <span className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 text-gray-400 text-xs rounded-lg">
+                  <Zap className="w-3.5 h-3.5 text-emerald-400" />
+                  Chat ID менеджера: {status.manager_id}
+                </span>
+              )}
+            </div>
+            {status.webhook?.last_error && (
+              <p className="text-red-400 text-xs">⚠️ Последняя ошибка: {status.webhook.last_error}</p>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Setup section */}
+      {!status?.connected && (
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
+          <h3 className="text-white font-semibold">Шаг 1 — Сохраните токен бота</h3>
+          <div className="bg-gray-800/60 rounded-lg p-3 text-sm text-gray-400 space-y-1.5">
+            <p>1. Напишите <a href="https://t.me/BotFather" target="_blank" className="text-blue-400 underline">@BotFather</a> → /newbot</p>
+            <p>2. Скопируйте токен вида <code className="bg-gray-700 px-1 rounded text-xs">7123456789:AAF...</code></p>
+            <p>3. Вставьте в 🔑 Интеграции → Telegram Bot Token → Сохранить</p>
+          </div>
+
+          <h3 className="text-white font-semibold">Шаг 2 — Укажите свой Chat ID</h3>
+          <div className="bg-gray-800/60 rounded-lg p-3 text-sm text-gray-400 space-y-1.5">
+            <p>1. Напишите <a href="https://t.me/userinfobot" target="_blank" className="text-blue-400 underline">@userinfobot</a> — он ответит вашим ID</p>
+            <p>2. Вставьте в 🔑 Интеграции → Chat ID менеджера → Сохранить</p>
+          </div>
+
+          <h3 className="text-white font-semibold">Шаг 3 — Нажмите «Подключить»</h3>
+        </div>
+      )}
+
+      {/* Connect / Reconnect button */}
+      <div className="flex gap-3">
+        <button
+          onClick={connect}
+          disabled={connecting}
+          className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-medium rounded-xl transition-colors"
+        >
+          {connecting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Bot className="w-4 h-4" />}
+          {status?.connected ? 'Переподключить' : 'Подключить бота'}
+        </button>
+        {status?.connected && (
+          <button
+            onClick={disconnect}
+            disabled={connecting}
+            className="px-4 py-3 bg-gray-800 hover:bg-red-900/30 text-gray-400 hover:text-red-400 text-sm rounded-xl transition-colors"
+          >
+            Отключить
+          </button>
+        )}
+      </div>
+
+      {/* Result */}
+      {result && (
+        <div className={`border rounded-xl p-4 text-sm ${
+          result.ok ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-red-500/10 border-red-500/30'
+        }`}>
+          {result.ok ? (
+            <div className="space-y-1.5">
+              <p className="text-emerald-400 font-medium">✅ Бот успешно подключён!</p>
+              {result.bot && <p className="text-gray-400">🤖 @{result.bot.username} — {result.bot.name}</p>}
+              {result.test_sent
+                ? <p className="text-gray-400">📱 Тестовое сообщение отправлено менеджеру</p>
+                : <p className="text-amber-400">⚠️ Chat ID менеджера не задан — тест не отправлен</p>
+              }
+            </div>
+          ) : (
+            <p className="text-red-400">{result.error}</p>
+          )}
+        </div>
+      )}
+
+      {/* Webhook URL info */}
+      <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-3">
+        <h3 className="text-white font-semibold text-sm">📡 Webhook URL бота</h3>
+        <div className="flex items-center gap-2">
+          <code className="flex-1 text-xs text-emerald-400 bg-gray-950 px-3 py-2 rounded-lg break-all">{WEBHOOK_URL}</code>
+          <CopyButton text={WEBHOOK_URL} />
+        </div>
+        <p className="text-gray-600 text-xs">Бот принимает: ✅ одобрение из очереди · 💬 сообщения клиентов · 👤 активация сотрудников</p>
+      </div>
+
+      {/* Manager bot link */}
+      {status?.bot?.username && (
+        <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-5">
+          <h3 className="text-white font-semibold mb-2">Поделитесь ботом с клиентами</h3>
+          <div className="flex items-center gap-2">
+            <code className="flex-1 text-sm text-blue-400 bg-gray-950 px-3 py-2 rounded-lg">
+              https://t.me/{status.bot.username}
+            </code>
+            <CopyButton text={`https://t.me/${status.bot.username}`} />
+          </div>
+          <p className="text-gray-500 text-xs mt-2">Разместите на сайте — клиенты пишут боту → сразу попадают в CRM</p>
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -504,7 +693,8 @@ export default function SettingsClient({ session }: { session: { login: string; 
   const [tab, setTab] = useState<Tab>('integrations')
 
   const tabs: { id: Tab; label: string }[] = [
-    { id: 'integrations', label: '🔑 Интеграции' },
+    { id: 'integrations', label: '🔑 Ключи' },
+    { id: 'telegram', label: '📱 Telegram' },
     { id: 'team', label: '👥 Команда' },
     { id: 'site', label: '🌐 Сайт' },
   ]
@@ -536,6 +726,7 @@ export default function SettingsClient({ session }: { session: { login: string; 
       </div>
 
       {tab === 'integrations' && <IntegrationsTab />}
+      {tab === 'telegram' && <TelegramTab />}
       {tab === 'team' && <TeamTab />}
       {tab === 'site' && <SiteTab />}
     </div>
