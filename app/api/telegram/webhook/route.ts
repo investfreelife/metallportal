@@ -7,16 +7,22 @@ const supabase = createClient(
 );
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN!;
+const TENANT_ID = 'a1000000-0000-0000-0000-000000000001';
+const CRM_URL = 'https://metallportal-crm2.vercel.app';
 
-async function sendTelegram(chatId: number, text: string) {
+async function sendTelegram(chatId: number | string, text: string, extra: object = {}) {
   await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: chatId, text, parse_mode: "HTML" }),
+    body: JSON.stringify({ chat_id: chatId, text, parse_mode: "HTML", ...extra }),
   });
 }
 
-const CRM_URL = 'https://metallportal-crm2.vercel.app'
+async function getManagerId(): Promise<string | null> {
+  const { data } = await supabase.from('tenant_settings')
+    .select('value').eq('tenant_id', TENANT_ID).eq('key', 'CRM_MANAGER_TG_ID').single();
+  return data?.value ?? null;
+}
 
 async function handleCrmCallback(callbackQuery: {
   id: string
@@ -98,9 +104,77 @@ export async function POST(req: NextRequest) {
     const firstName: string = msg.from.first_name ?? "";
     const text: string = msg.text ?? "";
 
+    // /status — статус очереди (только менеджер)
+    if (text === '/status') {
+      const managerId = await getManagerId();
+      if (managerId && String(tgId) === String(managerId)) {
+        const { count: pending } = await supabase.from('ai_queue')
+          .select('*', { count: 'exact', head: true })
+          .eq('tenant_id', TENANT_ID).eq('status', 'pending');
+        const { count: contacts } = await supabase.from('contacts')
+          .select('*', { count: 'exact', head: true }).eq('tenant_id', TENANT_ID);
+        await sendTelegram(tgId,
+          `📊 <b>Статус CRM МеталлПортал</b>\n\n⏳ Ожидают одобрения: <b>${pending ?? 0}</b>\n👥 Контактов в базе: <b>${contacts ?? 0}</b>\n\n🔗 <a href="${CRM_URL}/queue">Открыть очередь</a>`,
+          { disable_web_page_preview: true }
+        );
+      }
+      return NextResponse.json({ ok: true });
+    }
+
+    // /queue — список задач (только менеджер)
+    if (text === '/queue') {
+      const managerId = await getManagerId();
+      if (managerId && String(tgId) === String(managerId)) {
+        const { data: items } = await supabase.from('ai_queue')
+          .select('id, action_type, priority, contacts(full_name, phone)')
+          .eq('tenant_id', TENANT_ID).eq('status', 'pending')
+          .order('priority').limit(5);
+        if (!items?.length) {
+          await sendTelegram(tgId, '✅ Очередь пуста!');
+        } else {
+          const lines = items.map((it, i) => {
+            const c = it.contacts as { full_name?: string; phone?: string } | null;
+            const who = (c as Record<string, string>)?.full_name || (c as Record<string, string>)?.phone || 'Неизвестен';
+            const prio = it.priority === 'high' ? '🔴' : it.priority === 'medium' ? '🟡' : '🟢';
+            return `${i + 1}. ${prio} ${it.action_type} — ${who}`;
+          }).join('\n');
+          await sendTelegram(tgId,
+            `📋 <b>Очередь (${items.length}):</b>\n\n${lines}\n\n🔗 <a href="${CRM_URL}/queue">Открыть все</a>`,
+            { disable_web_page_preview: true }
+          );
+        }
+      }
+      return NextResponse.json({ ok: true });
+    }
+
     // /start — регистрация / приветствие
     if (text.startsWith("/start")) {
       const param = text.split(" ")[1] ?? "";
+
+      // /start manager_TOKEN — привязать менеджера к CRM
+      if (param.startsWith("manager_")) {
+        const linkToken = param.replace("manager_", "");
+        const { data: stored } = await supabase.from('tenant_settings')
+          .select('value').eq('tenant_id', TENANT_ID).eq('key', '_manager_link_token').single();
+        const [storedToken, expiresAt] = (stored?.value ?? '').split('|');
+        if (!storedToken || storedToken !== linkToken || new Date(expiresAt) < new Date()) {
+          await sendTelegram(tgId, '❌ Ссылка недействительна или истекла. Сгенерируйте новую в CRM → Настройки → Telegram.');
+        } else {
+          await supabase.from('tenant_settings').upsert(
+            { tenant_id: TENANT_ID, key: 'CRM_MANAGER_TG_ID', value: String(tgId), updated_at: new Date().toISOString() },
+            { onConflict: 'tenant_id,key' }
+          );
+          await supabase.from('tenant_settings').upsert(
+            { tenant_id: TENANT_ID, key: '_manager_link_token', value: '', updated_at: new Date().toISOString() },
+            { onConflict: 'tenant_id,key' }
+          );
+          await sendTelegram(tgId,
+            `✅ <b>Telegram подключён к CRM МеталлПортал!</b>\n\n👤 ${firstName}\n🆔 Ваш Chat ID: <code>${tgId}</code>\n\nТеперь новые лиды и заявки приходят сюда с кнопками одобрения.\n\nКоманды:\n/status — статус очереди\n/queue — список задач\n\n🔗 <a href="${CRM_URL}">Открыть CRM</a>`,
+            { disable_web_page_preview: true }
+          );
+        }
+        return NextResponse.json({ ok: true });
+      }
 
       // /start mobile_<code> — авторизация мобильного приложения
       if (param.startsWith("mobile_")) {
