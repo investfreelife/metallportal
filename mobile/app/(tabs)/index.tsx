@@ -1,27 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
-  View, Text, FlatList, TouchableOpacity, ScrollView,
+  View, Text, FlatList, TouchableOpacity, ScrollView, Image,
   ActivityIndicator, StyleSheet, SafeAreaView, TextInput,
-  ImageBackground, Dimensions,
+  Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { supabase } from '../../lib/supabase';
-import { useAuthStore } from '../../stores/authStore';
 
 const PRIMARY = '#1a56db';
 const ACCENT = '#f97316';
-const { width: W } = Dimensions.get('window');
+const SEARCH_API = 'https://metallportal.ru/api/search';
 
 const CATEGORY_ICONS: Record<string, string> = {
-  'metalloprokat': '🏗️',
-  'gotovye-konstruktsii': '🏠',
-  'truby-stalnye': '🔩',
-  'listovoy-prokat': '📄',
-  'fasonnyy-prokat': '⚙️',
-  'armatura': '🔧',
-  'navesy': '⛺',
-  'metizy': '🔩',
-  'default': '📦',
+  'metalloprokat': '🏗️', 'gotovye-konstruktsii': '🏠', 'truby-stalnye': '🔩',
+  'listovoy-prokat': '📄', 'fasonnyy-prokat': '⚙️', 'armatura': '🔧',
+  'navesy': '⛺', 'metizy': '🔩', 'default': '📦',
 };
 
 const QUICK_CATEGORIES = [
@@ -34,13 +27,19 @@ const QUICK_CATEGORIES = [
 ];
 
 interface Category { id: string; name: string; slug: string; parent_id: string | null; }
+interface SearchResult {
+  id: string; name: string; slug: string; image_url: string | null;
+  unit: string; categoryName: string; price: number | null;
+}
 
 export default function CatalogScreen() {
   const router = useRouter();
-  const { user } = useAuthStore();
   const [categories, setCategories] = useState<Category[]>([]);
   const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [searching, setSearching] = useState(false);
   const [loading, setLoading] = useState(true);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     supabase.from('categories').select('id,name,slug,parent_id')
@@ -48,19 +47,90 @@ export default function CatalogScreen() {
       .then(({ data }) => { setCategories(data ?? []); setLoading(false); });
   }, []);
 
-  const filtered = categories.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (search.length < 2) { setSearchResults([]); setSearching(false); return; }
+    setSearching(true);
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch(`${SEARCH_API}?q=${encodeURIComponent(search)}&limit=30`);
+        const data = await res.json();
+        setSearchResults(Array.isArray(data) ? data : []);
+      } catch { setSearchResults([]); }
+      setSearching(false);
+    }, 300);
+  }, [search]);
+
+  const isSearching = search.length >= 2;
 
   if (loading) return <View style={s.center}><ActivityIndicator size="large" color={PRIMARY} /></View>;
+
+  const SearchBar = () => (
+    <View style={s.searchWrap}>
+      <Text style={s.searchIcon}>🔍</Text>
+      <TextInput
+        style={s.searchInput}
+        placeholder="Поиск по каталогу..."
+        placeholderTextColor="#94a3b8"
+        value={search}
+        onChangeText={setSearch}
+        clearButtonMode="while-editing"
+        returnKeyType="search"
+      />
+      {searching && <ActivityIndicator size="small" color={PRIMARY} />}
+    </View>
+  );
+
+  if (isSearching) {
+    return (
+      <SafeAreaView style={s.container}>
+        <View style={s.searchHeader}><SearchBar /></View>
+        {searching ? (
+          <View style={s.center}><ActivityIndicator size="large" color={PRIMARY} /></View>
+        ) : (
+          <FlatList
+            data={searchResults}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={s.list}
+            ListEmptyComponent={
+              <View style={s.center}><Text style={s.emptyText}>Ничего не найдено</Text></View>
+            }
+            ListHeaderComponent={
+              searchResults.length > 0
+                ? <Text style={s.sectionTitle2}>Найдено: {searchResults.length} товаров</Text>
+                : null
+            }
+            renderItem={({ item }) => (
+              <TouchableOpacity style={s.searchCard} onPress={() => router.push(`/catalog/product/${item.id}` as any)}>
+                {item.image_url
+                  ? <Image source={{ uri: item.image_url }} style={s.searchImg} resizeMode="contain" />
+                  : <View style={s.searchImgPlaceholder}><Text style={{ fontSize: 20 }}>📦</Text></View>
+                }
+                <View style={s.searchInfo}>
+                  <Text style={s.searchCat}>{item.categoryName}</Text>
+                  <Text style={s.searchName} numberOfLines={2}>{item.name}</Text>
+                  {item.price !== null
+                    ? <Text style={s.searchPrice}>{item.price.toLocaleString('ru-RU')} ₽ / {item.unit}</Text>
+                    : <Text style={s.searchNoPrice}>Цену уточняйте</Text>
+                  }
+                </View>
+                <Text style={s.arrow}>›</Text>
+              </TouchableOpacity>
+            )}
+          />
+        )}
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={s.container}>
       <FlatList
-        data={filtered}
+        data={categories}
         keyExtractor={(item) => item.id}
         contentContainerStyle={s.list}
         ListHeaderComponent={() => (
           <View>
-            {/* Hero banner */}
             <View style={s.hero}>
               <View style={s.heroBadge}><Text style={s.heroBadgeText}>🔥 Лучшие цены</Text></View>
               <Text style={s.heroTitle}>МеталлПортал</Text>
@@ -73,35 +143,18 @@ export default function CatalogScreen() {
                 <View style={s.heroStat}><Text style={s.heroStatNum}>1 день</Text><Text style={s.heroStatLabel}>доставка</Text></View>
               </View>
             </View>
-
-            {/* Search */}
-            <View style={s.searchWrap}>
-              <Text style={s.searchIcon}>🔍</Text>
-              <TextInput
-                style={s.searchInput}
-                placeholder="Поиск по каталогу..."
-                placeholderTextColor="#94a3b8"
-                value={search}
-                onChangeText={setSearch}
-                clearButtonMode="while-editing"
-              />
+            <SearchBar />
+            <View style={s.section}>
+              <Text style={s.sectionTitle}>Популярные разделы</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.quickRow}>
+                {QUICK_CATEGORIES.map((q) => (
+                  <TouchableOpacity key={q.slug} style={s.quickCard} onPress={() => router.push(`/catalog/${q.slug}` as any)}>
+                    <Text style={s.quickIcon}>{q.icon}</Text>
+                    <Text style={s.quickName}>{q.name}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
             </View>
-
-            {/* Quick access */}
-            {!search && (
-              <View style={s.section}>
-                <Text style={s.sectionTitle}>Популярные разделы</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.quickRow}>
-                  {QUICK_CATEGORIES.map((q) => (
-                    <TouchableOpacity key={q.slug} style={s.quickCard} onPress={() => router.push(`/catalog/${q.slug}` as any)}>
-                      <Text style={s.quickIcon}>{q.icon}</Text>
-                      <Text style={s.quickName}>{q.name}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              </View>
-            )}
-
             <Text style={s.sectionTitle2}>Все категории</Text>
           </View>
         )}
@@ -149,6 +202,16 @@ const s = StyleSheet.create({
   quickIcon: { fontSize: 26, marginBottom: 6 },
   quickName: { fontSize: 11, fontWeight: '600', color: '#475569', textAlign: 'center' },
 
+  searchHeader: { backgroundColor: '#fff', paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#e2e8f0' },
+  searchCard: { backgroundColor: '#fff', marginHorizontal: 16, marginBottom: 10, borderRadius: 16, flexDirection: 'row', alignItems: 'center', padding: 12, gap: 12, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 5, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
+  searchImg: { width: 60, height: 60, borderRadius: 10, backgroundColor: '#f1f5f9' },
+  searchImgPlaceholder: { width: 60, height: 60, borderRadius: 10, backgroundColor: '#eff6ff', alignItems: 'center', justifyContent: 'center' },
+  searchInfo: { flex: 1 },
+  searchCat: { fontSize: 11, color: '#94a3b8', marginBottom: 2 },
+  searchName: { fontSize: 13, fontWeight: '500', color: '#0f172a', lineHeight: 18, marginBottom: 4 },
+  searchPrice: { fontSize: 15, fontWeight: '700', color: PRIMARY },
+  searchNoPrice: { fontSize: 13, color: '#94a3b8' },
+  emptyText: { fontSize: 15, color: '#94a3b8' },
   list: { paddingBottom: 24 },
   card: {
     backgroundColor: '#fff', marginHorizontal: 16, marginBottom: 10, borderRadius: 16,
