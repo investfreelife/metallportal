@@ -60,6 +60,17 @@
 - **Архитектура**: `crm/ARCHITECTURE.md` — полная спецификация SaaS платформы (Phase 1-7)
 - **Dev**: `cd crm && npm run dev -- --port 3002`
 
+### AI CRM — Phase 2: Трекинг и шина (20 апр 2026)
+- **`crm/public/track.js`** — JS трекер для сайтов (page_view, page_leave+scroll, phone_click, file_download, mpTrack API)
+  - Подключить: `<script src="https://metallportal-crm2.vercel.app/track.js?tid=TENANT_ID" defer>`
+  - МеталлПортал: уже подключён в `app/layout.tsx` с tid=a1000000-0000-0000-0000-000000000001
+- **`crm/src/app/api/track/route.ts`** — приёмник событий (CORS, scoring, создание контактов, ai_queue)
+- **`crm/src/app/api/webhook/route.ts`** — webhook от форм сайта (order/callback/quote)
+  - При заказе: создаёт контакт + активность + задачу в AI Queue с priority=high
+- **`app/api/orders/route.ts`** — интегрирован с CRM webhook (fire-and-forget после создания заказа)
+- **Scoring**: form_submit+30, add_to_cart+25, phone_click+15, page_view+2
+- **SUPABASE_SERVICE_ROLE_KEY** добавлен в Vercel env для обхода RLS
+
 ## 🔄 В ПРОЦЕССЕ
 - SEO генерация: ~3900/12166 готово, скрипт крутится в фоне
   Логи: tail -f /tmp/seo_generation.log
