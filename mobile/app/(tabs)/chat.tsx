@@ -31,28 +31,34 @@ export default function ChatScreen() {
 
   // Найти или создать чат для текущего пользователя
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const init = async () => {
-      let { data: chat } = await supabase
-        .from('chats')
-        .select('id')
-        .eq('user_id', user.id)
-        .single();
+      try {
+        let { data: chat, error: fetchErr } = await supabase
+          .from('chats')
+          .select('id')
+          .eq('user_id', user.id)
+          .maybeSingle();
 
-      if (!chat) {
-        const { data: newChat } = await supabase.from('chats').insert({
-          user_id: user.id,
-          customer_name: profile.name || user.email?.split('@')[0] || 'Клиент',
-          customer_phone: profile.phone || null,
-          status: 'open',
-          last_message: 'Начал диалог',
-          last_message_at: new Date().toISOString(),
-        }).select('id').single();
-        chat = newChat;
-      }
+        if (!chat) {
+          const { data: newChat, error: insertErr } = await supabase
+            .from('chats')
+            .insert({
+              user_id: user.id,
+              customer_name: profile.name || user.email?.split('@')[0] || 'Клиент',
+              customer_phone: profile.phone || null,
+              status: 'open',
+              last_message: 'Начал диалог',
+              last_message_at: new Date().toISOString(),
+            })
+            .select('id')
+            .single();
+          if (insertErr) console.error('Chat insert error:', insertErr.message);
+          chat = newChat;
+        }
 
-      if (!chat) return;
-      setChatId(chat.id);
+        if (!chat) { setLoading(false); return; }
+        setChatId(chat.id);
 
       const { data: msgs } = await supabase
         .from('messages')
