@@ -2,9 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import { formatRelativeTime, getActionTypeLabel } from '@/lib/utils'
-import { CheckCircle, XCircle, Clock, Edit3, Sparkles, MessageSquarePlus } from 'lucide-react'
+import { CheckCircle, XCircle, Clock, Edit3, Sparkles, MessageSquare } from 'lucide-react'
 
 type QueueItem = {
   id: string
@@ -40,7 +39,6 @@ export default function QueueClient({ items }: { items: QueueItem[] }) {
   const [processing, setProcessing] = useState<string | null>(null)
   const [localItems, setLocalItems] = useState(items)
   const [feedbacks, setFeedbacks] = useState<Record<string, string>>({})  // itemId → feedback text
-  const [feedbackOpen, setFeedbackOpen] = useState<Record<string, boolean>>({})
 
   async function approve(item: QueueItem) {
     setProcessing(item.id)
@@ -165,6 +163,26 @@ export default function QueueClient({ items }: { items: QueueItem[] }) {
                 </span>
               </div>
 
+              {/* Контактные данные */}
+              {item.contact && (item.contact.phone || item.contact.email) && (
+                <div className="flex gap-3 text-sm">
+                  {item.contact.phone && (
+                    <a href={`tel:${item.contact.phone}`} className="text-blue-400 hover:text-blue-300 transition-colors">📞 {item.contact.phone}</a>
+                  )}
+                  {item.contact.email && (
+                    <span className="text-gray-400">{item.contact.email}</span>
+                  )}
+                </div>
+              )}
+
+              {/* Сообщение клиента */}
+              {item.subject && (
+                <div className="bg-gray-800/60 border border-gray-700 rounded-lg px-3.5 py-3">
+                  <p className="text-gray-400 text-xs font-medium mb-1">💬 Сообщение клиента</p>
+                  <p className="text-white text-sm whitespace-pre-wrap">{item.subject}</p>
+                </div>
+              )}
+
               {item.ai_reasoning && (
                 <div className="bg-purple-900/20 border border-purple-500/20 rounded-lg px-3.5 py-3">
                   <p className="text-purple-300 text-xs font-medium mb-1">Обоснование ИИ</p>
@@ -173,9 +191,6 @@ export default function QueueClient({ items }: { items: QueueItem[] }) {
               )}
 
               <div>
-                {item.subject && (
-                  <p className="text-gray-400 text-xs mb-1.5">Тема: <span className="text-gray-300">{item.subject}</span></p>
-                )}
                 <div className="bg-gray-900 border border-gray-700 rounded-lg">
                   {isEditing ? (
                     <textarea
@@ -190,28 +205,19 @@ export default function QueueClient({ items }: { items: QueueItem[] }) {
                 </div>
               </div>
 
-              {/* Обратная связь менеджера → уходит в Claude для улучшения промпта */}
-              <div className="border-t border-gray-700/50 pt-3">
-                <button
-                  onClick={() => setFeedbackOpen(f => ({ ...f, [item.id]: !f[item.id] }))}
-                  className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-purple-400 transition-colors"
-                >
-                  <MessageSquarePlus className="w-3.5 h-3.5" />
-                  {feedbackOpen[item.id] ? 'Скрыть комментарий' : 'Добавить комментарий для обучения ИИ'}
-                </button>
-                {feedbackOpen[item.id] && (
-                  <div className="mt-2 space-y-1.5">
-                    <textarea
-                      autoFocus
-                      rows={2}
-                      value={feedbacks[item.id] ?? ''}
-                      onChange={e => setFeedbacks(f => ({ ...f, [item.id]: e.target.value }))}
-                      placeholder="Напишите что не так с ответом ИИ или что нужно улучшить... Claude скорректирует промпт"
-                      className="w-full px-3 py-2 bg-purple-950/30 border border-purple-500/30 rounded-lg text-gray-300 text-sm placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 resize-none"
-                    />
-                    <p className="text-gray-600 text-xs">Комментарий отправится вместе с одобрением/отклонением</p>
-                  </div>
-                )}
+              {/* Мнение менеджера → обучение ИИ (всегда видно) */}
+              <div className="border-t border-gray-700/50 pt-3 space-y-1.5">
+                <p className="flex items-center gap-1.5 text-xs text-purple-400 font-medium">
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  Ваше мнение об ответе ИИ (улучшит промпт)
+                </p>
+                <textarea
+                  rows={2}
+                  value={feedbacks[item.id] ?? ''}
+                  onChange={e => setFeedbacks(f => ({ ...f, [item.id]: e.target.value }))}
+                  placeholder="Что не так или что нужно изменить в ответе ИИ? Claude автоматически скорректирует промпт..."
+                  className="w-full px-3 py-2 bg-purple-950/30 border border-purple-500/30 rounded-lg text-gray-300 text-sm placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 resize-none"
+                />
               </div>
 
               {isRejecting && (

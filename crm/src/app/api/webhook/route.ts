@@ -130,20 +130,47 @@ export async function POST(request: NextRequest) {
         ? `Добрый день${name ? ', ' + name : ''}! Ваш заказ получен. Перезвоню в течение 15 минут для подтверждения.`
         : `Добрый день${name ? ', ' + name : ''}! Получил вашу заявку. Свяжусь с вами в ближайшее время.`
 
+    // Сохраняем оригинальное сообщение клиента в subject
+    const clientMsg = message ? String(message).slice(0, 500) : null
+    const subjectLine = clientMsg || `Тип: ${type}${name ? ' · ' + name : ''}${phone ? ' · ' + phone : ''}`
+
     const { data: queueItem } = await supabase.from('ai_queue').insert({
       tenant_id,
       contact_id: contactId,
       action_type: actionType,
       priority,
       status: 'pending',
+      subject: subjectLine,
       ai_reasoning: reasoning,
       content: suggested,
       suggested_message: suggested,
     }).select('id').single()
 
-    // Async: improve with GPT-4o + send Telegram notification
+    // ── Авто-создание сделки для нового лида ─────────────────────────────────
+    await supabase.from('deals').insert({
+      tenant_id,
+      contact_id: contactId,
+      title: `${type === 'order' ? 'Заказ' : 'Лид'}: ${String(name || phone || email || 'Новый')}`,
+      amount: total ? Number(total) : null,
+      stage: 'new',
+      ai_win_probability: 0,
+    }).select('id').single()
+
+    // ── Немедленное уведомление менеджера (до AI, без задержки) ──────────────
     if (queueItem) {
       const queueId = queueItem.id
+
+      await notifyManager({
+        queue_id: queueId,
+        contact_name: name ? String(name) : null,
+        contact_phone: phone ? String(phone) : null,
+        action_type: actionType,
+        priority,
+        ai_reasoning: reasoning + (clientMsg ? `\n\n💬 Сообщение: «${clientMsg}»` : ''),
+        suggested_message: suggested,
+      })
+
+      // Async: AI улучшает текст и присваивает сегмент
       ;(async () => {
         const ai = await analyzeNewLead({
           name: name ? String(name) : null,
@@ -151,7 +178,7 @@ export async function POST(request: NextRequest) {
           email: email ? String(email) : null,
           company: company ? String(company) : null,
           form_type: String(type),
-          message: message ? String(message) : null,
+          message: clientMsg,
           items: Array.isArray(items) ? items : undefined,
           total: total ? Number(total) : null,
           utm_source: utm_source ? String(utm_source) : null,
@@ -162,7 +189,7 @@ export async function POST(request: NextRequest) {
           const mappedPriority = ai.priority === 'medium' ? 'normal' : ai.priority
           const mappedAction = ai.action_type === 'call' ? 'make_call' : ai.action_type === 'schedule' ? 'create_task' : ai.action_type
           await supabase.from('ai_queue').update({
-            ai_reasoning: ai.reasoning,
+            ai_reasoning: ai.reasoning + (clientMsg ? `\n\n💬 Сообщение клиента: «${clientMsg}»` : ''),
             content: ai.suggested_message,
             suggested_message: ai.suggested_message,
             priority: mappedPriority,
@@ -176,29 +203,8 @@ export async function POST(request: NextRequest) {
               ai_next_action: ai.next_action_hint,
             }).eq('id', contactId)
           }
-
-          await notifyManager({
-            queue_id: queueId,
-            contact_name: name ? String(name) : null,
-            contact_phone: phone ? String(phone) : null,
-            action_type: ai.action_type === 'call' ? 'make_call' : ai.action_type,
-            priority: ai.priority === 'medium' ? 'normal' : ai.priority,
-            ai_reasoning: ai.reasoning,
-            suggested_message: ai.suggested_message,
-          })
-        } else {
-          // No GPT — still notify with basic info
-          await notifyManager({
-            queue_id: queueId,
-            contact_name: name ? String(name) : null,
-            contact_phone: phone ? String(phone) : null,
-            action_type: actionType,
-            priority,
-            ai_reasoning: reasoning,
-            suggested_message: suggested,
-          })
         }
-      })().catch(() => {})
+      })().catch((e) => console.error('[webhook] AI analysis error:', e))
     }
   }
 

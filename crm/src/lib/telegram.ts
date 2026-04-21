@@ -32,9 +32,10 @@ export interface NotifyPayload {
 }
 
 export async function notifyManager(payload: NotifyPayload): Promise<boolean> {
-  const BOT_TOKEN = await getSetting('TELEGRAM_BOT_TOKEN')
-  const MANAGER_TG_ID = await getSetting('CRM_MANAGER_TG_ID')
-  if (!BOT_TOKEN || !MANAGER_TG_ID) return false
+  const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || await getSetting('TELEGRAM_BOT_TOKEN')
+  const MANAGER_TG_ID = process.env.CRM_MANAGER_TG_ID || await getSetting('CRM_MANAGER_TG_ID')
+  if (!BOT_TOKEN) { console.error('[telegram] TELEGRAM_BOT_TOKEN not set'); return false }
+  if (!MANAGER_TG_ID) { console.error('[telegram] CRM_MANAGER_TG_ID not set — go to CRM Settings → Telegram to connect'); return false }
 
   const emoji = PRIORITY_EMOJI[payload.priority] ?? '⚪'
   const action = ACTION_LABEL[payload.action_type] ?? payload.action_type
