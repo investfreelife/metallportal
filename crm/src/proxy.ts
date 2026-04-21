@@ -1,19 +1,30 @@
 import { NextResponse, type NextRequest } from 'next/server'
-import { getSessionFromCookieString } from './lib/session'
+
+function hasValidSession(cookieHeader: string | null): boolean {
+  if (!cookieHeader) return false
+  const match = cookieHeader.match(/crm_session=([^;]+)/)
+  if (!match) return false
+  try {
+    const session = JSON.parse(atob(match[1]))
+    return session.exp > Date.now()
+  } catch {
+    return false
+  }
+}
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   const isPublic = pathname === '/login' || pathname.startsWith('/api/auth')
-  const session = getSessionFromCookieString(request.headers.get('cookie'))
+  const loggedIn = hasValidSession(request.headers.get('cookie'))
 
-  if (!session && !isPublic) {
+  if (!loggedIn && !isPublic) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
-  if (session && pathname === '/login') {
+  if (loggedIn && pathname === '/login') {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)
