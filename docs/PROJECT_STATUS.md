@@ -96,6 +96,32 @@
 - **`crm/supabase-migration-001.sql`** — ⚠️ НУЖНО выполнить в Supabase SQL Editor
 - **Env vars нужны**: `TELEGRAM_BOT_TOKEN`, `CRM_MANAGER_TG_ID`, `RESEND_API_KEY`
 
+### Phase 8: Telegram Bot — полная интеграция (20 апр 2026)
+**Единый webhook бота в CRM** — `crm/src/app/api/telegram/bot/route.ts`
+- CRM кнопки: `crm_approve/reject/snooze` → PATCH `/api/ai/queue/:id/:action`
+- `/start invite_TOKEN` — активация аккаунта менеджера + сохранение telegram_chat_id
+- `/start` — приветствие клиента + создание контакта в CRM
+- `/status`, `/queue` (только менеджер) — статистика и список задач
+- Входящие сообщения → создание контакта + activity + ai_queue + уведомление менеджера
+
+**Setup API** — `crm/src/app/api/telegram/setup/route.ts`
+- `POST /api/telegram/setup` — регистрирует webhook + тест-сообщение менеджеру
+- `DELETE /api/telegram/setup` — отключает webhook
+
+**Status API** — `crm/src/app/api/telegram/status/route.ts`
+- `GET /api/telegram/status` — статус бота (имя, username, webhook, ошибки)
+
+**Settings UI** — новая вкладка 📱 Telegram в SettingsClient:
+- Статус подключения (🟢/🔴) с именем бота
+- Инструкция по настройке (3 шага)
+- Кнопка **Подключить** → регистрирует webhook + тест → показывает результат
+- Ссылка на бота для клиентов (копировать)
+
+**Как подключить:**
+1. 🔑 Интеграции → сохранить `TELEGRAM_BOT_TOKEN` + `CRM_MANAGER_TG_ID`
+2. 📱 Telegram → кнопка **Подключить бота**
+3. Получить тест-сообщение в Telegram ✅
+
 ### Phase 7: Трекинг и формы — ИСПРАВЛЕНИЯ (20 апр 2026)
 **Корневые причины:**
 1. `track.js` с `defer` — `document.currentScript` = null → ENDPOINT падал на `/api/track` главного сайта (не существует)
