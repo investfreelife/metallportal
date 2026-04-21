@@ -131,31 +131,32 @@ export async function POST(request: NextRequest) {
         ? `Добрый день${name ? ', ' + name : ''}! Ваш заказ получен. Перезвоню в течение 15 минут для подтверждения.`
         : `Добрый день${name ? ', ' + name : ''}! Получил вашу заявку. Свяжусь с вами в ближайшее время.`
 
-    // Сохраняем оригинальное сообщение клиента в subject
     const clientMsg = message ? String(message).slice(0, 500) : null
-    const subjectLine = clientMsg || `Тип: ${type}${name ? ' · ' + name : ''}${phone ? ' · ' + phone : ''}`
+    const fullReasoning = reasoning + (clientMsg ? `\n\n💬 Сообщение клиента: «${clientMsg}»` : '')
 
-    const { data: queueItem } = await supabase.from('ai_queue').insert({
+    const { data: queueItem, error: queueError } = await supabase.from('ai_queue').insert({
       tenant_id,
       contact_id: contactId,
       action_type: actionType,
       priority,
       status: 'pending',
-      subject: subjectLine,
-      ai_reasoning: reasoning,
+      ai_reasoning: fullReasoning,
       content: suggested,
       suggested_message: suggested,
     }).select('id').single()
 
-    // ── Авто-создание сделки для нового лида ─────────────────────────────────
-    await supabase.from('deals').insert({
+    if (queueError) {
+      console.error('[webhook] ai_queue insert error:', queueError.message)
+    }
+
+    // ── Авто-создание сделки (не блокируем если таблица отличается) ──────────
+    void supabase.from('deals').insert({
       tenant_id,
       contact_id: contactId,
       title: `${type === 'order' ? 'Заказ' : 'Лид'}: ${String(name || phone || email || 'Новый')}`,
       amount: total ? Number(total) : null,
       stage: 'new',
-      ai_win_probability: 0,
-    }).select('id').single()
+    })
 
     // ── Немедленное уведомление менеджера (до AI, без задержки) ──────────────
     if (queueItem) {
@@ -192,8 +193,8 @@ export async function POST(request: NextRequest) {
           const mappedAction = ai.action_type === 'call' ? 'make_call' : ai.action_type === 'schedule' ? 'create_task' : ai.action_type
           await supabase.from('ai_queue').update({
             ai_reasoning: ai.reasoning + (clientMsg ? `\n\n💬 Сообщение клиента: «${clientMsg}»` : ''),
-            content: ai.suggested_message,
-            suggested_message: ai.suggested_message,
+            content: ai.suggested_message || suggested,
+            suggested_message: ai.suggested_message || suggested,
             priority: mappedPriority,
             action_type: mappedAction,
           }).eq('id', queueId)

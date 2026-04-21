@@ -19,6 +19,7 @@ CREATE INDEX IF NOT EXISTS idx_tenant_settings_tenant ON tenant_settings(tenant_
 
 -- 2. РАСШИРИТЬ ai_queue (колонки + CHECK constraints)
 ALTER TABLE ai_queue ADD COLUMN IF NOT EXISTS suggested_message TEXT;
+ALTER TABLE ai_queue ADD COLUMN IF NOT EXISTS subject TEXT;
 ALTER TABLE ai_queue ADD COLUMN IF NOT EXISTS rejected_at TIMESTAMPTZ;
 ALTER TABLE ai_queue ADD COLUMN IF NOT EXISTS snoozed_until TIMESTAMPTZ;
 ALTER TABLE ai_queue ADD COLUMN IF NOT EXISTS auto_execute_at TIMESTAMPTZ;
