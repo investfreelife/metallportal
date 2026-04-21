@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Search, Plus, Filter } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Search, Plus, Filter, X, Loader2 } from 'lucide-react'
 import { formatDate, getScoreBgColor, getContactStatusLabel } from '@/lib/utils'
 import type { Contact } from '@/types'
 
@@ -23,9 +24,37 @@ const SEGMENT_ICONS: Record<string, string> = {
 }
 
 export default function ContactsClient({ contacts }: { contacts: Partial<Contact>[] }) {
+  const router = useRouter()
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [segmentFilter, setSegmentFilter] = useState('')
+  const [showNewForm, setShowNewForm] = useState(false)
+  const [newForm, setNewForm] = useState({ full_name: '', company_name: '', phone: '', email: '', source: 'manual' })
+  const [creating, setCreating] = useState(false)
+  const [createError, setCreateError] = useState('')
+
+  async function handleCreateContact(e: React.FormEvent) {
+    e.preventDefault()
+    if (!newForm.full_name && !newForm.phone && !newForm.email) {
+      setCreateError('Заполните хотя бы одно поле'); return
+    }
+    setCreating(true); setCreateError('')
+    const res = await fetch('/api/contacts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newForm),
+    })
+    setCreating(false)
+    if (res.ok) {
+      const d = await res.json()
+      setShowNewForm(false)
+      setNewForm({ full_name: '', company_name: '', phone: '', email: '', source: 'manual' })
+      router.push(`/contacts/${d.id}`)
+    } else {
+      const d = await res.json()
+      setCreateError(d.error || 'Ошибка')
+    }
+  }
 
   const filtered = contacts.filter((c) => {
     const q = search.toLowerCase()
@@ -49,11 +78,61 @@ export default function ContactsClient({ contacts }: { contacts: Partial<Contact
           <h1 className="text-2xl font-bold text-white">Контакты</h1>
           <p className="text-gray-400 text-sm mt-0.5">{contacts.length} контактов</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors">
+        <button
+          onClick={() => setShowNewForm(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors"
+        >
           <Plus className="w-4 h-4" />
           Добавить контакт
         </button>
       </div>
+
+      {showNewForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6 w-full max-w-md space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-white font-semibold text-lg">Новый контакт</h2>
+              <button onClick={() => setShowNewForm(false)} className="text-gray-500 hover:text-white transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleCreateContact} className="space-y-3">
+              {[['full_name','Имя'],['company_name','Компания'],['phone','Телефон'],['email','Email']].map(([field, label]) => (
+                <input
+                  key={field}
+                  type={field === 'email' ? 'email' : 'text'}
+                  value={newForm[field as keyof typeof newForm]}
+                  onChange={(e) => setNewForm(f => ({ ...f, [field]: e.target.value }))}
+                  placeholder={label}
+                  className="w-full px-3.5 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              ))}
+              <select
+                value={newForm.source}
+                onChange={(e) => setNewForm(f => ({ ...f, source: e.target.value }))}
+                className="w-full px-3.5 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="manual">Ручное добавление</option>
+                <option value="referral">Рекомендация</option>
+                <option value="cold_call">Холодный звонок</option>
+                <option value="exhibition">Выставка</option>
+              </select>
+              {createError && <p className="text-red-400 text-xs">{createError}</p>}
+              <div className="flex gap-2 pt-1">
+                <button type="submit" disabled={creating}
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors">
+                  {creating && <Loader2 className="w-4 h-4 animate-spin" />}
+                  Создать
+                </button>
+                <button type="button" onClick={() => setShowNewForm(false)}
+                  className="px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm rounded-lg transition-colors">
+                  Отмена
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <div className="flex gap-3 flex-wrap">
         <div className="relative flex-1 min-w-60">
