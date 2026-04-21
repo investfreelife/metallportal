@@ -19,8 +19,7 @@ export async function GET() {
     const whRes = await fetch(`https://api.telegram.org/bot${token}/getWebhookInfo`)
     const whData = await whRes.json()
     const webhookUrl: string = whData.result?.url ?? ''
-    const isOurWebhook = webhookUrl.includes('metallportal-crm2.vercel.app/api/telegram/bot') ||
-      webhookUrl.includes('metallportal.vercel.app/api/telegram/webhook')
+    const isOurWebhook = webhookUrl.includes('metallportal.vercel.app/api/telegram/webhook')
     const pendingCount: number = whData.result?.pending_update_count ?? 0
     const lastError: string = whData.result?.last_error_message ?? ''
 

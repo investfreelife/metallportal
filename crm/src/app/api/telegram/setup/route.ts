@@ -5,7 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSetting } from '@/lib/settings'
 
-const WEBHOOK_URL = 'https://metallportal-crm2.vercel.app/api/telegram/bot'
+const WEBHOOK_URL = 'https://metallportal.vercel.app/api/telegram/webhook'
 
 export async function POST(req: NextRequest) {
   const token = await getSetting('TELEGRAM_BOT_TOKEN')
