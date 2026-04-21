@@ -3,7 +3,9 @@ import { NextResponse, type NextRequest } from 'next/server'
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  const isPublic = pathname === '/login' || pathname.startsWith('/api/auth')
+  const isPublic =
+    pathname === '/login' ||
+    pathname.startsWith('/api/')  // все API маршруты публичны — auth внутри каждого
 
   // Proxy just checks cookie presence; full validation happens in dashboard layout
   const sessionCookie = request.cookies.get('crm_session')?.value
