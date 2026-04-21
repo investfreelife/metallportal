@@ -10,6 +10,7 @@ import {
   Settings,
   LogOut,
   Zap,
+  BarChart2,
 } from 'lucide-react'
 
 const navItems = [
@@ -17,6 +18,7 @@ const navItems = [
   { href: '/contacts', label: 'Контакты', icon: Users },
   { href: '/deals', label: 'Сделки', icon: Briefcase },
   { href: '/queue', label: 'Очередь ИИ', icon: Sparkles, badge: true },
+  { href: '/analytics', label: 'Аналитика', icon: BarChart2 },
   { href: '/settings', label: 'Настройки', icon: Settings },
 ]
 
