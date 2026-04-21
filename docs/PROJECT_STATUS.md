@@ -96,6 +96,14 @@
 - **`crm/supabase-migration-001.sql`** — ⚠️ НУЖНО выполнить в Supabase SQL Editor
 - **Env vars нужны**: `TELEGRAM_BOT_TOKEN`, `CRM_MANAGER_TG_ID`, `RESEND_API_KEY`
 
+### AI CRM — Phase 5: Автоматизация (20 апр 2026)
+- **`crm/src/app/(dashboard)/contacts/[id]/AddActivityForm.tsx`** — форма добавления заметки/звонка/письма к контакту
+- **`crm/src/app/api/contacts/[id]/activity/route.ts`** — POST /api/contacts/:id/activity
+- **`crm/src/app/api/contacts/route.ts`** — POST /api/contacts (создание контакта вручную)
+- **ContactsClient** — модальная форма "Новый контакт" с редиректом на карточку
+- **QueueClient** — approve → если action=send_proposal+email контакта → auto-send email; reject/snooze → REST API
+- **Фикс**: activities.title→subject, activities.notes→body (align со schema)
+
 ## 🔄 В ПРОЦЕССЕ
 - SEO генерация: ~3900/12166 готово, скрипт крутится в фоне
   Логи: tail -f /tmp/seo_generation.log
