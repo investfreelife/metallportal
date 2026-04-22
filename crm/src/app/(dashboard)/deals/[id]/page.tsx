@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { formatCurrency, formatDate, getDealStageLabel } from '@/lib/utils'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+import DealItemsClient, { type DealItem } from './DealItemsClient'
 
 const STAGE_COLORS: Record<string, string> = {
   new: 'bg-blue-500/20 text-blue-300',
@@ -40,6 +41,12 @@ export default async function DealDetailPage({
           {getDealStageLabel(deal.stage)}
         </span>
       </div>
+
+      {/* Items table — full width */}
+      <DealItemsClient
+        dealId={deal.id}
+        initialItems={(deal.items as DealItem[]) ?? []}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <div className="lg:col-span-2 space-y-4">

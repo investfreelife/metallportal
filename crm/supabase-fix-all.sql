@@ -104,7 +104,15 @@ DROP POLICY IF EXISTS "service_role_all" ON ai_queue;
 CREATE POLICY "service_role_all" ON ai_queue
   FOR ALL USING (true) WITH CHECK (true);
 
--- 7. ПРОВЕРКА — должны показать таблицы
+-- 7. РАСШИРИТЬ deals — добавить items (JSONB массив товаров)
+ALTER TABLE deals ADD COLUMN IF NOT EXISTS items JSONB DEFAULT '[]';
+ALTER TABLE deals ADD COLUMN IF NOT EXISTS currency TEXT DEFAULT 'RUB';
+
+DROP POLICY IF EXISTS "service_role_all" ON deals;
+CREATE POLICY "service_role_all" ON deals
+  FOR ALL USING (true) WITH CHECK (true);
+
+-- 8. ПРОВЕРКА — должны показать таблицы
 SELECT table_name FROM information_schema.tables
 WHERE table_schema = 'public'
 ORDER BY table_name;

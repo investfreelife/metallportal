@@ -149,14 +149,26 @@ export async function POST(request: NextRequest) {
       console.error('[webhook] ai_queue insert error:', queueError.message)
     }
 
-    // ── Авто-создание сделки (не блокируем если таблица отличается) ──────────
-    void supabase.from('deals').insert({
+    // ── Авто-создание сделки с товарами ──────────────────────────────────────
+    const dealTitle = type === 'order'
+      ? `Заказ: ${String(name || phone || email || 'Новый')}${total ? ' — ' + Number(total).toLocaleString('ru') + ' ₽' : ''}`
+      : `Лид: ${String(name || phone || email || 'Новый')}`
+
+    const dealItems = Array.isArray(items) ? items : []
+
+    const { error: dealError } = await supabase.from('deals').insert({
       tenant_id,
       contact_id: contactId,
-      title: `${type === 'order' ? 'Заказ' : 'Лид'}: ${String(name || phone || email || 'Новый')}`,
+      title: dealTitle,
       amount: total ? Number(total) : null,
+      items: dealItems,
+      currency: 'RUB',
       stage: 'new',
+      ai_win_probability: 0,
     })
+    if (dealError) {
+      console.error('[webhook] deal insert error:', dealError.message, dealError.details)
+    }
 
     // ── Немедленное уведомление менеджера (до AI, без задержки) ──────────────
     if (queueItem) {
