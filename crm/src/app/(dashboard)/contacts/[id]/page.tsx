@@ -2,8 +2,9 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { formatDate, getContactStatusLabel, getScoreBgColor, getScoreColor, getSegmentLabel } from '@/lib/utils'
 import Link from 'next/link'
-import { ArrowLeft, Phone, Mail, MessageCircle } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import AddActivityForm from './AddActivityForm'
+import ContactMessengerClient from './ContactMessengerClient'
 
 export default async function ContactDetailPage({
   params,
@@ -68,30 +69,13 @@ export default async function ContactDetailPage({
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <div className="lg:col-span-1 space-y-4">
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
-            <h2 className="text-white font-semibold text-sm">Контактные данные</h2>
-            {contact.phone && (
-              <div className="flex items-center gap-2.5">
-                <Phone className="w-4 h-4 text-gray-500 flex-shrink-0" />
-                <span className="text-gray-300 text-sm">{contact.phone}</span>
-              </div>
-            )}
-            {contact.email && (
-              <div className="flex items-center gap-2.5">
-                <Mail className="w-4 h-4 text-gray-500 flex-shrink-0" />
-                <span className="text-gray-300 text-sm">{contact.email}</span>
-              </div>
-            )}
-            {contact.telegram && (
-              <div className="flex items-center gap-2.5">
-                <MessageCircle className="w-4 h-4 text-gray-500 flex-shrink-0" />
-                <span className="text-gray-300 text-sm">{contact.telegram}</span>
-              </div>
-            )}
-            {!contact.phone && !contact.email && !contact.telegram && (
-              <p className="text-gray-500 text-sm">Нет данных</p>
-            )}
-          </div>
+          <ContactMessengerClient
+            contactId={contact.id}
+            initialEmail={contact.email}
+            initialPhone={contact.phone}
+            initialTelegram={contact.telegram}
+            initialTelegramChatId={contact.telegram_chat_id}
+          />
 
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-3">
             <h2 className="text-white font-semibold text-sm">ИИ-оценка</h2>
