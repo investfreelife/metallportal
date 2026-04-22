@@ -222,6 +222,31 @@ export async function POST(request: NextRequest) {
     utm_campaign: utm_campaign || null,
   })
 
+  // Автоматически уведомить клиента в Telegram если он подключён к боту
+  if (contactId) {
+    const { data: contactWithTg } = await supabase.from('contacts')
+      .select('telegram_chat_id').eq('id', contactId).single()
+    if (contactWithTg?.telegram_chat_id) {
+      const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
+      if (BOT_TOKEN) {
+        const itemsList = Array.isArray(items) && items.length
+          ? '\n\n📦 Ваш заказ:\n' + (items as Array<{name?: string; qty?: number; unit?: string}>)
+              .map((it, i) => `${i+1}. ${it.name || '—'} — ${it.qty ?? 1} ${it.unit ?? 'шт'}`)
+              .join('\n')
+          : ''
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: contactWithTg.telegram_chat_id,
+            text: `✅ <b>Заявка получена!</b>${itemsList}\n\nМенеджер ответит в ближайшее время. Ответ придёт сюда автоматически 💬`,
+            parse_mode: 'HTML',
+          }),
+        }).catch(() => {})
+      }
+    }
+  }
+
   await logEvent('webhook_received', { type, name, phone, email, isNew, contactId })
   return NextResponse.json({ ok: true, contact_id: contactId, is_new: isNew })
 }

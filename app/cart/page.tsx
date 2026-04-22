@@ -71,13 +71,11 @@ export default function CartPage() {
         <p className="text-muted-foreground max-w-md">
           Мы получили вашу заявку и свяжемся с вами в ближайшее время для уточнения деталей.
         </p>
-        {tgLink && (
-          <a href={tgLink} target="_blank" rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 w-full max-w-sm bg-[#229ED9]/10 hover:bg-[#229ED9]/20 border border-[#229ED9]/30 text-[#229ED9] font-medium px-4 py-3 rounded-lg transition-all text-sm">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L6.05 13.845l-2.97-.924c-.645-.204-.658-.645.136-.953l11.57-4.461c.537-.194 1.006.131.776.741z"/></svg>
-            Подключить Telegram — получать статус заказа
-          </a>
-        )}
+        <a href="https://t.me/metallportal_bot" target="_blank" rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 w-full max-w-sm bg-[#229ED9]/10 hover:bg-[#229ED9]/20 border border-[#229ED9]/30 text-[#229ED9] font-medium px-4 py-3 rounded-lg transition-all text-sm">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L6.05 13.845l-2.97-.924c-.645-.204-.658-.645.136-.953l11.57-4.461c.537-.194 1.006.131.776.741z"/></svg>
+          Ответ придёт в бот — @metallportal_bot
+        </a>
         <Link href="/catalog" className="mt-2 px-8 py-3 bg-gold hover:bg-yellow-400 text-black font-bold rounded-lg transition-all">
           Продолжить покупки
         </Link>
@@ -195,13 +193,6 @@ export default function CartPage() {
                 </label>
                 <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="+7 (999) 000-00-00" type="tel"
                   className="w-full bg-input border border-border rounded-lg px-3 py-2.5 text-sm text-foreground outline-none focus:border-gold transition-colors" />
-              {phone.replace(/\D/g, '').length >= 10 && (
-                <a href={`https://t.me/metallportal_bot?start=client_${phone.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-2 mt-2 text-[#229ED9] text-xs hover:underline">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L6.05 13.845l-2.97-.924c-.645-.204-.658-.645.136-.953l11.57-4.461c.537-.194 1.006.131.776.741z"/></svg>
-                  Подключить Telegram для уведомлений о заказе
-                </a>
-              )}
               </div>
 
               <div>

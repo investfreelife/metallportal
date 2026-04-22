@@ -279,25 +279,82 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ ok: true });
       }
 
-      // Обычный /start — приветствие
-      const { data: existingChat } = await supabase
-        .from("chats").select("id").eq("telegram_id", tgId).single();
+      // Обычный /start — приветствие + запрос номера телефона
+      const { data: existingContact } = await supabase
+        .from('contacts').select('id, telegram_chat_id').eq('telegram_chat_id', String(tgId)).maybeSingle()
 
-      if (!existingChat) {
-        await supabase.from("chats").insert({
-          telegram_id: tgId,
-          telegram_username: tgUsername,
-          customer_name: firstName,
-          status: "open",
-          last_message: "Начал диалог",
-          last_message_at: new Date().toISOString(),
-        });
+      if (!existingContact) {
+        // Не связан — просим поделиться номером
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: tgId,
+            text: `👋 Привет, <b>${firstName}</b>!\n\nДобро пожаловать в МеталлПортал.\n\n📱 Нажмите кнопку ниже чтобы поделиться номером телефона — так менеджер сможет быстро найти вашу заявку и ответить.`,
+            parse_mode: 'HTML',
+            reply_markup: JSON.stringify({
+              keyboard: [[{ text: '📱 Поделиться номером телефона', request_contact: true }]],
+              resize_keyboard: true,
+              one_time_keyboard: true,
+            }),
+          }),
+        })
+      } else {
+        await sendTelegram(tgId,
+          `👋 Привет, <b>${firstName}</b>! Вы уже подключены.\n\nПросто напишите ваш вопрос 👇`
+        )
       }
-
-      await sendTelegram(tgId,
-        `👋 Привет, <b>${firstName}</b>!\n\nДобро пожаловать в МеталлПортал.\n\nЗдесь вы можете:\n• Задать вопрос менеджеру\n• Узнать статус заказа\n• Получить консультацию\n\nПросто напишите ваш вопрос 👇`
-      );
       return NextResponse.json({ ok: true });
+    }
+
+    // Обработка поделиться контактом — привязка телефона
+    if (msg.contact) {
+      const rawPhone: string = msg.contact.phone_number ?? ''
+      const digits = rawPhone.replace(/\D/g, '')
+      const normalized = digits.length === 11 ? '+' + digits
+        : digits.length === 10 ? '+7' + digits
+        : rawPhone
+
+      // Найти контакт по телефону
+      const { data: contact } = await supabase.from('contacts')
+        .select('id, full_name').eq('tenant_id', TENANT_ID).eq('phone', normalized).maybeSingle()
+
+      if (contact) {
+        await supabase.from('contacts')
+          .update({ telegram_chat_id: String(tgId), updated_at: new Date().toISOString() })
+          .eq('id', contact.id)
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: tgId,
+            text: `✅ <b>Отлично, ${firstName || contact.full_name || 'друг'}!</b>\n\nВаш номер привязан. Ответы менеджера на ваши заявки будут приходить сюда автоматически 💬`,
+            parse_mode: 'HTML',
+            reply_markup: JSON.stringify({ remove_keyboard: true }),
+          }),
+        })
+      } else {
+        // Новый клиент — создать контакт
+        await supabase.from('contacts').insert({
+          tenant_id: TENANT_ID,
+          full_name: firstName || null,
+          phone: normalized,
+          telegram_chat_id: String(tgId),
+          source: 'telegram',
+          ai_score: 10,
+        })
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: tgId,
+            text: `✅ <b>Готово!</b>\n\nМы сохранили ваш номер. Когда отправите заявку, менеджер ответит прямо сюда 💬\n\nИли напишите ваш вопрос прямо сейчас 👇`,
+            parse_mode: 'HTML',
+            reply_markup: JSON.stringify({ remove_keyboard: true }),
+          }),
+        })
+      }
+      return NextResponse.json({ ok: true })
     }
 
     // Если пишет менеджер — пересылаем клиенту или игнорируем
