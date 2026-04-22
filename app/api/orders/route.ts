@@ -108,14 +108,16 @@ export async function POST(req: NextRequest) {
       }
 
       // 4. Activity log
-      await supabase.from('activities').insert({
-        tenant_id: TENANT_ID,
-        contact_id: contactId,
-        type: 'note',
-        direction: 'inbound',
-        subject: `Заказ на сайте${total ? ' — ' + Math.round(total).toLocaleString('ru') + ' ₽' : ''}`,
-        body: comment || null,
-      }).catch(() => {})
+      try {
+        await supabase.from('activities').insert({
+          tenant_id: TENANT_ID,
+          contact_id: contactId,
+          type: 'note',
+          direction: 'inbound',
+          subject: `Заказ на сайте${total ? ' — ' + Math.round(total).toLocaleString('ru') + ' ₽' : ''}`,
+          body: comment || null,
+        })
+      } catch { /* non-critical */ }
     }
 
     // 5. Notify CRM async (Telegram + AI) — wrap in try so it doesn't block
