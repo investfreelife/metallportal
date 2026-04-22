@@ -92,19 +92,22 @@ export async function POST(req: NextRequest) {
     if (contactId) {
       const dealTitle = `Заказ: ${name}${total ? ' — ' + Math.round(total).toLocaleString('ru') + ' ₽' : ''}`
 
-      const { error: dealError } = await supabase.from('deals').insert({
+      const dealBase = {
         tenant_id: TENANT_ID,
         contact_id: contactId,
         title: dealTitle,
         amount: Math.round(total) || null,
-        items: items,
-        currency: 'RUB',
         stage: 'new',
         ai_win_probability: 0,
-      })
+      }
 
-      if (dealError) {
-        console.error('[orders] deal insert error:', dealError.message, dealError.details)
+      // Try with items + currency columns, fallback to base if columns don't exist yet
+      const { error: dealErr1 } = await supabase.from('deals')
+        .insert({ ...dealBase, items, currency: 'RUB' })
+      if (dealErr1) {
+        console.error('[orders] deal insert (full):', dealErr1.message)
+        const { error: dealErr2 } = await supabase.from('deals').insert(dealBase)
+        if (dealErr2) console.error('[orders] deal insert (base):', dealErr2.message)
       }
 
       // 4. Activity log
