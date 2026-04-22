@@ -88,26 +88,92 @@ export async function POST(req: NextRequest) {
       if (created) contactId = created.id
     }
 
-    // 3. Create deal with items directly in Supabase (reliable, no fire-and-forget)
+    // 3. Create or MERGE deal (объединяем несколько заявок от одного контакта)
     if (contactId) {
-      const dealTitle = `Заказ: ${name}${total ? ' — ' + Math.round(total).toLocaleString('ru') + ' ₽' : ''}`
+      // Check if there's already an open deal in early stages for this contact
+      const { data: existingDeal } = await supabase.from('deals')
+        .select('id, items, amount')
+        .eq('tenant_id', TENANT_ID)
+        .eq('contact_id', contactId)
+        .in('stage', ['new', 'call'])
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
 
-      const dealBase = {
-        tenant_id: TENANT_ID,
-        contact_id: contactId,
-        title: dealTitle,
-        amount: Math.round(total) || null,
-        stage: 'new',
-        ai_win_probability: 0,
+      if (existingDeal) {
+        // MERGE: add new items to existing deal
+        const prevItems: Array<{id: string; name: string; qty: number; unit: string; price: number; total: number}> = existingDeal.items ?? []
+        const mergedItems = [...prevItems]
+        for (const newItem of items) {
+          const exists = mergedItems.find((it) => it.name === newItem.name && it.unit === newItem.unit)
+          if (exists) {
+            exists.qty = (exists.qty || 0) + (newItem.qty || 0)
+            exists.total = Math.round((exists.price || newItem.price || 0) * exists.qty)
+          } else {
+            mergedItems.push(newItem)
+          }
+        }
+        const newTotal = mergedItems.reduce((s: number, it: {total?: number}) => s + (it.total ?? 0), 0)
+        await supabase.from('deals').update({
+          items: mergedItems,
+          amount: Math.round(newTotal) || null,
+          title: `Заказ: ${name} — ${Math.round(newTotal).toLocaleString('ru')} ₽`,
+        }).eq('id', existingDeal.id)
+        console.log('[orders] merged into existing deal:', existingDeal.id)
+      } else {
+        // CREATE new deal
+        const dealTitle = `Заказ: ${name}${total ? ' — ' + Math.round(total).toLocaleString('ru') + ' ₽' : ''}`
+        const dealBase = {
+          tenant_id: TENANT_ID,
+          contact_id: contactId,
+          title: dealTitle,
+          amount: Math.round(total) || null,
+          stage: 'new',
+          ai_win_probability: 0,
+        }
+        const { error: dealErr1 } = await supabase.from('deals')
+          .insert({ ...dealBase, items, currency: 'RUB' })
+        if (dealErr1) {
+          console.error('[orders] deal insert (full):', dealErr1.message)
+          const { error: dealErr2 } = await supabase.from('deals').insert(dealBase)
+          if (dealErr2) console.error('[orders] deal insert (base):', dealErr2.message)
+        }
       }
 
-      // Try with items + currency columns, fallback to base if columns don't exist yet
-      const { error: dealErr1 } = await supabase.from('deals')
-        .insert({ ...dealBase, items, currency: 'RUB' })
-      if (dealErr1) {
-        console.error('[orders] deal insert (full):', dealErr1.message)
-        const { error: dealErr2 } = await supabase.from('deals').insert(dealBase)
-        if (dealErr2) console.error('[orders] deal insert (base):', dealErr2.message)
+      // 3b. Auto-create manager task
+      try {
+        await supabase.from('tasks').insert({
+          tenant_id: TENANT_ID,
+          contact_id: contactId,
+          title: `Связаться с клиентом: ${name}`,
+          body: `Телефон: ${phone}${email ? ', email: ' + email : ''}${comment ? '\nКомментарий: ' + comment : ''}`,
+          priority: 'high',
+          status: 'pending',
+          due_at: new Date(Date.now() + 30 * 60 * 1000).toISOString(), // +30 min
+        })
+      } catch { /* tasks table may not exist yet */ }
+
+      // 3c. Notify customer via Telegram if they have chat_id
+      const botToken = process.env.TELEGRAM_BOT_TOKEN
+      if (botToken) {
+        try {
+          const { data: contact } = await supabase.from('contacts')
+            .select('telegram_chat_id')
+            .eq('id', contactId)
+            .single()
+          if (contact?.telegram_chat_id) {
+            const itemLines = items.map((it: {name: string; qty: number; unit: string}) =>
+              `• ${it.name} — ${it.qty} ${it.unit}`).join('\n')
+            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: contact.telegram_chat_id,
+                text: `✅ Ваш заказ получен!\n\n${itemLines}\n\n💰 Итого: ${Math.round(total).toLocaleString('ru')} ₽\n\nМы свяжемся с вами в ближайшее время.`,
+              }),
+            })
+          }
+        } catch { /* ignore */ }
       }
 
       // 4. Activity log

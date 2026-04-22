@@ -26,6 +26,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (body.stage !== undefined) update.stage = body.stage
   if (body.title !== undefined) update.title = body.title
   if (body.amount !== undefined) update.amount = body.amount
+  if (body.suppliers !== undefined) update.suppliers = body.suppliers
+  if (body.customer_notified !== undefined) update.customer_notified = body.customer_notified
 
   const { error } = await supabase.from('deals').update(update).eq('id', id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
