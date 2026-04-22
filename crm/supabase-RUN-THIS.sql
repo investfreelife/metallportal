@@ -124,6 +124,65 @@ ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS telegram_chat_id   TEXT;
 ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS status             TEXT NOT NULL DEFAULT 'active';
 CREATE INDEX IF NOT EXISTS idx_admin_users_invite ON admin_users(invite_token);
 
+-- ── EMAIL ACCOUNTS (почтовые аккаунты CRM) ──────────────────
+CREATE TABLE IF NOT EXISTS email_accounts (
+  id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  tenant_id        UUID NOT NULL DEFAULT 'a1000000-0000-0000-0000-000000000001',
+  email            TEXT NOT NULL,
+  display_name     TEXT,
+  provider         TEXT NOT NULL DEFAULT 'custom',
+  smtp_host        TEXT,
+  smtp_port        INT  DEFAULT 587,
+  smtp_user        TEXT,
+  smtp_pass        TEXT,
+  smtp_secure      BOOLEAN DEFAULT false,
+  imap_host        TEXT,
+  imap_port        INT  DEFAULT 993,
+  imap_user        TEXT,
+  imap_pass        TEXT,
+  imap_tls         BOOLEAN DEFAULT true,
+  status           TEXT DEFAULT 'active',
+  last_synced_at   TIMESTAMPTZ,
+  last_error       TEXT,
+  is_default       BOOLEAN DEFAULT false,
+  created_at       TIMESTAMPTZ DEFAULT now()
+);
+
+-- ── EMAILS (письма CRM) ─────────────────────────────────────
+CREATE TABLE IF NOT EXISTS emails (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  tenant_id     UUID NOT NULL DEFAULT 'a1000000-0000-0000-0000-000000000001',
+  account_id    UUID REFERENCES email_accounts(id) ON DELETE SET NULL,
+  message_id    TEXT,
+  thread_id     TEXT,
+  in_reply_to   TEXT,
+  direction     TEXT NOT NULL DEFAULT 'inbound',
+  from_email    TEXT,
+  from_name     TEXT,
+  to_emails     JSONB DEFAULT '[]',
+  cc_emails     JSONB DEFAULT '[]',
+  bcc_emails    JSONB DEFAULT '[]',
+  subject       TEXT,
+  body_html     TEXT,
+  body_text     TEXT,
+  is_read       BOOLEAN DEFAULT false,
+  is_starred    BOOLEAN DEFAULT false,
+  imap_uid      BIGINT,
+  imap_folder   TEXT DEFAULT 'INBOX',
+  deal_id       UUID REFERENCES deals(id) ON DELETE SET NULL,
+  contact_id    UUID REFERENCES contacts(id) ON DELETE SET NULL,
+  attachments   JSONB DEFAULT '[]',
+  received_at   TIMESTAMPTZ,
+  sent_at       TIMESTAMPTZ,
+  created_at    TIMESTAMPTZ DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_emails_account   ON emails(account_id);
+CREATE INDEX IF NOT EXISTS idx_emails_deal      ON emails(deal_id);
+CREATE INDEX IF NOT EXISTS idx_emails_contact   ON emails(contact_id);
+CREATE INDEX IF NOT EXISTS idx_emails_thread    ON emails(thread_id);
+CREATE INDEX IF NOT EXISTS idx_emails_ts        ON emails(received_at DESC NULLS LAST, sent_at DESC NULLS LAST);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_emails_message_id ON emails(message_id) WHERE message_id IS NOT NULL;
+
 -- ── ИНДЕКСЫ ─────────────────────────────────────────────────
 CREATE INDEX IF NOT EXISTS idx_orders_phone   ON orders(customer_phone);
 CREATE INDEX IF NOT EXISTS idx_orders_created ON orders(created_at DESC);
@@ -143,6 +202,8 @@ ALTER TABLE system_logs      ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contact_sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tasks            ENABLE ROW LEVEL SECURITY;
 ALTER TABLE orders           ENABLE ROW LEVEL SECURITY;
+ALTER TABLE email_accounts   ENABLE ROW LEVEL SECURITY;
+ALTER TABLE emails           ENABLE ROW LEVEL SECURITY;
 
 -- Политики (service_role key имеет доступ ко всему)
 DROP POLICY IF EXISTS "service_role_all" ON contacts;
@@ -177,6 +238,12 @@ CREATE POLICY "service_role_all" ON tasks            FOR ALL USING (true) WITH C
 
 DROP POLICY IF EXISTS "service_role_all_orders" ON orders;
 CREATE POLICY "service_role_all_orders" ON orders    FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "service_role_all_email_accounts" ON email_accounts;
+CREATE POLICY "service_role_all_email_accounts" ON email_accounts FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "service_role_all_emails" ON emails;
+CREATE POLICY "service_role_all_emails" ON emails    FOR ALL USING (true) WITH CHECK (true);
 
 -- ══════════════════════════════════════════════════════════════
 -- ПРОВЕРКА РЕЗУЛЬТАТА
