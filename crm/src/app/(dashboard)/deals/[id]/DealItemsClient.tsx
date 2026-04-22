@@ -14,7 +14,15 @@ export interface DealItem {
   length?: number
 }
 
-interface CatalogProduct { id: string; name: string; price: number | null; unit: string }
+interface CatalogProduct {
+  id: string
+  name: string
+  unit: string
+  dimensions?: string
+  gost?: string
+  weight_per_meter?: number
+  weight_per_unit?: number
+}
 
 function calcTotal(price: number, qty: number) {
   return Math.round(price * qty * 100) / 100
@@ -70,13 +78,14 @@ export default function DealItemsClient({ dealId, initialItems }: { dealId: stri
   }, [])
 
   const addFromCatalog = (p: CatalogProduct) => {
+    const label = p.dimensions ? `${p.name} (${p.dimensions})` : p.name
     setItems(prev => [...prev, {
       id: crypto.randomUUID(),
-      name: p.name,
+      name: label,
       qty: 1,
       unit: p.unit ?? 'т',
-      price: p.price ?? 0,
-      total: calcTotal(p.price ?? 0, 1),
+      price: 0,
+      total: 0,
     }])
     setQuery('')
     setOpen(false)
@@ -167,8 +176,8 @@ export default function DealItemsClient({ dealId, initialItems }: { dealId: stri
                   <button key={p.id} onClick={() => addFromCatalog(p)}
                     className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-gray-700 transition-colors text-left border-b border-gray-700/50 last:border-0">
                     <span className="text-white text-sm">{p.name}</span>
-                    <span className="text-amber-400 text-sm font-medium ml-3 flex-shrink-0">
-                      {p.price ? `${fmt(p.price)} ₽/${p.unit}` : 'цена по запросу'}
+                    <span className="text-gray-400 text-xs ml-3 flex-shrink-0">
+                      {p.dimensions ?? p.unit} {p.gost ? `· ${p.gost}` : ''}
                     </span>
                   </button>
                 ))

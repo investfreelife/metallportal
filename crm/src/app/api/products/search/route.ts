@@ -14,12 +14,13 @@ export async function GET(req: NextRequest) {
 
   const supabase = getSupabase()
 
-  const { data } = await supabase
+  // Search by name OR dimensions — products table has no 'price' col (prices are in price_items)
+  const { data, error } = await supabase
     .from('products')
-    .select('id, name, price, unit, category_id')
-    .ilike('name', `%${q}%`)
-    .eq('is_active', true)
-    .limit(15)
+    .select('id, name, unit, dimensions, gost, material, steel_grade, weight_per_meter, weight_per_unit, min_order')
+    .or(`name.ilike.%${q}%,dimensions.ilike.%${q}%`)
+    .limit(20)
 
+  if (error) console.error('[products/search]', error.message)
   return NextResponse.json(data ?? [])
 }
