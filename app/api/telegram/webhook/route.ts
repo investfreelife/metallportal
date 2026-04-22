@@ -31,6 +31,25 @@ async function handleCrmCallback(callbackQuery: {
   data?: string
 }) {
   const data = callbackQuery.data ?? ''
+
+  // Manager clicked "↩️ Ответить" — enter reply mode
+  if (data.startsWith('reply_')) {
+    const clientTgId = data.replace('reply_', '')
+    await supabase.from('tenant_settings').upsert(
+      { tenant_id: TENANT_ID, key: 'manager_reply_to', value: clientTgId, updated_at: new Date().toISOString() },
+      { onConflict: 'tenant_id,key' }
+    )
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/answerCallbackQuery`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ callback_query_id: callbackQuery.id, text: '✏️ Напишите ответ' })
+    })
+    if (callbackQuery.message?.chat?.id) {
+      await sendTelegram(callbackQuery.message.chat.id,
+        '✏️ <b>Напишите ответ клиенту</b>\n\nВаше следующее сообщение будет отправлено клиенту.\nДля отмены — /cancel')
+    }
+    return true
+  }
+
   if (!data.startsWith('crm_')) return false
 
   const [, actionRaw, queueId] = data.split('_')
@@ -281,7 +300,42 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
-    // Обычное сообщение — сохранить и уведомить менеджеров
+    // Если пишет менеджер — пересылаем клиенту или игнорируем
+    const managerId = await getManagerId()
+    if (managerId && String(tgId) === String(managerId)) {
+      if (text === '/cancel') {
+        await supabase.from('tenant_settings').upsert(
+          { tenant_id: TENANT_ID, key: 'manager_reply_to', value: null, updated_at: new Date().toISOString() },
+          { onConflict: 'tenant_id,key' }
+        )
+        await sendTelegram(tgId, '❌ Ответ отменён.')
+      } else {
+        const { data: replyTo } = await supabase.from('tenant_settings')
+          .select('value').eq('tenant_id', TENANT_ID).eq('key', 'manager_reply_to').single()
+        if (replyTo?.value) {
+          // Отправить клиенту
+          await sendTelegram(replyTo.value, `📩 <b>Менеджер МеталлПортал:</b>\n\n${text}`)
+          // Сохранить в messages
+          const { data: clientChat } = await supabase.from('chats')
+            .select('id').eq('telegram_id', replyTo.value).single()
+          if (clientChat) {
+            await supabase.from('messages').insert({ chat_id: clientChat.id, sender_type: 'manager', content: text })
+            await supabase.from('chats').update({ last_message: `Менеджер: ${text}`, last_message_at: new Date().toISOString() }).eq('id', clientChat.id)
+          }
+          // Очистить режим ответа
+          await supabase.from('tenant_settings').upsert(
+            { tenant_id: TENANT_ID, key: 'manager_reply_to', value: null, updated_at: new Date().toISOString() },
+            { onConflict: 'tenant_id,key' }
+          )
+          await sendTelegram(tgId, '✅ Ответ отправлен клиенту!')
+        } else {
+          await sendTelegram(tgId, '⚠️ Режим ответа не активен.\nНажмите «↩️ Ответить» в уведомлении о сообщении клиента.')
+        }
+      }
+      return NextResponse.json({ ok: true })
+    }
+
+    // Обычное сообщение от клиента — сохранить и уведомить менеджеров
     const { data: chat } = await supabase
       .from("chats")
       .select("id, customer_name")
@@ -306,16 +360,10 @@ export async function POST(req: NextRequest) {
         .single();
       chatId = newChat?.id;
     } else {
-      await supabase
-        .from("chats")
-        .update({
-          last_message: text,
-          last_message_at: new Date().toISOString(),
-          unread_count: supabase.rpc as any,
-        })
-        .eq("id", chatId);
-
-      await supabase.rpc("increment_unread", { chat_id: chatId });
+      await supabase.from('chats').update({
+        last_message: text,
+        last_message_at: new Date().toISOString(),
+      }).eq('id', chatId);
     }
 
     if (chatId) {
@@ -338,16 +386,15 @@ export async function POST(req: NextRequest) {
     );
 
     // Уведомить менеджера о новом сообщении от клиента
-    const managerId = await getManagerId();
     if (managerId) {
       const clientName = chat?.customer_name || firstName || 'Клиент';
       await sendTelegram(managerId,
-        `💬 <b>Новое сообщение от клиента</b>\n\n👤 ${clientName} (TG)\n\n📝 <i>${text}</i>\n\n🔗 <a href="https://metallportal-crm2.vercel.app/chats">Открыть чат в CRM</a>`,
+        `💬 <b>Новое сообщение от клиента</b>\n\n👤 ${clientName}\n📞 TG ID: <code>${tgId}</code>\n\n� ${text}`,
         {
-          disable_web_page_preview: true,
           reply_markup: {
             inline_keyboard: [[
-              { text: '💬 Открыть чат', url: 'https://metallportal-crm2.vercel.app/chats' }
+              { text: '↩️ Ответить', callback_data: `reply_${tgId}` },
+              { text: '💬 Открыть CRM', url: 'https://metallportal-crm2.vercel.app/chats' }
             ]]
           }
         }
