@@ -11,12 +11,14 @@ import {
   LogOut,
   Zap,
   BarChart2,
+  Mail,
 } from 'lucide-react'
 
 const navItems = [
   { href: '/dashboard', label: 'Дашборд', icon: LayoutDashboard },
   { href: '/contacts', label: 'Контакты', icon: Users },
   { href: '/deals', label: 'Сделки', icon: Briefcase },
+  { href: '/emails', label: 'Почта', icon: Mail },
   { href: '/queue', label: 'Очередь ИИ', icon: Sparkles, badge: true },
   { href: '/analytics', label: 'Аналитика', icon: BarChart2 },
   { href: '/settings', label: 'Настройки', icon: Settings },

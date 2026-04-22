@@ -4,6 +4,7 @@ import { formatCurrency, formatDate, getDealStageLabel } from '@/lib/utils'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import DealItemsClient, { type DealItem } from './DealItemsClient'
+import DealEmailsClient from './DealEmailsClient'
 
 const STAGE_COLORS: Record<string, string> = {
   new: 'bg-blue-500/20 text-blue-300',
@@ -47,6 +48,9 @@ export default async function DealDetailPage({
         dealId={deal.id}
         initialItems={(deal.items as DealItem[]) ?? []}
       />
+
+      {/* Emails linked to deal */}
+      <DealEmailsClient dealId={deal.id} contactEmail={(deal.contact as { email?: string } | null)?.email} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <div className="lg:col-span-2 space-y-4">
