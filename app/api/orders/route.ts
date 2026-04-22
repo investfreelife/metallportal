@@ -26,21 +26,35 @@ export async function POST(req: NextRequest) {
           sum + (i.total ?? (i.price || 0) * (i.qty || 1)), 0)
       : 0
 
-    // 1. Save order
-    const { data: order, error: orderError } = await supabase.from("orders").insert({
+    // 1. Save order — try full schema first, fallback to basic columns
+    const basePayload: Record<string, unknown> = {
       customer_name: name,
       customer_phone: phone,
-      customer_email: email || null,
-      comment: comment || null,
-      items: items,          // JSONB — store as object, not string
       status: "new",
-      total_amount: Math.round(total),
       created_at: new Date().toISOString(),
-    }).select("id").single()
+    }
+    if (email) basePayload.customer_email = email
+    if (comment) basePayload.comment = comment
 
-    if (orderError) {
-      console.error("Order insert error:", orderError)
-      return NextResponse.json({ error: orderError.message }, { status: 500 })
+    let orderId: string | null = null
+
+    // Try with extended columns (items, total_amount) — needs supabase-orders-fix.sql
+    const { data: orderFull, error: fullError } = await supabase.from("orders")
+      .insert({ ...basePayload, items, total_amount: Math.round(total) })
+      .select("id").single()
+
+    if (!fullError) {
+      orderId = orderFull?.id
+    } else {
+      // Fallback: insert without extended columns
+      const { data: orderBasic, error: basicError } = await supabase.from("orders")
+        .insert(basePayload)
+        .select("id").single()
+      if (basicError) {
+        console.error("Order insert error:", basicError)
+        return NextResponse.json({ error: basicError.message }, { status: 500 })
+      }
+      orderId = orderBasic?.id
     }
 
     // 2. Find or create contact
@@ -124,7 +138,7 @@ export async function POST(req: NextRequest) {
       ])
     } catch { /* Telegram notify / AI analysis timeout is non-critical */ }
 
-    return NextResponse.json({ ok: true, orderId: order?.id });
+    return NextResponse.json({ ok: true, orderId });
   } catch (e: unknown) {
     return NextResponse.json({ error: (e as Error).message }, { status: 500 });
   }
