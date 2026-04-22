@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, Package, Check, ExternalLink } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
@@ -16,6 +16,16 @@ export default function CartPage() {
   const [done, setDone] = useState(false);
   const [err, setErr] = useState("");
   const [tgLink, setTgLink] = useState("");
+
+  // Auto-fill from localStorage
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('mp_contact') ?? '{}')
+      if (saved.name) setName(saved.name)
+      if (saved.phone) setPhone(saved.phone)
+      if (saved.email) setEmail(saved.email)
+    } catch {}
+  }, []);
 
   const itemTotal = (i: typeof items[0]) =>
     i.tons ? (i.price ?? 0) * i.tons * i.quantity : (i.price ?? 0) * i.quantity;
@@ -56,8 +66,8 @@ export default function CartPage() {
       });
     }
     clearCart();
-    const digits = phone.replace(/\D/g, '');
-    if (digits.length >= 10) setTgLink(`https://t.me/metallportal_bot?start=client_${digits}`);
+    // Save contact for auto-fill next time
+    try { localStorage.setItem('mp_contact', JSON.stringify({ name, phone, email })) } catch {}
     setDone(true);
   };
 

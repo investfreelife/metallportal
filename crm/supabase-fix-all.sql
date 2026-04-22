@@ -104,7 +104,22 @@ DROP POLICY IF EXISTS "service_role_all" ON ai_queue;
 CREATE POLICY "service_role_all" ON ai_queue
   FOR ALL USING (true) WITH CHECK (true);
 
--- 7. РАСШИРИТЬ deals — добавить items (JSONB массив товаров)
+-- 7. ЛИЧНЫЙ КАБИНЕТ — OTP логин и сессии
+ALTER TABLE contacts ADD COLUMN IF NOT EXISTS login_otp TEXT;
+ALTER TABLE contacts ADD COLUMN IF NOT EXISTS login_otp_expires_at TIMESTAMPTZ;
+
+CREATE TABLE IF NOT EXISTS contact_sessions (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  contact_id UUID NOT NULL,
+  token      TEXT NOT NULL UNIQUE DEFAULT gen_random_uuid()::text,
+  expires_at TIMESTAMPTZ NOT NULL DEFAULT now() + interval '30 days',
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_contact_sessions_token ON contact_sessions(token);
+ALTER TABLE contact_sessions ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "service_only_sessions" ON contact_sessions USING (true) WITH CHECK (true);
+
+-- 8. РАСШИРИТЬ deals — добавить items (JSONB массив товаров)
 ALTER TABLE deals ADD COLUMN IF NOT EXISTS items JSONB DEFAULT '[]';
 ALTER TABLE deals ADD COLUMN IF NOT EXISTS currency TEXT DEFAULT 'RUB';
 
