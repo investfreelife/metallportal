@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { formatRelativeTime, getActionTypeLabel } from '@/lib/utils'
-import { CheckCircle, XCircle, Clock, Edit3, Sparkles, MessageSquare } from 'lucide-react'
+import { CheckCircle, XCircle, Clock, Edit3, Sparkles, MessageSquare, RefreshCw } from 'lucide-react'
 
 type QueueItem = {
   id: string
@@ -38,7 +38,8 @@ export default function QueueClient({ items }: { items: QueueItem[] }) {
   const [rejectReason, setRejectReason] = useState('')
   const [processing, setProcessing] = useState<string | null>(null)
   const [localItems, setLocalItems] = useState(items)
-  const [feedbacks, setFeedbacks] = useState<Record<string, string>>({})  // itemId → feedback text
+  const [feedbacks, setFeedbacks] = useState<Record<string, string>>({})  // itemId → instruction text
+  const [regenerating, setRegenerating] = useState<string | null>(null)
 
   async function approve(item: QueueItem) {
     setProcessing(item.id)
@@ -205,19 +206,53 @@ export default function QueueClient({ items }: { items: QueueItem[] }) {
                 </div>
               </div>
 
-              {/* Мнение менеджера → обучение ИИ (всегда видно) */}
-              <div className="border-t border-gray-700/50 pt-3 space-y-1.5">
-                <p className="flex items-center gap-1.5 text-xs text-purple-400 font-medium">
+              {/* Инструкция для ИИ → мгновенная регенерация */}
+              <div className="border-t border-gray-700/50 pt-3 space-y-2">
+                <p className="flex items-center gap-1.5 text-xs text-amber-400 font-medium">
                   <MessageSquare className="w-3.5 h-3.5" />
-                  Ваше мнение об ответе ИИ (улучшит промпт)
+                  Инструкция для ИИ — напишите что изменить и нажмите «Обновить»
                 </p>
-                <textarea
-                  rows={2}
-                  value={feedbacks[item.id] ?? ''}
-                  onChange={e => setFeedbacks(f => ({ ...f, [item.id]: e.target.value }))}
-                  placeholder="Что не так или что нужно изменить в ответе ИИ? Claude автоматически скорректирует промпт..."
-                  className="w-full px-3 py-2 bg-purple-950/30 border border-purple-500/30 rounded-lg text-gray-300 text-sm placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 resize-none"
-                />
+                <div className="flex gap-2">
+                  <textarea
+                    rows={2}
+                    value={feedbacks[item.id] ?? ''}
+                    onChange={e => setFeedbacks(f => ({ ...f, [item.id]: e.target.value }))}
+                    placeholder="Например: добавь счёт с ценами, сделай короче, уточни сроки 3 дня..."
+                    className="flex-1 px-3 py-2 bg-amber-950/20 border border-amber-500/30 rounded-lg text-gray-300 text-sm placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-amber-500 resize-none"
+                  />
+                  <button
+                    disabled={!feedbacks[item.id]?.trim() || regenerating === item.id}
+                    onClick={async () => {
+                      const instruction = feedbacks[item.id]?.trim()
+                      if (!instruction) return
+                      setRegenerating(item.id)
+                      try {
+                        const r = await fetch('/api/ai/regenerate', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            queue_id: item.id,
+                            instruction,
+                            current_content: editingId === item.id ? editedContent : item.content,
+                            ai_reasoning: item.ai_reasoning,
+                          }),
+                        })
+                        const d = await r.json()
+                        if (d.new_content) {
+                          setLocalItems(prev => prev.map(i => i.id === item.id ? { ...i, content: d.new_content } : i))
+                          if (editingId === item.id) setEditedContent(d.new_content)
+                          setFeedbacks(f => ({ ...f, [item.id]: '' }))
+                        }
+                      } finally {
+                        setRegenerating(null)
+                      }
+                    }}
+                    className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 bg-amber-600 hover:bg-amber-500 disabled:opacity-40 text-white text-xs font-medium rounded-lg transition-colors self-end"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${regenerating === item.id ? 'animate-spin' : ''}`} />
+                    {regenerating === item.id ? 'Генерирую...' : 'Обновить'}
+                  </button>
+                </div>
               </div>
 
               {isRejecting && (

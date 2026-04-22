@@ -191,10 +191,11 @@ export async function POST(request: NextRequest) {
         if (ai) {
           const mappedPriority = ai.priority === 'medium' ? 'normal' : ai.priority
           const mappedAction = ai.action_type === 'call' ? 'make_call' : ai.action_type === 'schedule' ? 'create_task' : ai.action_type
+          const quoteBlock = ai.quote_text ? `\n\n📋 КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ:\n${ai.quote_text}` : ''
           await supabase.from('ai_queue').update({
             ai_reasoning: ai.reasoning + (clientMsg ? `\n\n💬 Сообщение клиента: «${clientMsg}»` : ''),
-            content: ai.suggested_message || suggested,
-            suggested_message: ai.suggested_message || suggested,
+            content: (ai.suggested_message || suggested) + quoteBlock,
+            suggested_message: (ai.suggested_message || suggested) + quoteBlock,
             priority: mappedPriority,
             action_type: mappedAction,
           }).eq('id', queueId)

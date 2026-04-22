@@ -72,6 +72,7 @@ export interface AIAnalysis {
   score_adjustment: number
   segment: string
   next_action_hint: string
+  quote_text?: string
 }
 
 async function getSystemPrompt(): Promise<string> {
@@ -110,30 +111,46 @@ export async function analyzeNewLead(ctx: LeadContext): Promise<AIAnalysis | nul
 
   const systemPrompt = await getSystemPrompt()
 
+  // Format items nicely for AI
+  let itemsBlock = ''
+  if (ctx.items && Array.isArray(ctx.items) && ctx.items.length) {
+    const rows = (ctx.items as Array<{ name?: string; qty?: number; unit?: string; price?: number; total?: number }>)
+      .map((it, i) => {
+        const qty = it.qty ?? 1
+        const unit = it.unit ?? 'шт'
+        const price = it.price ? `${it.price.toLocaleString('ru')} ₽/${unit}` : 'цена по запросу'
+        const sum = it.total ? `${it.total.toLocaleString('ru')} ₽` : ''
+        return `  ${i + 1}. ${it.name ?? '—'} — ${qty} ${unit} × ${price}${sum ? ' = ' + sum : ''}`
+      }).join('\n')
+    itemsBlock = `\nТОВАРЫ ИЗ КОРЗИНЫ:\n${rows}`
+  }
+
   const contactInfo = [
     ctx.name && `Имя: ${ctx.name}`,
     ctx.company && `Компания: ${ctx.company}`,
     ctx.phone && `Телефон: ${ctx.phone}`,
     ctx.email && `Email: ${ctx.email}`,
-    ctx.message && `Сообщение: ${ctx.message}`,
+    ctx.message && `Комментарий клиента: ${ctx.message}`,
     ctx.total && `Сумма заказа: ${ctx.total.toLocaleString('ru')} ₽`,
-    ctx.items && `Товары: ${JSON.stringify(ctx.items).slice(0, 400)}`,
     ctx.utm_source && `Источник трафика: ${ctx.utm_source}`,
     ctx.utm_campaign && `Рекламная кампания: ${ctx.utm_campaign}`,
   ].filter(Boolean).join('\n')
 
+  const hasItems = ctx.items && Array.isArray(ctx.items) && ctx.items.length > 0
+
   const userMsg = `Новое обращение (тип: ${ctx.form_type}):
-${contactInfo}
+${contactInfo}${itemsBlock}
 
 Ответь строго JSON (без markdown):
 {
-  "reasoning": "1-2 предложения ПОЧЕМУ ты предлагаешь это действие и какой сегмент клиента",
-  "suggested_message": "Готовый текст для первого контакта менеджера (используй скрипт, обращение по имени если есть, 2-3 предложения)",
+  "reasoning": "1-2 предложения ПОЧЕМУ ты предлагаешь это действие, какой сегмент клиента и что именно заказал",
+  "suggested_message": "Готовый текст для первого контакта менеджера. Обращение по имени, упомяни КОНКРЕТНЫЕ товары и количество из заказа, уточни сроки доставки. 2-4 предложения.",
   "action_type": "call|send_proposal|send_message|schedule",
   "priority": "high|medium|low",
   "score_adjustment": число от -10 до +25,
   "segment": "Строитель|Завод|Перекупщик|Физлицо|Неизвестно",
-  "next_action_hint": "Одна конкретная подсказка менеджеру что делать после первого контакта"
+  "next_action_hint": "Одна конкретная подсказка менеджеру что делать после первого контакта"${hasItems ? `,
+  "quote_text": "Текст коммерческого предложения/счёта. Формат:\\nКП МеталлПортал | Дата\\nКлиент: [имя]\\n\\n№  Наименование  Кол-во  Цена  Сумма\\n[строки товаров]\\n\\nИТОГО: ... ₽\\n\\nДля оформления счёта уточните реквизиты."` : ''}
 }`
 
   try {
