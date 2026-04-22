@@ -91,18 +91,28 @@ export async function POST(req: NextRequest) {
     // 3. Create or MERGE deal (объединяем несколько заявок от одного контакта)
     if (contactId) {
       // Check if there's already an open deal in early stages for this contact
+      // Select only 'id' to avoid error if items/amount columns don't exist yet
       const { data: existingDeal } = await supabase.from('deals')
-        .select('id, items, amount')
+        .select('id')
         .eq('tenant_id', TENANT_ID)
         .eq('contact_id', contactId)
-        .in('stage', ['new', 'call'])
+        .in('stage', ['new', 'call', 'qualified'])
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle()
 
-      if (existingDeal) {
-        // MERGE: add new items to existing deal
-        const prevItems: Array<{id: string; name: string; qty: number; unit: string; price: number; total: number}> = existingDeal.items ?? []
+      if (existingDeal?.id) {
+        // MERGE: fetch full deal separately to safely get items
+        const { data: fullDeal } = await supabase.from('deals')
+          .select('id, amount').eq('id', existingDeal.id).single()
+
+        // Try to get items separately (column may not exist)
+        let prevItems: Array<{id: string; name: string; qty: number; unit: string; price: number; total: number}> = []
+        try {
+          const { data: d } = await supabase.from('deals').select('items').eq('id', existingDeal.id).single()
+          if (Array.isArray(d?.items)) prevItems = d.items
+        } catch { /* items column doesn't exist */ }
+
         const mergedItems = [...prevItems]
         for (const newItem of items) {
           const exists = mergedItems.find((it) => it.name === newItem.name && it.unit === newItem.unit)
@@ -113,12 +123,19 @@ export async function POST(req: NextRequest) {
             mergedItems.push(newItem)
           }
         }
-        const newTotal = mergedItems.reduce((s: number, it: {total?: number}) => s + (it.total ?? 0), 0)
-        await supabase.from('deals').update({
-          items: mergedItems,
+        const prevAmount = (fullDeal as {amount?: number} | null)?.amount ?? 0
+        const newTotal = mergedItems.reduce((s: number, it: {total?: number}) => s + (it.total ?? 0), 0) || (prevAmount + total)
+        const updatePayload: Record<string, unknown> = {
           amount: Math.round(newTotal) || null,
           title: `Заказ: ${name} — ${Math.round(newTotal).toLocaleString('ru')} ₽`,
-        }).eq('id', existingDeal.id)
+        }
+        // Only add items to update if we can (try, ignore error)
+        const { error: mergeErr } = await supabase.from('deals')
+          .update({ ...updatePayload, items: mergedItems }).eq('id', existingDeal.id)
+        if (mergeErr) {
+          // items column not available, update without it
+          await supabase.from('deals').update(updatePayload).eq('id', existingDeal.id)
+        }
         console.log('[orders] merged into existing deal:', existingDeal.id)
       } else {
         // CREATE new deal

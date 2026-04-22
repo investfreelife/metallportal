@@ -54,6 +54,15 @@ const AI_BUTTONS: Record<string, { label: string; icon: React.ReactNode; action:
   ],
 }
 
+// Map legacy stage values to pipeline stages
+function normalizeStage(s: string): string {
+  const map: Record<string, string> = {
+    qualified: 'call',
+    sent: 'proposal',
+  }
+  return map[s] ?? s
+}
+
 export default function DealPipelineClient({
   dealId,
   initialStage,
@@ -63,13 +72,14 @@ export default function DealPipelineClient({
   initialStage: string
   customerNotified?: boolean
 }) {
-  const [stage, setStage] = useState(initialStage)
+  const [stage, setStage] = useState(normalizeStage(initialStage))
   const [saving, setSaving] = useState(false)
   const [notified, setNotified] = useState(customerNotified)
   const [actionMsg, setActionMsg] = useState<string | null>(null)
 
   const currentIdx = STAGES.findIndex(s => s.id === stage)
-  const currentStage = STAGES[currentIdx]
+  // Fallback: if stage not found show first stage
+  const currentStage = STAGES[currentIdx] ?? STAGES[0]
 
   const moveStage = async (newStage: string) => {
     setSaving(true)

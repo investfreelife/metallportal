@@ -17,13 +17,22 @@ export default async function DealDetailPage({
   const { id } = await params
   const supabase = await createClient()
 
-  const [{ data: deal }, { data: tasks }] = await Promise.all([
-    supabase.from('deals').select('*, contact:contacts(*)').eq('id', id).single(),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (supabase as any).from('tasks').select('*').eq('deal_id', id).order('created_at', { ascending: false }),
-  ])
+  const { data: deal } = await supabase
+    .from('deals')
+    .select('*, contact:contacts(*)')
+    .eq('id', id)
+    .single()
 
   if (!deal) notFound()
+
+  // Tasks — resilient: table may not exist yet
+  let tasks: Task[] = []
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: t } = await (supabase as any)
+      .from('tasks').select('*').eq('deal_id', id).order('created_at', { ascending: false })
+    tasks = Array.isArray(t) ? t : []
+  } catch { /* tasks table not yet created */ }
 
   const items = (deal.items as DealItem[]) ?? []
   const suppliers = (deal.suppliers as Supplier[]) ?? []
