@@ -5,7 +5,6 @@
  */
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import Anthropic from '@anthropic-ai/sdk'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN!
@@ -58,37 +57,43 @@ export async function POST() {
     return NextResponse.json({ ok: true, events: 0 })
   }
 
-  // Claude анализирует логи
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+  // Claude анализирует логи (через прямой fetch, без SDK)
   const logsText = logs.slice(0, 50).map(l =>
     `[${new Date(l.ts).toLocaleTimeString('ru')}] ${l.event} → ${l.status}${l.error_msg ? ' ❌ ' + l.error_msg : ''}${l.detail ? ' ' + JSON.stringify(l.detail).slice(0, 100) : ''}`
   ).join('\n')
 
-  const msg = await anthropic.messages.create({
-    model: 'claude-haiku-20240307',
-    max_tokens: 600,
-    messages: [{
-      role: 'user',
-      content: `Ты AI-монитор CRM МеталлПортал. Проанализируй логи за последний час и напиши КРАТКИЙ отчёт (5-8 строк) для менеджера в Telegram.
+  const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY
+  let reportText = `За последний час: событий ${logs.length}. Заявок: ${leadsToday ?? 0}. Очередь: ${queuePending ?? 0}`
 
-Статистика за 24ч:
-- Заявок получено: ${leadsToday ?? 0}
-- Уведомлений НЕ отправлено: ${notifyFailed ?? 0}
-- В очереди ИИ ожидают: ${queuePending ?? 0}
+  if (ANTHROPIC_KEY) {
+    const claudeRes = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': ANTHROPIC_KEY,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-20240307',
+        max_tokens: 600,
+        messages: [{
+          role: 'user',
+          content: `Ты AI-монитор CRM МеталлПортал. Проанализируй логи за последний час и напиши КРАТКИЙ отчёт (5-8 строк) для менеджера в Telegram.
 
-Логи последнего часа:
-${logsText}
+Статистика за 24ч: заявок ${leadsToday ?? 0}, ошибок уведомлений ${notifyFailed ?? 0}, в очереди ${queuePending ?? 0}.
 
-Отчёт должен:
-1. Коротко описать что происходило
-2. Выделить проблемы (если есть) и их причину
-3. Дать 1-2 конкретных совета что проверить
-4. Использовать emoji для читаемости
-5. НЕ использовать HTML теги`
-    }]
-  })
+Логи: ${logsText}
 
-  const reportText = (msg.content[0] as { text: string }).text
+Отчёт: коротко, emoji, без HTML.`
+        }]
+      })
+    }).catch(() => null)
+
+    if (claudeRes?.ok) {
+      const claudeData = await claudeRes.json()
+      reportText = claudeData.content?.[0]?.text ?? reportText
+    }
+  }
 
   // Отправить отчёт менеджеру
   const managerId = await getManagerId()
