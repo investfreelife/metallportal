@@ -69,12 +69,16 @@ export function getContactStatusLabel(status: string): string {
 
 export function getDealStageLabel(stage: string): string {
   switch (stage) {
-    case 'new': return 'Новая заявка'
-    case 'qualified': return 'Квалифицирован'
-    case 'proposal': return 'КП отправлено'
-    case 'negotiation': return 'Переговоры'
-    case 'won': return 'Выигран'
-    case 'lost': return 'Проигран'
+    case 'new':              return 'Новая заявка'
+    case 'call':             return 'Контакт'
+    case 'qualified':        return 'Квалифицирован'
+    case 'supplier_request': return 'Запрос постав.'
+    case 'proposal':         return 'КП отправлено'
+    case 'negotiation':      return 'Переговоры'
+    case 'won':              return 'Оплата'
+    case 'delivery':         return 'Доставка'
+    case 'completed':        return 'Завершено'
+    case 'lost':             return 'Отказ'
     default: return stage
   }
 }

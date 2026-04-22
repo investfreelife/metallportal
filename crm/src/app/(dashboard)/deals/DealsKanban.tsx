@@ -83,12 +83,15 @@ function NewDealModal({ onClose }: { onClose: () => void }) {
                 onChange={e => setForm(f => ({ ...f, stage: e.target.value }))}
                 className="w-full px-3.5 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="new">Новая</option>
-                <option value="qualified">Квалификация</option>
+                <option value="new">Новая заявка</option>
+                <option value="call">Контакт</option>
+                <option value="supplier_request">Запрос поставщикам</option>
                 <option value="proposal">КП отправлено</option>
                 <option value="negotiation">Переговоры</option>
-                <option value="won">Выиграна</option>
-                <option value="lost">Проиграна</option>
+                <option value="won">Оплата</option>
+                <option value="delivery">Доставка</option>
+                <option value="completed">Завершено</option>
+                <option value="lost">Отказ</option>
               </select>
             </div>
           </div>
@@ -121,24 +124,30 @@ function NewDealModal({ onClose }: { onClose: () => void }) {
   )
 }
 
-const STAGES = ['new', 'qualified', 'proposal', 'negotiation', 'won', 'lost'] as const
+const STAGES = ['new', 'call', 'supplier_request', 'proposal', 'negotiation', 'won', 'delivery', 'completed', 'lost'] as const
 
 const STAGE_COLORS: Record<string, string> = {
-  new: 'border-blue-500/40 bg-blue-500/5',
-  qualified: 'border-cyan-500/40 bg-cyan-500/5',
-  proposal: 'border-purple-500/40 bg-purple-500/5',
-  negotiation: 'border-orange-500/40 bg-orange-500/5',
-  won: 'border-green-500/40 bg-green-500/5',
-  lost: 'border-red-500/40 bg-red-500/5',
+  new:              'border-blue-500/40 bg-blue-500/5',
+  call:             'border-cyan-500/40 bg-cyan-500/5',
+  supplier_request: 'border-amber-500/40 bg-amber-500/5',
+  proposal:         'border-purple-500/40 bg-purple-500/5',
+  negotiation:      'border-orange-500/40 bg-orange-500/5',
+  won:              'border-green-500/40 bg-green-500/5',
+  delivery:         'border-teal-500/40 bg-teal-500/5',
+  completed:        'border-emerald-500/40 bg-emerald-500/5',
+  lost:             'border-red-500/40 bg-red-500/5',
 }
 
 const STAGE_HEADER_COLORS: Record<string, string> = {
-  new: 'text-blue-400',
-  qualified: 'text-cyan-400',
-  proposal: 'text-purple-400',
-  negotiation: 'text-orange-400',
-  won: 'text-green-400',
-  lost: 'text-red-400',
+  new:              'text-blue-400',
+  call:             'text-cyan-400',
+  supplier_request: 'text-amber-400',
+  proposal:         'text-purple-400',
+  negotiation:      'text-orange-400',
+  won:              'text-green-400',
+  delivery:         'text-teal-400',
+  completed:        'text-emerald-400',
+  lost:             'text-red-400',
 }
 
 export default function DealsKanban({ deals }: { deals: DealRow[] }) {
