@@ -9,7 +9,6 @@ import {
   Sparkles,
   Settings,
   LogOut,
-  Zap,
   BarChart2,
   Mail,
 } from 'lucide-react'
@@ -45,13 +44,19 @@ export default function Sidebar({ userName, userLogin, pendingCount = 0 }: Sideb
       className="flex flex-col w-64 min-h-screen"
       style={{ backgroundColor: 'var(--sidebar-bg)' }}
     >
-      <div className="flex items-center gap-2.5 px-5 py-5 border-b border-white/10">
-        <div className="flex items-center justify-center w-8 h-8 bg-blue-600 rounded-lg flex-shrink-0">
-          <Zap className="w-4 h-4 text-white" />
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-white/10">
+        {/* МП logomark */}
+        <div className="flex flex-shrink-0">
+          <div className="w-7 h-7 flex items-center justify-center bg-amber-400 rounded-sm">
+            <span className="text-black font-black text-base leading-none" style={{ fontFamily: 'serif', letterSpacing: '-0.05em' }}>М</span>
+          </div>
+          <div className="w-7 h-7 flex items-center justify-center bg-gray-800 rounded-sm -ml-px border border-white/10">
+            <span className="text-white font-black text-base leading-none" style={{ fontFamily: 'serif', letterSpacing: '-0.05em' }}>П</span>
+          </div>
         </div>
-        <div>
-          <p className="text-white font-bold text-sm leading-tight">AI CRM</p>
-          <p className="text-gray-400 text-xs">МеталлПортал</p>
+        <div className="leading-tight">
+          <p className="text-white font-bold text-sm tracking-wide">МЕТАЛЛ</p>
+          <p className="text-amber-400 font-semibold text-xs tracking-widest">ПОРТАЛ</p>
         </div>
       </div>
 
