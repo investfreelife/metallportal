@@ -70,6 +70,7 @@ export default function EmailsPage() {
   const [reply, setReply] = useState(false)
   const [deals, setDeals] = useState<Deal[]>([])
   const [linkingDeal, setLinkingDeal] = useState(false)
+  const [bodyLoading, setBodyLoading] = useState(false)
   const [aiAnalyzing, setAiAnalyzing] = useState(false)
   const [aiResult, setAiResult] = useState<{ intent: string; reasoning: string; suggested_reply: string; action_type: string; priority: string; queue_id?: string } | null>(null)
   const [aiError, setAiError] = useState<string | null>(null)
@@ -145,11 +146,23 @@ export default function EmailsPage() {
     setLinkingDeal(false)
   }
 
-  const openEmail = (email: Email) => {
+  const openEmail = async (email: Email) => {
     setSelected(email)
     setAiResult(null)
     setAiError(null)
     if (!email.is_read) markRead(email.id)
+    // Lazy-load body if not yet fetched
+    if (!email.body_text && !email.body_html) {
+      setBodyLoading(true)
+      try {
+        const r = await fetch(`/api/emails/${email.id}/body`)
+        const d = await r.json()
+        if (d.body_text !== undefined || d.body_html !== undefined) {
+          setSelected(prev => prev ? { ...prev, body_text: d.body_text, body_html: d.body_html } : prev)
+          setEmails(prev => prev.map(e => e.id === email.id ? { ...e, body_text: d.body_text, body_html: d.body_html } : e))
+        }
+      } catch { /* silent */ } finally { setBodyLoading(false) }
+    }
   }
 
   const deleteEmail = async (emailId: string) => {
@@ -320,11 +333,16 @@ export default function EmailsPage() {
             </div>
 
             <div className="bg-gray-900/50 rounded-xl p-5">
-              {selected.body_html ? (
+              {bodyLoading ? (
+                <div className="flex items-center gap-2 text-gray-500 text-sm">
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  Загружаю содержимое письма...
+                </div>
+              ) : selected.body_html ? (
                 <div className="prose prose-invert prose-sm max-w-none text-gray-300"
                   dangerouslySetInnerHTML={{ __html: selected.body_html }} />
               ) : (
-                <pre className="text-gray-300 text-sm whitespace-pre-wrap font-sans">{selected.body_text ?? '(нет содержимого)'}</pre>
+                <pre className="text-gray-300 text-sm whitespace-pre-wrap font-sans">{selected.body_text ?? '(содержимое недоступно)'}</pre>
               )}
             </div>
           </div>
