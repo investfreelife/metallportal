@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import AddActivityForm from './AddActivityForm'
 import ContactMessengerClient from './ContactMessengerClient'
+import MergeDealsButton from './MergeDealsButton'
 
 export default async function ContactDetailPage({
   params,
@@ -33,6 +34,7 @@ export default async function ContactDetailPage({
     .from('deals')
     .select('id, title, amount, stage, ai_win_probability')
     .eq('contact_id', id)
+    .order('created_at', { ascending: false })
 
   const STATUS_COLORS: Record<string, string> = {
     new: 'bg-blue-500/20 text-blue-300',
@@ -135,7 +137,13 @@ export default async function ContactDetailPage({
         <div className="lg:col-span-2 space-y-4">
           {deals && deals.length > 0 && (
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-              <h2 className="text-white font-semibold text-sm mb-3">Сделки</h2>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-white font-semibold text-sm">Сделки ({deals.length})</h2>
+                <MergeDealsButton
+                  contactId={contact.id}
+                  openDealsCount={deals.filter(d => !['won','delivery','completed','lost'].includes(d.stage)).length}
+                />
+              </div>
               <div className="space-y-2">
                 {deals.map((d) => (
                   <Link key={d.id} href={`/deals/${d.id}`} className="flex items-center gap-3 p-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors">
