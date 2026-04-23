@@ -43,10 +43,9 @@ export async function POST(
   // Map priority
   const priority = ai.priority === 'high' ? 'high' : ai.priority === 'medium' ? 'normal' : 'low'
 
-  const { data: queueItem, error: qErr } = await supabase.from('ai_queue').insert({
+  const baseRecord = {
     tenant_id: TENANT_ID,
     contact_id: email.contact_id ?? null,
-    email_id: id,
     action_type: ai.action_type,
     priority,
     status: 'pending',
@@ -54,7 +53,18 @@ export async function POST(
     ai_reasoning: `📧 ${ai.intent}\n\n${ai.reasoning}`,
     content: ai.suggested_reply,
     suggested_message: ai.suggested_reply,
-  }).select('id').single()
+  }
+
+  // Try with email_id first; fall back silently if column doesn't exist yet
+  let queueItem = null
+  let qErr = null
+  ;({ data: queueItem, error: qErr } = await supabase.from('ai_queue')
+    .insert({ ...baseRecord, email_id: id }).select('id').single())
+
+  if (qErr && (qErr.message?.includes('email_id') || qErr.code === '42703')) {
+    ;({ data: queueItem, error: qErr } = await supabase.from('ai_queue')
+      .insert(baseRecord).select('id').single())
+  }
 
   if (qErr) return NextResponse.json({ error: qErr.message }, { status: 500 })
 

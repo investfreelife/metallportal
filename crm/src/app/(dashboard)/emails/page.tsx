@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Mail, RefreshCw, Pen, Star, StarOff, Check, ArrowLeft, Reply, Link2, Inbox, Sparkles } from 'lucide-react'
+import { Mail, RefreshCw, Pen, Star, StarOff, Check, ArrowLeft, Reply, Link2, Inbox, Sparkles, Trash2 } from 'lucide-react'
 import ComposeModal from '@/components/emails/ComposeModal'
 
 interface Email {
@@ -152,6 +152,13 @@ export default function EmailsPage() {
     if (!email.is_read) markRead(email.id)
   }
 
+  const deleteEmail = async (emailId: string) => {
+    if (!confirm('Удалить письмо?')) return
+    await fetch(`/api/emails/${emailId}`, { method: 'DELETE' })
+    setEmails(prev => prev.filter(e => e.id !== emailId))
+    if (selected?.id === emailId) setSelected(null)
+  }
+
   const runAI = async (emailId: string) => {
     setAiAnalyzing(true)
     setAiResult(null)
@@ -237,6 +244,9 @@ export default function EmailsPage() {
             </button>
             <button onClick={() => setLinkingDeal(v => !v)} className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-gray-300 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors">
               <Link2 className="w-3.5 h-3.5" /> {selected.deal_id ? 'Сделка привязана' : 'Привязать к сделке'}
+            </button>
+            <button onClick={() => deleteEmail(selected.id)} className="p-1.5 text-gray-500 hover:text-red-400 transition-colors" title="Удалить письмо">
+              <Trash2 className="w-4 h-4" />
             </button>
             <button onClick={() => runAI(selected.id)} disabled={aiAnalyzing}
               className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white text-xs font-medium rounded-lg transition-colors">
