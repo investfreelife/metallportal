@@ -89,14 +89,16 @@ export async function POST(req: NextRequest) {
     }
 
     // 3. Create or MERGE deal (объединяем несколько заявок от одного контакта)
+    let dealId: string | null = null
     if (contactId) {
       // Check if there's already an open deal in early stages for this contact
       // Select only 'id' to avoid error if items/amount columns don't exist yet
+      // Look for any open (non-closed) deal for this contact
       const { data: existingDeal } = await supabase.from('deals')
         .select('id')
         .eq('tenant_id', TENANT_ID)
         .eq('contact_id', contactId)
-        .in('stage', ['new', 'call', 'qualified'])
+        .not('stage', 'in', '(won,delivery,completed,lost)')
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle()
@@ -115,12 +117,21 @@ export async function POST(req: NextRequest) {
 
         const mergedItems = [...prevItems]
         for (const newItem of items) {
-          const exists = mergedItems.find((it) => it.name === newItem.name && it.unit === newItem.unit)
+          // Match by name + unit (trim whitespace for safety)
+          const exists = mergedItems.find(
+            (it) => it.name.trim() === (newItem.name ?? '').trim() && it.unit === newItem.unit
+          )
           if (exists) {
             exists.qty = (exists.qty || 0) + (newItem.qty || 0)
-            exists.total = Math.round((exists.price || newItem.price || 0) * exists.qty)
+            const unitPrice = exists.price || newItem.price || 0
+            if (unitPrice > 0) {
+              exists.total = Math.round(unitPrice * exists.qty)
+            } else {
+              // price unknown — add raw totals
+              exists.total = (exists.total ?? 0) + (newItem.total ?? 0)
+            }
           } else {
-            mergedItems.push(newItem)
+            mergedItems.push({ ...newItem })
           }
         }
         const prevAmount = (fullDeal as {amount?: number} | null)?.amount ?? 0
@@ -137,6 +148,7 @@ export async function POST(req: NextRequest) {
           await supabase.from('deals').update(updatePayload).eq('id', existingDeal.id)
         }
         console.log('[orders] merged into existing deal:', existingDeal.id)
+        dealId = existingDeal.id
       } else {
         // CREATE new deal
         const dealTitle = `Заказ: ${name}${total ? ' — ' + Math.round(total).toLocaleString('ru') + ' ₽' : ''}`
@@ -148,26 +160,33 @@ export async function POST(req: NextRequest) {
           stage: 'new',
           ai_win_probability: 0,
         }
-        const { error: dealErr1 } = await supabase.from('deals')
+        const { data: newDeal, error: dealErr1 } = await supabase.from('deals')
           .insert({ ...dealBase, items, currency: 'RUB' })
+          .select('id').single()
         if (dealErr1) {
           console.error('[orders] deal insert (full):', dealErr1.message)
-          const { error: dealErr2 } = await supabase.from('deals').insert(dealBase)
+          const { data: newDeal2, error: dealErr2 } = await supabase.from('deals')
+            .insert(dealBase).select('id').single()
           if (dealErr2) console.error('[orders] deal insert (base):', dealErr2.message)
+          if (newDeal2) dealId = newDeal2.id
+        } else {
+          if (newDeal) dealId = newDeal.id
         }
       }
 
-      // 3b. Auto-create manager task
+      // 3b. Auto-create manager task (linked to deal)
       try {
-        await supabase.from('tasks').insert({
+        const taskPayload: Record<string, unknown> = {
           tenant_id: TENANT_ID,
           contact_id: contactId,
           title: `Связаться с клиентом: ${name}`,
           body: `Телефон: ${phone}${email ? ', email: ' + email : ''}${comment ? '\nКомментарий: ' + comment : ''}`,
           priority: 'high',
           status: 'pending',
-          due_at: new Date(Date.now() + 30 * 60 * 1000).toISOString(), // +30 min
-        })
+          due_at: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
+        }
+        if (dealId) taskPayload.deal_id = dealId
+        await supabase.from('tasks').insert(taskPayload)
       } catch { /* tasks table may not exist yet */ }
 
       // 3c. Notify customer via Telegram if they have chat_id
@@ -193,16 +212,18 @@ export async function POST(req: NextRequest) {
         } catch { /* ignore */ }
       }
 
-      // 4. Activity log
+      // 4. Activity log (linked to deal)
       try {
-        await supabase.from('activities').insert({
+        const actPayload: Record<string, unknown> = {
           tenant_id: TENANT_ID,
           contact_id: contactId,
           type: 'note',
           direction: 'inbound',
           subject: `Заказ на сайте${total ? ' — ' + Math.round(total).toLocaleString('ru') + ' ₽' : ''}`,
           body: comment || null,
-        })
+        }
+        if (dealId) actPayload.deal_id = dealId
+        await supabase.from('activities').insert(actPayload)
       } catch { /* non-critical */ }
     }
 
