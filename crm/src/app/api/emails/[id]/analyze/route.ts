@@ -31,6 +31,19 @@ export async function POST(
 
   if (existing) return NextResponse.json({ ok: true, already: true, queue_id: existing.id })
 
+  // Load body FIRST if not yet fetched — so AI has full text
+  if (!email.body_text && email.imap_uid && email.account_id) {
+    try {
+      const base = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://metallportal-crm2.vercel.app'
+      const bodyRes = await fetch(`${base}/api/emails/${id}/body`)
+      if (bodyRes.ok) {
+        const bodyData = await bodyRes.json()
+        if (bodyData.body_text) email.body_text = bodyData.body_text
+        if (bodyData.body_html) email.body_html = bodyData.body_html
+      }
+    } catch { /* silent */ }
+  }
+
   const ai = await analyzeEmail({
     from_email: email.from_email ?? '',
     from_name: email.from_name,

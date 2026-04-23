@@ -368,6 +368,30 @@ export default function EmailsPage() {
                   {aiResult.suggested_reply && (
                     <div className="bg-gray-900 rounded-lg p-3 text-xs text-gray-300 whitespace-pre-wrap border border-purple-500/20">{aiResult.suggested_reply}</div>
                   )}
+                  <div className="flex gap-2 pt-1">
+                    <input
+                      type="text"
+                      placeholder='Команда ИИ: "удали похожие", "напиши ответ", "найди лучшую цену"...'
+                      className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-purple-500"
+                      onKeyDown={async e => {
+                        if (e.key !== 'Enter' || !selected) return
+                        const val = (e.target as HTMLInputElement).value.trim()
+                        if (!val) return;
+                        (e.target as HTMLInputElement).value = ''
+                        setCmdText(val)
+                        setCmdOpen(true)
+                        setCmdLoading(true)
+                        setCmdResult(null)
+                        try {
+                          const r = await fetch('/api/emails/ai-command', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ command: val }) })
+                          const d = await r.json()
+                          setCmdResult(d.error ? { action: 'error', ids: [], description: d.error, count: 0 } : d)
+                        } catch { setCmdResult({ action: 'error', ids: [], description: 'Нет ответа', count: 0 }) }
+                        finally { setCmdLoading(false) }
+                      }}
+                    />
+                    <Send className="w-3.5 h-3.5 text-gray-600 my-auto flex-shrink-0" />
+                  </div>
                 </div>
               )}
             </div>
