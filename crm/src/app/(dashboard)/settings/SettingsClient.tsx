@@ -645,70 +645,203 @@ function SiteTab() {
 
 // ───────────────────── Telegram Personal tab ─────────────────────
 
+type TgPersonalStep = 'loading' | 'no_creds' | 'phone' | 'code' | 'twofa' | 'connected'
+
 function TelegramPersonalTab() {
+  const [step, setStep] = useState<TgPersonalStep>('loading')
+  const [connectedUsername, setConnectedUsername] = useState('')
+  const [phone, setPhone] = useState('+7')
+  const [code, setCode] = useState('')
+  const [twofa, setTwofa] = useState('')
   const [apiId, setApiId] = useState('')
   const [apiHash, setApiHash] = useState('')
-  const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
-  const save = async () => {
+  useEffect(() => {
+    fetch('/api/telegram/personal/status').then(r => r.json()).then(d => {
+      if (d.status === 'connected') { setConnectedUsername(d.username ?? d.phone ?? ''); setStep('connected') }
+      else if (!d.hasApiCreds) setStep('no_creds')
+      else setStep('phone')
+    }).catch(() => setStep('no_creds'))
+  }, [])
+
+  const saveCreds = async () => {
     if (!apiId || !apiHash) return
-    setSaving(true)
+    setLoading(true); setError('')
     await fetch('/api/settings', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ TELEGRAM_API_ID: apiId, TELEGRAM_API_HASH: apiHash }),
     })
-    setSaving(false); setSaved(true); setTimeout(() => setSaved(false), 2000)
+    setLoading(false)
+    setStep('phone')
+  }
+
+  const sendCode = async () => {
+    if (!phone.trim()) return
+    setLoading(true); setError('')
+    const res = await fetch('/api/telegram/personal/start', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: phone.trim() }),
+    })
+    const d = await res.json()
+    setLoading(false)
+    if (d.ok) setStep('code')
+    else setError(d.error ?? 'Ошибка')
+  }
+
+  const verifyCode = async () => {
+    if (!code.trim()) return
+    setLoading(true); setError('')
+    const res = await fetch('/api/telegram/personal/verify', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: code.trim(), password: twofa.trim() || undefined }),
+    })
+    const d = await res.json()
+    setLoading(false)
+    if (d.needs2fa) { setStep('twofa'); return }
+    if (d.ok) { setConnectedUsername(d.username ?? d.name ?? phone); setStep('connected') }
+    else setError(d.error ?? 'Ошибка')
+  }
+
+  const disconnect = async () => {
+    if (!confirm('Отключить Telegram аккаунт?')) return
+    await fetch('/api/telegram/personal/status', { method: 'DELETE' })
+    setStep('phone'); setCode(''); setTwofa(''); setError('')
   }
 
   return (
     <div className="space-y-5">
-      <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-5 space-y-3">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl">✈️</span>
-          <div>
-            <h3 className="text-white font-semibold">Telegram Personal Account</h3>
-            <p className="text-blue-300 text-xs mt-0.5">Писать любому контакту напрямую — без бота</p>
-          </div>
+      {/* Header */}
+      <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 flex items-center gap-3">
+        <span className="text-2xl">✈️</span>
+        <div>
+          <h3 className="text-white font-semibold">Telegram Personal Account</h3>
+          <p className="text-blue-300 text-xs mt-0.5">Писать любому клиенту напрямую — без бота, по @username</p>
         </div>
-        <div className="text-gray-300 text-sm space-y-2">
-          <p>Позволяет CRM отправлять сообщения через ваш личный Telegram аккаунт — без бота, любому пользователю по @username.</p>
-          <div className="bg-gray-900/50 rounded-lg p-3 space-y-1 text-xs text-gray-400">
-            <p className="font-medium text-gray-300 mb-2">Как настроить:</p>
-            <p>1. Перейдите на <a href="https://my.telegram.org" target="_blank" className="text-blue-400 underline">my.telegram.org</a> → API development tools</p>
-            <p>2. Создайте приложение — получите <code className="text-amber-400">api_id</code> и <code className="text-amber-400">api_hash</code></p>
-            <p>3. Введите их ниже и сохраните</p>
-            <p>4. После сохранения — авторизуйтесь по ссылке (потребуется код из Telegram)</p>
-          </div>
-        </div>
+        {step === 'connected' && (
+          <span className="ml-auto flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg">
+            <CheckCircle className="w-3.5 h-3.5" /> Подключено
+          </span>
+        )}
       </div>
 
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
-        <h3 className="text-white font-semibold text-sm">Credentials</h3>
-        <div className="grid grid-cols-2 gap-3">
+      {/* Step 0: API Credentials */}
+      {step === 'no_creds' && (
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
           <div>
-            <label className="text-gray-400 text-xs mb-1 block">API ID</label>
-            <input value={apiId} onChange={e => setApiId(e.target.value)} placeholder="12345678"
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono" />
+            <h3 className="text-white font-semibold text-sm mb-1">Шаг 1 из 2 — API ключи (один раз)</h3>
+            <p className="text-gray-500 text-xs">Нужны для подключения к Telegram API. Получить бесплатно на <a href="https://my.telegram.org" target="_blank" className="text-blue-400 underline">my.telegram.org</a> → API development tools → Create App</p>
           </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-gray-400 text-xs mb-1 block">API ID</label>
+              <input value={apiId} onChange={e => setApiId(e.target.value)} placeholder="12345678"
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono" />
+            </div>
+            <div>
+              <label className="text-gray-400 text-xs mb-1 block">API Hash</label>
+              <input value={apiHash} onChange={e => setApiHash(e.target.value)} placeholder="abc123..." type="password"
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono" />
+            </div>
+          </div>
+          {error && <p className="text-red-400 text-xs">{error}</p>}
+          <button onClick={saveCreds} disabled={loading || !apiId || !apiHash}
+            className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors">
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+            Далее →
+          </button>
+        </div>
+      )}
+
+      {/* Step 1: Phone number */}
+      {(step === 'phone' || step === 'loading') && (
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
+          {step === 'loading' ? (
+            <div className="flex items-center gap-2 text-gray-500"><Loader2 className="w-4 h-4 animate-spin" /> Проверяем...</div>
+          ) : (
+            <>
+              <div>
+                <h3 className="text-white font-semibold text-sm mb-1">Введите номер телефона</h3>
+                <p className="text-gray-500 text-xs">Telegram пришлёт код подтверждения</p>
+              </div>
+              <div className="flex gap-3">
+                <input value={phone} onChange={e => setPhone(e.target.value)}
+                  placeholder="+79001234567" type="tel"
+                  className="flex-1 px-3.5 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-base placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-center tracking-wider" />
+              </div>
+              {error && <p className="text-red-400 text-xs">{error}</p>}
+              <button onClick={sendCode} disabled={loading || phone.length < 5}
+                className="w-full flex items-center justify-center gap-2 py-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold rounded-xl transition-colors">
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                {loading ? 'Отправляю код...' : 'Получить код'}
+              </button>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Step 2: Code */}
+      {step === 'code' && (
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
           <div>
-            <label className="text-gray-400 text-xs mb-1 block">API Hash</label>
-            <input value={apiHash} onChange={e => setApiHash(e.target.value)} placeholder="abcdef1234567890..."
-              type="password"
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono" />
+            <h3 className="text-white font-semibold text-sm mb-1">Введите код из Telegram</h3>
+            <p className="text-gray-500 text-xs">Telegram отправил код на номер <span className="text-white">{phone}</span></p>
+          </div>
+          <input value={code} onChange={e => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+            placeholder="_ _ _ _ _ _" maxLength={6}
+            className="w-full px-3.5 py-4 bg-gray-800 border border-gray-700 rounded-xl text-white text-2xl font-bold placeholder-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-center tracking-[0.5em]" />
+          {error && <p className="text-red-400 text-xs">{error}</p>}
+          <div className="flex gap-2">
+            <button onClick={() => { setStep('phone'); setCode(''); setError('') }}
+              className="px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-400 text-sm rounded-lg transition-colors">
+              ← Назад
+            </button>
+            <button onClick={verifyCode} disabled={loading || code.length < 5}
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-semibold rounded-lg transition-colors">
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+              {loading ? 'Подключаю...' : 'Подключить'}
+            </button>
           </div>
         </div>
-        <button onClick={save} disabled={saving || !apiId || !apiHash}
-          className="flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors">
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
-          {saved ? 'Сохранено!' : 'Сохранить'}
-        </button>
-      </div>
+      )}
 
-      <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
-        <p className="text-amber-400 text-xs font-medium mb-1">⚠️ Пока в разработке</p>
-        <p className="text-gray-400 text-xs">Полная интеграция MTProto (отправка от лица личного аккаунта) будет доступна в следующем обновлении. Сейчас используйте бот для отправки сообщений.</p>
-      </div>
+      {/* Step 3: 2FA */}
+      {step === 'twofa' && (
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
+          <div>
+            <h3 className="text-white font-semibold text-sm mb-1">🔐 Двухфакторная аутентификация</h3>
+            <p className="text-gray-500 text-xs">Введите пароль двухфакторной аутентификации вашего Telegram</p>
+          </div>
+          <input value={twofa} onChange={e => setTwofa(e.target.value)}
+            type="password" placeholder="Пароль 2FA"
+            className="w-full px-3.5 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          {error && <p className="text-red-400 text-xs">{error}</p>}
+          <button onClick={verifyCode} disabled={loading || !twofa}
+            className="w-full flex items-center justify-center gap-2 py-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold rounded-xl transition-colors">
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+            Подтвердить
+          </button>
+        </div>
+      )}
+
+      {/* Connected */}
+      {step === 'connected' && (
+        <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-5 space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-emerald-600 flex items-center justify-center text-2xl">✈️</div>
+            <div>
+              <p className="text-white font-semibold">Telegram подключён!</p>
+              <p className="text-emerald-400 text-sm">{connectedUsername ? `@${connectedUsername}` : 'Аккаунт активен'}</p>
+            </div>
+          </div>
+          <p className="text-gray-400 text-sm">Теперь в окне общения с контактом можно писать напрямую через этот аккаунт.</p>
+          <button onClick={disconnect}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-red-500/20 border border-gray-700 hover:border-red-500/30 text-gray-400 hover:text-red-400 text-sm rounded-lg transition-colors">
+            Отключить аккаунт
+          </button>
+        </div>
+      )}
     </div>
   )
 }
