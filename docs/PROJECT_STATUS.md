@@ -87,6 +87,11 @@
   2. `CRM_MANAGER_TG_ID` → написать @userinfobot в Telegram → получить chat_id → добавить в Vercel env
   3. После добавления env → `npx vercel --prod` из `crm/`
 
+### AI CRM — Дашборд мирового уровня (23 апр 2026)
+- **`crm/src/components/layout/Sidebar.tsx`** — переработан: ширина 200px, секции (Главное/Продажи/Коммуникации/Аналитика), новые пункты (Звонки, Telegram, Рассылки, Отчёты), бейджи для `pendingCount`/`unreadEmails`/`missedCalls`
+- **`crm/src/app/(dashboard)/layout.tsx`** — живые данные для Sidebar: `pendingCount` из `ai_queue`, `unreadEmails` из `emails`
+- **`crm/src/app/(dashboard)/dashboard/page.tsx`** — исправлен баг (`settings`→`tenant_settings`), добавлена Воронка продаж в правую колонку (реальные данные из deals по стадиям)
+
 ### AI CRM — Phase 4: Каналы и аналитика (20 апр 2026)
 - **`crm/src/lib/email.ts`** — Resend email (`sendEmail`, `buildProposalEmail`, `buildOrderConfirmEmail`)
 - **`crm/src/app/api/email/send/route.ts`** — POST /api/email/send (template: 'proposal'|'order_confirm')
