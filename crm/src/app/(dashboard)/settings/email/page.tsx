@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Mail, Plus, Trash2, RefreshCw, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
+import { Mail, Plus, Trash2, RefreshCw, CheckCircle, XCircle, AlertCircle, Send, FlaskConical, Inbox } from 'lucide-react'
 
 interface EmailAccount {
   id: string
@@ -16,6 +16,13 @@ interface EmailAccount {
   imap_host: string | null
 }
 
+interface AccountState {
+  testing: boolean
+  testResult: null | { imap: string; imap_count?: number; imap_error?: string; smtp: string; smtp_error?: string }
+  syncing: boolean
+  syncCount: null | number
+}
+
 const PROVIDER_INFO: Record<string, { label: string; hint: string; color: string }> = {
   gmail:  { label: 'Gmail',    color: 'text-red-400',    hint: 'Используйте App Password: myaccount.google.com → Безопасность → Пароли приложений' },
   mailru: { label: 'Mail.ru',  color: 'text-blue-400',   hint: 'Включите IMAP в настройках Mail.ru и создайте пароль приложения' },
@@ -27,7 +34,7 @@ export default function EmailSettingsPage() {
   const [accounts, setAccounts] = useState<EmailAccount[]>([])
   const [loading, setLoading] = useState(true)
   const [showAdd, setShowAdd] = useState(false)
-  const [syncing, setSyncing] = useState<string | null>(null)
+  const [states, setStates] = useState<Record<string, AccountState>>({})
 
   const [form, setForm] = useState({
     provider: 'gmail', email: '', display_name: '', smtp_pass: '',
@@ -36,15 +43,22 @@ export default function EmailSettingsPage() {
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState('')
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true)
     const res = await fetch('/api/emails/accounts')
     const data = await res.json()
     setAccounts(Array.isArray(data) ? data : [])
     setLoading(false)
-  }
+  }, [])
 
-  useEffect(() => { load() }, [])
+  useEffect(() => { load() }, [load])
+
+  function accState(id: string): AccountState {
+    return states[id] ?? { testing: false, testResult: null, syncing: false, syncCount: null }
+  }
+  function setAccState(id: string, patch: Partial<AccountState>) {
+    setStates(prev => ({ ...prev, [id]: { ...accState(id), ...patch } }))
+  }
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -52,9 +66,7 @@ export default function EmailSettingsPage() {
     if (!form.email || !form.smtp_pass) { setFormError('Email и пароль приложения обязательны'); return }
     setSaving(true)
     const res = await fetch('/api/emails/accounts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form),
     })
     const d = await res.json()
     setSaving(false)
@@ -70,10 +82,33 @@ export default function EmailSettingsPage() {
     load()
   }
 
+  const testConnection = async (id: string) => {
+    setAccState(id, { testing: true, testResult: null })
+    const res = await fetch('/api/emails/test', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ account_id: id }),
+    })
+    const d = await res.json()
+    setAccState(id, { testing: false, testResult: d })
+    load()
+  }
+
+  const testSend = async (id: string) => {
+    setAccState(id, { testing: true, testResult: null })
+    const res = await fetch('/api/emails/test', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ account_id: id, test_send: true }),
+    })
+    const d = await res.json()
+    setAccState(id, { testing: false, testResult: d })
+    load()
+  }
+
   const sync = async (id: string) => {
-    setSyncing(id)
-    await fetch('/api/emails/sync', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ account_id: id }) })
-    setSyncing(null)
+    setAccState(id, { syncing: true, syncCount: null })
+    const res = await fetch('/api/emails/sync', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ account_id: id }),
+    })
+    const d = await res.json()
+    setAccState(id, { syncing: false, syncCount: d.synced ?? 0 })
     load()
   }
 
@@ -83,7 +118,7 @@ export default function EmailSettingsPage() {
     <div className="p-6 max-w-3xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-white">Почта</h1>
+          <h1 className="text-xl font-bold text-white">Управление почтой</h1>
           <p className="text-gray-400 text-sm mt-1">Подключите Gmail, Mail.ru или любой IMAP/SMTP ящик</p>
         </div>
         <button onClick={() => setShowAdd(v => !v)}
@@ -96,8 +131,6 @@ export default function EmailSettingsPage() {
       {showAdd && (
         <div className="bg-gray-900 border border-gray-700 rounded-xl p-5 space-y-4">
           <h2 className="text-white font-semibold text-sm">Новый почтовый ящик</h2>
-
-          {/* Provider tabs */}
           <div className="flex gap-2 flex-wrap">
             {Object.entries(PROVIDER_INFO).map(([key, info]) => (
               <button key={key} onClick={() => setForm(f => ({ ...f, provider: key }))}
@@ -106,11 +139,9 @@ export default function EmailSettingsPage() {
                 }`}>{info.label}</button>
             ))}
           </div>
-
           <p className="text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2">
             ⚠️ {provInfo.hint}
           </p>
-
           <form onSubmit={save} className="space-y-3">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
@@ -146,9 +177,7 @@ export default function EmailSettingsPage() {
                 </div>
               </>)}
             </div>
-
             {formError && <p className="text-red-400 text-xs">{formError}</p>}
-
             <div className="flex gap-2">
               <button type="submit" disabled={saving}
                 className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors">
@@ -173,40 +202,93 @@ export default function EmailSettingsPage() {
           <p className="text-gray-600 text-xs mt-1">Нажмите «Подключить ящик» выше</p>
         </div>
       ) : (
-        <div className="space-y-3">
-          {accounts.map(acc => (
-            <div key={acc.id} className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex items-start gap-4">
-              <div className="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center flex-shrink-0">
-                <Mail className="w-4 h-4 text-blue-400" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <p className="text-white text-sm font-medium">{acc.display_name || acc.email}</p>
-                  <span className="text-xs text-gray-500">{acc.email}</span>
-                  <span className={`text-xs px-1.5 py-0.5 rounded ${PROVIDER_INFO[acc.provider]?.color ?? 'text-gray-400'} bg-gray-800`}>
-                    {PROVIDER_INFO[acc.provider]?.label ?? acc.provider}
-                  </span>
+        <div className="space-y-4">
+          {accounts.map(acc => {
+            const st = accState(acc.id)
+            const tr = st.testResult
+            return (
+              <div key={acc.id} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                {/* Account header */}
+                <div className="p-4 flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center flex-shrink-0 text-lg">
+                    {acc.provider === 'gmail' ? '🔴' : acc.provider === 'mailru' ? '🔵' : acc.provider === 'yandex' ? '🟡' : '📧'}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-white text-sm font-semibold">{acc.display_name || acc.email}</p>
+                      <span className="text-xs text-gray-500 font-mono">{acc.email}</span>
+                      <span className={`text-xs px-1.5 py-0.5 rounded ${PROVIDER_INFO[acc.provider]?.color ?? 'text-gray-400'} bg-gray-800`}>
+                        {PROVIDER_INFO[acc.provider]?.label ?? acc.provider}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3 mt-1.5 flex-wrap">
+                      {acc.status === 'active'       && <span className="flex items-center gap-1 text-xs text-green-400"><CheckCircle className="w-3 h-3" /> Активен</span>}
+                      {acc.status === 'error'        && <span className="flex items-center gap-1 text-xs text-red-400"><XCircle className="w-3 h-3" /> Ошибка</span>}
+                      {acc.status === 'disconnected' && <span className="flex items-center gap-1 text-xs text-gray-400"><AlertCircle className="w-3 h-3" /> Отключён</span>}
+                      {acc.last_synced_at && (
+                        <span className="text-xs text-gray-500">
+                          Синх: {new Date(acc.last_synced_at).toLocaleString('ru', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      )}
+                      {st.syncCount !== null && (
+                        <span className="text-xs text-blue-400">+{st.syncCount} писем загружено</span>
+                      )}
+                    </div>
+                    {acc.last_error && <p className="text-xs text-red-400 mt-1 bg-red-500/10 px-2 py-1 rounded truncate">{acc.last_error}</p>}
+                  </div>
+                  <button onClick={() => remove(acc.id)} className="p-2 text-gray-600 hover:text-red-400 transition-colors" title="Удалить">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
-                <div className="flex items-center gap-2 mt-1">
-                  {acc.status === 'active' && <span className="flex items-center gap-1 text-xs text-green-400"><CheckCircle className="w-3 h-3" /> Активен</span>}
-                  {acc.status === 'error' && <span className="flex items-center gap-1 text-xs text-red-400"><XCircle className="w-3 h-3" /> Ошибка</span>}
-                  {acc.status === 'disconnected' && <span className="flex items-center gap-1 text-xs text-gray-400"><AlertCircle className="w-3 h-3" /> Отключён</span>}
-                  {acc.last_synced_at && <span className="text-xs text-gray-600">Синх: {new Date(acc.last_synced_at).toLocaleString('ru')}</span>}
+
+                {/* Action buttons */}
+                <div className="px-4 pb-4 flex gap-2 flex-wrap">
+                  <button onClick={() => testConnection(acc.id)} disabled={st.testing}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 text-xs rounded-lg transition-colors disabled:opacity-50">
+                    {st.testing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <FlaskConical className="w-3.5 h-3.5" />}
+                    Тест IMAP
+                  </button>
+                  <button onClick={() => testSend(acc.id)} disabled={st.testing}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 text-xs rounded-lg transition-colors disabled:opacity-50">
+                    {st.testing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                    Тест отправки
+                  </button>
+                  <button onClick={() => sync(acc.id)} disabled={st.syncing}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/20 text-blue-400 text-xs rounded-lg transition-colors disabled:opacity-50">
+                    {st.syncing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Inbox className="w-3.5 h-3.5" />}
+                    {st.syncing ? 'Скачиваю...' : 'Скачать почту'}
+                  </button>
                 </div>
-                {acc.last_error && <p className="text-xs text-red-400 mt-1 truncate">{acc.last_error}</p>}
+
+                {/* Test result */}
+                {tr && (
+                  <div className="mx-4 mb-4 bg-gray-950 border border-gray-800 rounded-lg p-3 space-y-1.5 text-xs">
+                    <p className="font-semibold text-gray-300 mb-2">Результат проверки</p>
+                    <div className="flex items-center gap-2">
+                      {tr.imap === 'ok'
+                        ? <CheckCircle className="w-3.5 h-3.5 text-green-400 flex-shrink-0" />
+                        : tr.imap === 'error'
+                          ? <XCircle className="w-3.5 h-3.5 text-red-400 flex-shrink-0" />
+                          : <AlertCircle className="w-3.5 h-3.5 text-gray-500 flex-shrink-0" />}
+                      <span className={tr.imap === 'ok' ? 'text-green-400' : tr.imap === 'error' ? 'text-red-400' : 'text-gray-500'}>
+                        IMAP: {tr.imap === 'ok' ? `✓ Работает — ${tr.imap_count ?? 0} писем в ящике` : tr.imap === 'error' ? `✗ ${tr.imap_error}` : 'не проверялся'}
+                      </span>
+                    </div>
+                    {tr.smtp !== 'skipped' && (
+                      <div className="flex items-center gap-2">
+                        {tr.smtp === 'ok'
+                          ? <CheckCircle className="w-3.5 h-3.5 text-green-400 flex-shrink-0" />
+                          : <XCircle className="w-3.5 h-3.5 text-red-400 flex-shrink-0" />}
+                        <span className={tr.smtp === 'ok' ? 'text-green-400' : 'text-red-400'}>
+                          SMTP: {tr.smtp === 'ok' ? '✓ Тестовое письмо отправлено на ваш адрес' : `✗ ${tr.smtp_error}`}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <button onClick={() => sync(acc.id)} disabled={syncing === acc.id}
-                  className="p-2 text-gray-500 hover:text-blue-400 transition-colors" title="Синхронизировать">
-                  <RefreshCw className={`w-4 h-4 ${syncing === acc.id ? 'animate-spin' : ''}`} />
-                </button>
-                <button onClick={() => remove(acc.id)}
-                  className="p-2 text-gray-600 hover:text-red-400 transition-colors" title="Удалить">
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
 

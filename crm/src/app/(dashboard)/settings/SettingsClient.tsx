@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import {
-  Key, Users, Globe, Loader2, CheckCircle, Copy,
+  Key, Users, Globe, Loader2, CheckCircle, XCircle, Copy,
   Plus, Eye, EyeOff, Send, RefreshCw, UserCheck, UserX,
   Bot, Wifi, WifiOff, MessageSquare, Zap
 } from 'lucide-react'
@@ -849,89 +849,123 @@ function TelegramPersonalTab() {
 // ───────────────────── AI Макс tab ─────────────────────
 
 function AiMaxTab() {
-  const [fields, setFields] = useState({ OPENAI_API_KEY: '', AI_MAX_NAME: 'Макс', AI_MAX_TONE: 'professional' })
+  const [status, setStatus] = useState<{ openrouter: boolean; anthropic: boolean; openai: boolean } | null>(null)
+  const [testing, setTesting] = useState(false)
+  const [testResult, setTestResult] = useState<string | null>(null)
+  const [tone, setTone] = useState('professional')
   const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
-  const [show, setShow] = useState(false)
 
-  const save = async () => {
+  useEffect(() => {
+    fetch('/api/ai/status').then(r => r.json()).then(d => setStatus(d)).catch(() => setStatus({ openrouter: false, anthropic: false, openai: false }))
+  }, [])
+
+  const testAi = async () => {
+    setTesting(true); setTestResult(null)
+    const res = await fetch('/api/contacts/test-ai-reply', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'Добрый день! Хочу узнать цену на арматуру 12мм, 5 тонн.' }),
+    }).catch(() => null)
+    if (res?.ok) {
+      const d = await res.json()
+      setTestResult(d.text ?? d.error ?? 'Нет ответа')
+    } else {
+      setTestResult('Ошибка при тесте')
+    }
+    setTesting(false)
+  }
+
+  const saveTone = async () => {
     setSaving(true)
-    const payload: Record<string, string> = {}
-    if (fields.OPENAI_API_KEY && !fields.OPENAI_API_KEY.startsWith('••')) payload.OPENAI_API_KEY = fields.OPENAI_API_KEY
-    if (fields.AI_MAX_NAME) payload.AI_MAX_NAME = fields.AI_MAX_NAME
-    if (fields.AI_MAX_TONE) payload.AI_MAX_TONE = fields.AI_MAX_TONE
-    await fetch('/api/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
-    setSaving(false); setSaved(true); setTimeout(() => setSaved(false), 2000)
+    await fetch('/api/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ AI_MAX_TONE: tone }) })
+    setSaving(false)
   }
 
   return (
     <div className="space-y-5">
+      {/* Header */}
       <div className="bg-purple-500/10 border border-purple-500/20 rounded-xl p-5 space-y-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-lg">🤖</div>
-          <div>
-            <h3 className="text-white font-semibold">ИИ-ассистент Макс</h3>
+          <div className="w-12 h-12 rounded-full bg-purple-700 flex items-center justify-center text-2xl">�</div>
+          <div className="flex-1">
+            <h3 className="text-white font-semibold text-base">ИИ-ассистент Макс</h3>
             <p className="text-purple-300 text-xs mt-0.5">Анализирует лиды, предлагает ответы, ведёт очередь действий</p>
           </div>
-        </div>
-        <div className="grid grid-cols-3 gap-3 text-center text-xs">
-          {[
-            { icon: '🎯', title: 'Квалификация', desc: 'Автоматически оценивает лиды' },
-            { icon: '💬', title: 'Ответы', desc: 'Предлагает тексты для клиентов' },
-            { icon: '📋', title: 'Задачи', desc: 'Создаёт задачи менеджерам' },
-          ].map(f => (
-            <div key={f.title} className="bg-gray-900/50 rounded-lg p-3">
-              <div className="text-xl mb-1">{f.icon}</div>
-              <p className="text-white font-medium">{f.title}</p>
-              <p className="text-gray-500 mt-0.5">{f.desc}</p>
-            </div>
-          ))}
+          {status && (status.openrouter || status.anthropic || status.openai) && (
+            <span className="flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg">
+              <CheckCircle className="w-3.5 h-3.5" /> Активен
+            </span>
+          )}
         </div>
       </div>
 
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
-        <h3 className="text-white font-semibold text-sm">Настройки</h3>
-
-        <div>
-          <label className="text-gray-400 text-xs mb-1 block">OpenAI API Key (GPT-4o Mini)</label>
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-              <input value={fields.OPENAI_API_KEY} onChange={e => setFields(f => ({ ...f, OPENAI_API_KEY: e.target.value }))}
-                type={show ? 'text' : 'password'} placeholder="sk-..."
-                className="w-full px-3 py-2 pr-10 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 font-mono" />
-              <button onClick={() => setShow(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300">
-                {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
-          <p className="text-gray-600 text-xs mt-1">Получить: <a href="https://platform.openai.com/api-keys" target="_blank" className="text-blue-400 underline">platform.openai.com/api-keys</a></p>
+      {/* API Keys Status */}
+      <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-3">
+        <h3 className="text-white font-semibold text-sm">Подключённые API</h3>
+        <p className="text-gray-500 text-xs">Макс автоматически использует ключи из проекта — ничего вводить не нужно</p>
+        <div className="space-y-2">
+          {[
+            { key: 'openrouter', label: 'OpenRouter (GPT-4o-mini)', desc: 'Основной — быстро и дёшево' },
+            { key: 'anthropic',  label: 'Anthropic (Claude Haiku)', desc: 'Резервный — точные ответы' },
+            { key: 'openai',     label: 'OpenAI (GPT-4o-mini)',     desc: 'Дополнительный' },
+          ].map(api => {
+            const active = status?.[api.key as keyof typeof status]
+            return (
+              <div key={api.key} className={`flex items-center gap-3 p-3 rounded-lg border ${active ? 'border-emerald-500/20 bg-emerald-500/5' : 'border-gray-800 bg-gray-800/30'}`}>
+                {active
+                  ? <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  : <XCircle className="w-4 h-4 text-gray-600 flex-shrink-0" />}
+                <div>
+                  <p className={`text-sm font-medium ${active ? 'text-white' : 'text-gray-500'}`}>{api.label}</p>
+                  <p className="text-xs text-gray-500">{api.desc}</p>
+                </div>
+                <span className={`ml-auto text-xs px-2 py-0.5 rounded-full ${active ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gray-800 text-gray-600'}`}>
+                  {active ? 'Подключён' : 'Нет ключа'}
+                </span>
+              </div>
+            )
+          })}
         </div>
+      </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="text-gray-400 text-xs mb-1 block">Имя ИИ-ассистента</label>
-            <input value={fields.AI_MAX_NAME} onChange={e => setFields(f => ({ ...f, AI_MAX_NAME: e.target.value }))}
-              placeholder="Макс"
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500" />
+      {/* Test */}
+      <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-3">
+        <h3 className="text-white font-semibold text-sm">Проверить Макса</h3>
+        <button onClick={testAi} disabled={testing}
+          className="flex items-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors">
+          {testing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+          {testing ? 'Генерирую ответ...' : 'Тест: ответить на запрос по арматуре'}
+        </button>
+        {testResult && (
+          <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-3">
+            <p className="text-xs text-purple-300 mb-1 font-medium">Ответ Макса:</p>
+            <p className="text-gray-200 text-sm">{testResult}</p>
           </div>
-          <div>
-            <label className="text-gray-400 text-xs mb-1 block">Тон общения</label>
-            <select value={fields.AI_MAX_TONE} onChange={e => setFields(f => ({ ...f, AI_MAX_TONE: e.target.value }))}
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:ring-1 focus:ring-purple-500">
-              <option value="professional">Профессиональный</option>
-              <option value="friendly">Дружелюбный</option>
-              <option value="formal">Официальный</option>
-            </select>
-          </div>
+        )}
+      </div>
+
+      {/* Tone */}
+      <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-3">
+        <h3 className="text-white font-semibold text-sm">Тон общения</h3>
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { value: 'professional', label: '👔 Деловой' },
+            { value: 'friendly',     label: '😊 Дружелюбный' },
+            { value: 'formal',       label: '🎩 Официальный' },
+          ].map(t => (
+            <button key={t.value} onClick={() => setTone(t.value)}
+              className={`py-2.5 text-sm rounded-lg border transition-colors ${tone === t.value ? 'border-purple-500 bg-purple-500/10 text-purple-300' : 'border-gray-700 text-gray-400 hover:border-gray-500'}`}>
+              {t.label}
+            </button>
+          ))}
         </div>
-
-        <button onClick={save} disabled={saving}
-          className="flex items-center gap-2 px-5 py-2 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors">
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
-          {saved ? 'Сохранено!' : 'Сохранить настройки Макса'}
+        <button onClick={saveTone} disabled={saving}
+          className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm rounded-lg transition-colors">
+          {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle className="w-3.5 h-3.5" />}
+          Сохранить
         </button>
       </div>
 
+      {/* Capabilities */}
       <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-2">
         <h3 className="text-white font-semibold text-sm mb-3">Макс умеет</h3>
         {[

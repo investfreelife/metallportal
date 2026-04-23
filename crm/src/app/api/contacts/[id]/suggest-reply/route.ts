@@ -27,28 +27,75 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const recommendedChannel: 'telegram' | 'email' =
     channel_hint ?? (hasTelegram ? 'telegram' : hasEmail ? 'email' : 'telegram')
 
-  // Try OpenAI if key available
-  const openaiKey = process.env.OPENAI_API_KEY
-  if (openaiKey && last_message) {
+  const systemPrompt = `Ты менеджер по продажам металлопроката. Отвечай кратко, по-русски, профессионально и дружелюбно. Клиент: ${contact?.full_name ?? 'клиент'}, сегмент: ${contact?.ai_segment ?? 'неизвестно'}.`
+  const userMsg = `Клиент написал: "${last_message}". Напиши ответ менеджера (2-3 предложения).`
+
+  // Try OpenRouter (openai/gpt-4o-mini) — key already in project
+  const openrouterKey = process.env.OPENROUTER_API_KEY
+  if (openrouterKey && last_message) {
     try {
-      const systemPrompt = `Ты менеджер по продажам металлопроката. Отвечай кратко, по-русски, профессионально и дружелюбно. Клиент: ${contact?.full_name ?? 'клиент'}, сегмент: ${contact?.ai_segment ?? 'неизвестно'}.`
-      const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+      const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${openaiKey}` },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${openrouterKey}`,
+          'HTTP-Referer': 'https://metallportal-crm2.vercel.app',
+          'X-Title': 'МеталлПортал CRM',
+        },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
+          model: 'openai/gpt-4o-mini',
           max_tokens: 200,
           messages: [
             { role: 'system', content: systemPrompt },
-            { role: 'user', content: `Клиент написал: "${last_message}". Напиши ответ менеджера (2-3 предложения).` },
+            { role: 'user', content: userMsg },
           ],
         }),
       })
       const ai = await resp.json()
       const text = ai.choices?.[0]?.message?.content?.trim()
-      if (text) {
-        return NextResponse.json({ text, channel: recommendedChannel, source: 'ai' })
-      }
+      if (text) return NextResponse.json({ text, channel: recommendedChannel, source: 'openrouter' })
+    } catch { /* fallback */ }
+  }
+
+  // Try Anthropic (Claude Haiku — fast & cheap) — key already in project
+  const anthropicKey = process.env.ANTHROPIC_API_KEY
+  if (anthropicKey && last_message) {
+    try {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': anthropicKey,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-20240307',
+          max_tokens: 200,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: userMsg }],
+        }),
+      })
+      const ai = await resp.json()
+      const text = ai.content?.[0]?.text?.trim()
+      if (text) return NextResponse.json({ text, channel: recommendedChannel, source: 'anthropic' })
+    } catch { /* fallback */ }
+  }
+
+  // Try OpenAI directly if key set
+  const openaiKey = process.env.OPENAI_API_KEY
+  if (openaiKey && last_message) {
+    try {
+      const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${openaiKey}` },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini', max_tokens: 200,
+          messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userMsg }],
+        }),
+      })
+      const ai = await resp.json()
+      const text = ai.choices?.[0]?.message?.content?.trim()
+      if (text) return NextResponse.json({ text, channel: recommendedChannel, source: 'openai' })
     } catch { /* fallback to template */ }
   }
 
