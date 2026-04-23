@@ -65,11 +65,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     title: target.title,
   }).eq('id', target.id)
 
-  // 4. Re-link tasks and activities from merged deals to target
+  // 4. Re-link tasks, activities and ai_queue from merged deals to target
   const mergedIds = rest.map((d: { id: string }) => d.id)
   if (mergedIds.length > 0) {
     await supabase.from('tasks').update({ deal_id: target.id }).in('deal_id', mergedIds)
     await supabase.from('activities').update({ deal_id: target.id }).in('deal_id', mergedIds)
+    await supabase.from('ai_queue').update({ deal_id: target.id }).in('deal_id', mergedIds)
   }
 
   // 5. Delete the merged deals

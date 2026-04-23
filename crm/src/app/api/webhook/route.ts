@@ -134,9 +134,46 @@ export async function POST(request: NextRequest) {
     const clientMsg = message ? String(message).slice(0, 500) : null
     const fullReasoning = reasoning + (clientMsg ? `\n\n💬 Сообщение клиента: «${clientMsg}»` : '')
 
+    // ── Найти или создать сделку (НЕ создаём новую если уже есть открытая) ──
+    const CLOSED = ['won', 'delivery', 'completed', 'lost']
+    let dealId: string | null = null
+
+    const { data: existingDeal } = await supabase.from('deals')
+      .select('id')
+      .eq('tenant_id', tenant_id)
+      .eq('contact_id', contactId)
+      .not('stage', 'in', `(${CLOSED.join(',')})`)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (existingDeal?.id) {
+      // Сделка уже есть (создана orders API) — просто используем её
+      dealId = existingDeal.id
+    } else {
+      // Нет открытой сделки — создаём новую (например, форма обратной связи)
+      const dealTitle = type === 'order'
+        ? `Заказ: ${String(name || phone || email || 'Новый')}${total ? ' — ' + Number(total).toLocaleString('ru') + ' ₽' : ''}`
+        : `Лид: ${String(name || phone || email || 'Новый')}`
+      const { data: newDeal, error: dealError } = await supabase.from('deals').insert({
+        tenant_id,
+        contact_id: contactId,
+        title: dealTitle,
+        amount: total ? Number(total) : null,
+        items: Array.isArray(items) ? items : [],
+        currency: 'RUB',
+        stage: 'new',
+        ai_win_probability: 0,
+      }).select('id').single()
+      if (dealError) console.error('[webhook] deal insert error:', dealError.message)
+      if (newDeal) dealId = newDeal.id
+    }
+
+    // ── Вставить запись в очередь ИИ с deal_id ───────────────────────────────
     const { data: queueItem, error: queueError } = await supabase.from('ai_queue').insert({
       tenant_id,
       contact_id: contactId,
+      deal_id: dealId,
       action_type: actionType,
       priority,
       status: 'pending',
@@ -147,27 +184,6 @@ export async function POST(request: NextRequest) {
 
     if (queueError) {
       console.error('[webhook] ai_queue insert error:', queueError.message)
-    }
-
-    // ── Авто-создание сделки с товарами ──────────────────────────────────────
-    const dealTitle = type === 'order'
-      ? `Заказ: ${String(name || phone || email || 'Новый')}${total ? ' — ' + Number(total).toLocaleString('ru') + ' ₽' : ''}`
-      : `Лид: ${String(name || phone || email || 'Новый')}`
-
-    const dealItems = Array.isArray(items) ? items : []
-
-    const { error: dealError } = await supabase.from('deals').insert({
-      tenant_id,
-      contact_id: contactId,
-      title: dealTitle,
-      amount: total ? Number(total) : null,
-      items: dealItems,
-      currency: 'RUB',
-      stage: 'new',
-      ai_win_probability: 0,
-    })
-    if (dealError) {
-      console.error('[webhook] deal insert error:', dealError.message, dealError.details)
     }
 
     // ── Немедленное уведомление менеджера (до AI, без задержки) ──────────────
