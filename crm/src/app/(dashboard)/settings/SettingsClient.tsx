@@ -7,7 +7,7 @@ import {
   Bot, Wifi, WifiOff, MessageSquare, Zap
 } from 'lucide-react'
 
-type Tab = 'integrations' | 'telegram' | 'team' | 'site'
+type Tab = 'integrations' | 'telegram' | 'telegram_personal' | 'ai_max' | 'team' | 'site'
 
 type TeamUser = {
   id: string; name: string; login: string; role: string
@@ -643,16 +643,194 @@ function SiteTab() {
   )
 }
 
+// ───────────────────── Telegram Personal tab ─────────────────────
+
+function TelegramPersonalTab() {
+  const [apiId, setApiId] = useState('')
+  const [apiHash, setApiHash] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+
+  const save = async () => {
+    if (!apiId || !apiHash) return
+    setSaving(true)
+    await fetch('/api/settings', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ TELEGRAM_API_ID: apiId, TELEGRAM_API_HASH: apiHash }),
+    })
+    setSaving(false); setSaved(true); setTimeout(() => setSaved(false), 2000)
+  }
+
+  return (
+    <div className="space-y-5">
+      <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-5 space-y-3">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">✈️</span>
+          <div>
+            <h3 className="text-white font-semibold">Telegram Personal Account</h3>
+            <p className="text-blue-300 text-xs mt-0.5">Писать любому контакту напрямую — без бота</p>
+          </div>
+        </div>
+        <div className="text-gray-300 text-sm space-y-2">
+          <p>Позволяет CRM отправлять сообщения через ваш личный Telegram аккаунт — без бота, любому пользователю по @username.</p>
+          <div className="bg-gray-900/50 rounded-lg p-3 space-y-1 text-xs text-gray-400">
+            <p className="font-medium text-gray-300 mb-2">Как настроить:</p>
+            <p>1. Перейдите на <a href="https://my.telegram.org" target="_blank" className="text-blue-400 underline">my.telegram.org</a> → API development tools</p>
+            <p>2. Создайте приложение — получите <code className="text-amber-400">api_id</code> и <code className="text-amber-400">api_hash</code></p>
+            <p>3. Введите их ниже и сохраните</p>
+            <p>4. После сохранения — авторизуйтесь по ссылке (потребуется код из Telegram)</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
+        <h3 className="text-white font-semibold text-sm">Credentials</h3>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="text-gray-400 text-xs mb-1 block">API ID</label>
+            <input value={apiId} onChange={e => setApiId(e.target.value)} placeholder="12345678"
+              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono" />
+          </div>
+          <div>
+            <label className="text-gray-400 text-xs mb-1 block">API Hash</label>
+            <input value={apiHash} onChange={e => setApiHash(e.target.value)} placeholder="abcdef1234567890..."
+              type="password"
+              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono" />
+          </div>
+        </div>
+        <button onClick={save} disabled={saving || !apiId || !apiHash}
+          className="flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors">
+          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+          {saved ? 'Сохранено!' : 'Сохранить'}
+        </button>
+      </div>
+
+      <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
+        <p className="text-amber-400 text-xs font-medium mb-1">⚠️ Пока в разработке</p>
+        <p className="text-gray-400 text-xs">Полная интеграция MTProto (отправка от лица личного аккаунта) будет доступна в следующем обновлении. Сейчас используйте бот для отправки сообщений.</p>
+      </div>
+    </div>
+  )
+}
+
+// ───────────────────── AI Макс tab ─────────────────────
+
+function AiMaxTab() {
+  const [fields, setFields] = useState({ OPENAI_API_KEY: '', AI_MAX_NAME: 'Макс', AI_MAX_TONE: 'professional' })
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const [show, setShow] = useState(false)
+
+  const save = async () => {
+    setSaving(true)
+    const payload: Record<string, string> = {}
+    if (fields.OPENAI_API_KEY && !fields.OPENAI_API_KEY.startsWith('••')) payload.OPENAI_API_KEY = fields.OPENAI_API_KEY
+    if (fields.AI_MAX_NAME) payload.AI_MAX_NAME = fields.AI_MAX_NAME
+    if (fields.AI_MAX_TONE) payload.AI_MAX_TONE = fields.AI_MAX_TONE
+    await fetch('/api/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+    setSaving(false); setSaved(true); setTimeout(() => setSaved(false), 2000)
+  }
+
+  return (
+    <div className="space-y-5">
+      <div className="bg-purple-500/10 border border-purple-500/20 rounded-xl p-5 space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-lg">🤖</div>
+          <div>
+            <h3 className="text-white font-semibold">ИИ-ассистент Макс</h3>
+            <p className="text-purple-300 text-xs mt-0.5">Анализирует лиды, предлагает ответы, ведёт очередь действий</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-3 gap-3 text-center text-xs">
+          {[
+            { icon: '🎯', title: 'Квалификация', desc: 'Автоматически оценивает лиды' },
+            { icon: '💬', title: 'Ответы', desc: 'Предлагает тексты для клиентов' },
+            { icon: '📋', title: 'Задачи', desc: 'Создаёт задачи менеджерам' },
+          ].map(f => (
+            <div key={f.title} className="bg-gray-900/50 rounded-lg p-3">
+              <div className="text-xl mb-1">{f.icon}</div>
+              <p className="text-white font-medium">{f.title}</p>
+              <p className="text-gray-500 mt-0.5">{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
+        <h3 className="text-white font-semibold text-sm">Настройки</h3>
+
+        <div>
+          <label className="text-gray-400 text-xs mb-1 block">OpenAI API Key (GPT-4o Mini)</label>
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <input value={fields.OPENAI_API_KEY} onChange={e => setFields(f => ({ ...f, OPENAI_API_KEY: e.target.value }))}
+                type={show ? 'text' : 'password'} placeholder="sk-..."
+                className="w-full px-3 py-2 pr-10 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 font-mono" />
+              <button onClick={() => setShow(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300">
+                {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+          <p className="text-gray-600 text-xs mt-1">Получить: <a href="https://platform.openai.com/api-keys" target="_blank" className="text-blue-400 underline">platform.openai.com/api-keys</a></p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="text-gray-400 text-xs mb-1 block">Имя ИИ-ассистента</label>
+            <input value={fields.AI_MAX_NAME} onChange={e => setFields(f => ({ ...f, AI_MAX_NAME: e.target.value }))}
+              placeholder="Макс"
+              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500" />
+          </div>
+          <div>
+            <label className="text-gray-400 text-xs mb-1 block">Тон общения</label>
+            <select value={fields.AI_MAX_TONE} onChange={e => setFields(f => ({ ...f, AI_MAX_TONE: e.target.value }))}
+              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:ring-1 focus:ring-purple-500">
+              <option value="professional">Профессиональный</option>
+              <option value="friendly">Дружелюбный</option>
+              <option value="formal">Официальный</option>
+            </select>
+          </div>
+        </div>
+
+        <button onClick={save} disabled={saving}
+          className="flex items-center gap-2 px-5 py-2 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors">
+          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+          {saved ? 'Сохранено!' : 'Сохранить настройки Макса'}
+        </button>
+      </div>
+
+      <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-2">
+        <h3 className="text-white font-semibold text-sm mb-3">Макс умеет</h3>
+        {[
+          { icon: '🔍', text: 'Анализировать входящие лиды и расставлять приоритеты' },
+          { icon: '✍️', text: 'Предлагать тексты ответов в Telegram и Email' },
+          { icon: '📊', text: 'Рекомендовать канал общения для каждого клиента' },
+          { icon: '🎯', text: 'Сегментировать контакты (B2B крупный / малый, B2C)' },
+          { icon: '📋', text: 'Создавать задачи и напоминания менеджерам' },
+          { icon: '💰', text: 'Оценивать вероятность сделки и давать рекомендации' },
+        ].map(f => (
+          <div key={f.icon} className="flex items-center gap-3 text-sm">
+            <span>{f.icon}</span>
+            <span className="text-gray-300">{f.text}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ───────────────────── Main ─────────────────────
 
 export default function SettingsClient({ session }: { session: { login: string; role: string; name?: string } | null }) {
   const [tab, setTab] = useState<Tab>('integrations')
 
   const tabs: { id: Tab; label: string }[] = [
-    { id: 'integrations', label: '🔑 Ключи' },
-    { id: 'telegram', label: '📱 Telegram' },
-    { id: 'team', label: '👥 Команда' },
-    { id: 'site', label: '🌐 Сайт' },
+    { id: 'integrations',      label: '🔑 Ключи' },
+    { id: 'telegram',          label: '🤖 Бот' },
+    { id: 'telegram_personal', label: '✈️ TG Personal' },
+    { id: 'ai_max',            label: '🧠 Макс' },
+    { id: 'team',              label: '👥 Команда' },
+    { id: 'site',              label: '🌐 Сайт' },
   ]
 
   return (
@@ -667,12 +845,12 @@ export default function SettingsClient({ session }: { session: { login: string; 
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-gray-900 border border-gray-800 rounded-xl p-1">
+      <div className="flex flex-wrap gap-1 bg-gray-900 border border-gray-800 rounded-xl p-1">
         {tabs.map(t => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
+            className={`flex-1 min-w-fit py-2 px-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
               tab === t.id ? 'bg-gray-800 text-white' : 'text-gray-500 hover:text-gray-300'
             }`}
           >
@@ -681,10 +859,12 @@ export default function SettingsClient({ session }: { session: { login: string; 
         ))}
       </div>
 
-      {tab === 'integrations' && <IntegrationsTab />}
-      {tab === 'telegram' && <TelegramTab />}
-      {tab === 'team' && <TeamTab />}
-      {tab === 'site' && <SiteTab />}
+      {tab === 'integrations'      && <IntegrationsTab />}
+      {tab === 'telegram'          && <TelegramTab />}
+      {tab === 'telegram_personal' && <TelegramPersonalTab />}
+      {tab === 'ai_max'            && <AiMaxTab />}
+      {tab === 'team'              && <TeamTab />}
+      {tab === 'site'              && <SiteTab />}
     </div>
   )
 }

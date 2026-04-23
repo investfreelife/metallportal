@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { formatDate, getContactStatusLabel, getScoreBgColor, getScoreColor, getSegmentLabel } from '@/lib/utils'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, MessageSquare } from 'lucide-react'
 import AddActivityForm from './AddActivityForm'
 import ContactMessengerClient from './ContactMessengerClient'
 import MergeDealsButton from './MergeDealsButton'
@@ -67,6 +67,13 @@ export default async function ContactDetailPage({
             {getContactStatusLabel(contact.status)}
           </span>
         )}
+        <div className="ml-auto">
+          <Link href={`/contacts/${contact.id}/chat`}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors">
+            <MessageSquare className="w-4 h-4" />
+            Общение
+          </Link>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
