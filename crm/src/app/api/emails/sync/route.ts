@@ -12,17 +12,15 @@ function getSupabase() {
 }
 
 export async function POST(req: NextRequest) {
-  const { account_id } = await req.json()
+  const { account_id } = await req.json().catch(() => ({}))
   const supabase = getSupabase()
 
-  // Load account
+  // Fix: properly chain the query (each .eq() returns a NEW object)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sb = supabase as any
-  const query = sb.from('email_accounts').select('*').eq('tenant_id', TENANT_ID)
-  if (account_id) query.eq('id', account_id)
-  query.eq('status', 'active').not('imap_host', 'is', null)
+  let q = (supabase as any).from('email_accounts').select('*').eq('tenant_id', TENANT_ID).eq('status', 'active').not('imap_host', 'is', null)
+  if (account_id) q = q.eq('id', account_id)
 
-  const { data: accounts } = await query
+  const { data: accounts } = await q
   if (!accounts?.length) return NextResponse.json({ ok: true, synced: 0 })
 
   let totalSynced = 0
@@ -48,7 +46,6 @@ export async function POST(req: NextRequest) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function syncAccount(acc: Record<string, unknown>, supabase: any): Promise<number> {
-  // Get last synced UID
   const { data: lastEmail } = await supabase.from('emails')
     .select('imap_uid')
     .eq('account_id', acc.id as string)
@@ -74,47 +71,56 @@ async function syncAccount(acc: Record<string, unknown>, supabase: any): Promise
   try {
     const mailbox = await client.mailboxOpen('INBOX', { readOnly: true })
     const total = mailbox.exists
-
     if (total === 0) return 0
 
-    // Fetch up to 50 newest messages after last known UID
-    const searchUid = lastUid > 0 ? `${lastUid + 1}:*` : `${Math.max(1, total - 49)}:*`
+    // Use UID-based range for reliable incremental sync
+    const uidRange = lastUid > 0 ? `${lastUid + 1}:*` : `${Math.max(1, total - 49)}:*`
 
-    for await (const msg of client.fetch(searchUid, {
-      uid: true, envelope: true, bodyStructure: true, source: false,
-    })) {
+    // Fetch envelopes + body in one pass using UID mode (3rd arg {uid:true})
+    for await (const msg of client.fetch(uidRange, {
+      uid: true, envelope: true, bodyStructure: true,
+    }, { uid: lastUid > 0 })) {
       const env = msg.envelope
       if (!env) continue
 
-      // Check if already stored
-      const msgId = env.messageId
+      const msgId = env.messageId || null
+
+      // Skip already-stored messages (by message-id or imap_uid)
       if (msgId) {
-        const { data: exists } = await supabase.from('emails').select('id').eq('message_id', msgId).maybeSingle()
+        const { data: exists } = await supabase.from('emails')
+          .select('id').eq('message_id', msgId).maybeSingle()
+        if (exists) continue
+      } else {
+        const { data: exists } = await supabase.from('emails')
+          .select('id').eq('imap_uid', msg.uid).eq('account_id', acc.id).maybeSingle()
         if (exists) continue
       }
 
-      // Fetch body separately (avoids memory issues on large mails)
+      // Fetch body by UID (fix: pass {uid:true} to options)
       let bodyText = ''
       let bodyHtml = ''
       try {
-        for await (const part of client.fetch(`${msg.uid}`, { bodyParts: ['TEXT', 'HTML'] })) {
+        for await (const part of client.fetch(String(msg.uid), {
+          bodyParts: ['TEXT', 'HTML'],
+        }, { uid: true })) {
           bodyText = String(part.bodyParts?.get('TEXT') ?? '')
           bodyHtml = String(part.bodyParts?.get('HTML') ?? '')
         }
-      } catch {}
+      } catch { /* body optional */ }
 
       const fromEmail = env.from?.[0]?.address ?? ''
       const fromName = env.from?.[0]?.name ?? ''
 
-      // Try to match contact by email
       const { data: contact } = fromEmail
-        ? await supabase.from('contacts').select('id').eq('email', fromEmail).eq('tenant_id', TENANT_ID).maybeSingle()
+        ? await supabase.from('contacts').select('id')
+            .eq('email', fromEmail).eq('tenant_id', TENANT_ID).maybeSingle()
         : { data: null }
 
-      await supabase.from('emails').upsert({
+      // Fix: use INSERT instead of UPSERT to avoid partial-index conflict error
+      const { error: insertErr } = await supabase.from('emails').insert({
         tenant_id: TENANT_ID,
         account_id: acc.id,
-        message_id: msgId ?? null,
+        message_id: msgId,
         thread_id: env.inReplyTo ?? msgId ?? null,
         in_reply_to: env.inReplyTo ?? null,
         direction: 'inbound',
@@ -130,9 +136,17 @@ async function syncAccount(acc: Record<string, unknown>, supabase: any): Promise
         contact_id: contact?.id ?? null,
         received_at: env.date?.toISOString() ?? new Date().toISOString(),
         is_read: false,
-      }, { onConflict: 'message_id', ignoreDuplicates: true })
+      })
 
-      synced++
+      if (insertErr) {
+        // 23505 = unique_violation (already exists) — skip silently
+        if (insertErr.code !== '23505') {
+          console.error('[imap insert]', acc.email, insertErr.message)
+          throw new Error(insertErr.message)
+        }
+      } else {
+        synced++
+      }
     }
   } finally {
     await client.logout()
