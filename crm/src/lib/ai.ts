@@ -189,29 +189,60 @@ export async function analyzeEmail(ctx: {
 
   const systemPrompt = await getSystemPrompt()
 
-  const userMsg = `Входящее письмо:
+  const userMsg = `Ты — ИИ-ассистент менеджера B2B-маркетплейса металлопроката МеталлПортал.
+Мы ПОКУПАЕМ металл у поставщиков и ПРОДАЁМ клиентам (стройки, заводы, перекупщики).
+
+Входящее письмо:
 От: ${ctx.from_name ? `${ctx.from_name} <${ctx.from_email}>` : ctx.from_email}
 Тема: ${ctx.subject}
-Текст: ${(ctx.body_text ?? '(текст не загружен)').slice(0, 2000)}
+Текст: ${(ctx.body_text ?? '(текст не загружен)').slice(0, 2500)}
 
-Определи тип письма и предложи действие. Типы: запрос клиента, заявка на покупку, запрос цены, предложение о сотрудничестве от поставщика, партнёрское предложение, ответ на наш запрос, жалоба, спам/реклама, служебное.
+ТИПЫ ПИСЕМ в нашей работе:
+1. ЗАПРОС КЛИЕНТА — клиент просит цену/наличие/доставку
+2. ЗАЯВКА НА ПОКУПКУ — клиент готов купить, нужно оформить
+3. ОТВЕТ НА НАШ ЗАПРОС ЦЕНЫ — агрегатор или поставщик присылает ценовые предложения в ответ на наш запрос (напр. platformus.ru, sbs.ru, металлтрейд и т.п.) — содержит таблицу поставщиков с ценами
+4. КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ ОТ ПОСТАВЩИКА — поставщик предлагает свои условия
+5. ПАРТНЁРСКОЕ ПРЕДЛОЖЕНИЕ — предложение о сотрудничестве/интеграции
+6. ЖАЛОБА/ПРЕТЕНЗИЯ — клиент недоволен
+7. СЛУЖЕБНОЕ/УВЕДОМЛЕНИЕ — системное письмо, регистрация, безопасность
+8. СПАМ/РЕКЛАМА — нерелевантная рассылка
+
+Для типа 3 (ОТВЕТ НА ЗАПРОС ЦЕНЫ): выдели лучшее предложение из таблицы (минимальная цена / оптимальное сочетание цена+срок), объясни какого поставщика выбрать и почему.
 
 Ответь строго JSON (без markdown):
 {
-  "reasoning": "2-3 предложения: кто написал, тип письма, почему важно и что нужно сделать",
-  "suggested_reply": "Готовый текст ответного письма на русском. Обращение по имени если известно. Профессионально и конкретно. 3-6 предложений. Если спам — пустая строка.",
+  "reasoning": "2-4 предложения: тип письма, ключевые данные (цены/поставщики/суммы если есть), что конкретно делать менеджеру",
+  "suggested_reply": "Готовый текст ответного письма на русском. Если это ответ на запрос цены или служебное — пустая строка. Если спам — пустая строка.",
   "action_type": "send_email|make_call|send_proposal|create_task|schedule",
   "priority": "high|medium|low",
-  "segment": "Строитель|Завод|Перекупщик|Физлицо|Поставщик|Партнёр|Спам|Неизвестно",
+  "segment": "Клиент-Строитель|Клиент-Завод|Клиент-Перекупщик|Клиент-Физлицо|Поставщик|Агрегатор-Цен|Партнёр|Спам|Служебное",
   "intent": "Одно предложение — суть письма",
-  "subject_reply": "Тема ответного письма"
+  "subject_reply": "Тема ответного письма или пустая строка"
 }`
 
   try {
-    const text = await openrouterChat(OPENROUTER_KEY, [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: userMsg },
-    ], { json: true, maxTokens: 600 })
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${OPENROUTER_KEY}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': REFERER,
+        'X-Title': 'MetallPortal CRM AI',
+      },
+      body: JSON.stringify({
+        model: 'openai/gpt-4o',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userMsg },
+        ],
+        response_format: { type: 'json_object' },
+        temperature: 0.3,
+        max_tokens: 900,
+      }),
+    })
+    if (!res.ok) return null
+    const data = await res.json()
+    const text = data.choices?.[0]?.message?.content ?? null
     if (!text) return null
     return JSON.parse(text) as EmailAnalysis
   } catch {
