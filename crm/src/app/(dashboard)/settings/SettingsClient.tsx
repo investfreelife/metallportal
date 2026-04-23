@@ -149,10 +149,24 @@ function EmailTab() {
   }
 
   const hint = PROVIDER_HINTS[form.provider] ?? PROVIDER_HINTS.custom
+  const [emailSubTab, setEmailSubTab] = useState<'accounts' | 'guide'>('accounts')
 
   return (
     <div className="space-y-4">
 
+      {/* Inner sub-tabs */}
+      <div className="flex gap-1 bg-gray-900 border border-gray-800 rounded-lg p-1">
+        {([['accounts', '📬 Мои ящики'], ['guide', '📖 Как подключить']] as const).map(([id, label]) => (
+          <button key={id} onClick={() => setEmailSubTab(id)}
+            className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-colors ${
+              emailSubTab === id ? 'bg-gray-800 text-white' : 'text-gray-500 hover:text-gray-300'
+            }`}>{label}</button>
+        ))}
+      </div>
+
+      {emailSubTab === 'guide' && <EmailGuide />}
+
+      {emailSubTab === 'accounts' && <>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -354,6 +368,141 @@ function EmailTab() {
           <p><span className="text-yellow-400 font-medium">Яндекс:</span> <a href="https://id.yandex.ru/security/app-passwords" target="_blank" className="underline text-yellow-400">id.yandex.ru/security/app-passwords</a> → создать</p>
         </div>
       </div>
+      </>}
+    </div>
+  )
+}
+
+// ───────────────────── Email Guide ─────────────────────
+
+function ProviderBlock({ emoji, name, color, imap, smtp, passUrl, passLabel, steps }: {
+  emoji: string; name: string; color: string
+  imap: string; smtp: string
+  passUrl: string; passLabel: string
+  steps: string[]
+}) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+      <button onClick={() => setOpen(v => !v)}
+        className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-800/50 transition-colors">
+        <span className="text-xl">{emoji}</span>
+        <div className="flex-1">
+          <span className={`font-semibold text-sm ${color}`}>{name}</span>
+          <span className="text-gray-600 text-xs ml-3">IMAP: {imap} · SMTP: {smtp}</span>
+        </div>
+        <span className="text-gray-600 text-xs">{open ? '▲' : '▼'}</span>
+      </button>
+      {open && (
+        <div className="px-4 pb-4 space-y-3 border-t border-gray-800">
+          <div className="grid grid-cols-2 gap-3 mt-3">
+            <div className="bg-gray-950 rounded-lg p-3">
+              <p className="text-gray-500 text-xs mb-1">IMAP (входящие)</p>
+              <p className="text-white text-xs font-mono">{imap}</p>
+              <p className="text-gray-500 text-xs mt-1">Порт: 993, SSL</p>
+            </div>
+            <div className="bg-gray-950 rounded-lg p-3">
+              <p className="text-gray-500 text-xs mb-1">SMTP (исходящие)</p>
+              <p className="text-white text-xs font-mono">{smtp}</p>
+              <p className="text-gray-500 text-xs mt-1">Порт: 465/587</p>
+            </div>
+          </div>
+          <div>
+            <p className="text-amber-400 text-xs font-semibold mb-2">⚠️ Нужен пароль приложения — не обычный пароль!</p>
+            <div className="space-y-1">
+              {steps.map((s, i) => (
+                <div key={i} className="flex gap-2 text-xs">
+                  <span className="text-gray-600 flex-shrink-0 w-4">{i + 1}.</span>
+                  <span className="text-gray-300" dangerouslySetInnerHTML={{ __html: s }} />
+                </div>
+              ))}
+            </div>
+            {passUrl && (
+              <a href={passUrl} target="_blank"
+                className="inline-flex items-center gap-1.5 mt-3 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium rounded-lg transition-colors">
+                <ExternalLink className="w-3 h-3" /> {passLabel}
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function EmailGuide() {
+  return (
+    <div className="space-y-3">
+      <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl px-4 py-3 text-xs text-blue-300">
+        <p className="font-semibold mb-1">Как подключить почту — общий принцип:</p>
+        <p>1. Включить IMAP в настройках почты · 2. Создать пароль приложения · 3. Вставить в CRM вкладке «Мои ящики»</p>
+      </div>
+
+      <ProviderBlock
+        emoji="🔵" name="Mail.ru" color="text-blue-400"
+        imap="imap.mail.ru" smtp="smtp.mail.ru"
+        passUrl="https://account.mail.ru/user/2-step-auth/passwords/"
+        passLabel="Создать пароль на Mail.ru"
+        steps={[
+          'Зайди на <strong>account.mail.ru</strong>',
+          'Раздел <strong>«Пароль и безопасность»</strong>',
+          '<strong>«Пароли для приложений»</strong> → Добавить',
+          'Назови «CRM» → скопируй пароль (показывается 1 раз)',
+          'Также убедись: Настройки почты → Почтовые клиенты → IMAP включён',
+        ]}
+      />
+
+      <ProviderBlock
+        emoji="🔴" name="Gmail" color="text-red-400"
+        imap="imap.gmail.com" smtp="smtp.gmail.com"
+        passUrl="https://myaccount.google.com/apppasswords"
+        passLabel="Создать пароль на Google"
+        steps={[
+          'Включи <strong>двухфакторную аутентификацию</strong> в аккаунте Google',
+          'Зайди на <strong>myaccount.google.com/apppasswords</strong>',
+          'Выбери «Почта» + «Другое устройство» → назови «CRM»',
+          'Скопируй 16-значный пароль',
+          'В Gmail: Настройки → Все настройки → Пересылка и POP/IMAP → Включить IMAP',
+        ]}
+      />
+
+      <ProviderBlock
+        emoji="🟡" name="Яндекс Почта" color="text-yellow-400"
+        imap="imap.yandex.ru" smtp="smtp.yandex.ru"
+        passUrl="https://id.yandex.ru/security/app-passwords"
+        passLabel="Создать пароль на Яндекс"
+        steps={[
+          'Зайди на <strong>id.yandex.ru</strong> → Безопасность',
+          '<strong>«Пароли приложений»</strong> → Создать пароль',
+          'Тип: «Почта», назови «CRM» → скопируй',
+          'В Яндекс.Почте: Настройки → Почтовые программы → Включить IMAP',
+        ]}
+      />
+
+      <ProviderBlock
+        emoji="🔷" name="Outlook / Hotmail" color="text-blue-300"
+        imap="outlook.office365.com" smtp="smtp.office365.com"
+        passUrl="https://account.microsoft.com/security"
+        passLabel="Настройки безопасности Microsoft"
+        steps={[
+          'Зайди на <strong>account.microsoft.com</strong> → Безопасность',
+          'Дополнительные параметры → Пароли приложений → Создать',
+          'Назови «CRM» → скопируй пароль',
+          'IMAP и SMTP включены по умолчанию в Outlook',
+        ]}
+      />
+
+      <ProviderBlock
+        emoji="📧" name="Другой SMTP/IMAP сервер" color="text-gray-300"
+        imap="imap.example.com" smtp="smtp.example.com"
+        passUrl="" passLabel=""
+        steps={[
+          'Узнай у провайдера хосты IMAP и SMTP',
+          'Порт IMAP: 993 (SSL) или 143 (STARTTLS)',
+          'Порт SMTP: 465 (SSL) или 587 (STARTTLS)',
+          'При добавлении выбери «📧 IMAP/SMTP» и укажи хосты вручную',
+        ]}
+      />
     </div>
   )
 }
