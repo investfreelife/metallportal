@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { ImapFlow } from 'imapflow'
+import { simpleParser } from 'mailparser'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
@@ -57,22 +58,15 @@ export async function GET(
     await client.connect()
     await client.mailboxOpen(email.imap_folder || 'INBOX', { readOnly: true })
 
-    // Fetch raw source by UID then extract body parts
-    for await (const msg of client.fetch(String(email.imap_uid), {
-      bodyParts: ['TEXT', 'HTML', '1', '1.1', '1.2'],
-    }, { uid: true })) {
-      // Try each part in preference order
-      const html = msg.bodyParts?.get('HTML') ?? msg.bodyParts?.get('html') ?? msg.bodyParts?.get('1.2')
-      const text = msg.bodyParts?.get('TEXT') ?? msg.bodyParts?.get('text') ?? msg.bodyParts?.get('1.1') ?? msg.bodyParts?.get('1')
-      bodyHtml = html ? Buffer.from(html as Buffer).toString('utf8') : ''
-      bodyText = text ? Buffer.from(text as Buffer).toString('utf8') : ''
-      // Fallback: if nothing found, fetch full source and extract plain text
-      if (!bodyText && !bodyHtml) {
-        for await (const src of client.fetch(String(email.imap_uid), { source: true }, { uid: true })) {
-          const raw = src.source?.toString() ?? ''
-          // Extract body after headers (double newline)
-          const bodyStart = raw.indexOf('\r\n\r\n')
-          bodyText = bodyStart > -1 ? raw.slice(bodyStart + 4, bodyStart + 4004) : raw.slice(0, 4000)
+    // Fetch raw source by UID and parse with mailparser
+    for await (const msg of client.fetch(String(email.imap_uid), { source: true }, { uid: true })) {
+      if (msg.source) {
+        try {
+          const mail = await simpleParser(msg.source)
+          bodyText = mail.text ?? ''
+          bodyHtml = mail.html || mail.textAsHtml || ''
+        } catch {
+          bodyText = msg.source.toString().slice(0, 5000)
         }
       }
     }
