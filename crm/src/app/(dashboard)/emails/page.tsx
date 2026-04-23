@@ -71,13 +71,21 @@ export default function EmailsPage() {
   const [deals, setDeals] = useState<Deal[]>([])
   const [linkingDeal, setLinkingDeal] = useState(false)
 
+  const [loadError, setLoadError] = useState<string | null>(null)
+
   const load = useCallback(async () => {
     setLoading(true)
+    setLoadError(null)
     try {
       const res = await fetch('/api/emails')
       const data = await res.json()
-      setEmails(Array.isArray(data) ? data : [])
-    } catch { setEmails([]) } finally { setLoading(false) }
+      if (Array.isArray(data)) {
+        setEmails(data)
+      } else {
+        setEmails([])
+        if (data?.error) setLoadError(data.error)
+      }
+    } catch (e) { setEmails([]); setLoadError(String(e)) } finally { setLoading(false) }
   }, [])
 
   useEffect(() => {
@@ -104,8 +112,10 @@ export default function EmailsPage() {
     try {
       const r = await fetch('/api/emails/sync', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) })
       const d = await r.json()
-      if (d.ok) setSyncResult(d.synced > 0 ? `+${d.synced} писем` : 'Новых нет')
-      else setSyncResult('Ошибка: ' + (d.error ?? 'неизвестна'))
+      if (d.ok) {
+        if (d.synced > 0) setSyncResult(`+${d.synced} новых`)
+        else setSyncResult('Новых нет')
+      } else setSyncResult('Ошибка: ' + (d.error ?? JSON.stringify(d)))
     } catch {
       setSyncResult('Нет ответа')
     } finally {
@@ -172,7 +182,9 @@ export default function EmailsPage() {
           ) : emails.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-48 text-gray-600 px-4 text-center">
               <Mail className="w-8 h-8 mb-2" />
-              {syncing ? (
+              {loadError ? (
+                <p className="text-xs text-red-400 bg-red-500/10 px-3 py-2 rounded">Ошибка загрузки: {loadError}</p>
+              ) : syncing ? (
                 <p className="text-sm">Скачиваю почту...</p>
               ) : (
                 <>

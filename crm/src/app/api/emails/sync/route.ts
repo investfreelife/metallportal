@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ ok: true, synced: totalSynced })
+  return NextResponse.json({ ok: true, synced: totalSynced, accounts: accounts.length })
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -92,6 +92,8 @@ async function syncAccount(acc: Record<string, unknown>, supabase: any): Promise
 
   // ── Step 2: Insert to DB (IMAP connection already closed) ──
   let synced = 0
+  let skipped = 0
+  let firstInsertError = ''
 
   for (const { uid, envelope: env } of messages) {
     const msgId = env.messageId || null
@@ -99,11 +101,11 @@ async function syncAccount(acc: Record<string, unknown>, supabase: any): Promise
     if (msgId) {
       const { data: exists } = await supabase.from('emails')
         .select('id').eq('message_id', msgId).maybeSingle()
-      if (exists) continue
+      if (exists) { skipped++; continue }
     } else {
       const { data: exists } = await supabase.from('emails')
         .select('id').eq('imap_uid', uid).eq('account_id', acc.id).maybeSingle()
-      if (exists) continue
+      if (exists) { skipped++; continue }
     }
 
     const fromEmail = env.from?.[0]?.address ?? ''
@@ -137,14 +139,19 @@ async function syncAccount(acc: Record<string, unknown>, supabase: any): Promise
 
     if (insertErr) {
       if (insertErr.code !== '23505') {
+        if (!firstInsertError) firstInsertError = `${insertErr.code}: ${insertErr.message}`
         console.error('[imap insert]', acc.email, insertErr.message)
         throw new Error(insertErr.message)
+      } else {
+        skipped++
       }
     } else {
       synced++
     }
   }
 
+  console.log(`[imap sync] ${acc.email}: fetched=${messages.length} new=${synced} skipped=${skipped}${
+    firstInsertError ? ` err=${firstInsertError}` : ''}`)
   return synced
 }
 
