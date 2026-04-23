@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Mail, RefreshCw, Pen, Star, StarOff, Check, ArrowLeft, Reply, Link2, Inbox, Sparkles, Trash2 } from 'lucide-react'
+import { Mail, RefreshCw, Pen, Star, StarOff, Check, ArrowLeft, Reply, Link2, Inbox, Sparkles, Trash2, Bot, Send } from 'lucide-react'
 import ComposeModal from '@/components/emails/ComposeModal'
 
 interface Email {
@@ -74,6 +74,11 @@ export default function EmailsPage() {
   const [aiAnalyzing, setAiAnalyzing] = useState(false)
   const [aiResult, setAiResult] = useState<{ intent: string; reasoning: string; suggested_reply: string; action_type: string; priority: string; queue_id?: string } | null>(null)
   const [aiError, setAiError] = useState<string | null>(null)
+
+  const [cmdOpen, setCmdOpen] = useState(false)
+  const [cmdText, setCmdText] = useState('')
+  const [cmdLoading, setCmdLoading] = useState(false)
+  const [cmdResult, setCmdResult] = useState<{ action: string; ids: string[]; description: string; count: number } | null>(null)
 
   const [loadError, setLoadError] = useState<string | null>(null)
 
@@ -165,6 +170,34 @@ export default function EmailsPage() {
     }
   }
 
+  const runCommand = async () => {
+    if (!cmdText.trim()) return
+    setCmdLoading(true)
+    setCmdResult(null)
+    try {
+      const r = await fetch('/api/emails/ai-command', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ command: cmdText }) })
+      const d = await r.json()
+      if (d.error) setCmdResult({ action: 'error', ids: [], description: d.error, count: 0 })
+      else setCmdResult(d)
+    } catch { setCmdResult({ action: 'error', ids: [], description: 'Нет ответа от сервера', count: 0 }) }
+    finally { setCmdLoading(false) }
+  }
+
+  const executeCommand = async () => {
+    if (!cmdResult || !cmdResult.ids?.length) return
+    if (cmdResult.action === 'delete') {
+      await Promise.all(cmdResult.ids.map(id => fetch(`/api/emails/${id}`, { method: 'DELETE' })))
+      setEmails(prev => prev.filter(e => !cmdResult.ids.includes(e.id)))
+      if (selected && cmdResult.ids.includes(selected.id)) setSelected(null)
+    } else if (cmdResult.action === 'mark_read') {
+      await Promise.all(cmdResult.ids.map(id => fetch('/api/emails', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, is_read: true }) })))
+      setEmails(prev => prev.map(e => cmdResult.ids.includes(e.id) ? { ...e, is_read: true } : e))
+    }
+    setCmdResult(null)
+    setCmdText('')
+    setCmdOpen(false)
+  }
+
   const deleteEmail = async (emailId: string) => {
     if (!confirm('Удалить письмо?')) return
     await fetch(`/api/emails/${emailId}`, { method: 'DELETE' })
@@ -199,6 +232,10 @@ export default function EmailsPage() {
             <h1 className="text-white font-semibold text-sm">Входящие</h1>
             {unread > 0 && <span className="text-xs bg-blue-600 text-white px-1.5 py-0.5 rounded-full">{unread}</span>}
           </div>
+          <button onClick={() => { setCmdOpen(v => !v); setCmdResult(null) }}
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${cmdOpen ? 'bg-purple-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white'}`}>
+            <Bot className="w-3.5 h-3.5" /> ИИ-команда
+          </button>
           <button onClick={syncAll} disabled={syncing}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white text-xs font-medium rounded-lg transition-colors disabled:opacity-50">
             <RefreshCw className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} />
@@ -213,6 +250,42 @@ export default function EmailsPage() {
             <Pen className="w-3.5 h-3.5" /> Написать
           </button>
         </div>
+
+        {/* AI Command Panel */}
+        {cmdOpen && (
+          <div className="px-4 py-3 border-b border-gray-800 bg-purple-500/5 space-y-2">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={cmdText}
+                onChange={e => setCmdText(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && runCommand()}
+                placeholder='Например: "удали все письма от platformus.ru"'
+                className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-purple-500"
+              />
+              <button onClick={runCommand} disabled={cmdLoading || !cmdText.trim()}
+                className="px-3 py-2 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white rounded-lg transition-colors">
+                {cmdLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+              </button>
+            </div>
+            {cmdResult && (
+              <div className={`rounded-lg p-3 text-xs space-y-2 ${cmdResult.action === 'error' ? 'bg-red-500/10 border border-red-500/20' : 'bg-gray-900 border border-purple-500/20'}`}>
+                <p className={cmdResult.action === 'error' ? 'text-red-400' : 'text-gray-300'}>{cmdResult.description}</p>
+                {cmdResult.action !== 'error' && cmdResult.action !== 'none' && cmdResult.ids?.length > 0 && (
+                  <div className="flex items-center gap-2 pt-1">
+                    <span className="text-gray-500">Найдено: {cmdResult.count ?? cmdResult.ids.length} писем</span>
+                    <button onClick={executeCommand}
+                      className={`px-3 py-1 text-xs font-medium rounded-lg text-white transition-colors ${cmdResult.action === 'delete' ? 'bg-red-600 hover:bg-red-500' : 'bg-blue-600 hover:bg-blue-500'}`}>
+                      {cmdResult.action === 'delete' ? '🗑 Удалить все' : '✓ Выполнить'}
+                    </button>
+                    <button onClick={() => { setCmdResult(null); setCmdText('') }} className="px-3 py-1 text-xs text-gray-500 hover:text-gray-300">Отмена</button>
+                  </div>
+                )}
+                {cmdResult.action === 'none' && <p className="text-gray-600 text-xs">Подходящих писем не найдено</p>}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* List */}
         <div className="flex-1 overflow-y-auto">
