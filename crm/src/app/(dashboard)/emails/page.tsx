@@ -73,13 +73,22 @@ export default function EmailsPage() {
 
   const load = useCallback(async () => {
     setLoading(true)
-    const res = await fetch('/api/emails')
-    const data = await res.json()
-    setEmails(Array.isArray(data) ? data : [])
-    setLoading(false)
+    try {
+      const res = await fetch('/api/emails')
+      const data = await res.json()
+      setEmails(Array.isArray(data) ? data : [])
+    } catch { setEmails([]) } finally { setLoading(false) }
   }, [])
 
-  useEffect(() => { load() }, [load])
+  useEffect(() => {
+    load()
+    // Background auto-sync on open (non-blocking)
+    setSyncing(true)
+    fetch('/api/emails/sync', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) })
+      .then(() => load())
+      .catch(() => {})
+      .finally(() => setSyncing(false))
+  }, [load])
 
   useEffect(() => {
     fetch('/api/deals').then(r => r.json()).then(d => {
@@ -143,10 +152,16 @@ export default function EmailsPage() {
           {loading ? (
             <div className="flex items-center justify-center h-32 text-gray-500 text-sm">Загрузка...</div>
           ) : emails.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-48 text-gray-600">
+            <div className="flex flex-col items-center justify-center h-48 text-gray-600 px-4 text-center">
               <Mail className="w-8 h-8 mb-2" />
-              <p className="text-sm">Нет писем</p>
-              <p className="text-xs mt-1">Подключите ящик в Настройках → Почта</p>
+              {syncing ? (
+                <p className="text-sm">Скачиваю почту...</p>
+              ) : (
+                <>
+                  <p className="text-sm">Нет писем</p>
+                  <a href="/settings" className="text-xs text-blue-400 hover:text-blue-300 mt-1.5 underline">Подключить ящик в Настройках → Почта</a>
+                </>
+              )}
             </div>
           ) : (
             emails.map(email => (
