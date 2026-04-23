@@ -6,6 +6,10 @@
     {
       "path": "/api/monitor/report",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/emails/sync",
+      "schedule": "*/15 * * * *"
     }
   ]
 }
