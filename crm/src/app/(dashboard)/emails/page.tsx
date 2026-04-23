@@ -96,10 +96,21 @@ export default function EmailsPage() {
     }).catch(() => {})
   }, [])
 
+  const [syncResult, setSyncResult] = useState<string | null>(null)
+
   const syncAll = async () => {
     setSyncing(true)
-    await fetch('/api/emails/sync', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) })
-    setSyncing(false)
+    setSyncResult(null)
+    try {
+      const r = await fetch('/api/emails/sync', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) })
+      const d = await r.json()
+      if (d.ok) setSyncResult(d.synced > 0 ? `+${d.synced} писем` : 'Новых нет')
+      else setSyncResult('Ошибка: ' + (d.error ?? 'неизвестна'))
+    } catch {
+      setSyncResult('Нет ответа')
+    } finally {
+      setSyncing(false)
+    }
     load()
   }
 
@@ -139,9 +150,16 @@ export default function EmailsPage() {
             <h1 className="text-white font-semibold text-sm">Входящие</h1>
             {unread > 0 && <span className="text-xs bg-blue-600 text-white px-1.5 py-0.5 rounded-full">{unread}</span>}
           </div>
-          <button onClick={syncAll} disabled={syncing} className="p-1.5 text-gray-400 hover:text-white transition-colors" title="Синхронизировать IMAP">
-            <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
+          <button onClick={syncAll} disabled={syncing}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white text-xs font-medium rounded-lg transition-colors disabled:opacity-50">
+            <RefreshCw className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} />
+            {syncing ? 'Скачиваю...' : 'Скачать почту'}
           </button>
+          {syncResult && (
+            <span className={`text-xs px-2 py-1 rounded ${syncResult.startsWith('Ошибка') || syncResult === 'Нет ответа' ? 'text-red-400 bg-red-500/10' : 'text-green-400 bg-green-500/10'}`}>
+              {syncResult}
+            </span>
+          )}
           <button onClick={() => setCompose(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium rounded-lg transition-colors">
             <Pen className="w-3.5 h-3.5" /> Написать
           </button>

@@ -76,16 +76,17 @@ async function syncAccount(acc: Record<string, unknown>, supabase: any): Promise
     // Use UID-based range for reliable incremental sync
     const uidRange = lastUid > 0 ? `${lastUid + 1}:*` : `${Math.max(1, total - 49)}:*`
 
-    // Fetch envelopes + body in one pass using UID mode (3rd arg {uid:true})
+    // Fetch envelopes only (NO body) — keeps sync under Vercel 10s timeout
+    // Body is loaded on-demand when user opens an email
     for await (const msg of client.fetch(uidRange, {
-      uid: true, envelope: true, bodyStructure: true,
+      uid: true, envelope: true,
     }, { uid: lastUid > 0 })) {
       const env = msg.envelope
       if (!env) continue
 
       const msgId = env.messageId || null
 
-      // Skip already-stored messages (by message-id or imap_uid)
+      // Skip already-stored messages
       if (msgId) {
         const { data: exists } = await supabase.from('emails')
           .select('id').eq('message_id', msgId).maybeSingle()
@@ -96,27 +97,14 @@ async function syncAccount(acc: Record<string, unknown>, supabase: any): Promise
         if (exists) continue
       }
 
-      // Fetch body by UID (fix: pass {uid:true} to options)
-      let bodyText = ''
-      let bodyHtml = ''
-      try {
-        for await (const part of client.fetch(String(msg.uid), {
-          bodyParts: ['TEXT', 'HTML'],
-        }, { uid: true })) {
-          bodyText = String(part.bodyParts?.get('TEXT') ?? '')
-          bodyHtml = String(part.bodyParts?.get('HTML') ?? '')
-        }
-      } catch { /* body optional */ }
-
       const fromEmail = env.from?.[0]?.address ?? ''
-      const fromName = env.from?.[0]?.name ?? ''
+      const fromName  = env.from?.[0]?.name ?? ''
 
       const { data: contact } = fromEmail
         ? await supabase.from('contacts').select('id')
             .eq('email', fromEmail).eq('tenant_id', TENANT_ID).maybeSingle()
         : { data: null }
 
-      // Fix: use INSERT instead of UPSERT to avoid partial-index conflict error
       const { error: insertErr } = await supabase.from('emails').insert({
         tenant_id: TENANT_ID,
         account_id: acc.id,
@@ -129,8 +117,8 @@ async function syncAccount(acc: Record<string, unknown>, supabase: any): Promise
         to_emails: (env.to ?? []).map((a: { address?: string; name?: string }) => ({ email: a.address, name: a.name })),
         cc_emails: (env.cc ?? []).map((a: { address?: string; name?: string }) => ({ email: a.address, name: a.name })),
         subject: env.subject ?? '(без темы)',
-        body_html: bodyHtml || null,
-        body_text: bodyText || null,
+        body_html: null,
+        body_text: null,
         imap_uid: msg.uid,
         imap_folder: 'INBOX',
         contact_id: contact?.id ?? null,
@@ -139,7 +127,6 @@ async function syncAccount(acc: Record<string, unknown>, supabase: any): Promise
       })
 
       if (insertErr) {
-        // 23505 = unique_violation (already exists) — skip silently
         if (insertErr.code !== '23505') {
           console.error('[imap insert]', acc.email, insertErr.message)
           throw new Error(insertErr.message)
