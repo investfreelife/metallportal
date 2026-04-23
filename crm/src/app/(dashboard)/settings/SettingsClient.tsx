@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react'
 import {
   Key, Users, Globe, Loader2, CheckCircle, XCircle, Copy,
   Plus, Eye, EyeOff, Send, RefreshCw, UserCheck, UserX,
-  Bot, Wifi, WifiOff, MessageSquare, Zap
+  Bot, Wifi, WifiOff, MessageSquare, Zap,
+  Mail, FlaskConical, Inbox, AlertCircle, Trash2, ExternalLink
 } from 'lucide-react'
 
-type Tab = 'integrations' | 'telegram' | 'telegram_personal' | 'ai_max' | 'team' | 'site'
+type Tab = 'integrations' | 'telegram' | 'telegram_personal' | 'ai_max' | 'team' | 'site' | 'email'
 
 type TeamUser = {
   id: string; name: string; login: string; role: string
@@ -48,6 +49,312 @@ function CopyButton({ text }: { text: string }) {
     >
       {copied ? <CheckCircle className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
     </button>
+  )
+}
+
+// ───────────────────── Email tab ─────────────────────
+
+interface EmailAccount {
+  id: string
+  email: string
+  display_name: string
+  provider: string
+  status: string
+  last_synced_at: string | null
+  last_error: string | null
+  smtp_host: string | null
+  imap_host: string | null
+}
+
+interface AccState {
+  testing: boolean
+  testResult: null | { imap: string; imap_count?: number; imap_error?: string; smtp: string; smtp_error?: string }
+  syncing: boolean
+  syncCount: null | number
+}
+
+const PROVIDER_HINTS: Record<string, { emoji: string; label: string; passUrl: string }> = {
+  gmail:  { emoji: '🔴', label: 'Gmail',    passUrl: 'https://myaccount.google.com/apppasswords' },
+  mailru: { emoji: '🔵', label: 'Mail.ru',  passUrl: 'https://account.mail.ru/user/2-step-auth/passwords/' },
+  yandex: { emoji: '🟡', label: 'Яндекс',  passUrl: 'https://id.yandex.ru/security/app-passwords' },
+  custom: { emoji: '📧', label: 'IMAP/SMTP', passUrl: '' },
+}
+
+function EmailTab() {
+  const [accounts, setAccounts] = useState<EmailAccount[]>([])
+  const [loading, setLoading] = useState(true)
+  const [states, setStates] = useState<Record<string, AccState>>({})
+  const [showAdd, setShowAdd] = useState(false)
+  const [form, setForm] = useState({ provider: 'mailru', email: '', display_name: '', smtp_pass: '', smtp_host: '', imap_host: '' })
+  const [saving, setSaving] = useState(false)
+  const [formError, setFormError] = useState('')
+
+  const load = async () => {
+    setLoading(true)
+    const r = await fetch('/api/emails/accounts')
+    const d = await r.json()
+    setAccounts(Array.isArray(d) ? d : [])
+    setLoading(false)
+  }
+
+  useEffect(() => { load() }, [])
+
+  function st(id: string): AccState {
+    return states[id] ?? { testing: false, testResult: null, syncing: false, syncCount: null }
+  }
+  function setSt(id: string, patch: Partial<AccState>) {
+    setStates(p => ({ ...p, [id]: { ...st(id), ...patch } }))
+  }
+
+  const testImap = async (id: string) => {
+    setSt(id, { testing: true, testResult: null })
+    const r = await fetch('/api/emails/test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ account_id: id }) })
+    setSt(id, { testing: false, testResult: await r.json() })
+    load()
+  }
+
+  const testSmtp = async (id: string) => {
+    setSt(id, { testing: true, testResult: null })
+    const r = await fetch('/api/emails/test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ account_id: id, test_send: true }) })
+    setSt(id, { testing: false, testResult: await r.json() })
+    load()
+  }
+
+  const sync = async (id: string) => {
+    setSt(id, { syncing: true, syncCount: null })
+    const r = await fetch('/api/emails/sync', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ account_id: id }) })
+    const d = await r.json()
+    setSt(id, { syncing: false, syncCount: d.synced ?? 0 })
+    load()
+  }
+
+  const remove = async (id: string) => {
+    if (!confirm('Удалить аккаунт?')) return
+    await fetch('/api/emails/accounts', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) })
+    load()
+  }
+
+  const saveAccount = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setFormError('')
+    if (!form.email || !form.smtp_pass) { setFormError('Email и пароль приложения обязательны'); return }
+    setSaving(true)
+    const r = await fetch('/api/emails/accounts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })
+    const d = await r.json()
+    setSaving(false)
+    if (!r.ok) { setFormError(d.error ?? 'Ошибка'); return }
+    setShowAdd(false)
+    setForm({ provider: 'mailru', email: '', display_name: '', smtp_pass: '', smtp_host: '', imap_host: '' })
+    load()
+  }
+
+  const hint = PROVIDER_HINTS[form.provider] ?? PROVIDER_HINTS.custom
+
+  return (
+    <div className="space-y-4">
+
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-white font-semibold">Подключённые ящики</h2>
+          <p className="text-gray-500 text-xs mt-0.5">Тест подключения, синхронизация, отладка ошибок</p>
+        </div>
+        <button onClick={() => setShowAdd(v => !v)}
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium rounded-lg transition-colors">
+          <Plus className="w-3.5 h-3.5" /> Добавить
+        </button>
+      </div>
+
+      {/* Add form */}
+      {showAdd && (
+        <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 space-y-3">
+          <div className="flex gap-2 flex-wrap">
+            {Object.entries(PROVIDER_HINTS).map(([k, v]) => (
+              <button key={k} onClick={() => setForm(f => ({ ...f, provider: k }))}
+                className={`px-3 py-1 text-xs rounded-lg border transition-colors ${
+                  form.provider === k ? 'border-blue-500 bg-blue-500/10 text-blue-300' : 'border-gray-700 text-gray-400 hover:border-gray-500'
+                }`}>{v.emoji} {v.label}</button>
+            ))}
+          </div>
+
+          {form.provider !== 'custom' && (
+            <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2 text-xs text-amber-300">
+              ⚠️ Нужен <strong>пароль приложения</strong>, не обычный пароль.
+              {hint.passUrl && <> <a href={hint.passUrl} target="_blank" className="underline text-amber-400">Создать →</a></>}
+            </div>
+          )}
+
+          <form onSubmit={saveAccount} className="space-y-2">
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-gray-500 text-xs mb-1 block">Email *</label>
+                <input value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                  type="email" placeholder="you@mail.ru"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-2.5 py-1.5 text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+              </div>
+              <div>
+                <label className="text-gray-500 text-xs mb-1 block">Имя отправителя</label>
+                <input value={form.display_name} onChange={e => setForm(f => ({ ...f, display_name: e.target.value }))}
+                  placeholder="МеталлПортал"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-2.5 py-1.5 text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+              </div>
+              <div className="col-span-2">
+                <label className="text-gray-500 text-xs mb-1 block">Пароль приложения *</label>
+                <input value={form.smtp_pass} onChange={e => setForm(f => ({ ...f, smtp_pass: e.target.value }))}
+                  type="password" placeholder="Пароль приложения (не обычный!)"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-2.5 py-1.5 text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+              </div>
+              {form.provider === 'custom' && (<>
+                <div>
+                  <label className="text-gray-500 text-xs mb-1 block">SMTP хост</label>
+                  <input value={form.smtp_host} onChange={e => setForm(f => ({ ...f, smtp_host: e.target.value }))} placeholder="smtp.example.com"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-2.5 py-1.5 text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                </div>
+                <div>
+                  <label className="text-gray-500 text-xs mb-1 block">IMAP хост</label>
+                  <input value={form.imap_host} onChange={e => setForm(f => ({ ...f, imap_host: e.target.value }))} placeholder="imap.example.com"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-2.5 py-1.5 text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                </div>
+              </>)}
+            </div>
+            {formError && <p className="text-red-400 text-xs">{formError}</p>}
+            <div className="flex gap-2">
+              <button type="submit" disabled={saving}
+                className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg">
+                {saving ? 'Подключаю...' : 'Подключить'}
+              </button>
+              <button type="button" onClick={() => setShowAdd(false)}
+                className="px-4 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-400 text-sm rounded-lg">Отмена</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Accounts */}
+      {loading ? (
+        <div className="flex items-center gap-2 text-gray-500 text-sm py-4">
+          <Loader2 className="w-4 h-4 animate-spin" /> Загрузка...
+        </div>
+      ) : accounts.length === 0 ? (
+        <div className="bg-gray-900 border border-dashed border-gray-700 rounded-xl p-8 text-center">
+          <Mail className="w-7 h-7 text-gray-600 mx-auto mb-2" />
+          <p className="text-gray-500 text-sm">Нет подключённых ящиков</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {accounts.map(acc => {
+            const s = st(acc.id)
+            const tr = s.testResult
+            const prov = PROVIDER_HINTS[acc.provider] ?? PROVIDER_HINTS.custom
+            return (
+              <div key={acc.id} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                <div className="p-4 flex items-start gap-3">
+                  <span className="text-xl flex-shrink-0 mt-0.5">{prov.emoji}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-white text-sm font-semibold">{acc.display_name || acc.email}</span>
+                      <span className="text-gray-500 text-xs font-mono">{acc.email}</span>
+                    </div>
+                    <div className="flex items-center gap-3 mt-1 flex-wrap">
+                      {acc.status === 'active'  && <span className="flex items-center gap-1 text-xs text-emerald-400"><CheckCircle className="w-3 h-3" /> Активен</span>}
+                      {acc.status === 'error'   && <span className="flex items-center gap-1 text-xs text-red-400"><XCircle className="w-3 h-3" /> Ошибка</span>}
+                      {acc.status !== 'active' && acc.status !== 'error' && <span className="flex items-center gap-1 text-xs text-gray-500"><AlertCircle className="w-3 h-3" /> Не проверен</span>}
+                      {acc.last_synced_at && <span className="text-xs text-gray-600">синх: {new Date(acc.last_synced_at).toLocaleString('ru', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>}
+                      {s.syncCount !== null && <span className="text-xs text-blue-400">+{s.syncCount} писем</span>}
+                    </div>
+
+                    {/* Error with fix hint */}
+                    {acc.last_error && (
+                      <div className="mt-2 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 text-xs">
+                        <p className="text-red-400 font-medium mb-1">Ошибка подключения:</p>
+                        <p className="text-red-300">{acc.last_error}</p>
+                        {acc.last_error.includes('535') && (
+                          <p className="text-amber-400 mt-1.5">
+                            💡 Нужен <strong>пароль приложения</strong>, не обычный пароль.
+                            {prov.passUrl && <> <a href={prov.passUrl} target="_blank" className="underline flex-inline items-center gap-0.5">Создать на сайте {prov.label} <ExternalLink className="inline w-3 h-3" /></a></>}
+                          </p>
+                        )}
+                        {acc.last_error.includes('ECONNREFUSED') && (
+                          <p className="text-amber-400 mt-1.5">💡 Сервер недоступен — проверь хост и порт IMAP/SMTP</p>
+                        )}
+                        {acc.last_error.includes('certificate') && (
+                          <p className="text-amber-400 mt-1.5">💡 Ошибка SSL — попробуй отключить проверку сертификата</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <button onClick={() => remove(acc.id)} className="p-1.5 text-gray-600 hover:text-red-400 transition-colors flex-shrink-0">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* Action buttons */}
+                <div className="px-4 pb-3 flex gap-2 flex-wrap">
+                  <button onClick={() => testImap(acc.id)} disabled={s.testing}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 text-xs rounded-lg transition-colors disabled:opacity-50">
+                    {s.testing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FlaskConical className="w-3.5 h-3.5" />}
+                    Тест IMAP
+                  </button>
+                  <button onClick={() => testSmtp(acc.id)} disabled={s.testing}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 text-xs rounded-lg transition-colors disabled:opacity-50">
+                    {s.testing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                    Тест отправки
+                  </button>
+                  <button onClick={() => sync(acc.id)} disabled={s.syncing}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/20 text-blue-400 text-xs rounded-lg transition-colors disabled:opacity-50">
+                    {s.syncing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Inbox className="w-3.5 h-3.5" />}
+                    {s.syncing ? 'Скачиваю...' : 'Скачать почту'}
+                  </button>
+                </div>
+
+                {/* Test result */}
+                {tr && (
+                  <div className="mx-4 mb-3 bg-gray-950 border border-gray-800 rounded-lg p-3 space-y-1.5 text-xs">
+                    <p className="text-gray-400 font-medium">Результат проверки:</p>
+                    <div className="flex items-start gap-2">
+                      {tr.imap === 'ok'
+                        ? <CheckCircle className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                        : <XCircle className="w-3.5 h-3.5 text-red-400 flex-shrink-0 mt-0.5" />}
+                      <span className={tr.imap === 'ok' ? 'text-emerald-400' : 'text-red-400'}>
+                        IMAP: {tr.imap === 'ok'
+                          ? `✓ Работает — ${tr.imap_count ?? 0} писем в ящике`
+                          : `✗ ${tr.imap_error}`}
+                      </span>
+                    </div>
+                    {tr.smtp !== 'skipped' && (
+                      <div className="flex items-start gap-2">
+                        {tr.smtp === 'ok'
+                          ? <CheckCircle className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                          : <XCircle className="w-3.5 h-3.5 text-red-400 flex-shrink-0 mt-0.5" />}
+                        <span className={tr.smtp === 'ok' ? 'text-emerald-400' : 'text-red-400'}>
+                          SMTP: {tr.smtp === 'ok' ? '✓ Тестовое письмо отправлено' : `✗ ${tr.smtp_error}`}
+                        </span>
+                      </div>
+                    )}
+                    {(tr.imap === 'error' || tr.smtp === 'error') && (
+                      <div className="mt-2 pt-2 border-t border-gray-800">
+                        <p className="text-amber-400">💡 Ошибка 535 = нужен пароль приложения, не обычный пароль</p>
+                        {prov.passUrl && <a href={prov.passUrl} target="_blank" className="text-blue-400 underline mt-0.5 block">Создать пароль приложения {prov.label} →</a>}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* Fix guide */}
+      <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 space-y-2">
+        <p className="text-white text-sm font-semibold">Как исправить ошибку 535 (Invalid login)</p>
+        <div className="space-y-1 text-xs text-gray-400">
+          <p><span className="text-blue-400 font-medium">Mail.ru:</span> <a href="https://account.mail.ru/user/2-step-auth/passwords/" target="_blank" className="underline text-blue-400">account.mail.ru</a> → Пароль и безопасность → Пароли для приложений → Создать</p>
+          <p><span className="text-red-400 font-medium">Gmail:</span> <a href="https://myaccount.google.com/apppasswords" target="_blank" className="underline text-red-400">myaccount.google.com/apppasswords</a> → создать пароль для «Почта»</p>
+          <p><span className="text-yellow-400 font-medium">Яндекс:</span> <a href="https://id.yandex.ru/security/app-passwords" target="_blank" className="underline text-yellow-400">id.yandex.ru/security/app-passwords</a> → создать</p>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -997,6 +1304,7 @@ export default function SettingsClient({ session }: { session: { login: string; 
     { id: 'telegram_personal', label: '✈️ TG Personal' },
     { id: 'ai_max',            label: '🧠 Макс' },
     { id: 'team',              label: '👥 Команда' },
+    { id: 'email',             label: '📧 Почта' },
     { id: 'site',              label: '🌐 Сайт' },
   ]
 
@@ -1031,6 +1339,7 @@ export default function SettingsClient({ session }: { session: { login: string; 
       {tab === 'telegram_personal' && <TelegramPersonalTab />}
       {tab === 'ai_max'            && <AiMaxTab />}
       {tab === 'team'              && <TeamTab />}
+      {tab === 'email'             && <EmailTab />}
       {tab === 'site'              && <SiteTab />}
     </div>
   )
