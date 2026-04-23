@@ -8,12 +8,18 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-gold flex items-center justify-center">
-                <div className="w-6 h-6 border-2 border-background" />
+              <div className="flex flex-shrink-0">
+                <div className="w-10 h-10 flex items-center justify-center bg-gold">
+                  <span className="text-black font-black text-xl leading-none" style={{ fontFamily: 'Georgia, serif' }}>М</span>
+                </div>
+                <div className="w-10 h-10 flex items-center justify-center bg-foreground">
+                  <span className="text-background font-black text-xl leading-none" style={{ fontFamily: 'Georgia, serif' }}>П</span>
+                </div>
               </div>
-              <span className="text-[24px] font-bold text-foreground tracking-wide">
-                МЕТАЛЛПОРТАЛ
-              </span>
+              <div className="leading-tight">
+                <p className="text-foreground font-bold text-xl tracking-wide leading-none">МЕТАЛЛ</p>
+                <p className="text-gold font-semibold text-base tracking-widest leading-none mt-0.5">ПОРТАЛ</p>
+              </div>
             </div>
             <p className="text-foreground/60 text-sm leading-relaxed">
               Премиальный B2B портал металлопродукции, соединяющий проверенных

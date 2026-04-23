@@ -193,9 +193,19 @@ export default function Header() {
       {/* Main header */}
       <div className="bg-background border-b border-border">
         <div className="container-main h-16 lg:h-20 flex items-center gap-4 lg:gap-8">
-          <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-            <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gold rounded" />
-            <span className="text-lg lg:text-2xl font-bold text-foreground">МЕТАЛЛПОРТАЛ</span>
+          <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
+            <div className="flex flex-shrink-0">
+              <div className="w-8 h-8 lg:w-10 lg:h-10 flex items-center justify-center bg-gold">
+                <span className="text-black font-black text-lg lg:text-xl leading-none" style={{ fontFamily: 'Georgia, serif' }}>М</span>
+              </div>
+              <div className="w-8 h-8 lg:w-10 lg:h-10 flex items-center justify-center bg-foreground">
+                <span className="text-background font-black text-lg lg:text-xl leading-none" style={{ fontFamily: 'Georgia, serif' }}>П</span>
+              </div>
+            </div>
+            <div className="leading-tight">
+              <p className="text-foreground font-bold text-sm lg:text-base tracking-wide leading-none">МЕТАЛЛ</p>
+              <p className="text-gold font-semibold text-xs lg:text-sm tracking-widest leading-none mt-0.5">ПОРТАЛ</p>
+            </div>
           </Link>
 
           <SearchBar />
