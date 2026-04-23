@@ -91,10 +91,15 @@ function EmailTab() {
 
   const load = async () => {
     setLoading(true)
-    const r = await fetch('/api/emails/accounts')
-    const d = await r.json()
-    setAccounts(Array.isArray(d) ? d : [])
-    setLoading(false)
+    try {
+      const r = await fetch('/api/emails/accounts')
+      const d = await r.json()
+      setAccounts(Array.isArray(d) ? d : [])
+    } catch {
+      setAccounts([])
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => { load() }, [])
@@ -108,23 +113,35 @@ function EmailTab() {
 
   const testImap = async (id: string) => {
     setSt(id, { testing: true, testResult: null })
-    const r = await fetch('/api/emails/test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ account_id: id }) })
-    setSt(id, { testing: false, testResult: await r.json() })
+    try {
+      const r = await fetch('/api/emails/test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ account_id: id }) })
+      setSt(id, { testing: false, testResult: await r.json() })
+    } catch {
+      setSt(id, { testing: false, testResult: { imap: 'error', imap_error: 'Нет ответа от сервера', smtp: 'skipped' } })
+    }
     load()
   }
 
   const testSmtp = async (id: string) => {
     setSt(id, { testing: true, testResult: null })
-    const r = await fetch('/api/emails/test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ account_id: id, test_send: true }) })
-    setSt(id, { testing: false, testResult: await r.json() })
+    try {
+      const r = await fetch('/api/emails/test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ account_id: id, test_send: true }) })
+      setSt(id, { testing: false, testResult: await r.json() })
+    } catch {
+      setSt(id, { testing: false, testResult: { imap: 'error', imap_error: 'Нет ответа от сервера', smtp: 'skipped' } })
+    }
     load()
   }
 
   const sync = async (id: string) => {
     setSt(id, { syncing: true, syncCount: null })
-    const r = await fetch('/api/emails/sync', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ account_id: id }) })
-    const d = await r.json()
-    setSt(id, { syncing: false, syncCount: d.synced ?? 0 })
+    try {
+      const r = await fetch('/api/emails/sync', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ account_id: id }) })
+      const d = await r.json()
+      setSt(id, { syncing: false, syncCount: d.synced ?? 0 })
+    } catch {
+      setSt(id, { syncing: false, syncCount: 0 })
+    }
     load()
   }
 
@@ -526,9 +543,14 @@ function TelegramTab() {
 
   async function loadStatus() {
     setLoadingStatus(true)
-    const res = await fetch('/api/telegram/status')
-    setStatus(await res.json())
-    setLoadingStatus(false)
+    try {
+      const res = await fetch('/api/telegram/status')
+      setStatus(await res.json())
+    } catch {
+      // ignore - shows last known status
+    } finally {
+      setLoadingStatus(false)
+    }
   }
 
   useEffect(() => { loadStatus() }, [])
@@ -1313,6 +1335,12 @@ function AiMaxTab() {
 
   useEffect(() => {
     fetch('/api/ai/status').then(r => r.json()).then(d => setStatus(d)).catch(() => setStatus({ openrouter: false, anthropic: false, openai: false }))
+  }, [])
+
+  useEffect(() => {
+    fetch('/api/settings').then(r => r.json()).then(d => {
+      if (d.AI_MAX_TONE) setTone(d.AI_MAX_TONE)
+    }).catch(() => {})
   }, [])
 
   const testAi = async () => {
