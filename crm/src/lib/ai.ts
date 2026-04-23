@@ -166,6 +166,58 @@ ${contactInfo}${itemsBlock}
 }
 
 // ─────────────────────────────────────────────
+// АНАЛИЗ ВХОДЯЩЕГО ПИСЬМА
+// ─────────────────────────────────────────────
+export interface EmailAnalysis {
+  reasoning: string
+  suggested_reply: string
+  action_type: 'send_email' | 'make_call' | 'send_proposal' | 'create_task' | 'schedule'
+  priority: 'high' | 'medium' | 'low'
+  segment: string
+  intent: string
+  subject_reply: string
+}
+
+export async function analyzeEmail(ctx: {
+  from_email: string
+  from_name?: string | null
+  subject: string
+  body_text?: string | null
+}): Promise<EmailAnalysis | null> {
+  const OPENROUTER_KEY = await getSetting('OPENROUTER_API_KEY')
+  if (!OPENROUTER_KEY) return null
+
+  const systemPrompt = await getSystemPrompt()
+
+  const userMsg = `Входящее письмо от клиента:
+От: ${ctx.from_name ? `${ctx.from_name} <${ctx.from_email}>` : ctx.from_email}
+Тема: ${ctx.subject}
+Текст: ${(ctx.body_text ?? '(текст не загружен)').slice(0, 1500)}
+
+Проанализируй письмо и ответь строго JSON (без markdown):
+{
+  "reasoning": "1-2 предложения: кто написал, чего хочет, почему это важно",
+  "suggested_reply": "Готовый текст ответного письма. Обращение по имени, конкретно и по делу. 3-5 предложений.",
+  "action_type": "send_email|make_call|send_proposal|create_task|schedule",
+  "priority": "high|medium|low",
+  "segment": "Строитель|Завод|Перекупщик|Физлицо|Неизвестно",
+  "intent": "Одно предложение — суть запроса клиента",
+  "subject_reply": "Тема ответного письма (начни с Re:)"
+}`
+
+  try {
+    const text = await openrouterChat(OPENROUTER_KEY, [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userMsg },
+    ], { json: true, maxTokens: 600 })
+    if (!text) return null
+    return JSON.parse(text) as EmailAnalysis
+  } catch {
+    return null
+  }
+}
+
+// ─────────────────────────────────────────────
 // ОЦЕНКА CLAUDE: работа ИИ + менеджера
 // Вызывается после того как менеджер одобрил/отклонил задачу
 // ─────────────────────────────────────────────

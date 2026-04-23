@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Mail, RefreshCw, Pen, Star, StarOff, Check, ArrowLeft, Reply, Link2, Inbox } from 'lucide-react'
+import { Mail, RefreshCw, Pen, Star, StarOff, Check, ArrowLeft, Reply, Link2, Inbox, Sparkles } from 'lucide-react'
 import ComposeModal from '@/components/emails/ComposeModal'
 
 interface Email {
@@ -70,6 +70,9 @@ export default function EmailsPage() {
   const [reply, setReply] = useState(false)
   const [deals, setDeals] = useState<Deal[]>([])
   const [linkingDeal, setLinkingDeal] = useState(false)
+  const [aiAnalyzing, setAiAnalyzing] = useState(false)
+  const [aiResult, setAiResult] = useState<{ intent: string; reasoning: string; suggested_reply: string; action_type: string; priority: string; queue_id?: string } | null>(null)
+  const [aiError, setAiError] = useState<string | null>(null)
 
   const [loadError, setLoadError] = useState<string | null>(null)
 
@@ -144,7 +147,23 @@ export default function EmailsPage() {
 
   const openEmail = (email: Email) => {
     setSelected(email)
+    setAiResult(null)
+    setAiError(null)
     if (!email.is_read) markRead(email.id)
+  }
+
+  const runAI = async (emailId: string) => {
+    setAiAnalyzing(true)
+    setAiResult(null)
+    setAiError(null)
+    try {
+      const r = await fetch(`/api/emails/${emailId}/analyze`, { method: 'POST' })
+      const d = await r.json()
+      if (d.ok && d.ai) setAiResult({ ...d.ai, queue_id: d.queue_id })
+      else if (d.ok && d.already) setAiResult({ intent: 'Уже анализировано', reasoning: 'Задача уже есть в Очереди ИИ', suggested_reply: '', action_type: '', priority: '', queue_id: d.queue_id })
+      else setAiError(d.error ?? 'Неизвестная ошибка')
+    } catch { setAiError('Нет ответа от сервера') }
+    finally { setAiAnalyzing(false) }
   }
 
   const unread = emails.filter(e => !e.is_read && e.direction === 'inbound').length
@@ -219,10 +238,44 @@ export default function EmailsPage() {
             <button onClick={() => setLinkingDeal(v => !v)} className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-gray-300 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors">
               <Link2 className="w-3.5 h-3.5" /> {selected.deal_id ? 'Сделка привязана' : 'Привязать к сделке'}
             </button>
+            <button onClick={() => runAI(selected.id)} disabled={aiAnalyzing}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white text-xs font-medium rounded-lg transition-colors">
+              <Sparkles className={`w-3.5 h-3.5 ${aiAnalyzing ? 'animate-spin' : ''}`} />
+              {aiAnalyzing ? 'Анализ...' : 'Анализ ИИ'}
+            </button>
             <button onClick={() => setReply(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium rounded-lg transition-colors">
               <Reply className="w-3.5 h-3.5" /> Ответить
             </button>
           </div>
+
+          {/* AI result panel */}
+          {(aiResult || aiError) && (
+            <div className="px-5 py-3 border-b border-gray-800 bg-purple-500/5">
+              {aiError ? (
+                <p className="text-xs text-red-400">⚠️ {aiError}</p>
+              ) : aiResult && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                    <span className="text-xs font-medium text-purple-300">{aiResult.intent}</span>
+                    {aiResult.priority && (
+                      <span className={`text-xs px-1.5 py-0.5 rounded ${
+                        aiResult.priority === 'high' ? 'bg-red-500/20 text-red-300' :
+                        aiResult.priority === 'medium' ? 'bg-orange-500/20 text-orange-300' :
+                        'bg-gray-700 text-gray-400'}`}>{aiResult.priority}</span>
+                    )}
+                    {aiResult.queue_id && (
+                      <a href="/queue" className="text-xs text-purple-400 hover:text-purple-300 ml-auto underline">→ Очередь ИИ</a>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-400">{aiResult.reasoning}</p>
+                  {aiResult.suggested_reply && (
+                    <div className="bg-gray-900 rounded-lg p-3 text-xs text-gray-300 whitespace-pre-wrap border border-purple-500/20">{aiResult.suggested_reply}</div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Deal link dropdown */}
           {linkingDeal && (

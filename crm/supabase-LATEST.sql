@@ -75,6 +75,7 @@ ALTER TABLE ai_queue ADD COLUMN IF NOT EXISTS snoozed_until     TIMESTAMPTZ;
 ALTER TABLE ai_queue ADD COLUMN IF NOT EXISTS auto_execute_at   TIMESTAMPTZ;
 ALTER TABLE ai_queue ADD COLUMN IF NOT EXISTS content           TEXT;
 ALTER TABLE ai_queue ADD COLUMN IF NOT EXISTS deal_id           UUID;
+ALTER TABLE ai_queue ADD COLUMN IF NOT EXISTS email_id          UUID REFERENCES emails(id) ON DELETE SET NULL;
 
 ALTER TABLE ai_queue DROP CONSTRAINT IF EXISTS ai_queue_action_type_check;
 ALTER TABLE ai_queue ADD CONSTRAINT ai_queue_action_type_check CHECK (action_type IN (
