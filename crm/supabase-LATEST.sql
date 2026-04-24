@@ -283,6 +283,38 @@ CREATE INDEX IF NOT EXISTS idx_site_events_visitor ON site_events(visitor_id, cr
 CREATE INDEX IF NOT EXISTS idx_site_events_type ON site_events(tenant_id, event_type, created_at DESC);
 
 -- ══════════════════════════════════════════════════════════════
+-- PHASE 2: CHANNELS (Управление каналами)
+-- ══════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS channels (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  tenant_id UUID NOT NULL,
+  type TEXT NOT NULL CHECK (type IN (
+    'yandex_direct','yandex_rsy','vk_ads','vk_community',
+    'telegram_channel','telegram_ads','google_ads',
+    'email','whatsapp','tracking','referral',
+    'youtube','dzen','tenders','sms'
+  )),
+  name TEXT NOT NULL,
+  status TEXT DEFAULT 'inactive' CHECK (status IN ('active','inactive','error','paused')),
+  config JSONB DEFAULT '{}',
+  stats JSONB DEFAULT '{}',
+  error_message TEXT,
+  last_sync_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+ALTER TABLE channels ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "service_role_all" ON channels;
+CREATE POLICY "service_role_all" ON channels FOR ALL USING (true) WITH CHECK (true);
+CREATE INDEX IF NOT EXISTS idx_channels_tenant ON channels(tenant_id);
+
+INSERT INTO channels (tenant_id, type, name, status, config, stats) VALUES
+('a1000000-0000-0000-0000-000000000001','tracking','Трекинг сайта','inactive','{"site_url":"metallportal.vercel.app"}','{}'),
+('a1000000-0000-0000-0000-000000000001','telegram_channel','Telegram канал','inactive','{}','{}'),
+('a1000000-0000-0000-0000-000000000001','vk_community','VK Сообщество','inactive','{}','{}')
+ON CONFLICT DO NOTHING;
+
+-- ══════════════════════════════════════════════════════════════
 -- ПРОВЕРКА — должны показать все таблицы с RLS ✅
 -- ══════════════════════════════════════════════════════════════
 SELECT

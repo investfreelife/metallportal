@@ -15,6 +15,7 @@ import {
   Send,
   Megaphone,
   FileText,
+  Layers,
 } from 'lucide-react'
 
 type NavItem = {
@@ -51,6 +52,7 @@ const navSections: NavSection[] = [
       { href: '/emails', label: 'Почта', icon: Mail, badgeKey: 'emails' },
       { href: '/telegram', label: 'Telegram', icon: Send },
       { href: '/campaigns', label: 'Рассылки', icon: Megaphone },
+      { href: '/channels', label: 'Каналы', icon: Layers },
     ],
   },
   {
