@@ -1,7 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
-import { formatMoney, timeAgo, getInitials, getActionTypeLabel } from '@/lib/utils'
+import { formatMoney, timeAgo, getInitials } from '@/lib/utils'
 import Link from 'next/link'
 import DashboardQueue from './DashboardQueue'
+import { FunnelClient } from '@/components/dashboard/FunnelClient'
+import { DashboardRealtime } from '@/components/dashboard/DashboardRealtime'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
@@ -21,9 +23,11 @@ export default async function DashboardPage() {
   const supabase = await createClient()
 
   const todayStr = new Date().toISOString().split('T')[0]
+  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
 
   const [
     { count: hotLeads },
+    { count: hotLeadsLastWeek },
     { count: pendingQueueCount },
     { data: dealsRaw },
     { data: queueItems },
@@ -31,8 +35,11 @@ export default async function DashboardPage() {
     { data: recentActivities },
     { count: unreadEmails },
     { data: insightRow },
+    { data: leadSources },
+    { data: lostDeals },
   ] = await Promise.all([
     supabase.from('contacts').select('id', { count: 'exact', head: true }).eq('tenant_id', TENANT_ID).gt('ai_score', 60),
+    supabase.from('contacts').select('id', { count: 'exact', head: true }).eq('tenant_id', TENANT_ID).gt('ai_score', 60).lt('created_at', weekAgo),
     supabase.from('ai_queue').select('id', { count: 'exact', head: true }).eq('tenant_id', TENANT_ID).eq('status', 'pending'),
     supabase.from('deals').select('stage, amount').eq('tenant_id', TENANT_ID),
     supabase.from('ai_queue')
@@ -47,6 +54,8 @@ export default async function DashboardPage() {
     supabase.from('emails').select('id', { count: 'exact', head: true })
       .eq('tenant_id', TENANT_ID).eq('is_read', false).eq('direction', 'inbound'),
     supabase.from('tenant_settings').select('value').eq('tenant_id', TENANT_ID).eq('key', `ai_insight_${todayStr}`).maybeSingle(),
+    supabase.from('contacts').select('source').eq('tenant_id', TENANT_ID).not('source', 'is', null),
+    supabase.from('deals').select('lost_reason').eq('tenant_id', TENANT_ID).eq('stage', 'lost').not('lost_reason', 'is', null),
   ])
 
   const allDeals = dealsRaw ?? []
@@ -65,17 +74,40 @@ export default async function DashboardPage() {
 
   const todayDate = new Date().toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' })
 
-  const funnelSteps = [
-    { label: 'Посетители', value: 1240, color: '#4A90D9' },
-    { label: 'Лиды', value: hotLeads ?? 0, color: '#2EAF82' },
-    { label: 'КП', value: stageGroups.find(s => s.stage === 'proposal')?.count ?? 0, color: '#EF9F27' },
-    { label: 'Переговоры', value: stageGroups.find(s => s.stage === 'negotiation')?.count ?? 0, color: '#E24B4A' },
-    { label: 'Закрыто', value: stageGroups.find(s => s.stage === 'won')?.count ?? 0, color: '#639922' },
-  ]
-  const funnelMax = funnelSteps[0].value || 1
+  // Агрегация источников лидов
+  const sourceMap: Record<string, number> = {}
+  leadSources?.forEach((c: { source: string | null }) => {
+    const s = c.source || 'Прямые'
+    sourceMap[s] = (sourceMap[s] || 0) + 1
+  })
+  const leadsBySource = Object.entries(sourceMap)
+    .map(([source, count]) => ({ source, count }))
+    .sort((a, b) => b.count - a.count)
+
+  // Агрегация причин проигрышей
+  const reasonMap: Record<string, number> = {}
+  lostDeals?.forEach((d: { lost_reason: string | null }) => {
+    const r = d.lost_reason || 'Не указана'
+    reasonMap[r] = (reasonMap[r] || 0) + 1
+  })
+  const lostReasons = Object.entries(reasonMap)
+    .map(([reason, count]) => ({ reason, count }))
+    .sort((a, b) => b.count - a.count)
+
+  // Дельта горячих лидов
+  const hotLeadsNow = hotLeads ?? 0
+  const hotDelta = hotLeadsNow - (hotLeadsLastWeek ?? 0)
+  const hotDeltaLabel = hotDelta > 0 ? `+${hotDelta} за неделю` : hotDelta < 0 ? `${hotDelta} за неделю` : 'без изменений'
+  const hotDeltaColor = hotDelta > 0 ? '#22c55e' : hotDelta < 0 ? '#ef4444' : '#9ca3af'
+
+  const proposalCount = stageGroups.find(s => s.stage === 'proposal')?.count ?? 0
+  const negotiationCount = stageGroups.find(s => s.stage === 'negotiation')?.count ?? 0
+  const wonCount = stageGroups.find(s => s.stage === 'won')?.count ?? 0
 
   return (
     <div className="bg-gray-50">
+      <DashboardRealtime tenantId={TENANT_ID} />
+
       {/* Topbar */}
       <div className="bg-white border-b border-gray-200 px-5 py-3 flex items-center gap-3 flex-shrink-0">
         <h1 className="text-[15px] font-medium text-gray-900 flex-1">Дашборд</h1>
@@ -92,20 +124,34 @@ export default async function DashboardPage() {
       <div className="p-4 space-y-4">
         {/* 4 метрики */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {[
-            { label: 'Горячих лидов', value: hotLeads ?? 0, delta: '→ контакты', href: '/contacts', color: '#E24B4A' },
-            { label: 'Pipeline', value: formatMoney(pipelineTotal), delta: `закрыто ${formatMoney(wonTotal)} ₽`, href: '/deals', color: '#1a56db' },
-            { label: 'Задач ИИ', value: pendingQueueCount ?? 0, delta: 'ждут одобрения', href: '/queue', color: '#8b5cf6' },
-            { label: 'Новых писем', value: unreadEmails ?? 0, delta: 'непрочитанных', href: '/emails', color: '#EF9F27' },
-          ].map(m => (
-            <Link key={m.label} href={m.href}>
-              <div className="bg-white border border-gray-200 rounded-xl p-3 cursor-pointer hover:border-blue-300 hover:shadow-sm transition-all">
-                <div className="text-[11px] text-gray-500 mb-1">{m.label}</div>
-                <div className="text-2xl font-medium text-gray-900">{m.value}</div>
-                <div className="text-[11px] mt-0.5" style={{ color: m.color }}>{m.delta}</div>
-              </div>
-            </Link>
-          ))}
+          <Link href="/contacts">
+            <div className="bg-white border border-gray-200 rounded-xl p-3 cursor-pointer hover:border-blue-300 hover:shadow-sm transition-all">
+              <div className="text-[11px] text-gray-500 mb-1">Горячих лидов</div>
+              <div className="text-2xl font-medium text-gray-900">{hotLeadsNow}</div>
+              <div className="text-[11px] mt-0.5" style={{ color: hotDeltaColor }}>{hotDeltaLabel}</div>
+            </div>
+          </Link>
+          <Link href="/deals">
+            <div className="bg-white border border-gray-200 rounded-xl p-3 cursor-pointer hover:border-blue-300 hover:shadow-sm transition-all">
+              <div className="text-[11px] text-gray-500 mb-1">Pipeline</div>
+              <div className="text-2xl font-medium text-gray-900">{formatMoney(pipelineTotal)}</div>
+              <div className="text-[11px] mt-0.5" style={{ color: '#1a56db' }}>закрыто {formatMoney(wonTotal)} ₽</div>
+            </div>
+          </Link>
+          <Link href="/queue">
+            <div className="bg-white border border-gray-200 rounded-xl p-3 cursor-pointer hover:border-blue-300 hover:shadow-sm transition-all">
+              <div className="text-[11px] text-gray-500 mb-1">Задач ИИ</div>
+              <div className="text-2xl font-medium text-gray-900">{pendingQueueCount ?? 0}</div>
+              <div className="text-[11px] mt-0.5" style={{ color: '#8b5cf6' }}>ждут одобрения</div>
+            </div>
+          </Link>
+          <Link href="/emails">
+            <div className="bg-white border border-gray-200 rounded-xl p-3 cursor-pointer hover:border-blue-300 hover:shadow-sm transition-all">
+              <div className="text-[11px] text-gray-500 mb-1">Новых писем</div>
+              <div className="text-2xl font-medium text-gray-900">{unreadEmails ?? 0}</div>
+              <div className="text-[11px] mt-0.5" style={{ color: '#EF9F27' }}>непрочитанных</div>
+            </div>
+          </Link>
         </div>
 
         {/* ИИ-инсайт */}
@@ -142,26 +188,15 @@ export default async function DashboardPage() {
               <div className="px-4 py-2.5 border-b border-gray-100">
                 <span className="text-xs font-medium text-gray-700">Воронка продаж</span>
               </div>
-              <div className="p-3 space-y-1.5">
-                {funnelSteps.map(step => (
-                  <div key={step.label} className="flex items-center gap-2">
-                    <div className="w-[72px] text-[11px] text-gray-500 text-right flex-shrink-0">{step.label}</div>
-                    <div className="flex-1 h-5 rounded-sm overflow-hidden" style={{ backgroundColor: '#e5e7eb' }}>
-                      <div
-                        className="h-full rounded-sm flex items-center px-1.5"
-                        style={{
-                          width: `${Math.max(4, Math.round((step.value / funnelMax) * 100))}%`,
-                          backgroundColor: step.color,
-                        }}
-                      >
-                        <span className="text-[11px] font-medium text-white">
-                          {step.value}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <FunnelClient
+                visitors={1240}
+                leads={hotLeadsNow}
+                proposals={proposalCount}
+                negotiations={negotiationCount}
+                won={wonCount}
+                leadsBySource={leadsBySource}
+                lostReasons={lostReasons}
+              />
             </div>
 
             {/* Активность */}
