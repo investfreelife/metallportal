@@ -1,13 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { formatCurrency, formatRelativeTime } from '@/lib/utils'
-
-function getInitials(name: string | null): string {
-  if (!name) return '?'
-  return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
-}
 import Link from 'next/link'
 import DashboardQueue from './DashboardQueue'
-import { FunnelClient } from '@/components/dashboard/FunnelClient'
+import { FunnelWithDrawers } from '@/components/dashboard/FunnelDrawers'
+import { TrafficChannels } from '@/components/dashboard/TrafficChannels'
 import { DashboardRealtime } from '@/components/dashboard/DashboardRealtime'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
@@ -24,14 +20,20 @@ const ACTIVITY_ICONS: Record<string, string> = {
   call: '📞', email: '✉', message: '💬', note: '📝', ai_action: '★',
 }
 
+function getInitials(name: string | null): string {
+  if (!name) return '?'
+  return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+}
+
 export default async function DashboardPage() {
   const supabase = await createClient()
 
   const todayStr = new Date().toISOString().split('T')[0]
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
 
   const [
-    { count: hotLeads },
+    { count: hotLeadsCount },
     { count: hotLeadsLastWeek },
     { count: pendingQueueCount },
     { data: dealsRaw },
@@ -40,12 +42,17 @@ export default async function DashboardPage() {
     { data: recentActivities },
     { count: unreadEmails },
     { data: insightRow },
-    { data: leadSources },
-    { data: lostDeals },
+    { data: contactSources },
+    { data: lostDealsRaw },
+    { data: wonDealsRaw },
+    { count: unreadEmailsLastWeek },
   ] = await Promise.all([
-    supabase.from('contacts').select('id', { count: 'exact', head: true }).eq('tenant_id', TENANT_ID).gt('ai_score', 60),
-    supabase.from('contacts').select('id', { count: 'exact', head: true }).eq('tenant_id', TENANT_ID).gt('ai_score', 60).lt('created_at', weekAgo),
-    supabase.from('ai_queue').select('id', { count: 'exact', head: true }).eq('tenant_id', TENANT_ID).eq('status', 'pending'),
+    supabase.from('contacts').select('id', { count: 'exact', head: true })
+      .eq('tenant_id', TENANT_ID).gt('ai_score', 60),
+    supabase.from('contacts').select('id', { count: 'exact', head: true })
+      .eq('tenant_id', TENANT_ID).gt('ai_score', 60).lt('updated_at', weekAgo),
+    supabase.from('ai_queue').select('id', { count: 'exact', head: true })
+      .eq('tenant_id', TENANT_ID).eq('status', 'pending'),
     supabase.from('deals').select('stage, amount').eq('tenant_id', TENANT_ID),
     supabase.from('ai_queue')
       .select('id, action_type, priority, ai_reasoning, content, created_at, contact:contacts(full_name, company_name)')
@@ -58,40 +65,53 @@ export default async function DashboardPage() {
       .eq('tenant_id', TENANT_ID).order('created_at', { ascending: false }).limit(5),
     supabase.from('emails').select('id', { count: 'exact', head: true })
       .eq('tenant_id', TENANT_ID).eq('is_read', false).eq('direction', 'inbound'),
-    supabase.from('tenant_settings').select('value').eq('tenant_id', TENANT_ID).eq('key', `ai_insight_${todayStr}`).maybeSingle(),
-    supabase.from('contacts').select('source').eq('tenant_id', TENANT_ID).not('source', 'is', null),
-    supabase.from('deals').select('lost_reason').eq('tenant_id', TENANT_ID).eq('stage', 'lost').not('lost_reason', 'is', null),
+    supabase.from('tenant_settings').select('value')
+      .eq('tenant_id', TENANT_ID).eq('key', `ai_insight_${todayStr}`).maybeSingle(),
+    supabase.from('contacts').select('source').eq('tenant_id', TENANT_ID),
+    supabase.from('deals').select('lost_reason, amount')
+      .eq('tenant_id', TENANT_ID).eq('stage', 'lost'),
+    supabase.from('deals').select('amount, closed_at')
+      .eq('tenant_id', TENANT_ID).eq('stage', 'won').gte('closed_at', thirtyDaysAgo),
+    supabase.from('emails').select('id', { count: 'exact', head: true })
+      .eq('tenant_id', TENANT_ID).eq('is_read', false).eq('direction', 'inbound').lt('created_at', weekAgo),
   ])
 
   const allDeals = dealsRaw ?? []
-  const pipelineTotal = allDeals.filter((d: { stage: string }) => !['won','lost'].includes(d.stage)).reduce((s: number, d: { amount: number }) => s + (d.amount ?? 0), 0)
-  const wonTotal = allDeals.filter((d: { stage: string }) => d.stage === 'won').reduce((s: number, d: { amount: number }) => s + (d.amount ?? 0), 0)
+  const pipelineTotal = allDeals
+    .filter((d: { stage: string }) => !['won', 'lost'].includes(d.stage))
+    .reduce((s: number, d: { amount: number }) => s + (d.amount ?? 0), 0)
+  const wonTotal = allDeals
+    .filter((d: { stage: string }) => d.stage === 'won')
+    .reduce((s: number, d: { amount: number }) => s + (d.amount ?? 0), 0)
 
-  const stageGroups = ['new','qualified','proposal','negotiation','won'].map(stage => ({
+  const stageGroups = ['new', 'qualified', 'proposal', 'negotiation', 'won'].map(stage => ({
     stage,
     label: STAGE_LABELS[stage],
     color: STAGE_COLORS[stage],
     count: allDeals.filter((d: { stage: string }) => d.stage === stage).length,
-    amount: allDeals.filter((d: { stage: string }) => d.stage === stage).reduce((s: number, d: { amount: number }) => s + (d.amount ?? 0), 0),
+    amount: allDeals
+      .filter((d: { stage: string }) => d.stage === stage)
+      .reduce((s: number, d: { amount: number }) => s + (d.amount ?? 0), 0),
   }))
 
-  const insight = (insightRow as { value?: string } | null)?.value ?? null
+  const proposalCount = stageGroups.find(s => s.stage === 'proposal')?.count ?? 0
+  const negotiationCount = stageGroups.find(s => s.stage === 'negotiation')?.count ?? 0
+  const wonCount = stageGroups.find(s => s.stage === 'won')?.count ?? 0
 
-  const todayDate = new Date().toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' })
-
-  // Агрегация источников лидов
+  // Источники лидов
   const sourceMap: Record<string, number> = {}
-  leadSources?.forEach((c: { source: string | null }) => {
+  contactSources?.forEach((c: { source: string | null }) => {
     const s = c.source || 'Прямые'
     sourceMap[s] = (sourceMap[s] || 0) + 1
   })
   const leadsBySource = Object.entries(sourceMap)
     .map(([source, count]) => ({ source, count }))
     .sort((a, b) => b.count - a.count)
+    .slice(0, 6)
 
-  // Агрегация причин проигрышей
+  // Причины проигрышей
   const reasonMap: Record<string, number> = {}
-  lostDeals?.forEach((d: { lost_reason: string | null }) => {
+  lostDealsRaw?.forEach((d: { lost_reason: string | null }) => {
     const r = d.lost_reason || 'Не указана'
     reasonMap[r] = (reasonMap[r] || 0) + 1
   })
@@ -99,18 +119,18 @@ export default async function DashboardPage() {
     .map(([reason, count]) => ({ reason, count }))
     .sort((a, b) => b.count - a.count)
 
-  // Дельта горячих лидов
-  const hotLeadsNow = hotLeads ?? 0
-  const hotDelta = hotLeadsNow - (hotLeadsLastWeek ?? 0)
-  const hotDeltaLabel = hotDelta > 0 ? `+${hotDelta} за неделю` : hotDelta < 0 ? `${hotDelta} за неделю` : 'без изменений'
-  const hotDeltaColor = hotDelta > 0 ? '#22c55e' : hotDelta < 0 ? '#ef4444' : '#9ca3af'
+  // Выручка за 30 дней
+  const wonAmount = wonDealsRaw?.reduce((s: number, d: { amount: number | null }) => s + (d.amount ?? 0), 0) ?? 0
 
-  const proposalCount = stageGroups.find(s => s.stage === 'proposal')?.count ?? 0
-  const negotiationCount = stageGroups.find(s => s.stage === 'negotiation')?.count ?? 0
-  const wonCount = stageGroups.find(s => s.stage === 'won')?.count ?? 0
+  // Дельты
+  const hotDelta = (hotLeadsCount ?? 0) - (hotLeadsLastWeek ?? 0)
+  const emailDelta = (unreadEmails ?? 0) - (unreadEmailsLastWeek ?? 0)
+
+  const insight = (insightRow as { value?: string } | null)?.value ?? null
+  const todayDate = new Date().toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' })
 
   return (
-    <div className="bg-gray-50">
+    <div className="bg-gray-50 min-h-full">
       <DashboardRealtime tenantId={TENANT_ID} />
 
       {/* Topbar */}
@@ -127,34 +147,40 @@ export default async function DashboardPage() {
       </div>
 
       <div className="p-4 space-y-4">
-        {/* 4 метрики */}
+        {/* 4 метрики с дельтами */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <Link href="/contacts">
+          <Link href="/contacts?filter=hot">
             <div className="bg-white border border-gray-200 rounded-xl p-3 cursor-pointer hover:border-blue-300 hover:shadow-sm transition-all">
               <div className="text-[11px] text-gray-500 mb-1">Горячих лидов</div>
-              <div className="text-2xl font-medium text-gray-900">{hotLeadsNow}</div>
-              <div className="text-[11px] mt-0.5" style={{ color: hotDeltaColor }}>{hotDeltaLabel}</div>
+              <div className="text-2xl font-medium text-gray-900">{hotLeadsCount ?? 0}</div>
+              <div className={`text-[10px] mt-1 ${hotDelta > 0 ? 'text-green-600' : hotDelta < 0 ? 'text-red-500' : 'text-gray-400'}`}>
+                {hotDelta > 0 ? `↑ +${hotDelta}` : hotDelta < 0 ? `↓ ${hotDelta}` : '—'} за неделю
+              </div>
             </div>
           </Link>
           <Link href="/deals">
             <div className="bg-white border border-gray-200 rounded-xl p-3 cursor-pointer hover:border-blue-300 hover:shadow-sm transition-all">
               <div className="text-[11px] text-gray-500 mb-1">Pipeline</div>
               <div className="text-2xl font-medium text-gray-900">{formatCurrency(pipelineTotal)}</div>
-              <div className="text-[11px] mt-0.5" style={{ color: '#1a56db' }}>закрыто {formatCurrency(wonTotal)} ₽</div>
+              <div className="text-[10px] mt-1 text-gray-400">
+                закрыто {formatCurrency(wonTotal)}
+              </div>
             </div>
           </Link>
           <Link href="/queue">
             <div className="bg-white border border-gray-200 rounded-xl p-3 cursor-pointer hover:border-blue-300 hover:shadow-sm transition-all">
               <div className="text-[11px] text-gray-500 mb-1">Задач ИИ</div>
               <div className="text-2xl font-medium text-gray-900">{pendingQueueCount ?? 0}</div>
-              <div className="text-[11px] mt-0.5" style={{ color: '#8b5cf6' }}>ждут одобрения</div>
+              <div className="text-[10px] mt-1 text-gray-400">ждут одобрения</div>
             </div>
           </Link>
           <Link href="/emails">
             <div className="bg-white border border-gray-200 rounded-xl p-3 cursor-pointer hover:border-blue-300 hover:shadow-sm transition-all">
               <div className="text-[11px] text-gray-500 mb-1">Новых писем</div>
               <div className="text-2xl font-medium text-gray-900">{unreadEmails ?? 0}</div>
-              <div className="text-[11px] mt-0.5" style={{ color: '#EF9F27' }}>непрочитанных</div>
+              <div className={`text-[10px] mt-1 ${emailDelta > 0 ? 'text-red-500' : emailDelta < 0 ? 'text-green-600' : 'text-gray-400'}`}>
+                {emailDelta > 0 ? `↑ +${emailDelta}` : emailDelta < 0 ? `↓ ${emailDelta}` : '—'} за неделю
+              </div>
             </div>
           </Link>
         </div>
@@ -183,25 +209,36 @@ export default async function DashboardPage() {
               <span className="text-xs font-medium text-gray-700">Очередь ИИ</span>
               <Link href="/queue" className="text-[11px] text-blue-600 hover:text-blue-700">все →</Link>
             </div>
-            <DashboardQueue items={(queueItems ?? []).map((item: any) => ({ ...item, contact: Array.isArray(item.contact) ? item.contact[0] ?? null : item.contact }))} />
+            <DashboardQueue items={(queueItems ?? []).map((item: any) => ({
+              ...item,
+              contact: Array.isArray(item.contact) ? item.contact[0] ?? null : item.contact,
+            }))} />
           </div>
 
           {/* Правая: воронка + активность */}
           <div className="flex flex-col gap-3">
             {/* Воронка */}
             <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-              <div className="px-4 py-2.5 border-b border-gray-100">
+              <div className="px-4 py-2.5 border-b border-gray-100 flex items-center justify-between">
                 <span className="text-xs font-medium text-gray-700">Воронка продаж</span>
+                <span className="text-[10px] text-gray-400">клик = детали</span>
               </div>
-              <FunnelClient
-                visitors={1240}
-                leads={hotLeadsNow}
-                proposals={proposalCount}
-                negotiations={negotiationCount}
-                won={wonCount}
-                leadsBySource={leadsBySource}
-                lostReasons={lostReasons}
-              />
+              <div className="p-3">
+                <FunnelWithDrawers
+                  steps={[
+                    { key: 'visitors', label: 'Посетители', value: 1240, color: '#378ADD' },
+                    { key: 'leads', label: 'Лиды', value: hotLeadsCount ?? 0, color: '#27A882' },
+                    { key: 'proposals', label: 'КП', value: proposalCount, color: '#EF9F27' },
+                    { key: 'negotiations', label: 'Переговоры', value: negotiationCount, color: '#E87444' },
+                    { key: 'won', label: 'Закрыто ✓', value: wonCount, color: '#639922' },
+                  ]}
+                  leadsBySource={leadsBySource}
+                  lostReasons={lostReasons}
+                  totalLeads={hotLeadsCount ?? 0}
+                  wonAmount={wonAmount}
+                  avgDealDays={12}
+                />
+              </div>
             </div>
 
             {/* Активность */}
@@ -231,8 +268,8 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Нижняя строка: Pipeline + Горячие лиды */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        {/* Нижняя строка: Pipeline + Горячие лиды + Каналы трафика */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
           {/* Pipeline по стадиям */}
           <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
             <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-100">
@@ -264,14 +301,11 @@ export default async function DashboardPage() {
               {(hotContacts ?? []).map((c: { id: string; full_name: string | null; company_name: string | null; ai_score: number; ai_segment: string | null }) => (
                 <Link key={c.id} href={`/contacts/${c.id}`}>
                   <div className="flex items-center gap-2.5 px-4 py-2 hover:bg-gray-50 transition-colors">
-                    <div
-                      className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-medium flex-shrink-0 ${
-                        c.ai_segment === 'hot' ? 'bg-red-50 text-red-700' :
-                        c.ai_segment === 'warm' ? 'bg-amber-50 text-amber-700' :
-                        c.ai_segment === 'cold' ? 'bg-blue-50 text-blue-700' :
-                        'bg-gray-100 text-gray-600'
-                      }`}
-                    >
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-medium flex-shrink-0 ${
+                      c.ai_segment === 'hot' ? 'bg-red-50 text-red-700' :
+                      c.ai_segment === 'warm' ? 'bg-amber-50 text-amber-700' :
+                      'bg-gray-100 text-gray-600'
+                    }`}>
                       {getInitials(c.full_name)}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -287,6 +321,17 @@ export default async function DashboardPage() {
                   </div>
                 </Link>
               ))}
+            </div>
+          </div>
+
+          {/* Каналы трафика */}
+          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-100">
+              <span className="text-xs font-medium text-gray-700">Каналы трафика</span>
+              <span className="text-[10px] text-blue-600">ROI ↗</span>
+            </div>
+            <div className="p-3">
+              <TrafficChannels />
             </div>
           </div>
         </div>
