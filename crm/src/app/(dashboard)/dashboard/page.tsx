@@ -57,19 +57,30 @@ export default async function DashboardPage() {
   ])
 
   // Phase 2: дополнительные данные
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
   const [
     { data: contactSources },
     { data: lostDealsRaw },
     { data: wonDealsRaw },
     { count: hotLeadsWeekAgo },
+    { count: visitorsCount },
+    { count: sessionsCount },
+    { data: rawPageViews },
   ] = await Promise.all([
     supabase.from('contacts').select('source').eq('tenant_id', TENANT_ID),
     supabase.from('deals').select('lost_reason, amount').eq('tenant_id', TENANT_ID).eq('stage', 'lost'),
     supabase.from('deals').select('amount').eq('tenant_id', TENANT_ID).eq('stage', 'won')
-      .gte('closed_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()),
+      .gte('closed_at', thirtyDaysAgo),
     supabase.from('contacts').select('id', { count: 'exact', head: true })
       .eq('tenant_id', TENANT_ID).gt('ai_score', 60)
       .lt('updated_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()),
+    supabase.from('site_events').select('id', { count: 'exact', head: true })
+      .eq('tenant_id', TENANT_ID).eq('event_type', 'page_view').gte('created_at', thirtyDaysAgo),
+    supabase.from('site_events').select('id', { count: 'exact', head: true })
+      .eq('tenant_id', TENANT_ID).gte('created_at', thirtyDaysAgo),
+    supabase.from('site_events').select('created_at, url, utm_source')
+      .eq('tenant_id', TENANT_ID).eq('event_type', 'page_view')
+      .gte('created_at', thirtyDaysAgo).order('created_at', { ascending: true }),
   ])
 
   const sourceMap: Record<string, number> = {}
@@ -83,6 +94,53 @@ export default async function DashboardPage() {
   const wonAmount = wonDealsRaw?.reduce((s: number, d: { amount: number | null }) => s + (d.amount || 0), 0) ?? 0
   const hotDelta = (hotLeads ?? 0) - (hotLeadsWeekAgo ?? 0)
   const avgDealDays = 14
+
+  // Группируем site_events по дням для графика
+  const timelineMap: Record<string, number> = {}
+  rawPageViews?.forEach((e: { created_at: string }) => {
+    const day = e.created_at.split('T')[0]
+    timelineMap[day] = (timelineMap[day] || 0) + 1
+  })
+  const visitorsTimeline = Object.entries(timelineMap)
+    .map(([date, count]) => ({ date, count }))
+    .sort((a, b) => a.date.localeCompare(b.date))
+
+  // Топ страниц входа
+  const pagesMap: Record<string, number> = {}
+  rawPageViews?.forEach((e: { url: string | null }) => {
+    if (e.url) pagesMap[e.url] = (pagesMap[e.url] || 0) + 1
+  })
+  const topPages = Object.entries(pagesMap)
+    .map(([url, count]) => ({ url, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5)
+
+  // Каналы из utm_source событий + источников контактов
+  const channelColors: Record<string, string> = {
+    'яндекс': '#378ADD', 'yandex': '#378ADD', 'yandex.direct': '#378ADD',
+    'органика': '#27A882', 'organic': '#27A882', 'seo': '#27A882',
+    'прямые': '#EF9F27', 'direct': '#EF9F27', 'none': '#EF9F27',
+    'google': '#E87444',
+    'vk': '#0077FF', 'вк': '#0077FF', 'vkontakte': '#0077FF',
+    'telegram': '#7F77DD', 'тг': '#7F77DD',
+    'referral': '#534AB7', 'реферал': '#534AB7',
+  }
+  const utmMap: Record<string, number> = {}
+  rawPageViews?.forEach((e: { utm_source: string | null }) => {
+    const src = (e.utm_source || 'Прямые').toLowerCase()
+    utmMap[src] = (utmMap[src] || 0) + 1
+  })
+  const channels = Object.entries(utmMap).map(([src, vis]) => {
+    const leadsFromSrc = leadsBySource.find(l => l.source?.toLowerCase() === src)?.count || 0
+    const colorKey = Object.keys(channelColors).find(k => src.includes(k))
+    return {
+      name: src.charAt(0).toUpperCase() + src.slice(1),
+      visitors: vis,
+      leads: leadsFromSrc,
+      cost: 0,
+      color: colorKey ? channelColors[colorKey] : '#888780',
+    }
+  }).sort((a, b) => b.visitors - a.visitors)
 
   const allDeals = dealsRaw ?? []
   const pipelineTotal = allDeals.filter((d: { stage: string }) => !['won','lost'].includes(d.stage)).reduce((s: number, d: { amount: number }) => s + (d.amount ?? 0), 0)
@@ -101,7 +159,7 @@ export default async function DashboardPage() {
   const todayDate = new Date().toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' })
 
   const funnelSteps = [
-    { key: 'visitors', label: 'Посетители', value: 1240, color: '#4A90D9' },
+    { key: 'visitors', label: 'Посетители', value: visitorsCount ?? 0, color: '#4A90D9' },
     { key: 'leads', label: 'Лиды', value: hotLeads ?? 0, color: '#2EAF82' },
     { key: 'proposals', label: 'КП', value: stageGroups.find(s => s.stage === 'proposal')?.count ?? 0, color: '#EF9F27' },
     { key: 'negotiations', label: 'Переговоры', value: stageGroups.find(s => s.stage === 'negotiation')?.count ?? 0, color: '#E24B4A' },
@@ -190,6 +248,9 @@ export default async function DashboardPage() {
                   lostReasons={lostReasons}
                   wonAmount={wonAmount}
                   avgDealDays={avgDealDays}
+                  visitorsTimeline={visitorsTimeline}
+                  topPages={topPages}
+                  sessionsCount={sessionsCount ?? 0}
                 />
               </div>
             </div>
@@ -201,7 +262,11 @@ export default async function DashboardPage() {
                 <span className="text-[10px] text-gray-400">нажми для анализа</span>
               </div>
               <div className="p-3">
-                <TrafficChannels />
+                <TrafficChannels
+                  channels={channels}
+                  totalVisitors={visitorsCount ?? 0}
+                  totalLeads={leadsBySource.reduce((s, l) => s + l.count, 0)}
+                />
               </div>
             </div>
 

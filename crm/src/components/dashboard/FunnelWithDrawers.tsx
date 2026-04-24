@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Drawer } from '@/components/ui/Drawer'
 import { StatCard } from '@/components/ui/StatCard'
 import { RankBar } from '@/components/ui/RankBar'
@@ -11,9 +11,50 @@ interface Props {
   lostReasons: { reason: string; count: number }[]
   wonAmount: number
   avgDealDays: number
+  visitorsTimeline: { date: string; count: number }[]
+  topPages: { url: string; count: number }[]
+  sessionsCount: number
 }
 
-export function FunnelWithDrawers({ steps, leadsBySource, lostReasons, wonAmount, avgDealDays }: Props) {
+function VisitorsChart({ data }: { data: { date: string; count: number }[] }) {
+  const ref = useRef<HTMLCanvasElement>(null)
+  const instance = useRef<any>(null)
+
+  useEffect(() => {
+    if (!ref.current || data.length === 0) return
+    let destroyed = false
+    import('chart.js').then(({ Chart, LineElement, PointElement, CategoryScale, LinearScale, Filler, Tooltip }) => {
+      if (destroyed) return
+      Chart.register(LineElement, PointElement, CategoryScale, LinearScale, Filler, Tooltip)
+      if (instance.current) instance.current.destroy()
+      instance.current = new Chart(ref.current!, {
+        type: 'line',
+        data: {
+          labels: data.map(d => new Date(d.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })),
+          datasets: [{ label: 'Визиты', data: data.map(d => d.count), borderColor: '#378ADD', backgroundColor: '#378ADD22', fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: '#378ADD' }],
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { font: { size: 9 }, maxTicksLimit: 7 } },
+            y: { grid: { color: '#f5f5f5' }, ticks: { font: { size: 9 } }, beginAtZero: true },
+          }
+        }
+      })
+    })
+    return () => { destroyed = true; if (instance.current) instance.current.destroy() }
+  }, [data])
+
+  if (data.length === 0) return (
+    <div className="h-[120px] flex items-center justify-center bg-gray-50 rounded-lg">
+      <span className="text-[11px] text-gray-400">Нет данных за период</span>
+    </div>
+  )
+  return <div style={{ position: 'relative', height: 130 }}><canvas ref={ref} /></div>
+}
+
+export function FunnelWithDrawers({ steps, leadsBySource, lostReasons, wonAmount, avgDealDays, visitorsTimeline, topPages, sessionsCount }: Props) {
   const [active, setActive] = useState<string | null>(null)
   const maxVal = steps[0]?.value || 1
 
@@ -24,40 +65,55 @@ export function FunnelWithDrawers({ steps, leadsBySource, lostReasons, wonAmount
     return ((cur / prev) * 100).toFixed(1)
   }
 
+  const noTrackingState = (
+    <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+      <div className="text-[12px] font-medium text-amber-800 mb-2">Трекинг не подключён</div>
+      <div className="text-[11px] text-amber-700 leading-relaxed mb-3">
+        Данных нет. Трекинг-скрипт уже добавлен на сайт — проверьте что он отправляет события.
+      </div>
+      <div className="bg-white border border-amber-300 rounded-lg p-2">
+        <div className="text-[9px] text-amber-600 mb-1 font-medium">Тест в DevTools → Console:</div>
+        <code className="text-[10px] text-gray-800 break-all">mpTrack(&apos;test_event&apos;, &#123;&#125;)</code>
+      </div>
+    </div>
+  )
+
   const drawerContent: Record<string, { title: string; subtitle: string; body: React.ReactNode }> = {
     visitors: {
-      title: 'Откуда пришли посетители',
-      subtitle: 'Трафик за 30 дней',
+      title: 'Посетители сайта',
+      subtitle: 'Трафик за последние 30 дней',
       body: (
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-2">
             <StatCard label="Визитов всего" value={(steps[0]?.value || 0).toLocaleString('ru-RU')} />
-            <StatCard label="Уникальных" value={Math.round((steps[0]?.value || 0) * 0.78).toLocaleString('ru-RU')} />
+            <StatCard label="Уникальных сессий" value={(sessionsCount || 0).toLocaleString('ru-RU')} />
           </div>
-          <div>
-            <p className="text-[11px] font-medium text-gray-700 mb-2">Источники трафика</p>
-            {(leadsBySource.length > 0 ? leadsBySource : [
-              { source: 'Яндекс.Директ', count: 487 },
-              { source: 'Органика', count: 312 },
-              { source: 'Прямые', count: 198 },
-              { source: 'Google', count: 142 },
-              { source: 'VK', count: 67 },
-              { source: 'Telegram', count: 34 },
-            ]).map(s => (
-              <RankBar key={s.source} label={s.source} value={s.count}
-                max={leadsBySource[0]?.count || 487} color="#378ADD" />
-            ))}
-          </div>
-          <div>
-            <p className="text-[11px] font-medium text-gray-700 mb-2">Топ страниц входа</p>
-            {[
-              { label: '/catalog/truby', value: 340 },
-              { label: '/catalog/armatura', value: 220 },
-              { label: '/ (главная)', value: 180 },
-              { label: '/catalog/list-gk', value: 95 },
-              { label: '/catalog/balki', value: 62 },
-            ].map(p => <RankBar key={p.label} label={p.label} value={p.value} max={340} color="#534AB7" />)}
-          </div>
+          {steps[0]?.value === 0 ? noTrackingState : (
+            <>
+              <div>
+                <p className="text-[11px] font-medium text-gray-700 mb-2">Визиты по дням</p>
+                <VisitorsChart data={visitorsTimeline} />
+              </div>
+              {leadsBySource.length > 0 && (
+                <div>
+                  <p className="text-[11px] font-medium text-gray-700 mb-2">Источники трафика</p>
+                  {leadsBySource.map(s => (
+                    <RankBar key={s.source} label={s.source || 'Прямые'} value={s.count}
+                      max={leadsBySource[0]?.count || 1} color="#378ADD" />
+                  ))}
+                </div>
+              )}
+              {topPages.length > 0 && (
+                <div>
+                  <p className="text-[11px] font-medium text-gray-700 mb-2">Топ страниц входа</p>
+                  {topPages.map(p => (
+                    <RankBar key={p.url} label={p.url} value={p.count}
+                      max={topPages[0]?.count || 1} color="#534AB7" />
+                  ))}
+                </div>
+              )}
+            </>
+          )}
         </div>
       )
     },
@@ -71,23 +127,26 @@ export function FunnelWithDrawers({ steps, leadsBySource, lostReasons, wonAmount
               value={`${steps[0]?.value > 0 ? ((steps[1]?.value / steps[0]?.value) * 100).toFixed(1) : 0}%`}
               delta={steps[0]?.value > 0 && (steps[1]?.value / steps[0]?.value) < 0.1 ? '⚠ Норма: 10-20%' : '✓ В норме'}
               deltaType={steps[0]?.value > 0 && (steps[1]?.value / steps[0]?.value) < 0.1 ? 'down' : 'up'} />
-            <StatCard label="Лидов за 30 дней" value={steps[1]?.value || 0} />
+            <StatCard label="Лидов всего" value={steps[1]?.value || 0} />
           </div>
-          <div>
-            <p className="text-[11px] font-medium text-gray-700 mb-2">Откуда приходят лиды</p>
-            {[
-              { label: 'Форма на сайте', value: 45, color: '#378ADD' },
-              { label: 'Telegram бот', value: 22, color: '#7F77DD' },
-              { label: 'Входящий звонок', value: 15, color: '#27A882' },
-              { label: 'VK сообщество', value: 9, color: '#E87444' },
-              { label: 'Email', value: 7, color: '#EF9F27' },
-            ].map(s => <RankBar key={s.label} label={s.label} value={s.value} max={45} color={s.color} />)}
-          </div>
+          {leadsBySource.length > 0 ? (
+            <div>
+              <p className="text-[11px] font-medium text-gray-700 mb-2">Откуда приходят лиды</p>
+              {leadsBySource.map(s => (
+                <RankBar key={s.source} label={s.source || 'Прямые'}
+                  value={s.count} max={leadsBySource[0]?.count || 1} color="#27A882" />
+              ))}
+            </div>
+          ) : (
+            <div className="text-[11px] text-gray-500 text-center py-4 bg-gray-50 rounded-lg">
+              Нет данных об источниках лидов
+            </div>
+          )}
           {steps[0]?.value > 0 && (steps[1]?.value / steps[0]?.value) < 0.1 && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-3">
               <p className="text-[11px] font-medium text-red-700 mb-1">Узкое горлышко</p>
               <p className="text-[11px] text-red-600 leading-relaxed">
-                Конверсия ниже нормы. Рекомендации ИИ:<br/>
+                Конверсия ниже нормы. Рекомендации:<br/>
                 1. Popup при намерении уйти<br/>
                 2. Упростить форму — только телефон<br/>
                 3. Кнопка &quot;Рассчитать стоимость&quot; на каждой карточке
@@ -109,13 +168,6 @@ export function FunnelWithDrawers({ steps, leadsBySource, lostReasons, wonAmount
               value={(steps[1]?.value || 0) - (steps[2]?.value || 0)}
               delta="потенциальных клиентов" deltaType="down" />
           </div>
-          <div>
-            <p className="text-[11px] font-medium text-gray-700 mb-2">Скорость отправки КП</p>
-            {[
-              { label: 'ИИ автоматически', value: 12, color: '#27A882', suffix: ' мин' },
-              { label: 'Менеджер', value: 254, color: '#EF9F27', suffix: ' мин' },
-            ].map(s => <RankBar key={s.label} label={s.label} value={s.value} max={254} color={s.color} suffix={s.suffix} />)}
-          </div>
           <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
             <p className="text-[11px] font-medium text-purple-700 mb-1">Рекомендация ИИ</p>
             <p className="text-[11px] text-purple-600 leading-relaxed">
@@ -135,22 +187,16 @@ export function FunnelWithDrawers({ steps, leadsBySource, lostReasons, wonAmount
             <StatCard label="Сделок в работе" value={steps[3]?.value || 0} />
             <StatCard label="Средний срок" value={`${avgDealDays} дн`} delta="до решения" deltaType="neutral" />
           </div>
-          <div>
-            <p className="text-[11px] font-medium text-gray-700 mb-2">Топ возражений клиентов</p>
-            {[
-              { label: 'Дорого', value: 8, color: '#E24B4A' },
-              { label: 'Думают', value: 6, color: '#EF9F27' },
-              { label: 'Есть поставщик', value: 4, color: '#E87444' },
-              { label: 'Нет бюджета', value: 3, color: '#7F77DD' },
-              { label: 'Долго', value: 2, color: '#378ADD' },
-            ].map(s => <RankBar key={s.label} label={s.label} value={s.value} max={8} color={s.color} />)}
-          </div>
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-            <p className="text-[11px] font-medium text-amber-700 mb-1">Скрипты ИИ на возражения</p>
+            <p className="text-[11px] font-medium text-amber-700 mb-1">Типовые скрипты на возражения</p>
             <p className="text-[11px] text-amber-600 leading-relaxed">
               На &quot;дорого&quot;: предложить рассрочку или разбить на 2 поставки.<br/>
-              На &quot;думают&quot;: позвонить через 2 дня, предложить доп. скидку 3%.
+              На &quot;думают&quot;: позвонить через 2 дня, предложить доп. скидку 3%.<br/>
+              На &quot;есть поставщик&quot;: спросить о сроках и надёжности.
             </p>
+          </div>
+          <div className="text-[11px] text-gray-500 text-center py-2">
+            Возражения появятся после заполнения поля &quot;Причина отказа&quot; в сделках
           </div>
         </div>
       )
@@ -173,7 +219,7 @@ export function FunnelWithDrawers({ steps, leadsBySource, lostReasons, wonAmount
               value={steps[4]?.value > 0 ? `${Math.round(wonAmount / steps[4].value / 1000)}К ₽` : '—'} />
             <StatCard label="Цикл сделки" value={`${avgDealDays} дней`} />
           </div>
-          {lostReasons.length > 0 && (
+          {lostReasons.length > 0 ? (
             <div>
               <p className="text-[11px] font-medium text-gray-700 mb-2">Причины проигрышей</p>
               {lostReasons.map(r => (
@@ -181,16 +227,11 @@ export function FunnelWithDrawers({ steps, leadsBySource, lostReasons, wonAmount
                   value={r.count} max={lostReasons[0]?.count || 1} color="#E24B4A" />
               ))}
             </div>
+          ) : (
+            <div className="text-[11px] text-gray-500 text-center py-3 bg-gray-50 rounded-lg">
+              Нет данных о причинах проигрышей.<br/>Заполняйте поле в карточке сделки при отказе.
+            </div>
           )}
-          <div>
-            <p className="text-[11px] font-medium text-gray-700 mb-2">Лучшие источники побед</p>
-            {[
-              { label: 'Органика', value: 5, color: '#27A882' },
-              { label: 'Яндекс.Директ', value: 3, color: '#378ADD' },
-              { label: 'Рекомендации', value: 2, color: '#7F77DD' },
-              { label: 'VK', value: 1, color: '#E87444' },
-            ].map(s => <RankBar key={s.label} label={s.label} value={s.value} max={5} color={s.color} />)}
-          </div>
         </div>
       )
     }

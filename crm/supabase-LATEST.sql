@@ -257,6 +257,32 @@ CREATE INDEX IF NOT EXISTS idx_calls_tenant ON calls(tenant_id, created_at DESC)
 CREATE INDEX IF NOT EXISTS idx_calls_contact ON calls(contact_id, created_at DESC);
 
 -- ══════════════════════════════════════════════════════════════
+-- PHASE 2: SITE EVENTS (Трекинг)
+-- ══════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS site_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  tenant_id UUID NOT NULL,
+  contact_id UUID REFERENCES contacts(id),
+  session_id TEXT,
+  visitor_id TEXT,
+  event_type TEXT NOT NULL,
+  event_data JSONB DEFAULT '{}',
+  url TEXT,
+  referrer TEXT,
+  utm_source TEXT,
+  utm_campaign TEXT,
+  device TEXT,
+  city TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+ALTER TABLE site_events ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "service_role_all" ON site_events;
+CREATE POLICY "service_role_all" ON site_events FOR ALL USING (true) WITH CHECK (true);
+CREATE INDEX IF NOT EXISTS idx_site_events_tenant ON site_events(tenant_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_site_events_visitor ON site_events(visitor_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_site_events_type ON site_events(tenant_id, event_type, created_at DESC);
+
+-- ══════════════════════════════════════════════════════════════
 -- ПРОВЕРКА — должны показать все таблицы с RLS ✅
 -- ══════════════════════════════════════════════════════════════
 SELECT
