@@ -2,6 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { formatMoney, timeAgo, getInitials, getActionTypeLabel } from '@/lib/utils'
 import Link from 'next/link'
 import DashboardQueue from './DashboardQueue'
+import { FunnelWithDrawers } from '@/components/dashboard/FunnelWithDrawers'
+import { TrafficChannels } from '@/components/dashboard/TrafficChannels'
+import { DashboardRealtime } from '@/components/dashboard/DashboardRealtime'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
@@ -49,6 +52,34 @@ export default async function DashboardPage() {
     supabase.from('tenant_settings').select('value').eq('tenant_id', TENANT_ID).eq('key', `ai_insight_${todayStr}`).maybeSingle(),
   ])
 
+  // Phase 2: дополнительные данные
+  const [
+    { data: contactSources },
+    { data: lostDealsRaw },
+    { data: wonDealsRaw },
+    { count: hotLeadsWeekAgo },
+  ] = await Promise.all([
+    supabase.from('contacts').select('source').eq('tenant_id', TENANT_ID),
+    supabase.from('deals').select('lost_reason, amount').eq('tenant_id', TENANT_ID).eq('stage', 'lost'),
+    supabase.from('deals').select('amount').eq('tenant_id', TENANT_ID).eq('stage', 'won')
+      .gte('closed_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()),
+    supabase.from('contacts').select('id', { count: 'exact', head: true })
+      .eq('tenant_id', TENANT_ID).gt('ai_score', 60)
+      .lt('updated_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()),
+  ])
+
+  const sourceMap: Record<string, number> = {}
+  contactSources?.forEach((c: { source: string | null }) => { const s = c.source || 'Прямые'; sourceMap[s] = (sourceMap[s] || 0) + 1 })
+  const leadsBySource = Object.entries(sourceMap).map(([source, count]) => ({ source, count })).sort((a, b) => b.count - a.count).slice(0, 8)
+
+  const reasonMap: Record<string, number> = {}
+  lostDealsRaw?.forEach((d: { lost_reason: string | null }) => { const r = d.lost_reason || 'Не указана'; reasonMap[r] = (reasonMap[r] || 0) + 1 })
+  const lostReasons = Object.entries(reasonMap).map(([reason, count]) => ({ reason, count })).sort((a, b) => b.count - a.count)
+
+  const wonAmount = wonDealsRaw?.reduce((s: number, d: { amount: number | null }) => s + (d.amount || 0), 0) ?? 0
+  const hotDelta = (hotLeads ?? 0) - (hotLeadsWeekAgo ?? 0)
+  const avgDealDays = 14
+
   const allDeals = dealsRaw ?? []
   const pipelineTotal = allDeals.filter((d: { stage: string }) => !['won','lost'].includes(d.stage)).reduce((s: number, d: { amount: number }) => s + (d.amount ?? 0), 0)
   const wonTotal = allDeals.filter((d: { stage: string }) => d.stage === 'won').reduce((s: number, d: { amount: number }) => s + (d.amount ?? 0), 0)
@@ -66,13 +97,12 @@ export default async function DashboardPage() {
   const todayDate = new Date().toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' })
 
   const funnelSteps = [
-    { label: 'Посетители', value: 1240, color: '#4A90D9' },
-    { label: 'Лиды', value: hotLeads ?? 0, color: '#2EAF82' },
-    { label: 'КП', value: stageGroups.find(s => s.stage === 'proposal')?.count ?? 0, color: '#EF9F27' },
-    { label: 'Переговоры', value: stageGroups.find(s => s.stage === 'negotiation')?.count ?? 0, color: '#E24B4A' },
-    { label: 'Закрыто', value: stageGroups.find(s => s.stage === 'won')?.count ?? 0, color: '#639922' },
+    { key: 'visitors', label: 'Посетители', value: 1240, color: '#4A90D9' },
+    { key: 'leads', label: 'Лиды', value: hotLeads ?? 0, color: '#2EAF82' },
+    { key: 'proposals', label: 'КП', value: stageGroups.find(s => s.stage === 'proposal')?.count ?? 0, color: '#EF9F27' },
+    { key: 'negotiations', label: 'Переговоры', value: stageGroups.find(s => s.stage === 'negotiation')?.count ?? 0, color: '#E24B4A' },
+    { key: 'won', label: 'Закрыто', value: stageGroups.find(s => s.stage === 'won')?.count ?? 0, color: '#639922' },
   ]
-  const funnelMax = funnelSteps[0].value || 1
 
   return (
     <div className="bg-gray-50">
@@ -93,7 +123,7 @@ export default async function DashboardPage() {
         {/* 4 метрики */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
-            { label: 'Горячих лидов', value: hotLeads ?? 0, delta: '→ контакты', href: '/contacts', color: '#E24B4A' },
+            { label: 'Горячих лидов', value: hotLeads ?? 0, delta: hotDelta > 0 ? `+${hotDelta} за неделю` : hotDelta < 0 ? `${hotDelta} за неделю` : '→ контакты', href: '/contacts', color: '#E24B4A' },
             { label: 'Pipeline', value: formatMoney(pipelineTotal), delta: `закрыто ${formatMoney(wonTotal)} ₽`, href: '/deals', color: '#1a56db' },
             { label: 'Задач ИИ', value: pendingQueueCount ?? 0, delta: 'ждут одобрения', href: '/queue', color: '#8b5cf6' },
             { label: 'Новых писем', value: unreadEmails ?? 0, delta: 'непрочитанных', href: '/emails', color: '#EF9F27' },
@@ -135,32 +165,33 @@ export default async function DashboardPage() {
             <DashboardQueue items={(queueItems ?? []).map((item: any) => ({ ...item, contact: Array.isArray(item.contact) ? item.contact[0] ?? null : item.contact }))} />
           </div>
 
-          {/* Правая: воронка + активность */}
+          {/* Правая: воронка + каналы + активность */}
           <div className="flex flex-col gap-3">
-            {/* Воронка */}
+            {/* Воронка — кликабельная */}
             <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-              <div className="px-4 py-2.5 border-b border-gray-100">
+              <div className="px-4 py-2.5 border-b border-gray-100 flex items-center justify-between">
                 <span className="text-xs font-medium text-gray-700">Воронка продаж</span>
+                <span className="text-[10px] text-gray-400">нажми на шаг</span>
               </div>
-              <div className="p-3 space-y-1.5">
-                {funnelSteps.map(step => (
-                  <div key={step.label} className="flex items-center gap-2">
-                    <div className="w-[72px] text-[11px] text-gray-500 text-right flex-shrink-0">{step.label}</div>
-                    <div className="flex-1 h-5 rounded-sm overflow-hidden" style={{ backgroundColor: '#e5e7eb' }}>
-                      <div
-                        className="h-full rounded-sm flex items-center px-1.5"
-                        style={{
-                          width: `${Math.max(4, Math.round((step.value / funnelMax) * 100))}%`,
-                          backgroundColor: step.color,
-                        }}
-                      >
-                        <span className="text-[11px] font-medium text-white">
-                          {step.value}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+              <div className="p-3">
+                <FunnelWithDrawers
+                  steps={funnelSteps}
+                  leadsBySource={leadsBySource}
+                  lostReasons={lostReasons}
+                  wonAmount={wonAmount}
+                  avgDealDays={avgDealDays}
+                />
+              </div>
+            </div>
+
+            {/* Каналы трафика */}
+            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              <div className="px-4 py-2.5 border-b border-gray-100 flex items-center justify-between">
+                <span className="text-xs font-medium text-gray-700">Каналы трафика</span>
+                <span className="text-[10px] text-gray-400">нажми для анализа</span>
+              </div>
+              <div className="p-3">
+                <TrafficChannels />
               </div>
             </div>
 
@@ -251,6 +282,7 @@ export default async function DashboardPage() {
           </div>
         </div>
       </div>
+      <DashboardRealtime tenantId={TENANT_ID} />
     </div>
   )
 }

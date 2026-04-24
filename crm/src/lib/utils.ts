@@ -83,6 +83,28 @@ export function getDealStageLabel(stage: string): string {
   }
 }
 
+export function formatMoney(value: number): string {
+  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}М`
+  if (value >= 1_000) return `${Math.round(value / 1_000)}К`
+  return value.toLocaleString('ru-RU')
+}
+
+export function timeAgo(date: string | null): string {
+  if (!date) return '—'
+  const diff = Date.now() - new Date(date).getTime()
+  const mins = Math.floor(diff / 60000)
+  if (mins < 1) return 'только что'
+  if (mins < 60) return `${mins} мин назад`
+  const hours = Math.floor(mins / 60)
+  if (hours < 24) return `${hours}ч назад`
+  return `${Math.floor(hours / 24)} дн назад`
+}
+
+export function getInitials(name: string | null): string {
+  if (!name) return '?'
+  return name.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase()
+}
+
 export function getActionTypeLabel(type: string): string {
   switch (type) {
     case 'send_email': return 'Отправить email'
