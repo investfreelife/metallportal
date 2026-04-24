@@ -1,5 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
-import { formatMoney, timeAgo, getInitials } from '@/lib/utils'
+import { formatCurrency, formatRelativeTime } from '@/lib/utils'
+
+function getInitials(name: string | null): string {
+  if (!name) return '?'
+  return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+}
 import Link from 'next/link'
 import DashboardQueue from './DashboardQueue'
 import { FunnelClient } from '@/components/dashboard/FunnelClient'
@@ -134,8 +139,8 @@ export default async function DashboardPage() {
           <Link href="/deals">
             <div className="bg-white border border-gray-200 rounded-xl p-3 cursor-pointer hover:border-blue-300 hover:shadow-sm transition-all">
               <div className="text-[11px] text-gray-500 mb-1">Pipeline</div>
-              <div className="text-2xl font-medium text-gray-900">{formatMoney(pipelineTotal)}</div>
-              <div className="text-[11px] mt-0.5" style={{ color: '#1a56db' }}>закрыто {formatMoney(wonTotal)} ₽</div>
+              <div className="text-2xl font-medium text-gray-900">{formatCurrency(pipelineTotal)}</div>
+              <div className="text-[11px] mt-0.5" style={{ color: '#1a56db' }}>закрыто {formatCurrency(wonTotal)} ₽</div>
             </div>
           </Link>
           <Link href="/queue">
@@ -217,7 +222,7 @@ export default async function DashboardPage() {
                       <div className="text-[11px] text-gray-700 truncate">
                         {(Array.isArray(a.contacts) ? a.contacts[0] : a.contacts)?.full_name ?? a.subject ?? a.type}
                       </div>
-                      <div className="text-[10px] text-gray-400">{timeAgo(a.created_at)}</div>
+                      <div className="text-[10px] text-gray-400">{formatRelativeTime(a.created_at)}</div>
                     </div>
                   </div>
                 ))}
@@ -239,7 +244,7 @@ export default async function DashboardPage() {
                 <div key={s.stage} className="text-center">
                   <div className="text-[10px] text-gray-400 mb-1 truncate">{s.label}</div>
                   <div className="text-base font-medium text-gray-900">{s.count}</div>
-                  <div className="text-[10px] text-gray-500">{formatMoney(s.amount)}</div>
+                  <div className="text-[10px] text-gray-500">{formatCurrency(s.amount)}</div>
                   <div className="mt-1.5 h-[3px] rounded-full" style={{ backgroundColor: s.color, opacity: s.count > 0 ? 1 : 0.2 }} />
                 </div>
               ))}
