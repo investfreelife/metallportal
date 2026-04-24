@@ -16,8 +16,12 @@ const STAGE_COLORS: Record<string, string> = {
   new: '#1a56db', qualified: '#EF9F27', proposal: '#8b5cf6',
   negotiation: '#E24B4A', won: '#639922',
 }
-const ACTIVITY_ICONS: Record<string, string> = {
-  call: '📞', email: '✉', message: '💬', note: '📝', ai_action: '★',
+const ACTIVITY_ICON_STYLES: Record<string, { bg: string; text: string; icon: string }> = {
+  call:      { bg: 'bg-green-100',  text: 'text-green-700',  icon: '📞' },
+  email:     { bg: 'bg-blue-100',   text: 'text-blue-700',   icon: '✉' },
+  ai_action: { bg: 'bg-purple-100', text: 'text-purple-700', icon: '★' },
+  message:   { bg: 'bg-gray-100',   text: 'text-gray-600',   icon: '💬' },
+  note:      { bg: 'bg-gray-100',   text: 'text-gray-600',   icon: '📝' },
 }
 
 export default async function DashboardPage() {
@@ -106,6 +110,9 @@ export default async function DashboardPage() {
 
   return (
     <div className="bg-gray-50">
+      <style>{`
+        .metric-card:hover { border-color: var(--card-color) !important; }
+      `}</style>
       {/* Topbar */}
       <div className="bg-white border-b border-gray-200 px-5 py-3 flex items-center gap-3 flex-shrink-0">
         <h1 className="text-[15px] font-medium text-gray-900 flex-1">Дашборд</h1>
@@ -125,13 +132,16 @@ export default async function DashboardPage() {
           {[
             { label: 'Горячих лидов', value: hotLeads ?? 0, delta: hotDelta > 0 ? `+${hotDelta} за неделю` : hotDelta < 0 ? `${hotDelta} за неделю` : '→ контакты', href: '/contacts', color: '#E24B4A' },
             { label: 'Pipeline', value: formatMoney(pipelineTotal), delta: `закрыто ${formatMoney(wonTotal)} ₽`, href: '/deals', color: '#1a56db' },
-            { label: 'Задач ИИ', value: pendingQueueCount ?? 0, delta: 'ждут одобрения', href: '/queue', color: '#8b5cf6' },
-            { label: 'Новых писем', value: unreadEmails ?? 0, delta: 'непрочитанных', href: '/emails', color: '#EF9F27' },
+            { label: 'Задач ИИ', value: pendingQueueCount ?? 0, delta: 'ждут одобрения', href: '/queue', color: '#EF9F27' },
+            { label: 'Новых писем', value: unreadEmails ?? 0, delta: 'непрочитанных', href: '/emails', color: '#27A882' },
           ].map(m => (
             <Link key={m.label} href={m.href}>
-              <div className="bg-white border border-gray-200 rounded-xl p-3 cursor-pointer hover:border-blue-300 hover:shadow-sm transition-all">
+              <div
+                className="metric-card bg-white border border-gray-200 rounded-xl cursor-pointer hover:shadow-sm transition-all"
+                style={{ padding: '12px', borderLeft: `3px solid ${m.color}`, ['--card-color' as any]: m.color }}
+              >
                 <div className="text-[11px] text-gray-500 mb-1">{m.label}</div>
-                <div className="text-2xl font-medium text-gray-900">{m.value}</div>
+                <div className="text-[28px] font-medium text-gray-900 leading-tight">{m.value}</div>
                 <div className="text-[11px] mt-0.5" style={{ color: m.color }}>{m.delta}</div>
               </div>
             </Link>
@@ -155,9 +165,9 @@ export default async function DashboardPage() {
         )}
 
         {/* Основная строка: Очередь ИИ + правая колонка */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-          {/* Очередь ИИ — 2/3 */}
-          <div className="lg:col-span-2 bg-white border border-gray-200 rounded-xl overflow-hidden">
+        <div className="grid grid-cols-1 gap-3" style={{ gridTemplateColumns: 'minmax(0,1.4fr) minmax(0,1fr)' }}>
+          {/* Очередь ИИ */}
+          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
             <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-100">
               <span className="text-xs font-medium text-gray-700">Очередь ИИ</span>
               <Link href="/queue" className="text-[11px] text-blue-600 hover:text-blue-700">все →</Link>
@@ -195,39 +205,15 @@ export default async function DashboardPage() {
               </div>
             </div>
 
-            {/* Активность */}
-            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-100">
-                <span className="text-xs font-medium text-gray-700">Активность</span>
-              </div>
-              <div className="divide-y divide-gray-50">
-                {(recentActivities ?? []).length === 0 && (
-                  <div className="px-4 py-6 text-center text-xs text-gray-400">Нет активностей</div>
-                )}
-                {(recentActivities ?? []).map((a: any, i: number) => (
-                  <div key={i} className="flex items-start gap-2.5 px-4 py-2.5">
-                    <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-xs flex-shrink-0">
-                      {ACTIVITY_ICONS[a.type] ?? '📋'}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[11px] text-gray-700 truncate">
-                        {(Array.isArray(a.contacts) ? a.contacts[0] : a.contacts)?.full_name ?? a.subject ?? a.type}
-                      </div>
-                      <div className="text-[10px] text-gray-400">{timeAgo(a.created_at)}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
 
-        {/* Нижняя строка: Pipeline + Горячие лиды */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        {/* Нижняя строка: Pipeline + Горячие лиды + Активность */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
           {/* Pipeline по стадиям */}
           <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
             <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-100">
-              <span className="text-xs font-medium text-gray-700">Pipeline по стадиям</span>
+              <span className="text-[12px] font-medium text-gray-700">Pipeline по стадиям</span>
               <Link href="/deals" className="text-[11px] text-blue-600 hover:text-blue-700">сделки →</Link>
             </div>
             <div className="p-3 grid grid-cols-5 gap-2">
@@ -245,7 +231,7 @@ export default async function DashboardPage() {
           {/* Горячие лиды */}
           <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
             <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-100">
-              <span className="text-xs font-medium text-gray-700">Горячие лиды</span>
+              <span className="text-[12px] font-medium text-gray-700">Горячие лиды</span>
               <Link href="/contacts" className="text-[11px] text-blue-600 hover:text-blue-700">все →</Link>
             </div>
             <div className="divide-y divide-gray-50">
@@ -278,6 +264,34 @@ export default async function DashboardPage() {
                   </div>
                 </Link>
               ))}
+            </div>
+          </div>
+
+          {/* Активность */}
+          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-100">
+              <span className="text-[12px] font-medium text-gray-700">Активность</span>
+            </div>
+            <div className="divide-y divide-gray-50">
+              {(recentActivities ?? []).length === 0 && (
+                <div className="px-4 py-6 text-center text-xs text-gray-400">Нет активностей</div>
+              )}
+              {(recentActivities ?? []).map((a: any, i: number) => {
+                const style = ACTIVITY_ICON_STYLES[a.type] ?? { bg: 'bg-gray-100', text: 'text-gray-600', icon: '📋' }
+                return (
+                  <div key={i} className="flex items-start gap-2.5 px-4 py-2.5">
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 ${style.bg} ${style.text}`}>
+                      {style.icon}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[11px] text-gray-700 truncate">
+                        {(Array.isArray(a.contacts) ? a.contacts[0] : a.contacts)?.full_name ?? a.subject ?? a.type}
+                      </div>
+                      <div className="text-[10px] text-gray-400">{timeAgo(a.created_at)}</div>
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>
