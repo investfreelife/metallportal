@@ -14,7 +14,7 @@ const STAGE_COLORS: Record<string, string> = {
   negotiation: '#E24B4A', won: '#639922',
 }
 const ACTIVITY_ICONS: Record<string, string> = {
-  call: '📞', email: '✉', message: '💬', note: '📝', ai_action: '🤖',
+  call: '📞', email: '✉', message: '💬', note: '📝', ai_action: '★',
 }
 
 export default async function DashboardPage() {
@@ -66,16 +66,16 @@ export default async function DashboardPage() {
   const todayDate = new Date().toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' })
 
   const funnelSteps = [
-    { label: 'Посетители', value: 1240, color: '#B5D4F4', textColor: '#0C447C' },
-    { label: 'Лиды', value: hotLeads ?? 0, color: '#9FE1CB', textColor: '#085041' },
-    { label: 'КП', value: stageGroups.find(s => s.stage === 'proposal')?.count ?? 0, color: '#FAC775', textColor: '#633806' },
-    { label: 'Переговоры', value: stageGroups.find(s => s.stage === 'negotiation')?.count ?? 0, color: '#F5C4B3', textColor: '#712B13' },
-    { label: 'Закрыто', value: stageGroups.find(s => s.stage === 'won')?.count ?? 0, color: '#97C459', textColor: '#27500A' },
+    { label: 'Посетители', value: 1240, color: '#4A90D9' },
+    { label: 'Лиды', value: hotLeads ?? 0, color: '#2EAF82' },
+    { label: 'КП', value: stageGroups.find(s => s.stage === 'proposal')?.count ?? 0, color: '#EF9F27' },
+    { label: 'Переговоры', value: stageGroups.find(s => s.stage === 'negotiation')?.count ?? 0, color: '#E24B4A' },
+    { label: 'Закрыто', value: stageGroups.find(s => s.stage === 'won')?.count ?? 0, color: '#639922' },
   ]
   const funnelMax = funnelSteps[0].value || 1
 
   return (
-    <div className="flex flex-col h-full bg-gray-50 overflow-auto">
+    <div className="bg-gray-50">
       {/* Topbar */}
       <div className="bg-white border-b border-gray-200 px-5 py-3 flex items-center gap-3 flex-shrink-0">
         <h1 className="text-[15px] font-medium text-gray-900 flex-1">Дашборд</h1>
@@ -89,7 +89,7 @@ export default async function DashboardPage() {
         )}
       </div>
 
-      <div className="flex-1 p-4 space-y-4 min-w-0">
+      <div className="p-4 space-y-4">
         {/* 4 метрики */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
@@ -101,7 +101,7 @@ export default async function DashboardPage() {
             <Link key={m.label} href={m.href}>
               <div className="bg-white border border-gray-200 rounded-xl p-3 cursor-pointer hover:border-blue-300 hover:shadow-sm transition-all">
                 <div className="text-[11px] text-gray-500 mb-1">{m.label}</div>
-                <div className="text-xl font-medium text-gray-900">{m.value}</div>
+                <div className="text-2xl font-medium text-gray-900">{m.value}</div>
                 <div className="text-[11px] mt-0.5" style={{ color: m.color }}>{m.delta}</div>
               </div>
             </Link>
@@ -111,7 +111,7 @@ export default async function DashboardPage() {
         {/* ИИ-инсайт */}
         {insight ? (
           <div className="bg-purple-50 border border-purple-200 rounded-xl p-3">
-            <div className="text-[10px] font-medium text-purple-700 mb-1">★ ИИ-инсайт дня</div>
+            <div className="text-[11px] font-medium text-purple-600 mb-1">★ ИИ-инсайт дня</div>
             <div className="text-xs text-purple-900 leading-relaxed">
               {insight}
               <Link href="/queue" className="text-purple-600 underline ml-1 text-xs">Действовать ↗</Link>
@@ -119,7 +119,7 @@ export default async function DashboardPage() {
           </div>
         ) : (
           <div className="bg-purple-50 border border-purple-200 rounded-xl p-3 flex items-center gap-2">
-            <span className="text-[10px] font-medium text-purple-700">★ ИИ-инсайт дня</span>
+            <span className="text-[11px] font-medium text-purple-600">★ ИИ-инсайт дня</span>
             <Link href="/api/ai/daily-insight" className="text-[10px] text-purple-600 underline">Сгенерировать ↗</Link>
           </div>
         )}
@@ -146,7 +146,7 @@ export default async function DashboardPage() {
                 {funnelSteps.map(step => (
                   <div key={step.label} className="flex items-center gap-2">
                     <div className="w-[72px] text-[11px] text-gray-500 text-right flex-shrink-0">{step.label}</div>
-                    <div className="flex-1 h-4 rounded-sm overflow-hidden" style={{ backgroundColor: '#f3f4f6' }}>
+                    <div className="flex-1 h-5 rounded-sm overflow-hidden" style={{ backgroundColor: '#e5e7eb' }}>
                       <div
                         className="h-full rounded-sm flex items-center px-1.5"
                         style={{
@@ -154,7 +154,7 @@ export default async function DashboardPage() {
                           backgroundColor: step.color,
                         }}
                       >
-                        <span className="text-[10px] font-medium" style={{ color: step.textColor }}>
+                        <span className="text-[11px] font-medium text-white">
                           {step.value}
                         </span>
                       </div>
@@ -225,8 +225,12 @@ export default async function DashboardPage() {
                 <Link key={c.id} href={`/contacts/${c.id}`}>
                   <div className="flex items-center gap-2.5 px-4 py-2 hover:bg-gray-50 transition-colors">
                     <div
-                      className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-medium text-white flex-shrink-0"
-                      style={{ backgroundColor: (c.ai_score ?? 0) >= 70 ? '#E24B4A' : '#EF9F27' }}
+                      className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-medium flex-shrink-0 ${
+                        c.ai_segment === 'hot' ? 'bg-red-50 text-red-700' :
+                        c.ai_segment === 'warm' ? 'bg-amber-50 text-amber-700' :
+                        c.ai_segment === 'cold' ? 'bg-blue-50 text-blue-700' :
+                        'bg-gray-100 text-gray-600'
+                      }`}
                     >
                       {getInitials(c.full_name)}
                     </div>
