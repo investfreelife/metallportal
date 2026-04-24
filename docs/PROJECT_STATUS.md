@@ -87,6 +87,40 @@
   2. `CRM_MANAGER_TG_ID` → написать @userinfobot в Telegram → получить chat_id → добавить в Vercel env
   3. После добавления env → `npx vercel --prod` из `crm/`
 
+### AI CRM — Phase 2: Power Dashboard + Content Machine + Telephony (24 апр 2026)
+**Деплой**: https://metallportal-crm2.vercel.app — коммит `4cbb95c`
+
+**Модуль 1: Power Dashboard**
+- `crm/src/components/ui/Drawer.tsx` — slide-in панель (ESC, backdrop click, анимация)
+- `crm/src/components/ui/StatCard.tsx` — метрика с дельтой (up/down/neutral)
+- `crm/src/components/ui/RankBar.tsx` — горизонтальная шкала с цветом и суффиксом
+- `crm/src/components/dashboard/FunnelWithDrawers.tsx` — кликабельная воронка: каждый шаг открывает Drawer с глубокой аналитикой (источники, конверсии, возражения, причины проигрышей, ИИ-рекомендации)
+- `crm/src/components/dashboard/TrafficChannels.tsx` — блок 8 каналов трафика, клик → Drawer с Chart.js (lazy import), таблица ROI/конверсия/цена лида, drill-down по каналу
+- `crm/src/components/dashboard/DashboardRealtime.tsx` — Supabase Realtime: автообновление дашборда при новых задачах ИИ
+- `crm/src/app/(dashboard)/dashboard/page.tsx` — обновлён: +3 новых запроса (sourceMap, lostReasons, wonAmount, hotDelta), воронка заменена на FunnelWithDrawers, добавлен блок TrafficChannels, метрика "Горячих лидов" показывает дельту за неделю
+- **npm**: добавлены `chart.js`, `react-chartjs-2`, `openai`
+
+**Модуль 2: Контент-машина**
+- `crm/src/app/api/social/generate/route.ts` — POST: генерирует пост через OpenRouter GPT-4o-mini (5 типов: price_update, product_focus, case_study, gost_tip, market_review), сохраняет как draft в `social_posts`
+- `crm/src/app/api/social/publish/route.ts` — POST: публикует в Telegram через Bot API, обновляет статус, создаёт activity
+- `crm/src/app/(dashboard)/campaigns/page.tsx` + `CampaignsClient.tsx` — UI: генератор постов, предпросмотр, история, кнопка публикации
+
+**Модуль 3: Телефония**
+- `crm/src/app/api/calls/analyze/route.ts` — POST: Whisper транскрипция + GPT-4o анализ (summary, sentiment, quality_score, next_step, action_required → ai_queue)
+- `crm/src/app/(dashboard)/calls/page.tsx` + `CallsClient.tsx` — UI: метрики, список звонков, детали, кнопка анализа
+
+**Модуль 4: Заглушки**
+- `crm/src/app/(dashboard)/telegram/page.tsx` — страница Telegram (Phase 2 placeholder)
+- `crm/src/app/(dashboard)/reports/page.tsx` — страница Отчёты (Phase 2 placeholder)
+
+**SQL (выполнить в Supabase SQL Editor):**
+- `crm/supabase/migrations/20260424_phase2_social_calls.sql` — таблицы `social_posts` + `calls` с RLS
+
+**⚠️ Env vars нужны (Vercel + .env.local):**
+- `TELEGRAM_BOT_TOKEN` — для публикации постов
+- `TELEGRAM_CHANNEL_ID` — @канал или -100...
+- `OPENAI_API_KEY` — для Whisper транскрипции
+
 ### AI CRM — Дашборд мирового уровня (23 апр 2026)
 - **`crm/src/components/layout/Sidebar.tsx`** — переработан: ширина 200px, секции (Главное/Продажи/Коммуникации/Аналитика), новые пункты (Звонки, Telegram, Рассылки, Отчёты), бейджи для `pendingCount`/`unreadEmails`/`missedCalls`
 - **`crm/src/app/(dashboard)/layout.tsx`** — живые данные для Sidebar: `pendingCount` из `ai_queue`, `unreadEmails` из `emails`
