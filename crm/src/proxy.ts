@@ -7,8 +7,9 @@ const PUBLIC_EXACT = new Set([
   '/api/auth/logout',
   '/api/webhook',
   '/api/orders',
+  '/api/track',
 ])
-const PUBLIC_PREFIX = ['/_next/', '/favicon', '/api/auth/']
+const PUBLIC_PREFIX = ['/_next/', '/favicon', '/api/auth/', '/track.js']
 
 // ── Edge-compatible HMAC-SHA256 ────────────────────────────────────
 const enc = new TextEncoder()
