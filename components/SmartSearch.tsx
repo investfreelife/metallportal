@@ -28,27 +28,31 @@ export function SmartSearch() {
   const [step, setStep] = useState<'search' | 'cart' | 'form' | 'success'>('search')
   const [form, setForm] = useState({ name: '', phone: '', email: '', comment: '' })
   const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState('')
   const mediaRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
-
-  const AI_URL = process.env.NEXT_PUBLIC_AI_URL || 'https://ai.harlansteel.ru'
-  const AI_KEY = process.env.NEXT_PUBLIC_AI_KEY || ''
 
   const search = async (q?: string) => {
     const searchQuery = q || query
     if (!searchQuery.trim()) return
     setLoading(true)
+    setError('')
     try {
-      const res = await fetch(`${AI_URL}/api/search`, {
+      const res = await fetch('/api/ai/search', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-API-Key': AI_KEY },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: searchQuery }),
       })
       const data = await res.json()
+      if (data.error) { setError('Сервис временно недоступен. Попробуйте позже.'); return }
       if (data.items?.length > 0) {
         setResult(data)
         setStep('cart')
+      } else {
+        setError('Ничего не нашли. Попробуйте уточнить запрос: "труба профильная 40х40 ст3" или "арматура А500 d12"')
       }
+    } catch {
+      setError('Ошибка соединения. Попробуйте ещё раз.')
     } finally {
       setLoading(false)
     }
@@ -66,9 +70,8 @@ export function SmartSearch() {
         formData.append('audio', blob, 'recording.ogg')
         setLoading(true)
         try {
-          const res = await fetch(`${AI_URL}/api/search/voice`, {
+          const res = await fetch('/api/ai/search/voice', {
             method: 'POST',
-            headers: { 'X-API-Key': AI_KEY },
             body: formData,
           })
           const data = await res.json()
@@ -163,6 +166,9 @@ export function SmartSearch() {
           ● Говорите... нажмите 🎤 чтобы остановить
         </div>
       )}
+      {error && (
+        <div className="mt-3 text-sm text-red-500 bg-red-50 rounded-xl px-4 py-2">{error}</div>
+      )}
       <div className="mt-3 flex flex-wrap gap-2">
         {['Арматура А500 12мм', 'Труба профильная 40х40', 'Лист 10мм', 'Балка двутавровая'].map((hint) => (
           <button
@@ -250,9 +256,9 @@ export function SmartSearch() {
               (e.target as HTMLInputElement).value = ''
               setLoading(true)
               try {
-                const res = await fetch(`${AI_URL}/api/search`, {
+                const res = await fetch('/api/ai/search', {
                   method: 'POST',
-                  headers: { 'Content-Type': 'application/json', 'X-API-Key': AI_KEY },
+                  headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ query: newQuery }),
                 })
                 const data = await res.json()
