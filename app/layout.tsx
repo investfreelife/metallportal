@@ -30,6 +30,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           src="https://metallportal-crm2.vercel.app/track.js?tid=a1000000-0000-0000-0000-000000000001"
           strategy="afterInteractive"
         />
+        <Script id="ref-tracker" strategy="afterInteractive">{`
+          (function(){
+            var ref = new URLSearchParams(window.location.search).get('ref');
+            if(ref) {
+              document.cookie = 'ref_code=' + ref.toUpperCase() + '; max-age=' + 30*24*60*60 + '; path=/; SameSite=Lax';
+              fetch('https://metallportal-crm2.vercel.app/api/ref/track?code=' + ref, { mode: 'no-cors' }).catch(function(){});
+            }
+          })();
+        `}</Script>
       </body>
     </html>
   );

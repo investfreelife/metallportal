@@ -9,7 +9,7 @@ const PUBLIC_EXACT = new Set([
   '/api/orders',
   '/api/track',
 ])
-const PUBLIC_PREFIX = ['/_next/', '/favicon', '/api/auth/', '/track.js']
+const PUBLIC_PREFIX = ['/_next/', '/favicon', '/api/auth/', '/track.js', '/partner', '/api/ref/']
 
 // ── Edge-compatible HMAC-SHA256 ────────────────────────────────────
 const enc = new TextEncoder()

@@ -315,6 +315,142 @@ INSERT INTO channels (tenant_id, type, name, status, config, stats) VALUES
 ON CONFLICT DO NOTHING;
 
 -- ══════════════════════════════════════════════════════════════
+-- PHASE 3: REFERRAL PROGRAM (Реферальная программа)
+-- ══════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS referral_partners (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  tenant_id UUID NOT NULL,
+  user_id UUID,
+  full_name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT,
+  company TEXT,
+  ref_code TEXT UNIQUE NOT NULL,
+  level TEXT DEFAULT 'bronze' CHECK (level IN ('bronze','silver','gold')),
+  commission_rate DECIMAL(4,2) DEFAULT 2.00,
+  total_referrals INTEGER DEFAULT 0,
+  active_referrals INTEGER DEFAULT 0,
+  total_earned DECIMAL(12,2) DEFAULT 0,
+  total_paid DECIMAL(12,2) DEFAULT 0,
+  pending_amount DECIMAL(12,2) DEFAULT 0,
+  bank_card TEXT,
+  bank_name TEXT,
+  auto_payout BOOLEAN DEFAULT true,
+  payout_day INTEGER DEFAULT 1,
+  status TEXT DEFAULT 'active' CHECK (status IN ('active','paused','blocked')),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS referrals (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  tenant_id UUID NOT NULL,
+  partner_id UUID REFERENCES referral_partners(id),
+  contact_id UUID REFERENCES contacts(id),
+  ref_name TEXT,
+  ref_email TEXT,
+  ref_company TEXT,
+  ref_code TEXT NOT NULL,
+  source TEXT,
+  total_orders INTEGER DEFAULT 0,
+  total_amount DECIMAL(12,2) DEFAULT 0,
+  total_commission DECIMAL(12,2) DEFAULT 0,
+  status TEXT DEFAULT 'new' CHECK (status IN ('new','active','inactive')),
+  first_order_at TIMESTAMPTZ,
+  last_order_at TIMESTAMPTZ,
+  registered_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS referral_transactions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  tenant_id UUID NOT NULL,
+  partner_id UUID REFERENCES referral_partners(id),
+  referral_id UUID REFERENCES referrals(id),
+  deal_id UUID REFERENCES deals(id),
+  type TEXT CHECK (type IN ('commission','payout','bonus','adjustment')),
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending','approved','paid','cancelled')),
+  deal_amount DECIMAL(12,2),
+  commission_rate DECIMAL(4,2),
+  amount DECIMAL(12,2) NOT NULL,
+  description TEXT,
+  paid_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS referral_payouts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  tenant_id UUID NOT NULL,
+  partner_id UUID REFERENCES referral_partners(id),
+  amount DECIMAL(12,2) NOT NULL,
+  bank_card TEXT,
+  bank_name TEXT,
+  status TEXT DEFAULT 'processing' CHECK (status IN ('processing','completed','failed')),
+  transaction_ids UUID[],
+  completed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE referral_partners ENABLE ROW LEVEL SECURITY;
+ALTER TABLE referrals ENABLE ROW LEVEL SECURITY;
+ALTER TABLE referral_transactions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE referral_payouts ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "service_role_all" ON referral_partners;
+DROP POLICY IF EXISTS "service_role_all" ON referrals;
+DROP POLICY IF EXISTS "service_role_all" ON referral_transactions;
+DROP POLICY IF EXISTS "service_role_all" ON referral_payouts;
+CREATE POLICY "service_role_all" ON referral_partners FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "service_role_all" ON referrals FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "service_role_all" ON referral_transactions FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "service_role_all" ON referral_payouts FOR ALL USING (true) WITH CHECK (true);
+
+CREATE INDEX IF NOT EXISTS idx_referral_partners_code ON referral_partners(ref_code);
+CREATE INDEX IF NOT EXISTS idx_referral_partners_tenant ON referral_partners(tenant_id);
+CREATE INDEX IF NOT EXISTS idx_referrals_partner ON referrals(partner_id);
+CREATE INDEX IF NOT EXISTS idx_referrals_contact ON referrals(contact_id);
+CREATE INDEX IF NOT EXISTS idx_ref_transactions_partner ON referral_transactions(partner_id, created_at DESC);
+
+-- Функция обновления уровня
+CREATE OR REPLACE FUNCTION update_partner_level(p_partner_id UUID)
+RETURNS VOID AS $$
+DECLARE v_referrals INTEGER; v_level TEXT; v_rate DECIMAL;
+BEGIN
+  SELECT active_referrals INTO v_referrals FROM referral_partners WHERE id = p_partner_id;
+  IF v_referrals >= 20 THEN v_level := 'gold'; v_rate := 5.00;
+  ELSIF v_referrals >= 5 THEN v_level := 'silver'; v_rate := 3.50;
+  ELSE v_level := 'bronze'; v_rate := 2.00;
+  END IF;
+  UPDATE referral_partners SET level = v_level, commission_rate = v_rate, updated_at = now() WHERE id = p_partner_id;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Триггер автоначисления комиссии при закрытии сделки
+CREATE OR REPLACE FUNCTION auto_commission_on_deal()
+RETURNS TRIGGER AS $$
+DECLARE
+  v_referral referrals%ROWTYPE;
+  v_partner referral_partners%ROWTYPE;
+  v_commission DECIMAL;
+BEGIN
+  IF NEW.stage = 'won' AND OLD.stage != 'won' AND NEW.contact_id IS NOT NULL THEN
+    SELECT * INTO v_referral FROM referrals WHERE contact_id = NEW.contact_id LIMIT 1;
+    IF v_referral.id IS NOT NULL THEN
+      SELECT * INTO v_partner FROM referral_partners WHERE id = v_referral.partner_id;
+      v_commission := ROUND((NEW.amount * v_partner.commission_rate / 100)::NUMERIC, 2);
+      INSERT INTO referral_transactions (tenant_id, partner_id, referral_id, deal_id, type, status, deal_amount, commission_rate, amount, description)
+      VALUES (NEW.tenant_id, v_partner.id, v_referral.id, NEW.id, 'commission', 'pending', NEW.amount, v_partner.commission_rate, v_commission, 'Комиссия за сделку: ' || NEW.title);
+      UPDATE referrals SET total_orders = total_orders + 1, total_amount = total_amount + COALESCE(NEW.amount, 0), total_commission = total_commission + v_commission, status = 'active', last_order_at = now() WHERE id = v_referral.id;
+      UPDATE referral_partners SET total_earned = total_earned + v_commission, pending_amount = pending_amount + v_commission, updated_at = now() WHERE id = v_partner.id;
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS deals_commission_trigger ON deals;
+CREATE TRIGGER deals_commission_trigger AFTER UPDATE ON deals FOR EACH ROW EXECUTE FUNCTION auto_commission_on_deal();
+
+-- ══════════════════════════════════════════════════════════════
 -- ПРОВЕРКА — должны показать все таблицы с RLS ✅
 -- ══════════════════════════════════════════════════════════════
 SELECT

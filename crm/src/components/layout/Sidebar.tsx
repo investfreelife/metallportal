@@ -16,6 +16,7 @@ import {
   Megaphone,
   FileText,
   Layers,
+  Network,
 } from 'lucide-react'
 
 type NavItem = {
@@ -60,6 +61,7 @@ const navSections: NavSection[] = [
     items: [
       { href: '/analytics', label: 'Аналитика', icon: BarChart2 },
       { href: '/reports', label: 'Отчёты', icon: FileText },
+      { href: '/referral', label: 'Партнёры', icon: Network },
     ],
   },
 ]
