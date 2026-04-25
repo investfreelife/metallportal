@@ -235,6 +235,28 @@ POST /api/track   → {"ok":true} ✅
 - **QueueClient** — approve → если action=send_proposal+email контакта → auto-send email; reject/snooze → REST API
 - **Фикс**: activities.title→subject, activities.notes→body (align со schema)
 
+### Harlan Steel AI Platform — Phase 1 (25 апр 2026)
+- **`/Users/sergey/Desktop/металл/harlan-ai/`** — новый Python микросервис (отдельный репозиторий)
+- **Стек**: Python 3.12 + CrewAI 1.12 + FastAPI + OpenRouter + Supabase
+- **Структура**: `src/harlan_ai/` — config, main, crews/, tools/, flows/
+- **Crews**: `bezos_crew` (CEO утренний/еженедельный), `sales_crew` (скоринг лидов + дневной цикл), `search_crew` (AI поиск + Whisper), `document_crew` (расшифровка смет → КП), `content_crew` (Telegram посты + SEO)
+- **Tools**: `supabase_tools` (CRM stats, hot leads, memory, queue, products), `telegram_tools` (send), `search_tools` (web search, competitor prices)
+- **Flows**: `MorningFlow` (Безос → Продавец → Контент), `LeadFlow` (score + KP + task)
+- **FastAPI**: `/api/search`, `/api/search/voice`, `/api/documents/parse`, `/api/agents/bezos/*`, `/api/agents/sales/*`, `/api/cron/morning`
+- **Dockerfile**: python:3.12-slim + tesseract-ocr-rus + UV
+- **Next.js интеграция**:
+  - `lib/ai-client.ts` — searchMetal, voiceSearch, parseDocument, processLead
+  - `components/AISearch.tsx` — поиск + голосовой ввод
+  - `components/DocumentUpload.tsx` — drag&drop сметы → КП
+  - `app/api/cron/trigger-agents/route.ts` — Vercel cron → Python
+  - `vercel.json` — cron schedule 9:00 МСК
+- **⚠️ Следующие шаги**:
+  1. `cp .env.example .env` → заполнить все ключи
+  2. `uv venv && uv pip install -e .` → локальный тест
+  3. `uvicorn src.harlan_ai.main:app --reload`
+  4. Создать репо `harlan-ai` на GitHub → Railway деплой
+  5. Добавить `NEXT_PUBLIC_AI_URL` + `AI_API_KEY` + `CRON_SECRET` в Vercel
+
 ## 🔄 В ПРОЦЕССЕ
 - SEO генерация: ~3900/12166 готово, скрипт крутится в фоне
   Логи: tail -f /tmp/seo_generation.log

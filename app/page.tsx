@@ -7,6 +7,8 @@ import HowItWorks from "@/components/home/HowItWorks";
 import CTASection from "@/components/home/CTASection";
 import Link from "next/link";
 import { CheckCircle, Calculator, ArrowRight } from "lucide-react";
+import { AISearch } from "@/components/AISearch";
+import { DocumentUpload } from "@/components/DocumentUpload";
 
 export const metadata: Metadata = {
   title: "МеталлПортал — Металлопрокат оптом и в розницу в Москве",
@@ -56,6 +58,18 @@ export default function HomePage() {
       />
       <Hero />
       <TrustCounters />
+
+      {/* AI Поиск металлопроката */}
+      <section className="py-10 bg-background">
+        <div className="container-main">
+          <div className="text-center mb-5">
+            <h2 className="text-2xl font-bold text-foreground mb-1.5">Найти металлопрокат</h2>
+            <p className="text-muted-foreground text-sm">Опишите что нужно — AI подберёт из 12 000+ позиций</p>
+          </div>
+          <AISearch />
+        </div>
+      </section>
+
       <ProductGrid />
 
       {/* Калькуляторы баннер */}
@@ -79,6 +93,20 @@ export default function HomePage() {
 
       <CategoryRow />
       <HowItWorks />
+
+      {/* Загрузить смету */}
+      <section className="py-12 bg-muted/30">
+        <div className="container-main">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-foreground mb-2">Загрузить смету или проект</h2>
+            <p className="text-muted-foreground text-sm max-w-lg mx-auto">
+              Загрузите PDF, DOCX или Excel — AI расшифрует позиции металлопроката и сформирует коммерческое предложение
+            </p>
+          </div>
+          <DocumentUpload />
+        </div>
+      </section>
+
       <CTASection />
       <section className="bg-background py-14">
         <div className="container-main">
