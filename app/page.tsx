@@ -7,7 +7,7 @@ import HowItWorks from "@/components/home/HowItWorks";
 import CTASection from "@/components/home/CTASection";
 import Link from "next/link";
 import { CheckCircle, Calculator, ArrowRight } from "lucide-react";
-import { AISearch } from "@/components/AISearch";
+import { SmartSearch } from "@/components/SmartSearch";
 import { DocumentUpload } from "@/components/DocumentUpload";
 
 export const metadata: Metadata = {
@@ -66,7 +66,7 @@ export default function HomePage() {
             <h2 className="text-2xl font-bold text-foreground mb-1.5">Найти металлопрокат</h2>
             <p className="text-muted-foreground text-sm">Опишите что нужно — AI подберёт из 12 000+ позиций</p>
           </div>
-          <AISearch />
+          <SmartSearch />
         </div>
       </section>
 
