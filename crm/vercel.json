@@ -4,6 +4,10 @@
   "installCommand": "npm install",
   "crons": [
     {
+      "path": "/api/cron/bezos",
+      "schedule": "0 6 * * 1"
+    },
+    {
       "path": "/api/monitor/report",
       "schedule": "0 6 * * *"
     },
