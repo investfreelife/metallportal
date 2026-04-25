@@ -1,240 +1,228 @@
 'use client'
-
 import { useState } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Search, Plus, Filter, X, Loader2 } from 'lucide-react'
-import { formatDate, getScoreBgColor, getContactStatusLabel } from '@/lib/utils'
-import type { Contact } from '@/types'
 
-const STATUS_OPTIONS = ['', 'new', 'active', 'inactive', 'blocked'] as const
-const SEGMENT_OPTIONS = ['', 'hot', 'warm', 'cold'] as const
-
-const STATUS_COLORS: Record<string, string> = {
-  new: 'bg-blue-500/20 text-blue-300',
-  active: 'bg-green-500/20 text-green-300',
-  inactive: 'bg-gray-500/20 text-gray-400',
-  blocked: 'bg-red-500/20 text-red-300',
+function timeAgo(date: string | null) {
+  if (!date) return '—'
+  const diff = Date.now() - new Date(date).getTime()
+  const days = Math.floor(diff / 86400000)
+  if (days === 0) return 'Сегодня'
+  if (days === 1) return 'Вчера'
+  if (days < 30) return `${days} дн назад`
+  return new Date(date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })
 }
 
-const SEGMENT_ICONS: Record<string, string> = {
-  hot: '🔴',
-  warm: '🟡',
-  cold: '🔵',
+function ScoreBar({ score }: { score: number }) {
+  const color = score >= 70 ? '#E24B4A' : score >= 40 ? '#EF9F27' : '#378ADD'
+  return (
+    <div className="flex items-center gap-1.5">
+      <div className="w-12 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+        <div className="h-full rounded-full" style={{ width: `${score}%`, background: color }} />
+      </div>
+      <span className="text-[10px] text-gray-500 w-5">{score}</span>
+    </div>
+  )
 }
 
-export default function ContactsClient({ contacts }: { contacts: Partial<Contact>[] }) {
-  const router = useRouter()
+const SEGMENT_META: Record<string, { label: string; color: string; bg: string }> = {
+  hot:  { label: 'Горячий',  color: '#A32D2D', bg: '#FCEBEB' },
+  warm: { label: 'Тёплый',   color: '#633806', bg: '#FAEEDA' },
+  cold: { label: 'Холодный', color: '#0C447C', bg: '#E6F1FB' },
+}
+
+const SOURCE_LABELS: Record<string, string> = {
+  site: 'Сайт', telegram: 'Telegram', referral: 'Реферал',
+  cold: 'Холодный', email: 'Email', phone: 'Звонок', vk: 'VK', manual: 'Вручную',
+}
+
+export function ContactsClient({ contacts, stats }: { contacts: any[]; stats: any }) {
   const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [segmentFilter, setSegmentFilter] = useState('')
-  const [showNewForm, setShowNewForm] = useState(false)
-  const [newForm, setNewForm] = useState({ full_name: '', company_name: '', phone: '', email: '', source: 'manual' })
-  const [creating, setCreating] = useState(false)
-  const [createError, setCreateError] = useState('')
+  const [segment, setSegment] = useState('all')
+  const [showAdd, setShowAdd] = useState(false)
+  const router = useRouter()
 
-  async function handleCreateContact(e: React.FormEvent) {
-    e.preventDefault()
-    if (!newForm.full_name && !newForm.phone && !newForm.email) {
-      setCreateError('Заполните хотя бы одно поле'); return
-    }
-    setCreating(true); setCreateError('')
-    const res = await fetch('/api/contacts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newForm),
-    })
-    setCreating(false)
-    if (res.ok) {
-      const d = await res.json()
-      setShowNewForm(false)
-      setNewForm({ full_name: '', company_name: '', phone: '', email: '', source: 'manual' })
-      router.push(`/contacts/${d.id}`)
-    } else {
-      const d = await res.json()
-      setCreateError(d.error || 'Ошибка')
-    }
-  }
-
-  const filtered = contacts.filter((c) => {
-    const q = search.toLowerCase()
-    const matchSearch =
-      !q ||
-      c.full_name?.toLowerCase().includes(q) ||
-      c.company_name?.toLowerCase().includes(q) ||
-      c.phone?.includes(q) ||
-      c.email?.toLowerCase().includes(q)
-
-    const matchStatus = !statusFilter || c.status === statusFilter
-    const matchSegment = !segmentFilter || c.ai_segment === segmentFilter
-
-    return matchSearch && matchStatus && matchSegment
+  const filtered = contacts.filter(c => {
+    const matchSearch = !search ||
+      c.full_name?.toLowerCase().includes(search.toLowerCase()) ||
+      c.company_name?.toLowerCase().includes(search.toLowerCase()) ||
+      c.phone?.includes(search)
+    const score = c.ai_score || 0
+    const matchSegment = segment === 'all' ||
+      (segment === 'hot'  && score > 60) ||
+      (segment === 'warm' && score >= 30 && score <= 60) ||
+      (segment === 'cold' && score < 30)
+    return matchSearch && matchSegment
   })
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-5">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Контакты</h1>
-          <p className="text-gray-400 text-sm mt-0.5">{contacts.length} контактов</p>
-        </div>
-        <button
-          onClick={() => setShowNewForm(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Добавить контакт
-        </button>
-      </div>
-
-      {showNewForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6 w-full max-w-md space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-white font-semibold text-lg">Новый контакт</h2>
-              <button onClick={() => setShowNewForm(false)} className="text-gray-500 hover:text-white transition-colors">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <form onSubmit={handleCreateContact} className="space-y-3">
-              {[['full_name','Имя'],['company_name','Компания'],['phone','Телефон'],['email','Email']].map(([field, label]) => (
-                <input
-                  key={field}
-                  type={field === 'email' ? 'email' : 'text'}
-                  value={newForm[field as keyof typeof newForm]}
-                  onChange={(e) => setNewForm(f => ({ ...f, [field]: e.target.value }))}
-                  placeholder={label}
-                  className="w-full px-3.5 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              ))}
-              <select
-                value={newForm.source}
-                onChange={(e) => setNewForm(f => ({ ...f, source: e.target.value }))}
-                className="w-full px-3.5 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="manual">Ручное добавление</option>
-                <option value="referral">Рекомендация</option>
-                <option value="cold_call">Холодный звонок</option>
-                <option value="exhibition">Выставка</option>
-              </select>
-              {createError && <p className="text-red-400 text-xs">{createError}</p>}
-              <div className="flex gap-2 pt-1">
-                <button type="submit" disabled={creating}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors">
-                  {creating && <Loader2 className="w-4 h-4 animate-spin" />}
-                  Создать
-                </button>
-                <button type="button" onClick={() => setShowNewForm(false)}
-                  className="px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm rounded-lg transition-colors">
-                  Отмена
-                </button>
-              </div>
-            </form>
+    <div className="flex flex-col h-full">
+      {/* Шапка */}
+      <div className="flex-shrink-0 bg-white border-b border-gray-200 px-4 py-3">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h1 className="text-[15px] font-medium text-gray-900">Контакты</h1>
+            <p className="text-[11px] text-gray-500 mt-0.5">{stats.total} всего</p>
           </div>
+          <button onClick={() => setShowAdd(true)}
+            className="bg-blue-600 text-white text-[11px] px-4 py-2 rounded-lg hover:bg-blue-700">
+            + Добавить контакт
+          </button>
         </div>
-      )}
-
-      <div className="flex gap-3 flex-wrap">
-        <div className="relative flex-1 min-w-60">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Поиск по имени, компании, телефону..."
-            className="w-full pl-9 pr-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        <div className="flex gap-2">
+          <input value={search} onChange={e => setSearch(e.target.value)}
+            placeholder="Имя, компания, телефон..."
+            className="flex-1 text-[12px] border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:border-blue-400"
           />
-        </div>
-        <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-gray-500" />
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Все статусы</option>
-            {STATUS_OPTIONS.filter(Boolean).map((s) => (
-              <option key={s} value={s}>{getContactStatusLabel(s)}</option>
+          <div className="flex gap-1">
+            {[
+              { key: 'all',  label: `Все (${stats.total})` },
+              { key: 'hot',  label: `🔴 Горячие (${stats.hot})` },
+              { key: 'warm', label: `🟡 Тёплые (${stats.warm})` },
+              { key: 'cold', label: `🔵 Холодные (${stats.cold})` },
+            ].map(f => (
+              <button key={f.key} onClick={() => setSegment(f.key)}
+                className={`text-[10px] px-3 py-1.5 rounded-lg border transition-all whitespace-nowrap ${
+                  segment === f.key
+                    ? 'bg-blue-600 text-white border-blue-600'
+                    : 'border-gray-300 text-gray-600 hover:bg-gray-50'
+                }`}>
+                {f.label}
+              </button>
             ))}
-          </select>
-          <select
-            value={segmentFilter}
-            onChange={(e) => setSegmentFilter(e.target.value)}
-            className="px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Все сегменты</option>
-            {SEGMENT_OPTIONS.filter(Boolean).map((s) => (
-              <option key={s} value={s}>{SEGMENT_ICONS[s]} {s === 'hot' ? 'Горячие' : s === 'warm' ? 'Тёплые' : 'Холодные'}</option>
-            ))}
-          </select>
+          </div>
         </div>
       </div>
 
-      <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
-        {filtered.length === 0 ? (
-          <div className="py-16 text-center text-gray-500">
-            {search || statusFilter || segmentFilter ? 'Нет контактов по заданным фильтрам' : 'Контактов пока нет'}
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-800">
-                  <th className="text-left px-4 py-3 text-gray-400 text-xs font-medium uppercase tracking-wider">Контакт</th>
-                  <th className="text-left px-4 py-3 text-gray-400 text-xs font-medium uppercase tracking-wider">Телефон</th>
-                  <th className="text-left px-4 py-3 text-gray-400 text-xs font-medium uppercase tracking-wider">Источник</th>
-                  <th className="text-left px-4 py-3 text-gray-400 text-xs font-medium uppercase tracking-wider">ИИ-оценка</th>
-                  <th className="text-left px-4 py-3 text-gray-400 text-xs font-medium uppercase tracking-wider">Статус</th>
-                  <th className="text-left px-4 py-3 text-gray-400 text-xs font-medium uppercase tracking-wider">Дата</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-800">
-                {filtered.map((c) => (
-                  <tr
-                    key={c.id}
-                    className="hover:bg-gray-800/50 cursor-pointer transition-colors"
-                    onClick={() => window.location.href = `/contacts/${c.id}`}
-                  >
-                    <td className="px-4 py-3.5">
+      {/* Таблица */}
+      <div className="flex-1 overflow-auto">
+        <table className="w-full">
+          <thead className="sticky top-0 bg-gray-50 border-b border-gray-200">
+            <tr>
+              {['Контакт', 'Телефон', 'Источник', 'AI Скор', 'Сделок', 'Последний контакт', ''].map(h => (
+                <th key={h} className="px-4 py-2.5 text-left text-[10px] font-medium text-gray-500 uppercase tracking-wide whitespace-nowrap">
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map(contact => {
+              const seg = SEGMENT_META[contact.ai_segment || 'cold'] || SEGMENT_META.cold
+              const dealsCount = contact.deals?.length || 0
+              const activeDeals = contact.deals?.filter((d: any) => !['won','lost'].includes(d.stage)).length || 0
+              return (
+                <tr key={contact.id}
+                  className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
+                  onClick={() => router.push(`/contacts/${contact.id}`)}>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-medium flex-shrink-0"
+                        style={{ background: seg.bg, color: seg.color }}>
+                        {(contact.company_name || contact.full_name || '?').charAt(0).toUpperCase()}
+                      </div>
                       <div>
-                        <p className="text-white text-sm font-medium">
-                          {c.full_name || '—'}
-                          {c.ai_segment && (
-                            <span className="ml-1.5">{SEGMENT_ICONS[c.ai_segment]}</span>
-                          )}
-                        </p>
-                        {c.company_name && (
-                          <p className="text-gray-400 text-xs mt-0.5">{c.company_name}</p>
-                        )}
+                        <div className="text-[12px] font-medium text-gray-900">{contact.full_name || 'Без имени'}</div>
+                        <div className="text-[10px] text-gray-500">{contact.company_name || '—'}</div>
                       </div>
-                    </td>
-                    <td className="px-4 py-3.5 text-gray-300 text-sm">{c.phone || '—'}</td>
-                    <td className="px-4 py-3.5 text-gray-400 text-sm">{c.source || '—'}</td>
-                    <td className="px-4 py-3.5">
-                      <div className="flex items-center gap-2">
-                        <div className="w-16 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full rounded-full ${getScoreBgColor(c.ai_score ?? 0)}`}
-                            style={{ width: `${c.ai_score ?? 0}%` }}
-                          />
-                        </div>
-                        <span className="text-gray-300 text-sm w-6">{c.ai_score ?? 0}</span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5">
-                      {c.status && (
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[c.status] ?? 'bg-gray-500/20 text-gray-400'}`}>
-                          {getContactStatusLabel(c.status)}
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3.5 text-gray-400 text-sm">{formatDate(c.created_at ?? null)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-[11px] text-gray-600 whitespace-nowrap">{contact.phone || '—'}</td>
+                  <td className="px-4 py-3">
+                    <span className="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded whitespace-nowrap">
+                      {SOURCE_LABELS[contact.source || ''] || contact.source || 'Неизвестно'}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3"><ScoreBar score={contact.ai_score || 0} /></td>
+                  <td className="px-4 py-3 text-[11px] text-gray-700">
+                    {dealsCount > 0 ? (
+                      <span>{dealsCount}{activeDeals > 0 && <span className="text-blue-600 ml-1">({activeDeals} акт.)</span>}</span>
+                    ) : '—'}
+                  </td>
+                  <td className="px-4 py-3 text-[11px] text-gray-500 whitespace-nowrap">
+                    {timeAgo(contact.last_contact_at || contact.created_at)}
+                  </td>
+                  <td className="px-4 py-3 text-[10px] text-blue-500">→</td>
+                </tr>
+              )
+            })}
+            {filtered.length === 0 && (
+              <tr>
+                <td colSpan={7} className="px-4 py-12 text-center text-[12px] text-gray-400">
+                  {search ? 'Ничего не найдено' : 'Нет контактов'}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {showAdd && <AddContactModal onClose={() => setShowAdd(false)}
+        onAdd={c => { setShowAdd(false); router.push(`/contacts/${c.id}`) }} />}
+    </div>
+  )
+}
+
+function AddContactModal({ onClose, onAdd }: { onClose: () => void; onAdd: (c: any) => void }) {
+  const [form, setForm] = useState({ full_name: '', company_name: '', phone: '', email: '', source: 'manual' })
+  const [saving, setSaving] = useState(false)
+
+  const save = async () => {
+    if (!form.full_name && !form.company_name) return
+    setSaving(true)
+    const res = await fetch('/api/contacts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    })
+    const data = await res.json()
+    if (data.contact || data.id) onAdd(data.contact || { id: data.id })
+    setSaving(false)
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
+          <h2 className="text-[14px] font-medium text-gray-900">Новый контакт</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">×</button>
+        </div>
+        <div className="p-5 space-y-3">
+          {[
+            { key: 'full_name',    label: 'Имя',      placeholder: 'Иван Петров' },
+            { key: 'company_name', label: 'Компания', placeholder: 'ООО Стройком' },
+            { key: 'phone',        label: 'Телефон',  placeholder: '+7 (999) 123-45-67' },
+            { key: 'email',        label: 'Email',    placeholder: 'ivan@company.ru' },
+          ].map(f => (
+            <div key={f.key}>
+              <label className="text-[11px] font-medium text-gray-700 block mb-1">{f.label}</label>
+              <input value={(form as any)[f.key]}
+                onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))}
+                onKeyDown={e => e.key === 'Enter' && save()}
+                placeholder={f.placeholder}
+                className="w-full text-[12px] border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-400"
+              />
+            </div>
+          ))}
+          <div>
+            <label className="text-[11px] font-medium text-gray-700 block mb-1">Источник</label>
+            <select value={form.source} onChange={e => setForm(p => ({ ...p, source: e.target.value }))}
+              className="w-full text-[12px] border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-400">
+              <option value="manual">Вручную</option>
+              <option value="site">Сайт</option>
+              <option value="telegram">Telegram</option>
+              <option value="referral">Реферал</option>
+              <option value="cold">Холодный</option>
+              <option value="vk">VK</option>
+            </select>
           </div>
-        )}
+        </div>
+        <div className="flex gap-2 justify-end px-5 pb-4">
+          <button onClick={onClose} className="text-[12px] border border-gray-300 text-gray-600 px-4 py-2 rounded-xl hover:bg-gray-50">Отмена</button>
+          <button onClick={save} disabled={saving || (!form.full_name && !form.company_name)}
+            className="text-[12px] bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 disabled:opacity-50">
+            {saving ? 'Создаю...' : 'Создать'}
+          </button>
+        </div>
       </div>
     </div>
   )
