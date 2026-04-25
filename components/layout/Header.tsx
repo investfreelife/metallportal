@@ -185,6 +185,7 @@ export default function Header() {
               <CartCount />
               <span>Корзина</span>
             </Link>
+            <Link href="/account" className="text-xs hover:text-gold transition-colors">👤 Кабинет</Link>
             <Link href="/supplier" className="text-xs text-gold hover:text-yellow-300 transition-colors">Стать поставщиком</Link>
           </div>
         </div>
