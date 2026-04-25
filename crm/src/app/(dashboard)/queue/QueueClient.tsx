@@ -2,345 +2,175 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { formatRelativeTime, getActionTypeLabel } from '@/lib/utils'
-import { CheckCircle, XCircle, Clock, Edit3, Sparkles, MessageSquare, RefreshCw } from 'lucide-react'
 
-type QueueItem = {
-  id: string
-  action_type: string
-  priority: 'urgent' | 'high' | 'normal' | 'low'
-  subject: string | null
-  content: string
-  ai_reasoning: string | null
-  auto_execute_at: string | null
-  created_at: string
-  contact: {
-    id: string
-    full_name: string | null
-    company_name: string | null
-    phone: string | null
-    email: string | null
-  } | null
+const PRIORITY_STYLES: Record<string, string> = {
+  urgent: 'bg-red-50 text-red-700 border-red-200',
+  high:   'bg-orange-50 text-orange-700 border-orange-200',
+  normal: 'bg-blue-50 text-blue-700 border-blue-200',
+  low:    'bg-gray-50 text-gray-600 border-gray-200',
 }
 
-const PRIORITY_CONFIG = {
-  urgent: { label: '🔴 Срочно', color: 'border-red-500/50 bg-red-500/5' },
-  high: { label: '🟠 Высокий', color: 'border-orange-500/50 bg-orange-500/5' },
-  normal: { label: '🔵 Обычный', color: 'border-blue-500/50 bg-blue-500/5' },
-  low: { label: '⚪ Низкий', color: 'border-gray-700 bg-gray-800/30' },
+const ACTION_LABELS: Record<string, string> = {
+  send_proposal: '📄 Отправить КП',
+  make_call:     '📞 Позвонить',
+  send_email:    '✉️ Написать письмо',
+  send_message:  '💬 Отправить сообщение',
+  create_task:   '✅ Создать задачу',
+  send_campaign: '📣 Запустить рассылку',
 }
 
-export default function QueueClient({ items }: { items: QueueItem[] }) {
+function timeAgo(d: string) {
+  const diff = Date.now() - new Date(d).getTime()
+  const m = Math.floor(diff / 60000)
+  if (m < 60) return `${m} мин назад`
+  const h = Math.floor(m / 60)
+  if (h < 24) return `${h}ч назад`
+  return `${Math.floor(h / 24)} дн назад`
+}
+
+export function QueueClient({ items, stats }: { items: any[], stats: any }) {
+  const [filter, setFilter] = useState<'all'|'pending'|'approved'>('pending')
+  const [loading, setLoading] = useState<string | null>(null)
+  const [editing, setEditing] = useState<string | null>(null)
+  const [editText, setEditText] = useState('')
   const router = useRouter()
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [editedContent, setEditedContent] = useState('')
-  const [rejectingId, setRejectingId] = useState<string | null>(null)
-  const [rejectReason, setRejectReason] = useState('')
-  const [processing, setProcessing] = useState<string | null>(null)
-  const [localItems, setLocalItems] = useState(items)
-  const [feedbacks, setFeedbacks] = useState<Record<string, string>>({})  // itemId → instruction text
-  const [regenerating, setRegenerating] = useState<string | null>(null)
 
-  async function approve(item: QueueItem) {
-    setProcessing(item.id)
-    const finalContent = editingId === item.id ? editedContent : item.content
-    const managerFeedback = feedbacks[item.id] ?? ''
+  const filtered = filter === 'all' ? items : items.filter((i: any) => i.status === filter)
 
-    // If action is email/proposal and contact has email → auto-send
-    const emailActions = ['send_email', 'send_proposal', 'send_message']
-    if (emailActions.includes(item.action_type) && item.contact?.email) {
-      await fetch('/api/email/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          to: item.contact.email,
-          subject: item.subject || 'Предложение от МеталлПортал',
-          html: `<p>${finalContent.replace(/\n/g, '<br>')}</p>`,
-          contact_id: item.contact.id,
-          queue_item_id: item.id,
-        }),
-      })
-    } else {
-      await fetch(`/api/ai/queue/${item.id}/approve`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ manager_feedback: managerFeedback }),
-      })
-    }
-
-    setLocalItems((prev) => prev.filter((i) => i.id !== item.id))
-    setEditingId(null)
-    setProcessing(null)
-    router.refresh()
-  }
-
-  async function reject(item: QueueItem) {
-    setProcessing(item.id)
-    const managerFeedback = feedbacks[item.id] ?? ''
-    await fetch(`/api/ai/queue/${item.id}/reject`, {
-      method: 'PATCH',
+  const act = async (id: string, status: string, content?: string) => {
+    setLoading(id)
+    await fetch('/api/queue/update', {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ manager_feedback: managerFeedback }),
+      body: JSON.stringify({ id, status, content }),
     })
-    setLocalItems((prev) => prev.filter((i) => i.id !== item.id))
-    setRejectingId(null)
-    setRejectReason('')
-    setProcessing(null)
+    setLoading(null)
+    setEditing(null)
     router.refresh()
-  }
-
-  async function snooze(itemId: string, hours: number) {
-    const action = hours === 1 ? 'snooze1' : hours === 3 ? 'snooze3' : 'snooze24'
-    await fetch(`/api/ai/queue/${itemId}/${action}`, { method: 'PATCH' })
-    setLocalItems((prev) => prev.filter((i) => i.id !== itemId))
-    router.refresh()
-  }
-
-  function startEdit(item: QueueItem) {
-    setEditingId(item.id)
-    setEditedContent(item.content)
-  }
-
-  if (localItems.length === 0) {
-    return (
-      <div className="p-6 max-w-3xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Sparkles className="w-6 h-6 text-purple-400" />
-            Очередь ИИ
-          </h1>
-          <p className="text-gray-400 text-sm mt-0.5">Ожидающие подтверждения действия</p>
-        </div>
-        <div className="bg-gray-900 border border-gray-800 rounded-xl py-20 text-center">
-          <Sparkles className="w-10 h-10 text-gray-700 mx-auto mb-3" />
-          <p className="text-gray-400 font-medium">Очередь пуста</p>
-          <p className="text-gray-600 text-sm mt-1">ИИ пока не предложил никаких действий</p>
-        </div>
-      </div>
-    )
   }
 
   return (
-    <div className="p-6 max-w-3xl mx-auto space-y-5">
-      <div>
-        <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-          <Sparkles className="w-6 h-6 text-purple-400" />
-          Очередь ИИ
-        </h1>
-        <p className="text-gray-400 text-sm mt-0.5">
-          {localItems.length} {localItems.length === 1 ? 'действие ждёт' : 'действий ждут'} подтверждения
-        </p>
+    <div className="flex flex-col h-full">
+      <div className="flex-shrink-0 bg-white border-b border-gray-200 px-4 py-3">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h1 className="text-[15px] font-medium text-gray-900">Очередь ИИ</h1>
+            <p className="text-[11px] text-gray-500 mt-0.5">
+              {stats.pending} ждут одобрения · {stats.approved} одобрено
+            </p>
+          </div>
+        </div>
+        <div className="flex gap-1">
+          {[
+            { k: 'pending', l: `Ожидают (${stats.pending})` },
+            { k: 'approved', l: 'Одобренные' },
+            { k: 'all', l: 'Все' },
+          ].map(f => (
+            <button key={f.k} onClick={() => setFilter(f.k as any)}
+              className={`text-[11px] px-3 py-1.5 rounded-lg border transition-all ${
+                filter === f.k ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 text-gray-600 hover:bg-gray-50'
+              }`}>
+              {f.l}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="space-y-4">
-        {localItems.map((item) => {
-          const priorityCfg = PRIORITY_CONFIG[item.priority]
-          const isEditing = editingId === item.id
-          const isRejecting = rejectingId === item.id
-          const isProcessing = processing === item.id
-
-          return (
-            <div
-              key={item.id}
-              className={`rounded-xl border p-5 space-y-4 ${priorityCfg.color}`}
-            >
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        {filtered.length === 0 ? (
+          <div className="text-center py-16 text-gray-400">
+            <div className="text-4xl mb-3">✅</div>
+            <div className="text-[13px] font-medium text-gray-600">Очередь пуста</div>
+            <div className="text-[11px] mt-1">Запустите агентов — они создадут задачи</div>
+          </div>
+        ) : filtered.map((item: any) => (
+          <div key={item.id} className={`bg-white border rounded-xl overflow-hidden ${
+            item.priority === 'urgent' ? 'border-red-200' :
+            item.priority === 'high' ? 'border-orange-200' : 'border-gray-200'
+          }`}>
+            <div className="px-4 py-3 border-b border-gray-100">
               <div className="flex items-start justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-semibold">{priorityCfg.label}</span>
-                    <span className="text-gray-500 text-xs">{formatRelativeTime(item.created_at)}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className={`text-[9px] px-2 py-0.5 rounded border font-medium ${PRIORITY_STYLES[item.priority] || PRIORITY_STYLES.normal}`}>
+                      {item.priority === 'urgent' ? '🔴 Срочно' : item.priority === 'high' ? '🟡 Важно' : '🔵 Обычное'}
+                    </span>
+                    <span className="text-[10px] text-gray-500">
+                      {ACTION_LABELS[item.action_type] || item.action_type}
+                    </span>
+                    <span className="text-[10px] text-gray-400">{timeAgo(item.created_at)}</span>
                   </div>
-                  {item.contact && (
-                    <p className="text-white font-semibold mt-1">
-                      {item.contact.full_name || item.contact.company_name || 'Неизвестный контакт'}
-                      {item.contact.company_name && item.contact.full_name && (
-                        <span className="text-gray-400 font-normal text-sm ml-1.5">· {item.contact.company_name}</span>
-                      )}
-                    </p>
-                  )}
-                </div>
-                <span className="px-2.5 py-1 bg-gray-800 text-gray-300 text-xs rounded-lg whitespace-nowrap">
-                  {getActionTypeLabel(item.action_type)}
-                </span>
-              </div>
-
-              {/* Контактные данные */}
-              {item.contact && (item.contact.phone || item.contact.email) && (
-                <div className="flex gap-3 text-sm">
-                  {item.contact.phone && (
-                    <a href={`tel:${item.contact.phone}`} className="text-blue-400 hover:text-blue-300 transition-colors">📞 {item.contact.phone}</a>
-                  )}
-                  {item.contact.email && (
-                    <span className="text-gray-400">{item.contact.email}</span>
-                  )}
-                </div>
-              )}
-
-              {/* Сообщение клиента */}
-              {item.subject && (
-                <div className="bg-gray-800/60 border border-gray-700 rounded-lg px-3.5 py-3">
-                  <p className="text-gray-400 text-xs font-medium mb-1">💬 Сообщение клиента</p>
-                  <p className="text-white text-sm whitespace-pre-wrap">{item.subject}</p>
-                </div>
-              )}
-
-              {item.ai_reasoning && (
-                <div className="bg-purple-900/20 border border-purple-500/20 rounded-lg px-3.5 py-3">
-                  <p className="text-purple-300 text-xs font-medium mb-1">Обоснование ИИ</p>
-                  <p className="text-gray-300 text-sm">{item.ai_reasoning}</p>
-                </div>
-              )}
-
-              <div>
-                <div className="bg-gray-900 border border-gray-700 rounded-lg">
-                  {isEditing ? (
-                    <textarea
-                      value={editedContent}
-                      onChange={(e) => setEditedContent(e.target.value)}
-                      rows={6}
-                      className="w-full p-3.5 bg-transparent text-gray-200 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg"
-                    />
-                  ) : (
-                    <p className="p-3.5 text-gray-300 text-sm whitespace-pre-wrap">{item.content}</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Инструкция для ИИ → мгновенная регенерация */}
-              <div className="border-t border-gray-700/50 pt-3 space-y-2">
-                <p className="flex items-center gap-1.5 text-xs text-amber-400 font-medium">
-                  <MessageSquare className="w-3.5 h-3.5" />
-                  Инструкция для ИИ — напишите что изменить и нажмите «Обновить»
-                </p>
-                <div className="flex gap-2">
-                  <textarea
-                    rows={2}
-                    value={feedbacks[item.id] ?? ''}
-                    onChange={e => setFeedbacks(f => ({ ...f, [item.id]: e.target.value }))}
-                    placeholder="Например: добавь счёт с ценами, сделай короче, уточни сроки 3 дня..."
-                    className="flex-1 px-3 py-2 bg-amber-950/20 border border-amber-500/30 rounded-lg text-gray-300 text-sm placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-amber-500 resize-none"
-                  />
-                  <button
-                    disabled={!feedbacks[item.id]?.trim() || regenerating === item.id}
-                    onClick={async () => {
-                      const instruction = feedbacks[item.id]?.trim()
-                      if (!instruction) return
-                      setRegenerating(item.id)
-                      try {
-                        const r = await fetch('/api/ai/regenerate', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({
-                            queue_id: item.id,
-                            instruction,
-                            current_content: editingId === item.id ? editedContent : item.content,
-                            ai_reasoning: item.ai_reasoning,
-                          }),
-                        })
-                        const d = await r.json()
-                        if (d.new_content) {
-                          setLocalItems(prev => prev.map(i => i.id === item.id ? { ...i, content: d.new_content } : i))
-                          if (editingId === item.id) setEditedContent(d.new_content)
-                          setFeedbacks(f => ({ ...f, [item.id]: '' }))
-                        }
-                      } finally {
-                        setRegenerating(null)
-                      }
-                    }}
-                    className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 bg-amber-600 hover:bg-amber-500 disabled:opacity-40 text-white text-xs font-medium rounded-lg transition-colors self-end"
-                  >
-                    <RefreshCw className={`w-3.5 h-3.5 ${regenerating === item.id ? 'animate-spin' : ''}`} />
-                    {regenerating === item.id ? 'Генерирую...' : 'Обновить'}
-                  </button>
-                </div>
-              </div>
-
-              {isRejecting && (
-                <div className="space-y-2">
-                  <input
-                    type="text"
-                    value={rejectReason}
-                    onChange={(e) => setRejectReason(e.target.value)}
-                    placeholder="Причина отклонения (необязательно)"
-                    className="w-full px-3.5 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500"
-                    autoFocus
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => reject(item)}
-                      disabled={isProcessing}
-                      className="flex-1 py-2 bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
-                    >
-                      Подтвердить отклонение
-                    </button>
-                    <button
-                      onClick={() => setRejectingId(null)}
-                      className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm rounded-lg transition-colors"
-                    >
-                      Отмена
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {!isRejecting && (
-                <div className="flex items-center gap-2 flex-wrap">
-                  <button
-                    onClick={() => approve(item)}
-                    disabled={isProcessing}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-green-600 hover:bg-green-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
-                  >
-                    <CheckCircle className="w-4 h-4" />
-                    {isEditing ? 'Сохранить и отправить' : 'Отправить'}
-                  </button>
-
-                  {!isEditing ? (
-                    <button
-                      onClick={() => startEdit(item)}
-                      className="flex items-center gap-1.5 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium rounded-lg transition-colors"
-                    >
-                      <Edit3 className="w-4 h-4" />
-                      Изменить
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => setEditingId(null)}
-                      className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm rounded-lg transition-colors"
-                    >
-                      Отмена
-                    </button>
-                  )}
-
-                  <button
-                    onClick={() => setRejectingId(item.id)}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-red-400 text-sm font-medium rounded-lg transition-colors"
-                  >
-                    <XCircle className="w-4 h-4" />
-                    Отклонить
-                  </button>
-
-                  <div className="relative group">
-                    <button className="flex items-center gap-1.5 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-400 text-sm rounded-lg transition-colors">
-                      <Clock className="w-4 h-4" />
-                      Напомнить
-                    </button>
-                    <div className="absolute bottom-full left-0 mb-1 hidden group-hover:flex bg-gray-800 border border-gray-700 rounded-lg overflow-hidden shadow-xl z-10">
-                      {[1, 3, 24].map((h) => (
-                        <button
-                          key={h}
-                          onClick={() => snooze(item.id, h)}
-                          className="px-3 py-2 hover:bg-gray-700 text-gray-300 text-xs whitespace-nowrap transition-colors"
-                        >
-                          {h === 24 ? '1 день' : `${h}ч`}
-                        </button>
-                      ))}
+                  <div className="text-[13px] font-medium text-gray-900">{item.subject}</div>
+                  {item.contacts && (
+                    <div className="text-[11px] text-gray-500 mt-0.5">
+                      {item.contacts.company_name || item.contacts.full_name}
+                      {item.contacts.phone && ` · ${item.contacts.phone}`}
                     </div>
-                  </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="px-4 py-3">
+              {item.ai_reasoning && (
+                <div className="text-[10px] text-purple-600 bg-purple-50 rounded-lg px-3 py-2 mb-3">
+                  <span className="font-medium">★ ИИ объясняет: </span>{item.ai_reasoning}
+                </div>
+              )}
+
+              {editing === item.id ? (
+                <textarea
+                  value={editText}
+                  onChange={e => setEditText(e.target.value)}
+                  rows={4}
+                  className="w-full text-[12px] border border-gray-300 rounded-lg px-3 py-2 mb-3 focus:outline-none focus:border-blue-400 resize-none"
+                />
+              ) : (
+                <div className="text-[12px] text-gray-700 bg-gray-50 rounded-lg px-3 py-2 mb-3 whitespace-pre-wrap max-h-32 overflow-y-auto">
+                  {item.content}
+                </div>
+              )}
+
+              {item.status === 'pending' ? (
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => act(item.id, 'approved', item.content)}
+                    disabled={loading === item.id}
+                    className="flex-1 bg-green-600 text-white text-[12px] py-2 rounded-lg hover:bg-green-700 disabled:opacity-50">
+                    {loading === item.id ? '...' : '✓ Одобрить'}
+                  </button>
+                  {editing === item.id ? (
+                    <button
+                      onClick={() => act(item.id, 'approved', editText)}
+                      disabled={loading === item.id}
+                      className="flex-1 bg-blue-600 text-white text-[12px] py-2 rounded-lg hover:bg-blue-700">
+                      ✓ Сохранить и одобрить
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => { setEditing(item.id); setEditText(item.content) }}
+                      className="px-3 py-2 border border-gray-300 text-gray-600 text-[12px] rounded-lg hover:bg-gray-50">
+                      ✎ Изменить
+                    </button>
+                  )}
+                  <button
+                    onClick={() => act(item.id, 'rejected')}
+                    disabled={loading === item.id}
+                    className="px-3 py-2 bg-red-50 text-red-600 text-[12px] rounded-lg hover:bg-red-100">
+                    ✗
+                  </button>
+                </div>
+              ) : (
+                <div className={`text-[11px] px-3 py-1.5 rounded-lg text-center ${
+                  item.status === 'approved' ? 'bg-green-50 text-green-700' :
+                  item.status === 'rejected' ? 'bg-red-50 text-red-600' : 'bg-gray-50 text-gray-500'
+                }`}>
+                  {item.status === 'approved' ? '✓ Одобрено' : item.status === 'rejected' ? '✗ Отклонено' : item.status}
                 </div>
               )}
             </div>
-          )
-        })}
+          </div>
+        ))}
       </div>
     </div>
   )

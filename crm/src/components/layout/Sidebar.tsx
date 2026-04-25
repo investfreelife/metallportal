@@ -33,14 +33,9 @@ type NavSection = {
 
 const navSections: NavSection[] = [
   {
-    section: 'AI CEO',
-    items: [
-      { href: '/bezos', label: '🧠 Безос (CEO)', icon: Sparkles },
-    ],
-  },
-  {
     section: 'Главное',
     items: [
+      { href: '/bezos', label: '🧠 AI Центр', icon: Sparkles },
       { href: '/dashboard', label: 'Дашборд', icon: LayoutDashboard },
       { href: '/queue', label: 'Очередь ИИ', icon: Sparkles, badgeKey: 'pending' },
     ],

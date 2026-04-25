@@ -2,6 +2,13 @@
 *Последнее обновление: 25 апреля 2026*
 
 ## ✅ СДЕЛАНО
+
+### SmartSearch — Умный поиск → Корзина → CRM (25 апр 2026)
+- **`components/SmartSearch.tsx`** — новый компонент: 4 шага (поиск → корзина → форма → успех). Поддержка голосового поиска, редактирование количества +/-, добавление позиций в корзину, форма контактов, отправка в CRM
+- **`app/api/orders/create/route.ts`** — новый API: создаёт контакт в CRM (или находит существующий), создаёт сделку в `deals`, создаёт задачу в `ai_queue`, отправляет Telegram уведомление менеджеру, запускает AI продавца через harlan-ai в фоне
+- **`app/page.tsx`** — заменён `AISearch` на `SmartSearch`
+- **`harlan-ai/search_crew.py`** — обновлён `recommend_task`: возвращает структурированный JSON с полями `items[]`, `total_price`, `recommendation`, `clarifying_question`, `missing_info`; включены эталонные цены РФ 2024
+- Env vars необходимы: `NEXT_PUBLIC_AI_URL`, `NEXT_PUBLIC_AI_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_MANAGER_CHAT_ID`, `AI_API_KEY`
 - Инфраструктура: GitHub + Vercel + Supabase
 - 12,166 товаров импортированы, все в правильных категориях
 - Цены: 12,166 price_items заполнены
