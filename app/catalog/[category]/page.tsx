@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCategoryBySlug, getSubcategories, getCategoryWithChildren, getProductCounts, sumCounts } from "@/lib/queries";
@@ -11,6 +12,29 @@ export const revalidate = 3600;
 
 interface Props {
   params: { category: string };
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const category = await getCategoryBySlug(params.category);
+  if (!category) return { title: "Каталог" };
+
+  const title = `${category.name} — купить в Москве`;
+  const description = category.description
+    ? `${category.description}. Купите ${category.name.toLowerCase()} по выгодным ценам с доставкой по Москве и России.`
+    : `${category.name} оптом и в розницу. Большой выбор, доставка по Москве и всей России. Цены от производителя.`;
+  const url = `/catalog/${params.category}`;
+
+  return {
+    title,
+    description: description.slice(0, 160),
+    alternates: { canonical: url },
+    openGraph: {
+      title,
+      description: description.slice(0, 160),
+      url,
+      type: "website",
+    },
+  };
 }
 
 export default async function CategoryPage({ params }: Props) {

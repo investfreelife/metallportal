@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Hero from "@/components/home/Hero";
 import TrustCounters from "@/components/home/TrustCounters";
 import ProductGrid from "@/components/home/ProductGrid";
@@ -7,9 +8,52 @@ import CTASection from "@/components/home/CTASection";
 import Link from "next/link";
 import { CheckCircle, Calculator, ArrowRight } from "lucide-react";
 
+export const metadata: Metadata = {
+  title: "МеталлПортал — Металлопрокат оптом и в розницу в Москве",
+  description:
+    "Купите металлопрокат оптом и в розницу: арматура, трубы, листовой металл. 1500+ позиций в наличии. Доставка по Москве и всей России. Цены от производителя.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "МеталлПортал — Металлопрокат оптом и в розницу в Москве",
+    description:
+      "Купите металлопрокат оптом и в розницу: арматура, трубы, листовой металл. 1500+ позиций в наличии. Доставка по Москве и всей России.",
+    url: "/",
+    type: "website",
+  },
+};
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "МеталлПортал",
+  alternateName: "МЕТАЛЛПОРТАЛ",
+  url: "https://metallportal.vercel.app",
+  description:
+    "B2B/B2C маркетплейс металлопроката, труб, арматуры и другой металлопродукции. Прямые поставки от производителей по всей России.",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Москва",
+    addressCountry: "RU",
+  },
+  areaServed: "RU",
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Металлопрокат",
+    itemListElement: [
+      { "@type": "Offer", itemOffered: { "@type": "Product", name: "Арматура А500С" } },
+      { "@type": "Offer", itemOffered: { "@type": "Product", name: "Трубы стальные" } },
+      { "@type": "Offer", itemOffered: { "@type": "Product", name: "Листовой металл" } },
+    ],
+  },
+};
+
 export default function HomePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
       <Hero />
       <TrustCounters />
       <ProductGrid />

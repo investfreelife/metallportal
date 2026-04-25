@@ -20,10 +20,34 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cat = await getCategoryBySlug(params.subcategory);
-  if (cat) return { title: `${cat.name} — купить в Москве | МеталлПортал` };
+  if (cat) {
+    const title = `${cat.name} — купить в Москве`;
+    const description = cat.description
+      ? `${cat.description}. Купите ${cat.name.toLowerCase()} по выгодным ценам с доставкой по Москве и России.`
+      : `${cat.name} оптом и в розницу. Большой выбор, доставка по Москве и всей России. Цены от производителя.`;
+    const url = `/catalog/${params.category}/${params.subcategory}`;
+    return {
+      title,
+      description: description.slice(0, 160),
+      alternates: { canonical: url },
+      openGraph: { title, description: description.slice(0, 160), url, type: "website" },
+    };
+  }
+
   const product = await getProductBySlug(params.subcategory);
-  if (!product) return { title: "Не найдено | МеталлПортал" };
-  return { title: `${product.name} цена купить в Москве | МеталлПортал` };
+  if (!product) return { title: "Не найдено" };
+
+  const title = `${product.name} — цена, купить в Москве`;
+  const specs = [product.dimensions, product.gost, product.steel_grade].filter(Boolean).join(", ");
+  const description = `${product.name}${specs ? ` (${specs})` : ""} — купить по выгодной цене с доставкой по Москве и всей России. МеталлПортал.`;
+  const url = `/catalog/${params.category}/${params.subcategory}`;
+
+  return {
+    title,
+    description: description.slice(0, 160),
+    alternates: { canonical: url },
+    openGraph: { title, description: description.slice(0, 160), url, type: "website" },
+  };
 }
 
 const DEDICATED_PAGES: Record<string, string> = {
@@ -760,13 +784,45 @@ export default async function SubcategoryPage({ params }: Props) {
       getProductPriceItems(product.id),
       getRelatedProducts(product.category_id, product.id, 6),
     ]);
+
+    const minPrice = priceItems.reduce(
+      (min: number, pi: any) => Math.min(min, pi.base_price ?? Infinity),
+      Infinity
+    );
+    const specs = [product.dimensions, product.gost, product.steel_grade].filter(Boolean).join(", ");
+    const productSchema: Record<string, any> = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: product.name,
+      description: `${product.name}${specs ? ` (${specs})` : ""} — купить в Москве с доставкой по России.`,
+      sku: product.slug,
+      brand: { "@type": "Brand", name: "МеталлПортал" },
+    };
+    if (product.image_url) productSchema.image = product.image_url;
+    if (isFinite(minPrice)) {
+      productSchema.offers = {
+        "@type": "Offer",
+        price: minPrice.toFixed(2),
+        priceCurrency: "RUB",
+        availability: "https://schema.org/InStock",
+        url: `https://metallportal.vercel.app/catalog/${params.category}/${params.subcategory}`,
+        seller: { "@type": "Organization", name: "МеталлПортал" },
+      };
+    }
+
     return (
-      <ProductDetailView
-        product={product}
-        priceItems={priceItems}
-        related={related}
-        basePath={`/catalog/${params.category}`}
-      />
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+        />
+        <ProductDetailView
+          product={product}
+          priceItems={priceItems}
+          related={related}
+          basePath={`/catalog/${params.category}`}
+        />
+      </>
     );
   }
 

@@ -8,10 +8,30 @@ import AdminBar from "@/components/admin/AdminBar";
 import { CartProvider } from "@/contexts/CartContext";
 
 export const metadata: Metadata = {
-  title: "МЕТАЛЛПОРТАЛ — Маркетплейс металлопродукции",
+  metadataBase: new URL("https://metallportal.vercel.app"),
+  title: {
+    default: "МЕТАЛЛПОРТАЛ — Металлопрокат оптом и в розницу",
+    template: "%s | МеталлПортал",
+  },
   description:
-    "B2B/B2C маркетплейс металлопроката, труб, арматуры и другой металлопродукции. Прямые поставки от производителей.",
+    "B2B/B2C маркетплейс металлопроката, труб, арматуры и другой металлопродукции. Прямые поставки от производителей. Доставка по России.",
   keywords: ["металлопрокат", "арматура", "трубы", "металл", "маркетплейс", "B2B", "оптом"],
+  openGraph: {
+    type: "website",
+    locale: "ru_RU",
+    siteName: "МеталлПортал",
+    title: "МЕТАЛЛПОРТАЛ — Металлопрокат оптом и в розницу",
+    description:
+      "B2B/B2C маркетплейс металлопроката, труб, арматуры и другой металлопродукции. Прямые поставки от производителей.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@metallportal",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

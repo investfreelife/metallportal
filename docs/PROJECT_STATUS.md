@@ -1,5 +1,5 @@
 # PROJECT_STATUS.md — МеталлПортал
-*Последнее обновление: 19 апреля 2026*
+*Последнее обновление: 25 апреля 2026*
 
 ## ✅ СДЕЛАНО
 - Инфраструктура: GitHub + Vercel + Supabase
@@ -9,6 +9,15 @@
 - Админка: 6 страниц
 - Тёмная/светлая тема
 - RPC функция get_product_counts() в Supabase
+
+### SEO (25 апр 2026)
+- **`public/robots.txt`** — Allow /, Disallow /api/ /_next/ /*?, Sitemap: https://metallportal.vercel.app/sitemap.xml
+- **`app/sitemap.ts`** — динамический sitemap: статические страницы + все активные категории (1/2/3 уровень) + все активные товары. URL: `/sitemap.xml`
+- **`app/layout.tsx`** — добавлены `metadataBase`, `title.template`, `openGraph` defaults, `twitter: { card: "summary_large_image" }`, `robots`
+- **`app/page.tsx`** — уникальный `metadata` (title/description/canonical/OG) + Organization JSON-LD (`@type: Organization`)
+- **`app/catalog/[category]/page.tsx`** — добавлен `generateMetadata` с title/description/canonical/OG для каждой категории
+- **`app/catalog/[category]/[subcategory]/page.tsx`** — расширен `generateMetadata` (description, canonical, OG для категорий и товаров) + Product JSON-LD (`@type: Product`) с offers/price/priceCurrency/availability при показе товара
+- **`app/tools/layout.tsx`** — новый файл: metadata (title/description/canonical/OG) + FAQPage JSON-LD (4 вопроса о калькуляторах)
 
 ### UI/UX — Калькуляторы металлопроката (19 апр 2026)
 - **ToolSearchBox** (`components/tools/ToolSearchBox.tsx`): создан переиспользуемый компонент поиска товаров с дебаунсом (280мс), выпадающим списком, автозапуском поиска при изменении `initialQuery`
