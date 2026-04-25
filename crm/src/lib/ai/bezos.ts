@@ -1,4 +1,4 @@
-const OPUS_MODEL = 'anthropic/claude-opus-4-5'
+const OPUS_MODEL = 'anthropic/claude-opus-4-6'
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions'
 const REFERER = 'https://metallportal-crm2.vercel.app'
 

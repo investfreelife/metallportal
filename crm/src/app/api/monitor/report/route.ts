@@ -75,7 +75,7 @@ export async function POST() {
         'X-Title': 'MetallPortal CRM Monitor',
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-haiku-20240307',
+        model: 'anthropic/claude-sonnet-4-6',
         max_tokens: 600,
         messages: [{
           role: 'user',

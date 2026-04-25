@@ -305,7 +305,7 @@ ${ctx.actual_result ? `- Результат: ${ctx.actual_result}` : ''}
         'X-Title': 'MetallPortal CRM AI',
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-haiku-20240307',
+        model: 'anthropic/claude-sonnet-4-6',
         max_tokens: 500,
         response_format: { type: 'json_object' },
         messages: [{ role: 'user', content: prompt }],
