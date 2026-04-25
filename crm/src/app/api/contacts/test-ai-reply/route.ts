@@ -30,24 +30,5 @@ export async function POST(req: NextRequest) {
     } catch { /* fallback */ }
   }
 
-  // Try Anthropic
-  const anthropicKey = process.env.ANTHROPIC_API_KEY
-  if (anthropicKey) {
-    try {
-      const resp = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-api-key': anthropicKey, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({
-          model: 'claude-haiku-20240307', max_tokens: 200,
-          system,
-          messages: [{ role: 'user', content: userContent }],
-        }),
-      })
-      const ai = await resp.json()
-      const text = ai.content?.[0]?.text?.trim()
-      if (text) return NextResponse.json({ text, source: 'anthropic' })
-    } catch { /* fallback */ }
-  }
-
   return NextResponse.json({ text: 'Добрый день! Уточним наличие арматуры 12мм на складе и пришлём актуальный прайс в течение 15 минут.', source: 'template' })
 }

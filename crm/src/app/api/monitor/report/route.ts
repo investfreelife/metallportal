@@ -62,19 +62,20 @@ export async function POST() {
     `[${new Date(l.ts).toLocaleTimeString('ru')}] ${l.event} → ${l.status}${l.error_msg ? ' ❌ ' + l.error_msg : ''}${l.detail ? ' ' + JSON.stringify(l.detail).slice(0, 100) : ''}`
   ).join('\n')
 
-  const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY
+  const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY
   let reportText = `За последний час: событий ${logs.length}. Заявок: ${leadsToday ?? 0}. Очередь: ${queuePending ?? 0}`
 
-  if (ANTHROPIC_KEY) {
-    const claudeRes = await fetch('https://api.anthropic.com/v1/messages', {
+  if (OPENROUTER_KEY) {
+    const aiRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'x-api-key': ANTHROPIC_KEY,
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json',
+        'Authorization': `Bearer ${OPENROUTER_KEY}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://metallportal-crm2.vercel.app',
+        'X-Title': 'MetallPortal CRM Monitor',
       },
       body: JSON.stringify({
-        model: 'claude-haiku-20240307',
+        model: 'anthropic/claude-haiku-20240307',
         max_tokens: 600,
         messages: [{
           role: 'user',
@@ -89,9 +90,9 @@ export async function POST() {
       })
     }).catch(() => null)
 
-    if (claudeRes?.ok) {
-      const claudeData = await claudeRes.json()
-      reportText = claudeData.content?.[0]?.text ?? reportText
+    if (aiRes?.ok) {
+      const aiData = await aiRes.json()
+      reportText = aiData.choices?.[0]?.message?.content ?? reportText
     }
   }
 

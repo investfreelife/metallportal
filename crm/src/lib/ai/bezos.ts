@@ -1,6 +1,27 @@
-import Anthropic from '@anthropic-ai/sdk'
+const OPUS_MODEL = 'anthropic/claude-opus-4-5'
+const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions'
+const REFERER = 'https://metallportal-crm2.vercel.app'
 
-const OPUS_MODEL = 'claude-opus-4-5'
+async function openrouterMessages(messages: Array<{ role: string; content: string }>, maxTokens = 2000): Promise<string> {
+  const key = process.env.OPENROUTER_API_KEY
+  if (!key) throw new Error('OPENROUTER_API_KEY not set')
+  const res = await fetch(OPENROUTER_URL, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${key}`,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': REFERER,
+      'X-Title': 'MetallPortal CRM · Bezos AI',
+    },
+    body: JSON.stringify({ model: OPUS_MODEL, messages, max_tokens: maxTokens, temperature: 0.6 }),
+  })
+  if (!res.ok) {
+    const err = await res.text()
+    throw new Error(`OpenRouter error ${res.status}: ${err}`)
+  }
+  const data = await res.json()
+  return data.choices?.[0]?.message?.content ?? ''
+}
 
 export const BEZOS_SYSTEM_PROMPT = `
 Ты — AI CEO платформы Harlan Steel (harlansteel.ru).
@@ -91,17 +112,10 @@ export interface BezosContext {
   }
 }
 
-function getClient() {
-  return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
-}
-
 export async function bezosWeeklyReport(context: BezosContext): Promise<string> {
-  const client = getClient()
-  const response = await client.messages.create({
-    model: OPUS_MODEL,
-    max_tokens: 2000,
-    system: BEZOS_SYSTEM_PROMPT,
-    messages: [{
+  return openrouterMessages([
+    { role: 'system', content: BEZOS_SYSTEM_PROMPT },
+    {
       role: 'user',
       content: `
 Данные за прошедшую неделю:
@@ -134,9 +148,7 @@ ${context.marketSignals.map(s => `- ${s}`).join('\n')}
 Для каждого планируемого действия укажи: агент-исполнитель, ожидаемый результат, метрика успеха.
 Применяй Amazon Flywheel и Working Backwards.
       `.trim(),
-    }],
-  })
-  return response.content[0].type === 'text' ? response.content[0].text : ''
+    }], 2000)
 }
 
 export async function bezosDecide(situation: string, options: string[]): Promise<{
@@ -146,12 +158,9 @@ export async function bezosDecide(situation: string, options: string[]): Promise
   priority: 'urgent' | 'high' | 'normal'
   pressRelease?: string
 }> {
-  const client = getClient()
-  const response = await client.messages.create({
-    model: OPUS_MODEL,
-    max_tokens: 1000,
-    system: BEZOS_SYSTEM_PROMPT,
-    messages: [{
+  const text = await openrouterMessages([
+    { role: 'system', content: BEZOS_SYSTEM_PROMPT },
+    {
       role: 'user',
       content: `
 Ситуация требует стратегического решения:
@@ -170,9 +179,7 @@ ${options.map((o, i) => `${i + 1}. ${o}`).join('\n')}
   "pressRelease": "Сегодня Harlan Steel... [1 предложение о результате]"
 }
       `.trim(),
-    }],
-  })
-  const text = response.content[0].type === 'text' ? response.content[0].text : '{}'
+    }], 1000)
   try {
     return JSON.parse(text.replace(/```json|```/g, '').trim())
   } catch {
@@ -181,17 +188,11 @@ ${options.map((o, i) => `${i + 1}. ${o}`).join('\n')}
 }
 
 export async function bezosChat(message: string, conversationHistory: Array<{ role: 'user' | 'assistant'; content: string }>): Promise<string> {
-  const client = getClient()
-  const response = await client.messages.create({
-    model: OPUS_MODEL,
-    max_tokens: 1500,
-    system: BEZOS_SYSTEM_PROMPT,
-    messages: [
-      ...conversationHistory.slice(-6),
-      { role: 'user', content: message },
-    ],
-  })
-  return response.content[0].type === 'text' ? response.content[0].text : ''
+  return openrouterMessages([
+    { role: 'system', content: BEZOS_SYSTEM_PROMPT },
+    ...conversationHistory.slice(-6),
+    { role: 'user', content: message },
+  ], 1500)
 }
 
 export async function bezosLearn(params: {
@@ -201,12 +202,9 @@ export async function bezosLearn(params: {
   ownerModification?: string
   outcome?: string
 }): Promise<string> {
-  const client = getClient()
-  const response = await client.messages.create({
-    model: OPUS_MODEL,
-    max_tokens: 300,
-    system: BEZOS_SYSTEM_PROMPT,
-    messages: [{
+  return openrouterMessages([
+    { role: 'system', content: BEZOS_SYSTEM_PROMPT },
+    {
       role: 'user',
       content: `
 Обратная связь от владельца:
@@ -220,7 +218,5 @@ ${params.outcome ? `Результат: ${params.outcome}` : ''}
 Что я должен скорректировать в своей стратегии на будущее?
 Один конкретный вывод в 1-2 предложения.
       `.trim(),
-    }],
-  })
-  return response.content[0].type === 'text' ? response.content[0].text : ''
+    }], 300)
 }

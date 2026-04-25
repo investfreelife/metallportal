@@ -272,8 +272,8 @@ export async function evaluateAndImprove(ctx: {
   manager_response_minutes: number
   actual_result?: string | null
 }): Promise<EvalResult | null> {
-  const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY
-  if (!ANTHROPIC_KEY) return null
+  const OPENROUTER_KEY = await getSetting('OPENROUTER_API_KEY')
+  if (!OPENROUTER_KEY) return null
 
   const prompt = `Ты — тренер отдела продаж МеталлПортал. Оцени работу ИИ-ассистента и менеджера.
 
@@ -286,7 +286,7 @@ export async function evaluateAndImprove(ctx: {
 - Время реакции менеджера: ${ctx.manager_response_minutes} минут
 ${ctx.actual_result ? `- Результат: ${ctx.actual_result}` : ''}
 
-Ответь строго JSON:
+Отвечай строго JSON без markdown:
 {
   "ai_score": число 0-10,
   "manager_score": число 0-10,
@@ -296,22 +296,24 @@ ${ctx.actual_result ? `- Результат: ${ctx.actual_result}` : ''}
 }`
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'x-api-key': ANTHROPIC_KEY,
-        'anthropic-version': '2023-06-01',
+        'Authorization': `Bearer ${OPENROUTER_KEY}`,
         'Content-Type': 'application/json',
+        'HTTP-Referer': REFERER,
+        'X-Title': 'MetallPortal CRM AI',
       },
       body: JSON.stringify({
-        model: 'claude-haiku-20240307',
+        model: 'anthropic/claude-haiku-20240307',
         max_tokens: 500,
+        response_format: { type: 'json_object' },
         messages: [{ role: 'user', content: prompt }],
       }),
     })
     if (!res.ok) return null
     const data = await res.json()
-    const text = data.content?.[0]?.text
+    const text = data.choices?.[0]?.message?.content
     if (!text) return null
     const result = JSON.parse(text) as EvalResult
 
