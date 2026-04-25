@@ -1,10 +1,7 @@
-const AI_BASE = process.env.NEXT_PUBLIC_AI_URL || 'https://ai.harlansteel.ru'
-const AI_KEY = process.env.AI_API_KEY || ''
-
 export async function searchMetal(query: string, context?: object) {
-  const res = await fetch(`${AI_BASE}/api/search`, {
+  const res = await fetch('/api/ai/search', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-API-Key': AI_KEY },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ query, context }),
   })
   if (!res.ok) throw new Error('AI search failed')
@@ -14,9 +11,8 @@ export async function searchMetal(query: string, context?: object) {
 export async function voiceSearch(audioBlob: Blob) {
   const form = new FormData()
   form.append('audio', audioBlob, 'recording.ogg')
-  const res = await fetch(`${AI_BASE}/api/search/voice`, {
+  const res = await fetch('/api/ai/search/voice', {
     method: 'POST',
-    headers: { 'X-API-Key': AI_KEY },
     body: form,
   })
   if (!res.ok) throw new Error('Voice search failed')
@@ -26,9 +22,8 @@ export async function voiceSearch(audioBlob: Blob) {
 export async function parseDocument(file: File) {
   const form = new FormData()
   form.append('file', file)
-  const res = await fetch(`${AI_BASE}/api/documents/parse`, {
+  const res = await fetch('/api/ai/documents/parse', {
     method: 'POST',
-    headers: { 'X-API-Key': AI_KEY },
     body: form,
   })
   if (!res.ok) throw new Error('Document parse failed')
@@ -44,9 +39,9 @@ export async function processLead(leadData: {
   source?: string
   contact_id?: string
 }) {
-  const res = await fetch(`${AI_BASE}/api/agents/sales/process-lead`, {
+  const res = await fetch('/api/ai/leads/process', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-API-Key': AI_KEY },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(leadData),
   })
   if (!res.ok) throw new Error('Lead processing failed')
