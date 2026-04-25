@@ -24,10 +24,10 @@ export async function POST(req: NextRequest) {
       contact_id: contact_id ?? null,
       expected_close_date: expected_close_date ?? null,
       ai_win_probability: 0,
-    }).select('id').single()
+    }).select('*, contacts(full_name, company_name, phone)').single()
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-    return NextResponse.json({ ok: true, id: data?.id })
+    return NextResponse.json({ ok: true, id: data?.id, deal: data })
   } catch (e: unknown) {
     return NextResponse.json({ error: (e as Error).message }, { status: 500 })
   }
