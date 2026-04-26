@@ -14,17 +14,20 @@ const AGENT_META: Record<string, { icon: string; color: string }> = {
 }
 
 const MODEL_COLORS: Record<string, string> = {
-  'Opus 4':      '#7C3AED',
-  'Sonnet 4':    '#2563EB',
-  'GPT-4o':      '#059669',
-  'GPT-4o-mini': '#D97706',
-  'Haiku':       '#DC2626',
+  'qwen3.6-plus-preview': '#10B981',
+  'qwen3.5-flash':        '#F59E0B',
+  'qwen3.5-35b-a3b':      '#8B5CF6',
+  'qwen3.5-9b':           '#6366F1',
+  'gpt-4o':               '#059669',
+  'gpt-4o-mini':          '#D97706',
+  'claude-sonnet-4-6':    '#2563EB',
+  'claude-haiku-4-5':     '#DC2626',
 }
 
 function formatCost(usd: number) {
-  if (usd === 0) return '$0.000000'
-  if (usd < 0.001) return `$${usd.toFixed(6)}`
-  if (usd < 0.1) return `$${usd.toFixed(4)}`
+  if (usd === 0) return '🆓 FREE'
+  if (usd < 0.0001) return `$${usd.toFixed(6)}`
+  if (usd < 0.01)   return `$${usd.toFixed(4)}`
   return `$${usd.toFixed(3)}`
 }
 
