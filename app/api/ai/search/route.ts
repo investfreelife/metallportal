@@ -20,40 +20,50 @@ const REF_PRICES: Array<{ keywords: string[]; name: string; unit: string; price:
   { keywords: ['круг', 'пруток'], name: 'Круг стальной', unit: 'тонн', price: 80000 },
 ]
 
+function extractQty(segment: string): number {
+  const m = segment.match(/(\d+(?:[.,]\d+)?)\s*(?:т(?:онн?)?|штук|шт|м(?:етр)?)/i)
+  return m ? parseFloat(m[1].replace(',', '.')) : 1
+}
+
 function fallbackSearch(query: string): ReturnType<typeof normalizeResponse> {
   const q = query.toLowerCase()
-  // Извлечь количество
-  const qtyMatch = q.match(/(\d+(?:[.,]\d+)?)\s*(?:т(?:онн?)?|штук|шт|м(?:етр)?)/i)
-  const qty = qtyMatch ? parseFloat(qtyMatch[1].replace(',', '.')) : 1
+  const usedIndices = new Set<number>()
+  const items: any[] = []
 
-  const matched = REF_PRICES.filter(r => r.keywords.some(k => q.includes(k)))
-  if (!matched.length) return null
+  // Ищем все вхождения металлопроката в запросе
+  for (let i = 0; i < REF_PRICES.length; i++) {
+    if (usedIndices.has(i)) continue
+    const ref = REF_PRICES[i]
+    const matchedKw = ref.keywords.find(k => q.includes(k))
+    if (!matchedKw) continue
 
-  // Берём наиболее специфичное совпадение (больше keywords = лучше)
-  const best = matched.sort((a, b) => {
-    const aMatch = a.keywords.filter(k => q.includes(k)).length
-    const bMatch = b.keywords.filter(k => q.includes(k)).length
-    return bMatch - aMatch
-  })[0]
+    usedIndices.add(i)
+    const pos = q.indexOf(matchedKw)
+    // Берём фрагмент вокруг найденного слова (±60 символов) для извлечения кол-ва и размера
+    const segment = q.slice(Math.max(0, pos - 5), pos + 80)
 
-  // Попробуем извлечь спецификацию из запроса (размер)
-  const sizeMatch = q.match(/\b(\d+[х×x]\d+(?:[х×x]\d+)?|\d+(?:\.\d+)?мм|\d+\/\d+|ду\s*\d+)\b/i)
-  const spec = sizeMatch ? sizeMatch[0].toUpperCase() : ''
+    const qty = extractQty(segment)
+    const sizeMatch = segment.match(/(\d+[х×x]\d+(?:[х×x]\d+)?|\b\d{1,3}(?:\.\d+)?мм\b|\d+\/\d+|ду\s*\d+|\bd\s*\d+)/i)
+    const spec = sizeMatch ? sizeMatch[0].toUpperCase().replace(/\s+/g, '') : ''
 
-  const item = {
-    name: best.name + (spec ? ` ${spec}` : ''),
-    spec: spec || 'ГОСТ, наличие уточняется',
-    quantity: qty,
-    unit: best.unit,
-    price_per_unit: best.price,
-    total_price: qty * best.price,
-    in_stock: true,
-    product_id: null,
+    items.push({
+      name: ref.name + (spec ? ` ${spec}` : ''),
+      spec: spec || 'ГОСТ, наличие уточняется',
+      quantity: qty,
+      unit: ref.unit,
+      price_per_unit: ref.price,
+      total_price: qty * ref.price,
+      in_stock: true,
+      product_id: null,
+    })
   }
+
+  if (!items.length) return null
+
   return {
-    items: [item],
-    total_price: item.total_price,
-    recommendation: 'Цена ориентировочная. Точную стоимость и наличие уточнит менеджер.',
+    items,
+    total_price: items.reduce((s, i) => s + i.total_price, 0),
+    recommendation: 'Цены ориентировочные. Точную стоимость и наличие уточнит менеджер.',
     clarifying_question: null,
     missing_info: [],
   }
