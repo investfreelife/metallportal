@@ -29,8 +29,7 @@ export function SmartSearch() {
   const [form, setForm] = useState({ name: '', phone: '', email: '', comment: '' })
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
-  const mediaRef = useRef<MediaRecorder | null>(null)
-  const chunksRef = useRef<Blob[]>([])
+  const recognitionRef = useRef<any>(null)
 
   const search = async (q?: string) => {
     const searchQuery = q || query
@@ -58,43 +57,46 @@ export function SmartSearch() {
     }
   }
 
-  const startVoice = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      const recorder = new MediaRecorder(stream)
-      chunksRef.current = []
-      recorder.ondataavailable = (e) => chunksRef.current.push(e.data)
-      recorder.onstop = async () => {
-        const blob = new Blob(chunksRef.current, { type: 'audio/ogg' })
-        const formData = new FormData()
-        formData.append('audio', blob, 'recording.ogg')
-        setLoading(true)
-        try {
-          const res = await fetch('/api/ai/search/voice', {
-            method: 'POST',
-            body: formData,
-          })
-          const data = await res.json()
-          if (data.voice_transcript) setQuery(data.voice_transcript)
-          if (data.items?.length > 0) {
-            setResult(data)
-            setStep('cart')
-          }
-        } finally {
-          setLoading(false)
-          stream.getTracks().forEach((t) => t.stop())
-        }
-        setRecording(false)
-      }
-      recorder.start()
-      mediaRef.current = recorder
-      setRecording(true)
-    } catch {
-      alert('Нет доступа к микрофону')
+  const startVoice = () => {
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    if (!SpeechRecognition) {
+      setError('Голосовой поиск не поддерживается в вашем браузере.')
+      return
     }
+    const recognition = new SpeechRecognition()
+    recognition.lang = 'ru-RU'
+    recognition.continuous = false
+    recognition.interimResults = false
+    recognitionRef.current = recognition
+
+    recognition.onstart = () => setRecording(true)
+
+    recognition.onresult = async (event: any) => {
+      const transcript: string = event.results[0][0].transcript
+      setQuery(transcript)
+      setRecording(false)
+      await search(transcript)
+    }
+
+    recognition.onerror = (event: any) => {
+      setRecording(false)
+      if (event.error === 'not-allowed') {
+        setError('Нет доступа к микрофону.')
+      } else {
+        setError('Ошибка распознавания голоса.')
+      }
+    }
+
+    recognition.onend = () => setRecording(false)
+
+    recognition.start()
   }
 
-  const stopVoice = () => mediaRef.current?.stop()
+  const stopVoice = () => {
+    recognitionRef.current?.stop()
+    setRecording(false)
+  }
 
   const updateQty = (i: number, qty: number) => {
     if (!result) return
