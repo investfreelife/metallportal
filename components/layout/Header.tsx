@@ -254,6 +254,29 @@ export default function Header() {
           <Link href="/tools" className="flex items-center gap-1.5 text-xs font-bold text-black bg-gold hover:bg-yellow-400 px-3 py-1.5 rounded-full transition-all">
             🧮 Калькуляторы
           </Link>
+
+          {/* AI Search button with tooltip */}
+          <div className="relative group">
+            <Link
+              href="/ai-search"
+              className="flex items-center gap-1.5 text-xs font-bold text-white bg-gradient-to-r from-blue-500 to-violet-600 hover:from-blue-400 hover:to-violet-500 px-4 py-1.5 rounded-full transition-all shadow-lg shadow-blue-600/40 ring-1 ring-white/20"
+            >
+              <span className="text-[13px] leading-none">✦</span>
+              Поиск с ИИ
+            </Link>
+            {/* Tooltip */}
+            <div className="pointer-events-none absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 bg-background border border-border rounded-2xl shadow-2xl p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-background border-l border-t border-border rotate-45" />
+              <p className="text-xs font-bold text-foreground mb-1.5 flex items-center gap-1.5">
+                <span className="text-blue-500">✦</span> Умный поиск с ИИ
+              </p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Опишите нужный металлопрокат своими словами — ИИ подберёт из 12&nbsp;000+ позиций и сформирует заявку с ценами за секунды
+              </p>
+              <p className="text-xs font-semibold text-blue-500 mt-2">Нажмите чтобы открыть →</p>
+            </div>
+          </div>
+
           <Link href="/catalog" className="ml-auto text-xs hover:text-gold transition-colors opacity-60">
             Весь каталог →
           </Link>
@@ -275,6 +298,10 @@ export default function Header() {
       {mobileOpen && (
         <div className="lg:hidden bg-background border-b border-border shadow-xl">
           <div className="container-main py-4 space-y-1 max-h-[70vh] overflow-y-auto">
+            <Link href="/ai-search" onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 py-3 px-3 bg-gradient-to-r from-blue-500/15 to-violet-500/15 border border-blue-400/30 rounded-xl text-sm font-bold text-blue-400 mb-2">
+              ✦ Поиск с ИИ — подбор из 12 000+ позиций
+            </Link>
             <Link href="/tools" onClick={() => setMobileOpen(false)}
               className="flex items-center gap-2 py-3 px-3 bg-gold/10 border border-gold/30 rounded-xl text-sm font-bold text-gold mb-2">
               🧮 Калькуляторы металлопроката

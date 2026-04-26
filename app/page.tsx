@@ -7,7 +7,6 @@ import HowItWorks from "@/components/home/HowItWorks";
 import CTASection from "@/components/home/CTASection";
 import Link from "next/link";
 import { CheckCircle, Calculator, ArrowRight } from "lucide-react";
-import { SmartSearch } from "@/components/SmartSearch";
 import { DocumentUpload } from "@/components/DocumentUpload";
 
 export const metadata: Metadata = {
@@ -58,17 +57,6 @@ export default function HomePage() {
       />
       <Hero />
       <TrustCounters />
-
-      {/* AI Поиск металлопроката */}
-      <section className="py-10 bg-background">
-        <div className="container-main">
-          <div className="text-center mb-5">
-            <h2 className="text-2xl font-bold text-foreground mb-1.5">Найти металлопрокат</h2>
-            <p className="text-muted-foreground text-sm">Опишите что нужно — AI подберёт из 12 000+ позиций</p>
-          </div>
-          <SmartSearch />
-        </div>
-      </section>
 
       <ProductGrid />
 
