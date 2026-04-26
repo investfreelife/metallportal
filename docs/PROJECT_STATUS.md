@@ -3,6 +3,11 @@
 
 ## ✅ СДЕЛАНО
 
+### MASTER.md — главная документация проекта (26 апр 2026)
+- Создан `docs/MASTER.md` — единая точка входа для любого агента/разработчика
+- Охватывает: стратегию, архитектуру, все компоненты, AI агентов, деплой, env vars, известные проблемы и решения, roadmap
+- Структура: 15 разделов, полная файловая система, потоки данных, правила для агентов
+
 ### Детальный лог расходов AI + правильные модели (26 апр 2026)
 - **harlan-ai `config.py`**: полностью переработаны LLM — Bezos/Analyst: `claude-sonnet-4-6` (max_tokens 2000/1500), Seller/SMM: `gpt-4o` (max 1500/800), Scorer/Cheap: `gpt-4o-mini` (max 500). Aliases `llm_orchestrator=llm_analyst`, `llm_worker=llm_seller` для обратной совместимости
 - **harlan-ai `tools/cost_logger.py`**: новый модуль — `log_llm_call()`, `calculate_cost()`, `LLMCallLogger` context manager. Цены за 1М токенов для всех моделей. Пишет в таблицу `ai_cost_log`
