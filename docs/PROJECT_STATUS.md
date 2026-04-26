@@ -3,6 +3,15 @@
 
 ## ✅ СДЕЛАНО
 
+### Week 1 — Data Quality Infra (26 апр 2026, выполнено автоматически)
+- **ПН**: `docs/data-truth-baseline-2026-04.md` заполнен реальными цифрами через Supabase API
+- **ВТ**: Миграция `20260427_data_quality_queue.sql` применена → созданы `data_quality_queue`, `manual_review_queue`, RPC `upsert_dq_issue`, `products_without_prices`
+- **СР**: `scripts/audit_data_health.ts` запущен → 5882 issues в DQ queue; `app/api/cron/audit-data-health/route.ts` создан; `vercel.json` обновлён (hourly cron `0 * * * *`)
+- **ЧТ**: `validators.py` добавлен в harlan-ai; `tasks.py`: `@with_validation` на `search_metal()` + `validate_pricing` gate в `generate_kp(items=...)`; Railway задеплоен v3.0
+- **Baseline цифры**: products=3812, price_items=5192 (fresh_7d=0%), deals(90d)=2, contacts=7, p95 search=61s(!), failures=1/bezos
+- **DQ Queue**: critical/zero_price=259, critical/missing_price=47, critical/price_mismatch=118, warning/stale_price=5191, info/missing_image=181
+- **Pending (Сергей)**: 152-ФЗ pre-flight (8 пунктов → GitHub issues), выбор поставщика + 3 прайса в `data/suppliers/<slug>/`
+
 ### MASTER.md — главная документация проекта (26 апр 2026)
 - Создан `docs/MASTER.md` — единая точка входа для любого агента/разработчика
 - Охватывает: стратегию, архитектуру, все компоненты, AI агентов, деплой, env vars, известные проблемы и решения, roadmap
