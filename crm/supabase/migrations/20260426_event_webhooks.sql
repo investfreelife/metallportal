@@ -37,13 +37,16 @@ CREATE INDEX IF NOT EXISTS idx_cost_log ON ai_cost_log(tenant_id, created_at DES
 
 CREATE OR REPLACE FUNCTION notify_contact_created()
 RETURNS TRIGGER LANGUAGE plpgsql AS $$
+DECLARE
+  _ai_url TEXT := 'https://harlan-ai-production-production.up.railway.app';
+  _ai_key TEXT := 'harlan_steel_ai_2024_secret_key_xK9mP3nQ';
 BEGIN
   IF NEW.ai_score IS NULL THEN
     PERFORM net.http_post(
-      url     := current_setting('app.ai_url', true) || '/api/webhook/contact-created',
+      url     := _ai_url || '/api/webhook/contact-created',
       headers := jsonb_build_object(
         'Content-Type', 'application/json',
-        'X-API-Key', current_setting('app.ai_key', true)
+        'X-API-Key', _ai_key
       ),
       body    := jsonb_build_object('record', row_to_json(NEW))
     );
@@ -55,13 +58,16 @@ END $$;
 
 CREATE OR REPLACE FUNCTION notify_deal_won()
 RETURNS TRIGGER LANGUAGE plpgsql AS $$
+DECLARE
+  _ai_url TEXT := 'https://harlan-ai-production-production.up.railway.app';
+  _ai_key TEXT := 'harlan_steel_ai_2024_secret_key_xK9mP3nQ';
 BEGIN
   IF NEW.stage = 'won' AND (OLD.stage IS NULL OR OLD.stage != 'won') THEN
     PERFORM net.http_post(
-      url     := current_setting('app.ai_url', true) || '/api/webhook/deal-won',
+      url     := _ai_url || '/api/webhook/deal-won',
       headers := jsonb_build_object(
         'Content-Type', 'application/json',
-        'X-API-Key', current_setting('app.ai_key', true)
+        'X-API-Key', _ai_key
       ),
       body    := jsonb_build_object('record', row_to_json(NEW))
     );
@@ -73,24 +79,22 @@ END $$;
 
 CREATE OR REPLACE FUNCTION notify_task_approved()
 RETURNS TRIGGER LANGUAGE plpgsql AS $$
+DECLARE
+  _ai_url TEXT := 'https://harlan-ai-production-production.up.railway.app';
+  _ai_key TEXT := 'harlan_steel_ai_2024_secret_key_xK9mP3nQ';
 BEGIN
   IF NEW.status = 'approved' AND OLD.status = 'pending' THEN
     PERFORM net.http_post(
-      url     := current_setting('app.ai_url', true) || '/api/webhook/task-approved',
+      url     := _ai_url || '/api/webhook/task-approved',
       headers := jsonb_build_object(
         'Content-Type', 'application/json',
-        'X-API-Key', current_setting('app.ai_key', true)
+        'X-API-Key', _ai_key
       ),
       body    := jsonb_build_object('record', row_to_json(NEW))
     );
   END IF;
   RETURN NEW;
 END $$;
-
--- ─── Настройки URL (заменить на реальный Railway URL) ─────
-
-ALTER DATABASE postgres SET app.ai_url = 'https://harlan-ai-production-production.up.railway.app';
-ALTER DATABASE postgres SET app.ai_key = 'harlan_steel_ai_2024_secret_key_xK9mP3nQ';
 
 -- ─── Триггеры ─────────────────────────────────────────────
 
