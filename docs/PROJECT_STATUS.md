@@ -1,7 +1,15 @@
 # PROJECT_STATUS.md — МеталлПортал
-*Последнее обновление: 25 апреля 2026 (вечер)*
+*Последнее обновление: 26 апреля 2026*
 
 ## ✅ СДЕЛАНО
+
+### Детальный лог расходов AI + правильные модели (26 апр 2026)
+- **harlan-ai `config.py`**: полностью переработаны LLM — Bezos/Analyst: `claude-sonnet-4-6` (max_tokens 2000/1500), Seller/SMM: `gpt-4o` (max 1500/800), Scorer/Cheap: `gpt-4o-mini` (max 500). Aliases `llm_orchestrator=llm_analyst`, `llm_worker=llm_seller` для обратной совместимости
+- **harlan-ai `tools/cost_logger.py`**: новый модуль — `log_llm_call()`, `calculate_cost()`, `LLMCallLogger` context manager. Цены за 1М токенов для всех моделей. Пишет в таблицу `ai_cost_log`
+- **harlan-ai crews**: логирование добавлено в `bezos_crew.py` (утренний цикл + еженедельная стратегия), `sales_crew.py` (скоринг+КП + ежедневный цикл), `content_crew.py` (посты SMM + SEO контент)
+- **SQL**: `crm/supabase/migrations/20260425_ai_cost_log.sql` — таблица `ai_cost_log` с полями agent_name, task_name, model, tokens, cost_usd, duration_ms, contact_id, deal_id + RLS policy + индексы
+- **CRM `/costs`**: обновлён `page.tsx` → теперь читает `ai_cost_log`. Создан `CostsDashboard.tsx` — карточки агентов, разбивка по моделям с color-bar, детальный лог (клик = раскрытие), фильтр по агентам, поиск, прогноз/месяц
+- **⚠️ Ручные шаги**: 1) Запустить `crm/supabase/migrations/20260425_ai_cost_log.sql` в Supabase SQL Editor, 2) Установить в Railway: MODEL_BEZOS=anthropic/claude-sonnet-4-6, MODEL_ANALYST=anthropic/claude-sonnet-4-6, MODEL_SELLER=openai/gpt-4o, MODEL_SMM=openai/gpt-4o, MODEL_SCORER=openai/gpt-4o-mini, MODEL_CHEAP=openai/gpt-4o-mini
 
 ### Контроль расходов AI + починка системы (25 апр 2026)
 - **harlan-ai**: модели снижены — Bezos: `claude-sonnet-4-6` (было opus, в 5× дешевле), Orchestrator: `claude-haiku`, Worker: `gpt-4o-mini`. После emergency commit — Bezos тоже на Haiku + max_tokens=500
