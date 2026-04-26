@@ -92,6 +92,8 @@ function normalizeResponse(data: any) {
   return data
 }
 
+export const maxDuration = 55
+
 export async function POST(req: NextRequest) {
   const body = await req.json()
   const query: string = body.query || ''
@@ -101,7 +103,7 @@ export async function POST(req: NextRequest) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-API-Key': AI_KEY },
       body: JSON.stringify(body),
-      signal: AbortSignal.timeout(25000),
+      signal: AbortSignal.timeout(52000),
     })
     const raw = await res.json()
     const normalized = normalizeResponse(raw)
