@@ -9,6 +9,7 @@ const AGENT_META: Record<string, { icon: string; color: string }> = {
   scout:     { icon: '🔍', color: '#EDE9FE' },
   secretary: { icon: '🗂', color: '#FEF3C7' },
   content:   { icon: '📝', color: '#D1FAE5' },
+  search:    { icon: '🔎', color: '#FEE2E2' },
   system:    { icon: '⚙️', color: '#F3F4F6' },
 }
 
@@ -51,10 +52,22 @@ export function CostsDashboard({ logs, balance, rawByAgent }: {
   const [search, setSearch] = useState('')
   const [expanded, setExpanded] = useState<string | null>(null)
   const [refreshing, setRefreshing] = useState(false)
+  const [reconcile, setReconcile] = useState<any>(null)
+  const [reconciling, setReconciling] = useState(false)
 
   const refresh = () => {
     setRefreshing(true)
     window.location.reload()
+  }
+
+  const doReconcile = async () => {
+    setReconciling(true)
+    try {
+      const res = await fetch('/api/costs/reconcile')
+      setReconcile(await res.json())
+    } finally {
+      setReconciling(false)
+    }
   }
 
   const totalCost = logs.reduce((s, l) => s + (l.total_cost_usd || 0), 0)
@@ -98,10 +111,16 @@ export function CostsDashboard({ logs, balance, rawByAgent }: {
               Детальный лог каждого запроса · {logs.length} записей
             </p>
           </div>
-          <button onClick={refresh} disabled={refreshing}
-            className="text-[11px] border border-gray-300 text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-50 disabled:opacity-50">
-            {refreshing ? '...' : '↻ Обновить'}
-          </button>
+          <div className="flex gap-2">
+            <button onClick={doReconcile} disabled={reconciling}
+              className="text-[11px] border border-amber-300 text-amber-700 px-3 py-1.5 rounded-lg hover:bg-amber-50 disabled:opacity-50">
+              {reconciling ? '...' : '🔍 Сверить с OpenRouter'}
+            </button>
+            <button onClick={refresh} disabled={refreshing}
+              className="text-[11px] border border-gray-300 text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-50 disabled:opacity-50">
+              {refreshing ? '...' : '↻ Обновить'}
+            </button>
+          </div>
         </div>
 
         {balance && (
@@ -125,6 +144,46 @@ export function CostsDashboard({ logs, balance, rawByAgent }: {
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
+
+        {/* Сверка с OpenRouter */}
+        {reconcile && (
+          <div className={`rounded-xl p-4 border ${
+            Math.abs(reconcile.discrepancy || 0) > 0.001
+              ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'
+          }`}>
+            <div className="text-[12px] font-medium mb-2">
+              {Math.abs(reconcile.discrepancy || 0) > 0.001 ? '⚠️ Расхождение найдено' : '✅ Всё сходится'}
+            </div>
+            <div className="grid grid-cols-3 gap-3 mb-3">
+              <div>
+                <div className="text-[9px] text-gray-500">OpenRouter (реально)</div>
+                <div className="text-[15px] font-medium">${(reconcile.openrouter?.usage || 0).toFixed(4)}</div>
+              </div>
+              <div>
+                <div className="text-[9px] text-gray-500">Наш лог</div>
+                <div className="text-[15px] font-medium">${(reconcile.our_log?.total || 0).toFixed(4)}</div>
+              </div>
+              <div>
+                <div className="text-[9px] text-gray-500">Не отслежено</div>
+                <div className={`text-[15px] font-medium ${
+                  Math.abs(reconcile.discrepancy || 0) > 0.001 ? 'text-red-600' : 'text-green-600'
+                }`}>
+                  {reconcile.discrepancy >= 0 ? '+' : ''}{(reconcile.discrepancy || 0).toFixed(4)} USD
+                </div>
+              </div>
+            </div>
+            {reconcile.our_log?.by_agent && (
+              <div className="space-y-1 border-t border-gray-200 pt-2">
+                {Object.entries(reconcile.our_log.by_agent).map(([agent, data]: any) => (
+                  <div key={agent} className="flex justify-between text-[11px]">
+                    <span className="text-gray-600">{agent}</span>
+                    <span>{data.calls} вызовов · ${data.cost.toFixed(4)}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Метрики по агентам */}
         <div className="grid grid-cols-3 gap-2">
