@@ -1,6 +1,6 @@
 'use client'
 import { useState, useRef } from 'react'
-import { searchMetal, voiceSearch } from '@/lib/ai-client'
+import { searchMetal } from '@/lib/ai-client'
 
 interface Product {
   id?: string
@@ -27,8 +27,7 @@ export function AISearch() {
   const [loading, setLoading] = useState(false)
   const [recording, setRecording] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const mediaRef = useRef<MediaRecorder | null>(null)
-  const chunksRef = useRef<Blob[]>([])
+  const recognitionRef = useRef<any>(null)
 
   const search = async () => {
     if (!query.trim()) return
@@ -44,37 +43,55 @@ export function AISearch() {
     }
   }
 
-  const startVoice = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      const recorder = new MediaRecorder(stream)
-      chunksRef.current = []
-      recorder.ondataavailable = (e) => chunksRef.current.push(e.data)
-      recorder.onstop = async () => {
-        const blob = new Blob(chunksRef.current, { type: 'audio/ogg' })
-        setLoading(true)
-        setError(null)
-        try {
-          const result = await voiceSearch(blob)
-          setQuery(result.voice_transcript || '')
-          setResults(result)
-        } catch (e) {
-          setError('Ошибка голосового поиска.')
-        } finally {
-          setLoading(false)
-          setRecording(false)
-          stream.getTracks().forEach((t) => t.stop())
-        }
-      }
-      recorder.start()
-      mediaRef.current = recorder
-      setRecording(true)
-    } catch {
-      setError('Нет доступа к микрофону.')
+  const startVoice = () => {
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    if (!SpeechRecognition) {
+      setError('Голосовой поиск не поддерживается в вашем браузере.')
+      return
     }
+    const recognition = new SpeechRecognition()
+    recognition.lang = 'ru-RU'
+    recognition.continuous = false
+    recognition.interimResults = false
+    recognitionRef.current = recognition
+
+    recognition.onstart = () => setRecording(true)
+
+    recognition.onresult = async (event: any) => {
+      const transcript: string = event.results[0][0].transcript
+      setQuery(transcript)
+      setRecording(false)
+      setLoading(true)
+      setError(null)
+      try {
+        const result = await searchMetal(transcript)
+        setResults(result)
+      } catch {
+        setError('Ошибка поиска. Попробуйте ещё раз.')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    recognition.onerror = (event: any) => {
+      setRecording(false)
+      if (event.error === 'not-allowed') {
+        setError('Нет доступа к микрофону.')
+      } else {
+        setError('Ошибка распознавания голоса.')
+      }
+    }
+
+    recognition.onend = () => setRecording(false)
+
+    recognition.start()
   }
 
-  const stopVoice = () => mediaRef.current?.stop()
+  const stopVoice = () => {
+    recognitionRef.current?.stop()
+    setRecording(false)
+  }
 
   return (
     <div className="w-full max-w-2xl mx-auto">
