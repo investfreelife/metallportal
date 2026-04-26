@@ -1,7 +1,17 @@
 # PROJECT_STATUS.md — МеталлПортал
-*Последнее обновление: 25 апреля 2026*
+*Последнее обновление: 25 апреля 2026 (вечер)*
 
 ## ✅ СДЕЛАНО
+
+### Контроль расходов AI + починка системы (25 апр 2026)
+- **harlan-ai**: модели снижены — Bezos: `claude-sonnet-4-6` (было opus, в 5× дешевле), Orchestrator: `claude-haiku`, Worker: `gpt-4o-mini`. После emergency commit — Bezos тоже на Haiku + max_tokens=500
+- **harlan-ai `main.py`**: добавлен `log_llm_cost()` → пишет в `ai_costs`, cron `/api/cron/morning` теперь пропускает запуск если последний был < 20 часов назад (деdup через `agent_memory`)
+- **`harlan-ai/supabase/ai_tables.sql`**: добавлена таблица `ai_costs` (tenant_id, agent_name, model, cost_usd, tokens, RLS)
+- **CRM `crm/src/app/(dashboard)/costs/`**: новая страница `/costs` — баланс OpenRouter API, метрики расходов, разбивка по агентам и моделям, рекомендации по экономии
+- **CRM `Sidebar.tsx`**: добавлен пункт `💰 Расходы AI` в раздел Аналитика
+- **`app/api/ai/search/route.ts`**: добавлен `AbortSignal.timeout(30000)`, улучшен fallback — теперь поддерживает несколько позиций в одном запросе (multi-item)
+- Деплой: CRM → https://metallportal-crm2.vercel.app, сайт → https://www.harlansteel.ru
+- **⚠️ Ручные шаги**: 1) Запустить `harlan-ai/supabase/ai_tables.sql` в Supabase, 2) Обновить Railway vars MODEL_*, 3) Установить лимиты на openrouter.ai/settings/limits ($2/день, $20/мес)
 
 ### SmartSearch — Умный поиск → Корзина → CRM (25 апр 2026)
 - **`components/SmartSearch.tsx`** — новый компонент: 4 шага (поиск → корзина → форма → успех). Поддержка голосового поиска, редактирование количества +/-, добавление позиций в корзину, форма контактов, отправка в CRM
