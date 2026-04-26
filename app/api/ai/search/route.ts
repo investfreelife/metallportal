@@ -3,39 +3,112 @@ import { NextRequest, NextResponse } from 'next/server'
 const AI_BASE = process.env.NEXT_PUBLIC_AI_URL || 'https://ai.harlansteel.ru'
 const AI_KEY = process.env.AI_API_KEY || ''
 
+// Эталонные цены РФ 2024 (₽/т)
+const REF_PRICES: Array<{ keywords: string[]; name: string; unit: string; price: number }> = [
+  { keywords: ['арматура', 'армату', 'арм', 'a500', 'а500', 'a400', 'а400'], name: 'Арматура А500С', unit: 'тонн', price: 75000 },
+  { keywords: ['труба профил', 'профильная', 'профиль', '40х40', '60х60', '80х80', '100х100', '50х50'], name: 'Труба профильная ст3', unit: 'тонн', price: 90000 },
+  { keywords: ['труба вгп', 'вгп', 'водогазо', 'ду15', 'ду20', 'ду25', 'ду32', 'ду40', 'ду50'], name: 'Труба ВГП', unit: 'тонн', price: 85000 },
+  { keywords: ['труба бесшовн', 'бесшовн'], name: 'Труба бесшовная', unit: 'тонн', price: 110000 },
+  { keywords: ['труба', 'трубу', 'трубы'], name: 'Труба стальная', unit: 'тонн', price: 88000 },
+  { keywords: ['лист горяче', 'г/к', 'гк лист', 'лист 10', 'лист 12', 'лист 8', 'лист 6', 'лист 4'], name: 'Лист горячекатаный', unit: 'тонн', price: 85000 },
+  { keywords: ['лист холодно', 'х/к', 'хк лист'], name: 'Лист холоднокатаный', unit: 'тонн', price: 95000 },
+  { keywords: ['лист', 'листов', 'листу'], name: 'Лист стальной', unit: 'тонн', price: 85000 },
+  { keywords: ['балка', 'двутавр', 'двутавровая'], name: 'Балка двутавровая', unit: 'тонн', price: 82000 },
+  { keywords: ['швеллер', 'шв'], name: 'Швеллер', unit: 'тонн', price: 83000 },
+  { keywords: ['уголок', 'угол'], name: 'Уголок стальной', unit: 'тонн', price: 78000 },
+  { keywords: ['полоса', 'полосу'], name: 'Полоса стальная', unit: 'тонн', price: 76000 },
+  { keywords: ['круг', 'пруток'], name: 'Круг стальной', unit: 'тонн', price: 80000 },
+]
+
+function fallbackSearch(query: string): ReturnType<typeof normalizeResponse> {
+  const q = query.toLowerCase()
+  // Извлечь количество
+  const qtyMatch = q.match(/(\d+(?:[.,]\d+)?)\s*(?:т(?:онн?)?|штук|шт|м(?:етр)?)/i)
+  const qty = qtyMatch ? parseFloat(qtyMatch[1].replace(',', '.')) : 1
+
+  const matched = REF_PRICES.filter(r => r.keywords.some(k => q.includes(k)))
+  if (!matched.length) return null
+
+  // Берём наиболее специфичное совпадение (больше keywords = лучше)
+  const best = matched.sort((a, b) => {
+    const aMatch = a.keywords.filter(k => q.includes(k)).length
+    const bMatch = b.keywords.filter(k => q.includes(k)).length
+    return bMatch - aMatch
+  })[0]
+
+  // Попробуем извлечь спецификацию из запроса (размер)
+  const sizeMatch = q.match(/\b(\d+[х×x]\d+(?:[х×x]\d+)?|\d+(?:\.\d+)?мм|\d+\/\d+|ду\s*\d+)\b/i)
+  const spec = sizeMatch ? sizeMatch[0].toUpperCase() : ''
+
+  const item = {
+    name: best.name + (spec ? ` ${spec}` : ''),
+    spec: spec || 'ГОСТ, наличие уточняется',
+    quantity: qty,
+    unit: best.unit,
+    price_per_unit: best.price,
+    total_price: qty * best.price,
+    in_stock: true,
+    product_id: null,
+  }
+  return {
+    items: [item],
+    total_price: item.total_price,
+    recommendation: 'Цена ориентировочная. Точную стоимость и наличие уточнит менеджер.',
+    clarifying_question: null,
+    missing_info: [],
+  }
+}
+
+function normalizeResponse(data: any) {
+  if (data.products !== undefined && data.items === undefined) {
+    const items = (data.products || []).map((p: any) => ({
+      name: p.name || p.title || 'Товар',
+      spec: p.spec || p.description || p.category || '',
+      quantity: p.quantity || 1,
+      unit: p.unit || 'тонн',
+      price_per_unit: p.price || p.price_per_unit || 0,
+      total_price: (p.price || 0) * (p.quantity || 1),
+      in_stock: p.in_stock ?? p.available ?? true,
+      product_id: p.id || p.product_id || null,
+    }))
+    return {
+      items,
+      total_price: items.reduce((s: number, i: any) => s + i.total_price, 0),
+      recommendation: data.recommendation || '',
+      clarifying_question: null,
+      missing_info: [],
+    }
+  }
+  return data
+}
+
 export async function POST(req: NextRequest) {
+  const body = await req.json()
+  const query: string = body.query || ''
+
   try {
-    const body = await req.json()
     const res = await fetch(`${AI_BASE}/api/search`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-API-Key': AI_KEY },
       body: JSON.stringify(body),
+      signal: AbortSignal.timeout(25000),
     })
-    const data = await res.json()
+    const raw = await res.json()
+    const normalized = normalizeResponse(raw)
 
-    // Нормализуем: старый формат {products, recommendation, alternatives} → новый {items, ...}
-    if (data.products !== undefined && data.items === undefined) {
-      const items = (data.products || []).map((p: any) => ({
-        name: p.name || p.title || 'Товар',
-        spec: p.spec || p.description || p.category || '',
-        quantity: p.quantity || 1,
-        unit: p.unit || 'тонн',
-        price_per_unit: p.price || p.price_per_unit || 0,
-        total_price: (p.price || 0) * (p.quantity || 1),
-        in_stock: p.in_stock ?? p.available ?? true,
-        product_id: p.id || p.product_id || null,
-      }))
-      return NextResponse.json({
-        items,
-        total_price: items.reduce((s: number, i: any) => s + i.total_price, 0),
-        recommendation: data.recommendation || '',
-        clarifying_question: null,
-        missing_info: [],
-      })
+    // Если AI вернул пустые items — используем keyword fallback
+    if (!normalized.items?.length && query) {
+      const fb = fallbackSearch(query)
+      if (fb) return NextResponse.json(fb)
     }
 
-    return NextResponse.json(data, { status: res.status })
+    return NextResponse.json(normalized, { status: res.status })
   } catch {
+    // AI недоступен — используем keyword fallback
+    if (query) {
+      const fb = fallbackSearch(query)
+      if (fb) return NextResponse.json(fb)
+    }
     return NextResponse.json({ error: 'AI service unavailable' }, { status: 503 })
   }
 }

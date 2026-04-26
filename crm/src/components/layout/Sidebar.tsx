@@ -63,6 +63,7 @@ const navSections: NavSection[] = [
       { href: '/analytics', label: 'Аналитика', icon: BarChart2 },
       { href: '/reports', label: 'Отчёты', icon: FileText },
       { href: '/referral', label: 'Партнёры', icon: Network },
+      { href: '/costs', label: '💰 Расходы AI', icon: BarChart2 },
     ],
   },
 ]
