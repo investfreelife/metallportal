@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { User, LogOut, Package, ChevronRight, Phone, Mail, ShoppingBag } from "lucide-react";
+import { User, LogOut, Package, ChevronRight, Phone, Mail, ShoppingBag, Share2, Copy, Check } from "lucide-react";
 import Link from "next/link";
 
 const supabase = createClient(
@@ -21,6 +21,10 @@ export default function AccountPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [deals, setDeals] = useState<Deal[]>([]);
   const [loading, setLoading] = useState(true);
+  const [tab, setTab] = useState<'main' | 'referral'>('main');
+  const [siteUser, setSiteUser] = useState<any>(null);
+  const [referrals, setReferrals] = useState<any[]>([]);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -37,6 +41,12 @@ export default function AccountPage() {
             name: meData.user.full_name, phone: meData.user.phone, email: meData.user.email
           }));
         } catch {}
+        // Also load site_users referral data
+        try {
+          const r2 = await fetch('/api/auth/me');
+          const d2 = await r2.json();
+          if (d2.user) { setSiteUser(d2.user); setReferrals(d2.referrals || []); }
+        } catch {}
         setLoading(false);
         return;
       }
@@ -50,8 +60,15 @@ export default function AccountPage() {
     load();
   }, []);
 
+  const copyRefLink = () => {
+    if (!siteUser?.ref_code) return;
+    navigator.clipboard.writeText(`https://harlansteel.ru/?ref=${siteUser.ref_code}`);
+    setCopied(true); setTimeout(() => setCopied(false), 2000);
+  };
+
   const handleSignOut = async () => {
     await fetch("/api/account/logout", { method: "POST" });
+    await fetch("/api/auth/logout", { method: "POST" });
     await supabase.auth.signOut();
     window.location.href = "/";
   };
@@ -82,6 +99,104 @@ export default function AccountPage() {
       </div>
 
       <div className="container-main py-10 max-w-2xl mx-auto space-y-5">
+
+        {/* Tabs */}
+        <div className="flex border-b border-border">
+          <button onClick={() => setTab('main')}
+            className={`px-4 py-2.5 text-sm border-b-2 transition-all ${tab==='main' ? 'text-gold border-gold font-medium' : 'text-muted-foreground border-transparent'}`}>
+            Профиль и заказы
+          </button>
+          <button onClick={() => setTab('referral')}
+            className={`px-4 py-2.5 text-sm border-b-2 transition-all flex items-center gap-1.5 ${tab==='referral' ? 'text-gold border-gold font-medium' : 'text-muted-foreground border-transparent'}`}>
+            <Share2 size={13} /> Реферальная программа
+          </button>
+        </div>
+
+        {/* Referral tab */}
+        {tab === 'referral' && (
+          <div className="space-y-4">
+            {!siteUser ? (
+              <div className="bg-card border border-border rounded-xl p-6 text-center">
+                <p className="text-muted-foreground text-sm mb-3">Для участия в реферальной программе нужна регистрация по email</p>
+                <Link href="/partner/join" className="bg-gold text-black px-5 py-2 rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-all">
+                  Узнать подробнее →
+                </Link>
+              </div>
+            ) : (
+              <>
+                {/* Уровень */}
+                <div className={`rounded-xl p-4 ${
+                  referrals.length >= 20 ? 'bg-yellow-500/10 border border-yellow-400/30' :
+                  referrals.length >= 5  ? 'bg-muted/60 border border-border' :
+                  'bg-orange-500/10 border border-orange-400/30'
+                }`}>
+                  <div className="flex items-center gap-3">
+                    <span className="text-3xl">{referrals.length >= 20 ? '🥇' : referrals.length >= 5 ? '🥈' : '🥉'}</span>
+                    <div>
+                      <div className="font-bold text-foreground">
+                        {referrals.length >= 20 ? 'Золото — 5%' : referrals.length >= 5 ? 'Серебро — 3.5%' : 'Бронза — 2%'}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {referrals.length < 5 ? `ещё ${5 - referrals.length} до Серебра` :
+                         referrals.length < 20 ? `ещё ${20 - referrals.length} до Золота` : 'Максимальный уровень!'}
+                      </div>
+                    </div>
+                    <div className="ml-auto text-right">
+                      <div className="text-xs text-muted-foreground">Рефералов</div>
+                      <div className="text-2xl font-bold text-foreground">{referrals.length}</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Ссылка */}
+                <div className="bg-card border border-border rounded-xl p-4">
+                  <div className="text-sm font-medium text-foreground mb-2">Ваша реферальная ссылка</div>
+                  <div className="flex gap-2">
+                    <div className="flex-1 bg-muted rounded-xl px-3 py-2 text-xs font-mono text-muted-foreground truncate">
+                      harlansteel.ru/?ref={siteUser.ref_code}
+                    </div>
+                    <button onClick={copyRefLink}
+                      className="flex items-center gap-1.5 bg-gold text-black text-xs font-medium px-3 py-2 rounded-xl hover:bg-yellow-400 transition-all">
+                      {copied ? <><Check size={12} /> Скопировано</> : <><Copy size={12} /> Копировать</>}
+                    </button>
+                  </div>
+                  <div className="flex gap-2 mt-2">
+                    <a href={`https://t.me/share/url?url=https://harlansteel.ru/?ref=${siteUser.ref_code}`} target="_blank"
+                      className="flex-1 text-center text-xs border border-border rounded-xl py-2 hover:bg-muted transition-colors">
+                      📱 Telegram
+                    </a>
+                    <a href={`https://wa.me/?text=https://harlansteel.ru/?ref=${siteUser.ref_code}`} target="_blank"
+                      className="flex-1 text-center text-xs border border-border rounded-xl py-2 hover:bg-muted transition-colors">
+                      💬 WhatsApp
+                    </a>
+                  </div>
+                </div>
+
+                {/* Рефералы */}
+                <div className="bg-card border border-border rounded-xl overflow-hidden">
+                  <div className="px-4 py-3 border-b border-border text-sm font-medium text-foreground">
+                    Мои рефералы ({referrals.length})
+                  </div>
+                  {referrals.length === 0 ? (
+                    <div className="px-4 py-8 text-center text-sm text-muted-foreground">
+                      Поделитесь ссылкой — вы получаете % с заказов приглашённых клиентов
+                    </div>
+                  ) : referrals.map((r: any) => (
+                    <div key={r.id} className="px-4 py-3 border-b border-border last:border-0 flex justify-between items-center">
+                      <div>
+                        <div className="text-sm font-medium text-foreground">{r.company_name || r.full_name}</div>
+                        <div className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString('ru-RU')}</div>
+                      </div>
+                      <div className="text-xs text-muted-foreground">{r.total_orders} заказов</div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {tab === 'main' && <>
         {/* Profile header */}
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-full bg-gold/20 border border-gold/30 flex items-center justify-center">
@@ -188,6 +303,7 @@ export default function AccountPage() {
           className="w-full flex items-center justify-center gap-2 py-3 border border-border rounded-xl text-sm text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-all">
           <LogOut size={15} /> Выйти из аккаунта
         </button>
+        </>}
       </div>
     </div>
   );
