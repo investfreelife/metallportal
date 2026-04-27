@@ -29,17 +29,21 @@ export function SmartSearch() {
   const [form, setForm] = useState({ name: '', phone: '', email: '', comment: '', consent: false })
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [advice, setAdvice] = useState('')           // совет AI-консультанта
+  const [consulting, setConsulting] = useState(false) // AI думает...
   const [voiceText, setVoiceText] = useState('')    // живой текст пока говорит
   const [voiceTimer, setVoiceTimer] = useState(0)   // секунды записи
   const recognitionRef = useRef<any>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const voiceCallbackRef = useRef<((text: string) => void) | null>(null)
 
+  // Быстрый поиск по каталогу (текстовый ввод)
   const search = async (q?: string) => {
     const searchQuery = q || query
     if (!searchQuery.trim()) return
     setLoading(true)
     setError('')
+    setAdvice('')
     try {
       const res = await fetch('/api/ai/search', {
         method: 'POST',
@@ -52,12 +56,39 @@ export function SmartSearch() {
         setResult(data)
         setStep('cart')
       } else {
-        setError('Ничего не нашли. Попробуйте уточнить запрос: "труба профильная 40х40 ст3" или "арматура А500 d12"')
+        setError('Ничего не нашли. Попробуйте уточнить: "труба профильная 40х40" или "арматура А500 d12"')
       }
     } catch {
       setError('Ошибка соединения. Попробуйте ещё раз.')
     } finally {
       setLoading(false)
+    }
+  }
+
+  // AI-консультант (голосовой ввод): понимает контекст → ищет в базе
+  const consultSearch = async (voiceQuery: string) => {
+    if (!voiceQuery.trim()) return
+    setConsulting(true)
+    setError('')
+    setAdvice('')
+    try {
+      const res = await fetch('/api/ai/consult', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: voiceQuery }),
+      })
+      const data = await res.json()
+      if (data.advice) setAdvice(data.advice)
+      if (data.items?.length > 0) {
+        setResult(data)
+        setStep('cart')
+      } else {
+        setError('Не нашли подходящих позиций в каталоге. Попробуйте описать подробнее.')
+      }
+    } catch {
+      setError('Ошибка. Попробуйте ещё раз.')
+    } finally {
+      setConsulting(false)
     }
   }
 
@@ -130,7 +161,7 @@ export function SmartSearch() {
         voiceCallbackRef.current(text)
       } else {
         setQuery(text)
-        search(text)
+        consultSearch(text)  // голос → AI консультант
       }
     }
 
@@ -235,6 +266,11 @@ export function SmartSearch() {
           {voiceText && <div className="mt-1 text-gray-600 text-xs italic">«{voiceText}»</div>}
         </div>
       )}
+      {consulting && (
+        <div className="mt-2 text-center text-sm text-blue-600 animate-pulse">
+          🤖 AI подбирает материалы...
+        </div>
+      )}
       {error && (
         <div className="mt-3 text-sm text-red-500 bg-red-50 rounded-xl px-4 py-2">{error}</div>
       )}
@@ -264,6 +300,12 @@ export function SmartSearch() {
           ← Изменить запрос
         </button>
       </div>
+
+      {advice && (
+        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-3 mb-4 text-sm text-blue-800">
+          🤖 {advice}
+        </div>
+      )}
 
       <div className="space-y-2 mb-4">
         {result.items.map((item, i) => (
