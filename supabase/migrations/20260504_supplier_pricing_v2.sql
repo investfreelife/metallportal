@@ -3,7 +3,7 @@
 -- Phase 0 / Week 2 — Pipeline загрузки прайса поставщика → две цены в КП
 -- ============================================================================
 -- ЧТО ДЕЛАЕТ ЭТА МИГРАЦИЯ:
---   1. Создаёт справочник suppliers (если ещё нет)
+--   1. Создаёт справочник price_suppliers (если ещё нет)
 --   2. Журнал загрузок прайсов (supplier_price_uploads)
 --   3. Staging-таблицу для сырых строк прайса со ссылкой на ячейку (supplier_price_offers)
 --   4. Обучаемые правила парсинга (supplier_parsing_rules)
@@ -31,7 +31,7 @@ BEGIN;
 -- Имя поставщика НЕ публикуется клиенту. is_public_name=false по умолчанию.
 -- В CRM менеджер видит. На сайте/КП клиенту — только обезличено "Поставщик 1".
 
-CREATE TABLE IF NOT EXISTS suppliers (
+CREATE TABLE IF NOT EXISTS price_suppliers (
   id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   tenant_id       uuid NOT NULL,
   slug            text NOT NULL,
@@ -49,16 +49,16 @@ CREATE TABLE IF NOT EXISTS suppliers (
 );
 
 CREATE INDEX IF NOT EXISTS idx_suppliers_tenant_active
-  ON suppliers (tenant_id, is_active);
+  ON price_suppliers (tenant_id, is_active);
 
-ALTER TABLE suppliers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE price_suppliers ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS suppliers_tenant_isolation ON suppliers;
-CREATE POLICY suppliers_tenant_isolation ON suppliers
+DROP POLICY IF EXISTS suppliers_tenant_isolation ON price_suppliers;
+CREATE POLICY suppliers_tenant_isolation ON price_suppliers
   USING (tenant_id::text = current_setting('app.current_tenant', true));
 
 -- Сразу seed Металлсервиса для текущего тенанта
-INSERT INTO suppliers (tenant_id, slug, name, domain, contact_email, notes)
+INSERT INTO price_suppliers (tenant_id, slug, name, domain, contact_email, notes)
 VALUES (
   'a1000000-0000-0000-0000-000000000001',
   'metallservice',
@@ -80,7 +80,7 @@ ON CONFLICT (tenant_id, slug) DO NOTHING;
 CREATE TABLE IF NOT EXISTS supplier_price_uploads (
   id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   tenant_id           uuid NOT NULL,
-  supplier_id         uuid NOT NULL REFERENCES suppliers(id) ON DELETE RESTRICT,
+  supplier_id         uuid NOT NULL REFERENCES price_suppliers(id) ON DELETE RESTRICT,
   batch_id            uuid NOT NULL,                      -- группирует загрузки одного "обновления"
   file_name           text NOT NULL,
   file_storage_path   text,                                -- путь в Supabase Storage
@@ -137,7 +137,7 @@ CREATE TABLE IF NOT EXISTS supplier_price_offers (
   id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   tenant_id           uuid NOT NULL,
   upload_id           uuid NOT NULL REFERENCES supplier_price_uploads(id) ON DELETE CASCADE,
-  supplier_id         uuid NOT NULL REFERENCES suppliers(id) ON DELETE RESTRICT,
+  supplier_id         uuid NOT NULL REFERENCES price_suppliers(id) ON DELETE RESTRICT,
 
   -- иерархия из прайса (как было в файле)
   section             text,           -- "Сортовой прокат", "Цветной прокат", "Трубы"
@@ -199,7 +199,7 @@ CREATE POLICY offers_tenant_isolation ON supplier_price_offers
 CREATE TABLE IF NOT EXISTS supplier_parsing_rules (
   id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   tenant_id       uuid NOT NULL,
-  supplier_id     uuid NOT NULL REFERENCES suppliers(id) ON DELETE CASCADE,
+  supplier_id     uuid NOT NULL REFERENCES price_suppliers(id) ON DELETE CASCADE,
   rule_type       text NOT NULL
                   CHECK (rule_type IN (
                     'header_alias',           -- "Полка"="ширина", "Наим."="наименование"
@@ -243,7 +243,7 @@ CREATE TABLE IF NOT EXISTS parsing_questions (
   id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   tenant_id       uuid NOT NULL,
   upload_id       uuid NOT NULL REFERENCES supplier_price_uploads(id) ON DELETE CASCADE,
-  supplier_id     uuid NOT NULL REFERENCES suppliers(id) ON DELETE CASCADE,
+  supplier_id     uuid NOT NULL REFERENCES price_suppliers(id) ON DELETE CASCADE,
   question_type   text NOT NULL
                   CHECK (question_type IN (
                     'unknown_subcategory',
@@ -289,7 +289,7 @@ CREATE POLICY questions_tenant_isolation ON parsing_questions
 CREATE TABLE IF NOT EXISTS supplier_sku_mapping (
   id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   tenant_id           uuid NOT NULL,
-  supplier_id         uuid NOT NULL REFERENCES suppliers(id) ON DELETE CASCADE,
+  supplier_id         uuid NOT NULL REFERENCES price_suppliers(id) ON DELETE CASCADE,
   -- canonical_key — детерминированный хэш (section, subcategory, mark_normalized, dim_normalized, unit)
   canonical_key       text NOT NULL,
   product_id          uuid,                                 -- nullable! если ещё не смэпплено
@@ -338,7 +338,7 @@ CREATE POLICY mapping_tenant_isolation ON supplier_sku_mapping
 CREATE TABLE IF NOT EXISTS supplier_quote_requests (
   id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   tenant_id           uuid NOT NULL,
-  supplier_id         uuid NOT NULL REFERENCES suppliers(id) ON DELETE RESTRICT,
+  supplier_id         uuid NOT NULL REFERENCES price_suppliers(id) ON DELETE RESTRICT,
   deal_id             uuid,                                  -- ссылка на сделку/заявку
   contact_id          uuid,                                  -- клиент которому делаем КП
   channel             text NOT NULL DEFAULT 'email'
@@ -388,7 +388,7 @@ CREATE TABLE IF NOT EXISTS supplier_quote_responses (
   id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   tenant_id           uuid NOT NULL,
   request_id          uuid NOT NULL REFERENCES supplier_quote_requests(id) ON DELETE CASCADE,
-  supplier_id         uuid NOT NULL REFERENCES suppliers(id) ON DELETE RESTRICT,
+  supplier_id         uuid NOT NULL REFERENCES price_suppliers(id) ON DELETE RESTRICT,
   raw_email_body      text,                                  -- если ответ пришёл email-ом
   raw_email_message_id text,
   items               jsonb NOT NULL,
@@ -536,7 +536,7 @@ CREATE POLICY discount_review_tenant_isolation ON discount_review_queue
 -- Добавляем поля чтобы price_items знал ОТ КОГО эта цена и КАК она получена.
 
 ALTER TABLE price_items
-  ADD COLUMN IF NOT EXISTS supplier_id uuid REFERENCES suppliers(id) ON DELETE SET NULL;
+  ADD COLUMN IF NOT EXISTS supplier_id uuid REFERENCES price_suppliers(id) ON DELETE SET NULL;
 
 ALTER TABLE price_items
   ADD COLUMN IF NOT EXISTS source_offer_id uuid REFERENCES supplier_price_offers(id) ON DELETE SET NULL;
@@ -700,7 +700,7 @@ COMMIT;
 --   ('parsing_questions','customer_price_overrides','discount_policies','discount_review_queue');
 -- → должно вернуть 11 строк
 --
--- SELECT slug FROM suppliers WHERE tenant_id='a1000000-0000-0000-0000-000000000001';
+-- SELECT slug FROM price_suppliers WHERE tenant_id='a1000000-0000-0000-0000-000000000001';
 -- → должно вернуть 'metallservice'
 --
 -- SELECT policy_name, min_markup_pct FROM discount_policies

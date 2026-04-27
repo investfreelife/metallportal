@@ -54,6 +54,8 @@ YYYY-MM-DD HH:MM | <agent>           | <emoji> | <что сделано>        
 2026-04-27 17:11 | windsurf | 📋 | 10 .xls прайсов Металлсервис + notes.md + фикстуры в tests/fixtures | data/suppliers/metallservice/2026-04-24/, harlan-ai/tests/fixtures/metallservice/
 2026-04-27 17:12 | windsurf | ⚙️ | xlrd==1.2.0 + pyyaml==6.0.3 установлены; import MetallserviceLoader → OK | harlan-ai/pyproject.toml
 2026-04-27 17:15 | windsurf | 🚨 | БЛОКЕР: миграция 20260504 упала — `suppliers` в БД уже существует (CRM-схема, 4 строки, нет tenant_id). Нужно решение Сергея: переименовать price_suppliers или объединить | STATE.md §8
+2026-04-27 17:25 | windsurf | 🔧 | Фикс блокера: suppliers → price_suppliers во всей миграции (15 мест) + parse_supplier_pricing.py (1 место) | supabase/migrations/20260504_supplier_pricing_v2.sql, harlan-ai/scripts/parse_supplier_pricing.py
+2026-04-27 17:26 | windsurf | ✅ | Миграция 20260504_supplier_pricing_v2 применена: price_suppliers ✅, CRM suppliers 4 строки ✅, seed metallservice ✅ | supabase/migrations/20260504_supplier_pricing_v2.sql
 ```
 
 <!-- Новые записи дописывать ниже этой строки -->
