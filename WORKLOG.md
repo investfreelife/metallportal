@@ -59,6 +59,9 @@ YYYY-MM-DD HH:MM | <agent>           | <emoji> | <что сделано>        
 2026-04-27 17:30 | windsurf | 🔬 | pytest 16/16 PASSED (col_letter, source_ref, 10 реальных файлов, anomaly detector) | harlan-ai/tests/suppliers/
 2026-04-27 17:35 | windsurf | 🔬 | Dry-run парсер: 10 OK, 0 failed, 13741 offers, 13445 аномалий (все unknown_subcat — норма для первого прогона), 3422 вопросов | harlan-ai/scripts/parse_supplier_pricing.py
 2026-04-27 17:40 | windsurf | 🚨 | ШАГ 7 частично: 13741 offers записаны, parsing_questions=0, uploads stuck 'parsing'. supplier_price_uploads не имеет updated_at — RPC create_parsing_question + finalize_supplier_upload упали. Нужен фикс от Сергея | STATE.md §8
+2026-04-27 18:05 | windsurf | 🔧 | Мини-миграция 20260504_2_supplier_uploads_align: ADD COLUMN updated_at + trigger set_updated_at | supabase/migrations/20260504_2_supplier_uploads_align.sql
+2026-04-27 18:06 | windsurf | 🗑️ | Чистка: DELETE 10 stuck offers+uploads WHERE status='parsing' AND supplier=metallservice | БД
+2026-04-27 18:10 | windsurf | ✅ | ШАГ 7 ПОЛНЫЙ: 10 uploads=pending_review | 13741 offers | 3422 questions open — Week 2 pipeline DONE | harlan-ai/scripts/parse_supplier_pricing.py
 ```
 
 <!-- Новые записи дописывать ниже этой строки -->
