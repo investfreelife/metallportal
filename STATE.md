@@ -80,6 +80,7 @@ External: OpenRouter (Qwen3), Upstash Redis, Resend, Telegram, ЮKassa
 ## 5. СДЕЛАНО (последние 10, новые сверху)
 
 ```
+2026-04-27  🚨  Dry-run matcher: 100% unmatched — products.dimensions NULL у 96% записей, unit теор.т у 79% offers но 0 в products, стратегия мэтча расходится
 2026-04-27  ✅  Week 2 Шаг 7 завершён: 10 uploads pending_review | 13741 offers | 3422 questions open
 2026-04-27  ✅  Week 2 шаг 1: миграция 20260504_supplier_pricing_v2 применена (price_suppliers + 10 таблиц)
 2026-04-27  🆕  Week 2 шаги 2-4: 9 Python-модулей suppliers/, CLI, тесты, 10 .xls прайсов — всё на месте
@@ -101,16 +102,20 @@ External: OpenRouter (Qwen3), Upstash Redis, Resend, Telegram, ЮKassa
 
 ## 6. ПРЯМО СЕЙЧАС
 
-Week 2 все 8 шагов завершены. Пайплайн парсинга работает: 13741 offers + 3422 questions в БД, 10 uploads = pending_review.
-Сергей может выдавать ТЗ на matcher.
+Matcher инфраструктура создана (20 тестов ✅). Dry-run показал 100% unmatched из-за data quality в products.
+BLOCKER: нужно решение Сергея по стратегии мэтча до боевого прогона.
 
 ---
 
 ## 7. СЛЕДУЮЩИЙ ШАГ (одна задача)
 
-**Кто:** Сергей
-**Что:** Выдать ТЗ на matcher (Week 2 шаг 8) — сопоставление supplier_price_offers с products/price_items.
-**Когда готово:** После получения ТЗ от Сергея.
+**Кто:** Сергей → решение
+**Что:** Выбрать стратегию мэтча для products:
+  - Вариант А: парсить `products.name` → извлекать dimensions+steel_grade скриптом (DQ fix)
+  - Вариант Б: матчить на конкатенации `subcategory+mark+dimension_raw` vs `products.name` (freeform)
+  - Вариант В: игнорировать `unit` как gate-условие (теор.т ≈ т для матчинга)
+  - Вариант Г: вручную замапить products для нескольких ключевых категорий
+**Когда готово:** После решения Сергея → боевой прогон.
 
 ---
 
@@ -128,6 +133,12 @@ Week 2 все 8 шагов завершены. Пайплайн парсинга
 - 2026-04-27: [БЛОКЕР ⚠️] DPA с OpenRouter не проверен. Сергей → проверить openrouter.ai/privacy.
 - 2026-04-27: [ЗАКРЫТО ✅] Week 2 блокер suppliers → переименована в `price_suppliers` в миграции + Python-коде. CRM-таблица suppliers нетронута (4 строки).
 - 2026-04-27: [ЗАКРЫТО ✅] updated_at блокер: миграция 20260504_2 добавила updated_at + trigger, шаг 7 прошёл полностью.
+- 2026-04-27: [БЛОКЕР 🚨] Matcher dry-run 100% unmatched. Причины:
+  1) products.dimensions NULL у 3675/3812 (96%) — невозможно матчить размеры
+  2) offer.unit='теор.т' у 79% offers; у products unit='теор.т' = 0 записей → unit gate fire
+  3) offer.mark='ДУ 15 черн' (спецификация трубы), product.steel_grade='09Г2С' (марка стали) — семантика разная
+  4) 86 products имеют unit='ГОСТ XXXX-XX' (мусор)
+  Решение: выбрать стратегию мэтча. Боевой прогон ЗАБЛОКИРОВАН до решения Сергея.
 ```
 
 Если появляется блокер — формат: `- YYYY-MM-DD: что мешает, кто разблокирует, к какому сроку`.

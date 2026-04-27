@@ -62,6 +62,10 @@ YYYY-MM-DD HH:MM | <agent>           | <emoji> | <что сделано>        
 2026-04-27 18:05 | windsurf | 🔧 | Мини-миграция 20260504_2_supplier_uploads_align: ADD COLUMN updated_at + trigger set_updated_at | supabase/migrations/20260504_2_supplier_uploads_align.sql
 2026-04-27 18:06 | windsurf | 🗑️ | Чистка: DELETE 10 stuck offers+uploads WHERE status='parsing' AND supplier=metallservice | БД
 2026-04-27 18:10 | windsurf | ✅ | ШАГ 7 ПОЛНЫЙ: 10 uploads=pending_review | 13741 offers | 3422 questions open — Week 2 pipeline DONE | harlan-ai/scripts/parse_supplier_pricing.py
+2026-04-27 19:00 | windsurf | 🆕 | Миграция 20260505_matcher_columns: 4 колонки в supplier_price_offers + RPC apply_match_results + расширение manual_review_queue | metallportal/supabase/migrations/20260505_matcher_columns.sql
+2026-04-27 19:05 | windsurf | 🆕 | Пакет harlan_ai.matcher: types, normalizer, fuzzy, engine, review_queue, __init__ | harlan-ai/src/harlan_ai/matcher/
+2026-04-27 19:10 | windsurf | 🆕 | CLI match_supplier_offers.py + тесты tests/matcher/ (20/20 PASSED) + rapidfuzz в pyproject.toml | harlan-ai/scripts/, harlan-ai/tests/matcher/
+2026-04-27 19:15 | windsurf | 🚨 | Dry-run matcher 100% unmatched. products.dimensions NULL у 96%, unit теор.т у 79% offers vs 0 в products, offer.mark≠steel_grade семантика. Боевой прогон ЗАБЛОКИРОВАН до решения Сергея | STATE.md §8
 ```
 
 <!-- Новые записи дописывать ниже этой строки -->
