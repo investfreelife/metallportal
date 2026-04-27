@@ -66,6 +66,12 @@ YYYY-MM-DD HH:MM | <agent>           | <emoji> | <что сделано>        
 2026-04-27 19:05 | windsurf | 🆕 | Пакет harlan_ai.matcher: types, normalizer, fuzzy, engine, review_queue, __init__ | harlan-ai/src/harlan_ai/matcher/
 2026-04-27 19:10 | windsurf | 🆕 | CLI match_supplier_offers.py + тесты tests/matcher/ (20/20 PASSED) + rapidfuzz в pyproject.toml | harlan-ai/scripts/, harlan-ai/tests/matcher/
 2026-04-27 19:15 | windsurf | 🚨 | Dry-run matcher 100% unmatched. products.dimensions NULL у 96%, unit теор.т у 79% offers vs 0 в products, offer.mark≠steel_grade семантика. Боевой прогон ЗАБЛОКИРОВАН до решения Сергея | STATE.md §8
+2026-04-27 21:30 | windsurf | 🆕 | Smart key composer: grades.py, profile.py (15 Profile + classify), composer.py (compose + split_mark_field), 94 теста PASSED | harlan-ai/src/harlan_ai/matcher/{grades,profile,composer}.py
+2026-04-27 21:32 | windsurf | 🔧 | Engine v3: load by supplier_id (все uploads), scope filter (FASTENER/NON_STEEL→out_of_scope), smart key через compose(), per-profile stats | harlan-ai/src/harlan_ai/matcher/engine.py
+2026-04-27 21:34 | windsurf | 🆕 | Миграция 20260507000000_match_status_extra: CHECK constraint + out_of_scope + unmatched_unknown_profile | metallportal/supabase/migrations/
+2026-04-27 21:36 | windsurf | 📊 | Dry-run v3: 13741 offers, out_of_scope=6368(46%), matched=370(5.3% matchable), unmatched=6129(44.6%), unknown=392(2.9%). Прогресс: от 0% до 5.3% matched. Ключевая проблема: products.dimensions NULL у 96% | /tmp/matcher_dryrun_v3.log
 ```
+
+2026-04-27 15:20 | windsurf | 🔬 | Аудит products: скрипт audit_products.py + отчёт week2/PRODUCTS_AUDIT_REPORT.md. Итог: 3812 продуктов, dimensions=97.2%, steel_grade=73.4%, мусор=94, дубли=123, ОЦЕНКА=«осмысленный каталог», РЕКОМЕНДАЦИЯ=«чистить точечно» | harlan-ai/scripts/audit_products.py, harlan-ai/week2/PRODUCTS_AUDIT_REPORT.md
 
 <!-- Новые записи дописывать ниже этой строки -->

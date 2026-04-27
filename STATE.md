@@ -80,7 +80,9 @@ External: OpenRouter (Qwen3), Upstash Redis, Resend, Telegram, ЮKassa
 ## 5. СДЕЛАНО (последние 10, новые сверху)
 
 ```
-2026-04-27  🚨  Dry-run matcher: 100% unmatched — products.dimensions NULL у 96% записей, unit теор.т у 79% offers но 0 в products, стратегия мэтча расходится
+2026-04-27  🔬  Аудит products завершён: 3812 продуктов, dimensions=97.2%, steel_grade=73.4%, мусор=94, дубли=123. Оценка: осмысленный каталог → чистить точечно
+2026-04-27  🔬  Dry-run v3: 13741 offers, out_of_scope=46%, matched=5.3% matchable, unmatched=44.6%. Smart key composer работает, но products.dimensions NULL у 96%
+2026-04-27  🆕  Smart key composer: profile.py (15 профилей + classify), composer.py, grades.py, engine v3, 94 теста PASSED
 2026-04-27  ✅  Week 2 Шаг 7 завершён: 10 uploads pending_review | 13741 offers | 3422 questions open
 2026-04-27  ✅  Week 2 шаг 1: миграция 20260504_supplier_pricing_v2 применена (price_suppliers + 10 таблиц)
 2026-04-27  🆕  Week 2 шаги 2-4: 9 Python-модулей suppliers/, CLI, тесты, 10 .xls прайсов — всё на месте
@@ -102,20 +104,18 @@ External: OpenRouter (Qwen3), Upstash Redis, Resend, Telegram, ЮKassa
 
 ## 6. ПРЯМО СЕЙЧАС
 
-Matcher инфраструктура создана (20 тестов ✅). Dry-run показал 100% unmatched из-за data quality в products.
-BLOCKER: нужно решение Сергея по стратегии мэтча до боевого прогона.
+Аудит products завершён. Ключевые цифры: 3812 продуктов, dimensions=97.2%, steel_grade=73.4%, мусор B=94 строки, дубли=123.
+Оценка: **осмысленный каталог** → рекомендация: **чистить точечно**.
+⚠️ Важно: dry-run v3 говорил «dimensions NULL у 96%», но аудит показывает 97.2% заполнены — скорее всего проблема была в формате/несовместимости с matcher, не в самих данных.
+Ждём решения Сергея: чистить точечно (steel_grade=26.6% пусто, мусор B, дубли) или ТЗ на полный снос.
 
 ---
 
 ## 7. СЛЕДУЮЩИЙ ШАГ (одна задача)
 
-**Кто:** Сергей → решение
-**Что:** Выбрать стратегию мэтча для products:
-  - Вариант А: парсить `products.name` → извлекать dimensions+steel_grade скриптом (DQ fix)
-  - Вариант Б: матчить на конкатенации `subcategory+mark+dimension_raw` vs `products.name` (freeform)
-  - Вариант В: игнорировать `unit` как gate-условие (теор.т ≈ т для матчинга)
-  - Вариант Г: вручную замапить products для нескольких ключевых категорий
-**Когда готово:** После решения Сергея → боевой прогон.
+**Кто:** Сергей (решение)
+**Что:** На основе `week2/PRODUCTS_AUDIT_REPORT.md` принять решение: «осмысленный» → ТЗ на точечную чистку (steel_grade, мусор B, 50 категорий-сирот) + продолжаем matcher v4; «полный мусор» → ТЗ на снос + ETL.
+**Когда готово:** После прочтения отчёта Сергеем.
 
 ---
 
@@ -133,10 +133,8 @@ BLOCKER: нужно решение Сергея по стратегии мэтч
 - 2026-04-27: [БЛОКЕР ⚠️] DPA с OpenRouter не проверен. Сергей → проверить openrouter.ai/privacy.
 - 2026-04-27: [ЗАКРЫТО ✅] Week 2 блокер suppliers → переименована в `price_suppliers` в миграции + Python-коде. CRM-таблица suppliers нетронута (4 строки).
 - 2026-04-27: [ЗАКРЫТО ✅] updated_at блокер: миграция 20260504_2 добавила updated_at + trigger, шаг 7 прошёл полностью.
-- 2026-04-27: [БЛОКЕР 🚨] Matcher dry-run 100% unmatched. Причины:
-  1) products.dimensions NULL у 3675/3812 (96%) — невозможно матчить размеры
-  2) offer.unit='теор.т' у 79% offers; у products unit='теор.т' = 0 записей → unit gate fire
-  3) offer.mark='ДУ 15 черн' (спецификация трубы), product.steel_grade='09Г2С' (марка стали) — семантика разная
+- 2026-04-27: [ЧАСТИЧНО ЗАКРЫТО ✅] Matcher dry-run v3: smart key composer решил проблему 2+3 (семантика mark/grade, unit).
+  Остаётся: products.dimensions NULL у 96% → нужен enrich_products.py --commit
   4) 86 products имеют unit='ГОСТ XXXX-XX' (мусор)
   Решение: выбрать стратегию мэтча. Боевой прогон ЗАБЛОКИРОВАН до решения Сергея.
 ```
