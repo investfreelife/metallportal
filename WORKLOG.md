@@ -42,6 +42,7 @@ YYYY-MM-DD HH:MM | <agent>           | <emoji> | <что сделано>        
 2026-04-27 09:11 | windsurf | ⚙️ | Обновил vercel.json: cron audit-data-health schedule → 0 * * * * (hourly)        | vercel.json
 2026-04-27 09:12 | windsurf | 📊 | Заполнил STATE.md §9 пятью baseline цифрами из docs/data-truth-baseline-2026-04.md | STATE.md
 2026-04-27 09:13 | windsurf | 🚨 | 152-ФЗ pre-flight: 0/8 пунктов закрыто — 8 блокеров записаны в STATE.md §8        | STATE.md
+2026-04-27 23:30 | windsurf | 🔧 | Фикс: AI-поиск fallback → supabaseSearch (убрал хардкоженный REF_PRICES)           | app/api/ai/search/route.ts
 ```
 
 <!-- Новые записи дописывать ниже этой строки -->

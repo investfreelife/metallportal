@@ -80,6 +80,7 @@ External: OpenRouter (Qwen3), Upstash Redis, Resend, Telegram, ЮKassa
 ## 5. СДЕЛАНО (последние 10, новые сверху)
 
 ```
+2026-04-27  🔧  Фикс AI-поиска: fallback заменён с хардкоженных REF_PRICES на supabaseSearch (реальный прайс)
 2026-04-27  ⚙️  Windsurf: STATE.md + .windsurfrules + WORKLOG.md → корень репо; vercel.json cron → hourly
 2026-04-27  📊  5 baseline цифр в STATE.md §9: fresh_7d=0%, no_price=1.2%, no_seo=100%, mismatch=5.4%, no_img=4.7%
 2026-04-27  🚨  152-ФЗ pre-flight: 0/8 закрыто — все 8 пунктов записаны как блокеры в раздел 8
@@ -97,8 +98,8 @@ External: OpenRouter (Qwen3), Upstash Redis, Resend, Telegram, ЮKassa
 
 ## 6. ПРЯМО СЕЙЧАС
 
-Windsurf завершил Шаги 1–6 задания Week 1. Ожидание Сергея:
-(а) заполнить `docs/supplier-selection-checklist.md` в воскресенье;
+Windsurf завершил Шаги 1–6 Week 1 + фикс AI-поиска (fallback → Supabase). Ожидание Сергея:
+(а) заполнить `docs/supplier-selection-checklist.md`;
 (б) закрыть 8 пунктов 152-ФЗ pre-flight (раздел 8).
 После этого Сергей даёт сигнал → переход на Week 2.
 
@@ -107,7 +108,7 @@ Windsurf завершил Шаги 1–6 задания Week 1. Ожидание
 ## 7. СЛЕДУЮЩИЙ ШАГ (одна задача)
 
 **Кто:** Сергей
-**Что:** (1) Заполнить `docs/supplier-selection-checklist.md` — выбрать 1 эталонного поставщика. (2) Закрыть 152-ФЗ pre-flight — 8 пунктов из `docs/data-truth-baseline-2026-04.md` раздел 0. (3) Дать сигнал «Week 1 готова» → Windsurf начинает Week 2 (pipeline одного поставщика).
+**Что:** (1) Проверить AI-поиск после фикса — должен возвращать реальные цены из прайса. (2) Заполнить `docs/supplier-selection-checklist.md`. (3) Закрыть 152-ФЗ pre-flight. (4) Дать сигнал «Week 1 готова» → Windsurf начинает Week 2.
 **Когда готово:** После подтверждения Сергея → переход на Week 2.
 
 ---
