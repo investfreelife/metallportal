@@ -26,7 +26,7 @@ export function SmartSearch() {
   const [loading, setLoading] = useState(false)
   const [recording, setRecording] = useState(false)
   const [step, setStep] = useState<'search' | 'cart' | 'form' | 'success'>('search')
-  const [form, setForm] = useState({ name: '', phone: '', email: '', comment: '' })
+  const [form, setForm] = useState({ name: '', phone: '', email: '', comment: '', consent: false })
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const recognitionRef = useRef<any>(null)
@@ -360,9 +360,24 @@ export function SmartSearch() {
         </div>
       </div>
 
+      <label className="flex items-start gap-2 cursor-pointer mb-3">
+        <input
+          type="checkbox"
+          checked={form.consent}
+          onChange={(e) => setForm((p) => ({ ...p, consent: e.target.checked }))}
+          className="mt-0.5 accent-blue-600 flex-shrink-0"
+        />
+        <span className="text-xs text-gray-500 leading-relaxed">
+          Нажимая «Отправить заявку», я соглашаюсь с{' '}
+          <a href="/privacy" className="text-blue-600 hover:underline" target="_blank" rel="noopener">
+            политикой обработки персональных данных
+          </a>
+        </span>
+      </label>
+
       <button
         onClick={submitOrder}
-        disabled={!form.phone || submitting}
+        disabled={!form.phone || !form.consent || submitting}
         className="w-full bg-blue-600 text-white font-medium py-4 rounded-2xl hover:bg-blue-700 disabled:opacity-50 text-sm transition-colors"
       >
         {submitting ? 'Отправляю...' : '✓ Отправить заявку — мы перезвоним'}

@@ -10,15 +10,15 @@ export default function Footer() {
             <div className="flex items-center gap-3 mb-4">
               <div className="flex flex-shrink-0">
                 <div className="w-10 h-10 flex items-center justify-center bg-gold">
-                  <span className="text-black font-black text-xl leading-none" style={{ fontFamily: 'Georgia, serif' }}>М</span>
+                  <span className="text-black font-black text-xl leading-none" style={{ fontFamily: 'Georgia, serif' }}>Х</span>
                 </div>
                 <div className="w-10 h-10 flex items-center justify-center bg-foreground">
-                  <span className="text-background font-black text-xl leading-none" style={{ fontFamily: 'Georgia, serif' }}>П</span>
+                  <span className="text-background font-black text-xl leading-none" style={{ fontFamily: 'Georgia, serif' }}>М</span>
                 </div>
               </div>
               <div className="leading-tight">
-                <p className="text-foreground font-bold text-xl tracking-wide leading-none">МЕТАЛЛ</p>
-                <p className="text-gold font-semibold text-base tracking-widest leading-none mt-0.5">ПОРТАЛ</p>
+                <p className="text-foreground font-bold text-xl tracking-wide leading-none">Харланметалл</p>
+                <p className="text-gold font-semibold text-sm tracking-widest leading-none mt-0.5">МЕТАЛЛОПРОКАТ · КОНСТРУКЦИИ</p>
               </div>
             </div>
             <p className="text-foreground/60 text-sm leading-relaxed">
@@ -67,10 +67,10 @@ export default function Footer() {
               Правовая информация
             </h4>
             <ul className="space-y-2">
-              <li><Link href="#" className="text-sm text-foreground/60 hover:text-gold transition-colors">Политика конфиденциальности</Link></li>
-              <li><Link href="#" className="text-sm text-foreground/60 hover:text-gold transition-colors">Условия использования</Link></li>
-              <li><Link href="#" className="text-sm text-foreground/60 hover:text-gold transition-colors">Политика cookies</Link></li>
-              <li><Link href="#" className="text-sm text-foreground/60 hover:text-gold transition-colors">Соответствие</Link></li>
+              <li><Link href="/privacy" className="text-sm text-foreground/60 hover:text-gold transition-colors">Политика конфиденциальности</Link></li>
+              <li><Link href="/oferta" className="text-sm text-foreground/60 hover:text-gold transition-colors">Публичная оферта</Link></li>
+              <li><Link href="/privacy#7" className="text-sm text-foreground/60 hover:text-gold transition-colors">Политика cookies</Link></li>
+              <li><Link href="/privacy" className="text-sm text-foreground/60 hover:text-gold transition-colors">152-ФЗ</Link></li>
             </ul>
           </div>
         </div>
@@ -78,7 +78,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="pt-8 border-t border-gold/10 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-foreground/40 text-sm">
-            © {new Date().getFullYear()} МеталлПортал. Все права защищены.
+            © {new Date().getFullYear()} Харланметалл. Все права защищены.
           </p>
           <div className="flex gap-6">
             <a href="#" className="text-foreground/40 hover:text-gold transition-colors text-sm uppercase tracking-wider">VK</a>

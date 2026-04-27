@@ -42,7 +42,12 @@ YYYY-MM-DD HH:MM | <agent>           | <emoji> | <что сделано>        
 2026-04-27 09:11 | windsurf | ⚙️ | Обновил vercel.json: cron audit-data-health schedule → 0 * * * * (hourly)        | vercel.json
 2026-04-27 09:12 | windsurf | 📊 | Заполнил STATE.md §9 пятью baseline цифрами из docs/data-truth-baseline-2026-04.md | STATE.md
 2026-04-27 09:13 | windsurf | 🚨 | 152-ФЗ pre-flight: 0/8 пунктов закрыто — 8 блокеров записаны в STATE.md §8        | STATE.md
-2026-04-27 23:30 | windsurf | 🔧 | Фикс: AI-поиск fallback → supabaseSearch (убрал хардкоженный REF_PRICES)           | app/api/ai/search/route.ts
+2026-04-27 23:30 | windsurf | 🔧 | Фикс: AI-поиск fallback → supabaseSearch (убрал хардкоженный REF_PRICES)                           | app/api/ai/search/route.ts
+2026-04-27 12:20 | windsurf | 🆕 | Создал app/privacy/page.tsx — Политика ПДн 152-ФЗ (10 разделов, по образцу Металлика/Металлсервис) | app/privacy/page.tsx
+2026-04-27 12:21 | windsurf | 🆕 | Создал app/oferta/page.tsx — Публичная оферта купли-продажи (10 разделов, ст.437 ГК РФ)            | app/oferta/page.tsx
+2026-04-27 12:22 | windsurf | 🆕 | Создал components/CookieBanner.tsx — баннер Принять/Отказаться + localStorage                      | components/CookieBanner.tsx
+2026-04-27 12:23 | windsurf | 🔧 | SmartSearch.tsx: чекбокс согласия на ПДн + ссылка /privacy; кнопка заблокирована без ✓             | components/SmartSearch.tsx
+2026-04-27 12:24 | windsurf | 🔧 | Footer /privacy /oferta реальные ссылки; layout.tsx: CookieBanner подключён                       | components/layout/Footer.tsx, app/layout.tsx
 ```
 
 <!-- Новые записи дописывать ниже этой строки -->
