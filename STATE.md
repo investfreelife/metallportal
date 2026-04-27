@@ -80,6 +80,7 @@ External: OpenRouter (Qwen3), Upstash Redis, Resend, Telegram, ЮKassa
 ## 5. СДЕЛАНО (последние 10, новые сверху)
 
 ```
+2026-04-27  🚨  Шаг 7 частично: 13741 offers в БД, но parsing_questions=0 (все RPC упали updated_at), uploads stuck 'parsing'
 2026-04-27  ✅  Week 2 шаг 1: миграция 20260504_supplier_pricing_v2 применена (price_suppliers + 10 таблиц)
 2026-04-27  🆕  Week 2 шаги 2-4: 9 Python-модулей suppliers/, CLI, тесты, 10 .xls прайсов — всё на месте
 2026-04-27  �  Фикс AI-поиска: fallback заменён с хардкоженных REF_PRICES на supabaseSearch (реальный прайс)
@@ -100,16 +101,19 @@ External: OpenRouter (Qwen3), Upstash Redis, Resend, Telegram, ЮKassa
 
 ## 6. ПРЯМО СЕЙЧАС
 
-Week 2 шаги 1-4 выполнены полностью. Миграция применена (price_suppliers создана, seed Металлсервиса есть), Python-модули установлены, 10 .xls прайсов на месте.
-Готово к шагу 5 (pytest) и шагу 6 (dry-run парсер).
+Week 2 шаги 1-6 выполнены. Шаг 7 частично: 13741 offers в БД, но parsing_questions=0 и uploads stuck 'parsing'.
+**БЛОКЕР**: `supplier_price_uploads` уже существовала без `updated_at`. RPC-функции её референцируют. Нужна миграция добавления колонки.
 
 ---
 
 ## 7. СЛЕДУЮЩИЙ ШАГ (одна задача)
 
-**Кто:** Windsurf
-**Что:** Шаг 5 — запустить pytest `harlan-ai/tests/suppliers/`; Шаг 6 — dry-run парсер по 10 файлам.
-**Когда готово:** Зелёные тесты + dry-run без падений → сигнал Сергею для шага 7 (боевой прогон).
+**Кто:** Сергей → решение, потом Windsurf
+**Что:** Выбрать способ фикса `updated_at` в `supplier_price_uploads`:
+  - Вариант А: `ALTER TABLE supplier_price_uploads ADD COLUMN IF NOT EXISTS updated_at timestamptz NOT NULL DEFAULT now();` (новая мини-миграция)
+  - Вариант Б: убрать `updated_at = now()` из трёх RPC-функций (безопаснее)
+После фикса — почистить текущий батч (удалить 10 'parsing' записей) и повторить шаг 7.
+**Когда готово:** После фикса миграции → все 13741 offers + 3422 questions + финализированные uploads.
 
 ---
 
@@ -126,6 +130,7 @@ Week 2 шаги 1-4 выполнены полностью. Миграция пр
 - 2026-04-27: [БЛОКЕР ⚠️] Уведомление в РКН не подано. Сергей → asap (ст.22 152-ФЗ).
 - 2026-04-27: [БЛОКЕР ⚠️] DPA с OpenRouter не проверен. Сергей → проверить openrouter.ai/privacy.
 - 2026-04-27: [ЗАКРЫТО ✅] Week 2 блокер suppliers → переименована в `price_suppliers` в миграции + Python-коде. CRM-таблица suppliers нетронута (4 строки).
+- 2026-04-27: [БЛОКЕР 🚨] `supplier_price_uploads` уже существовала без `updated_at`. Фикс: `ALTER TABLE supplier_price_uploads ADD COLUMN IF NOT EXISTS updated_at timestamptz NOT NULL DEFAULT now();` + повторить шаг 7. Или убрать `updated_at = now()` из RPC. Решение от Сергея.
 ```
 
 Если появляется блокер — формат: `- YYYY-MM-DD: что мешает, кто разблокирует, к какому сроку`.

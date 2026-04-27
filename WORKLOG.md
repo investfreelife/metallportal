@@ -56,6 +56,9 @@ YYYY-MM-DD HH:MM | <agent>           | <emoji> | <что сделано>        
 2026-04-27 17:15 | windsurf | 🚨 | БЛОКЕР: миграция 20260504 упала — `suppliers` в БД уже существует (CRM-схема, 4 строки, нет tenant_id). Нужно решение Сергея: переименовать price_suppliers или объединить | STATE.md §8
 2026-04-27 17:25 | windsurf | 🔧 | Фикс блокера: suppliers → price_suppliers во всей миграции (15 мест) + parse_supplier_pricing.py (1 место) | supabase/migrations/20260504_supplier_pricing_v2.sql, harlan-ai/scripts/parse_supplier_pricing.py
 2026-04-27 17:26 | windsurf | ✅ | Миграция 20260504_supplier_pricing_v2 применена: price_suppliers ✅, CRM suppliers 4 строки ✅, seed metallservice ✅ | supabase/migrations/20260504_supplier_pricing_v2.sql
+2026-04-27 17:30 | windsurf | 🔬 | pytest 16/16 PASSED (col_letter, source_ref, 10 реальных файлов, anomaly detector) | harlan-ai/tests/suppliers/
+2026-04-27 17:35 | windsurf | 🔬 | Dry-run парсер: 10 OK, 0 failed, 13741 offers, 13445 аномалий (все unknown_subcat — норма для первого прогона), 3422 вопросов | harlan-ai/scripts/parse_supplier_pricing.py
+2026-04-27 17:40 | windsurf | 🚨 | ШАГ 7 частично: 13741 offers записаны, parsing_questions=0, uploads stuck 'parsing'. supplier_price_uploads не имеет updated_at — RPC create_parsing_question + finalize_supplier_upload упали. Нужен фикс от Сергея | STATE.md §8
 ```
 
 <!-- Новые записи дописывать ниже этой строки -->
