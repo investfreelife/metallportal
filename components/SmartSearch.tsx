@@ -29,7 +29,11 @@ export function SmartSearch() {
   const [form, setForm] = useState({ name: '', phone: '', email: '', comment: '', consent: false })
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [voiceText, setVoiceText] = useState('')    // живой текст пока говорит
+  const [voiceTimer, setVoiceTimer] = useState(0)   // секунды записи
   const recognitionRef = useRef<any>(null)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const voiceCallbackRef = useRef<((text: string) => void) | null>(null)
 
   const search = async (q?: string) => {
     const searchQuery = q || query
@@ -57,45 +61,107 @@ export function SmartSearch() {
     }
   }
 
-  const startVoice = () => {
+  // onDone — что делать с готовым текстом (поиск или добавление в корзину)
+  const startVoice = (onDone?: (text: string) => void) => {
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     if (!SpeechRecognition) {
       setError('Голосовой поиск не поддерживается в вашем браузере.')
       return
     }
+    voiceCallbackRef.current = onDone || null
     const recognition = new SpeechRecognition()
     recognition.lang = 'ru-RU'
-    recognition.continuous = false
-    recognition.interimResults = false
+    recognition.continuous = true       // не останавливаться после паузы
+    recognition.interimResults = true   // показывать текст в реальном времени
     recognitionRef.current = recognition
+
+    let finalText = ''
+    setVoiceText('')
+    setVoiceTimer(0)
+
+    // Таймер секунд + автостоп через 60 сек
+    const interval = setInterval(() => {
+      setVoiceTimer(t => {
+        if (t + 1 >= 60) {
+          recognition.stop()
+          return 60
+        }
+        return t + 1
+      })
+    }, 1000)
+    timerRef.current = interval
 
     recognition.onstart = () => setRecording(true)
 
-    recognition.onresult = async (event: any) => {
-      const transcript: string = event.results[0][0].transcript
-      setQuery(transcript)
-      setRecording(false)
-      await search(transcript)
+    recognition.onresult = (event: any) => {
+      let interim = ''
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) {
+          finalText += event.results[i][0].transcript + ' '
+        } else {
+          interim += event.results[i][0].transcript
+        }
+      }
+      const combined = (finalText + interim).trim()
+      setVoiceText(combined)
+      setQuery(combined)
     }
 
     recognition.onerror = (event: any) => {
+      clearInterval(interval)
       setRecording(false)
+      setVoiceText('')
       if (event.error === 'not-allowed') {
         setError('Нет доступа к микрофону.')
-      } else {
+      } else if (event.error !== 'no-speech') {
         setError('Ошибка распознавания голоса.')
       }
     }
 
-    recognition.onend = () => setRecording(false)
+    recognition.onend = () => {
+      clearInterval(interval)
+      setRecording(false)
+      setVoiceText('')
+      setVoiceTimer(0)
+      const text = finalText.trim()
+      if (!text) return
+      if (voiceCallbackRef.current) {
+        voiceCallbackRef.current(text)
+      } else {
+        setQuery(text)
+        search(text)
+      }
+    }
 
     recognition.start()
   }
 
   const stopVoice = () => {
+    if (timerRef.current) clearInterval(timerRef.current)
     recognitionRef.current?.stop()
-    setRecording(false)
+  }
+
+  const addMore = async (newQuery: string) => {
+    if (!newQuery.trim()) return
+    setLoading(true)
+    try {
+      const res = await fetch('/api/ai/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: newQuery }),
+      })
+      const data = await res.json()
+      if (data.items?.length > 0) {
+        setResult((prev) => prev ? {
+          ...prev,
+          items: [...prev.items, ...data.items],
+          total_price: prev.total_price + data.total_price,
+        } : data)
+      }
+    } finally {
+      setLoading(false)
+    }
   }
 
   const updateQty = (i: number, qty: number) => {
@@ -155,7 +221,7 @@ export function SmartSearch() {
           ) : '🔍'}
         </button>
         <button
-          onClick={recording ? stopVoice : startVoice}
+          onClick={() => recording ? stopVoice() : startVoice()}
           className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 text-xl transition-colors ${
             recording ? 'bg-red-500 text-white animate-pulse' : 'bg-gray-100 hover:bg-gray-200'
           }`}
@@ -164,8 +230,9 @@ export function SmartSearch() {
         </button>
       </div>
       {recording && (
-        <div className="mt-2 text-center text-sm text-red-500 animate-pulse">
-          ● Говорите... нажмите 🎤 чтобы остановить
+        <div className="mt-2 text-center text-sm text-red-500">
+          <span className="animate-pulse">● Запись {voiceTimer}с / 60с — нажмите 🎤 чтобы остановить</span>
+          {voiceText && <div className="mt-1 text-gray-600 text-xs italic">«{voiceText}»</div>}
         </div>
       )}
       {error && (
@@ -250,35 +317,33 @@ export function SmartSearch() {
 
       <div className="flex gap-2 mb-4">
         <input
-          placeholder="Добавить ещё позицию..."
+          id="add-more-input"
+          placeholder="Добавить ещё позицию... (Enter)"
           className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400"
           onKeyDown={async (e) => {
             if (e.key === 'Enter' && (e.target as HTMLInputElement).value) {
-              const newQuery = (e.target as HTMLInputElement).value;
-              (e.target as HTMLInputElement).value = ''
-              setLoading(true)
-              try {
-                const res = await fetch('/api/ai/search', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ query: newQuery }),
-                })
-                const data = await res.json()
-                if (data.items?.length > 0) {
-                  setResult((prev) => prev ? {
-                    ...prev,
-                    items: [...prev.items, ...data.items],
-                    total_price: prev.total_price + data.total_price,
-                  } : data)
-                }
-              } finally {
-                setLoading(false)
-              }
+              const newQuery = (e.target as HTMLInputElement).value
+              ;(e.target as HTMLInputElement).value = ''
+              await addMore(newQuery)
             }
           }}
         />
-        <span className="text-xs text-gray-400 self-center">Enter</span>
+        <button
+          onClick={() => recording ? stopVoice() : startVoice((text) => addMore(text))}
+          title="Добавить голосом"
+          className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-base transition-colors ${
+            recording ? 'bg-red-500 text-white animate-pulse' : 'bg-gray-100 hover:bg-gray-200'
+          }`}
+        >
+          🎤
+        </button>
       </div>
+      {recording && (
+        <div className="mb-3 text-center text-xs text-red-500">
+          <span className="animate-pulse">● {voiceTimer}с / 60с</span>
+          {voiceText && <span className="ml-2 text-gray-500 italic">«{voiceText}»</span>}
+        </div>
+      )}
 
       {result.recommendation && (
         <div className="bg-blue-50 border border-blue-100 rounded-2xl p-3 mb-4 text-sm text-blue-800">
