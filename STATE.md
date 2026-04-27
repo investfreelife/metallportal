@@ -80,7 +80,9 @@ External: OpenRouter (Qwen3), Upstash Redis, Resend, Telegram, ЮKassa
 ## 5. СДЕЛАНО (последние 10, новые сверху)
 
 ```
-2026-04-27  🔧  Фикс AI-поиска: fallback заменён с хардкоженных REF_PRICES на supabaseSearch (реальный прайс)
+2026-04-27  �  Week 2 шаг 1 БЛОКЕР: миграция 20260504 упала — конфликт таблицы `suppliers` (CRM, 4 строки, нет tenant_id)
+2026-04-27  🆕  Week 2 шаги 2-4: 9 Python-модулей suppliers/, CLI, тесты, 10 .xls прайсов — всё на месте
+2026-04-27  �  Фикс AI-поиска: fallback заменён с хардкоженных REF_PRICES на supabaseSearch (реальный прайс)
 2026-04-27  🆕  152-ФЗ: /privacy + /oferta страницы, CookieBanner, чекбокс ПДн в SmartSearch, Footer ссылки
 2026-04-27  ⚙️  Windsurf: STATE.md + .windsurfrules + WORKLOG.md → корень репо; vercel.json cron → hourly
 2026-04-27  📊  5 baseline цифр в STATE.md §9: fresh_7d=0%, no_price=1.2%, no_seo=100%, mismatch=5.4%, no_img=4.7%
@@ -98,8 +100,9 @@ External: OpenRouter (Qwen3), Upstash Redis, Resend, Telegram, ЮKassa
 
 ## 6. ПРЯМО СЕЙЧАС
 
-Windsurf завершил 152-ФЗ: страницы /privacy + /oferta, CookieBanner, чекбокс согласия в SmartSearch.
-Ожидание Сергея: (а) заполнить ИНН/ОГРН/р-счёт в /privacy и /oferta; (б) подать уведомление в РКН; (в) проверить DPA с OpenRouter; (г) заполнить supplier-checklist.
+Week 2 шаги 2-4 выполнены: 9 Python-модулей, CLI, тесты, 10 .xls прайсов скопированы, xlrd/pyyaml установлены.
+**СТОП на шаге 1**: миграция 20260504_supplier_pricing_v2 падает — конфликт с существующей таблицей `suppliers` (CRM-схема, 4 строки, нет tenant_id).
+Ожидание решения Сергея: переименовать нашу таблицу прайс-поставщиков (`price_suppliers`) ИЛИ объединить схемы.
 
 ---
 
@@ -123,6 +126,7 @@ Windsurf завершил 152-ФЗ: страницы /privacy + /oferta, CookieB
 - 2026-04-27: [БЛОКЕР ⚠️] ИНН/ОГРН/р-счёт не заполнены в /privacy и /oferta. Сергей → до деплоя.
 - 2026-04-27: [БЛОКЕР ⚠️] Уведомление в РКН не подано. Сергей → asap (ст.22 152-ФЗ).
 - 2026-04-27: [БЛОКЕР ⚠️] DPA с OpenRouter не проверен. Сергей → проверить openrouter.ai/privacy.
+- 2026-04-27: [БЛОКЕР 🚨] Week 2 миграция: в БД уже есть таблица `suppliers` с другой схемой (CRM, нет tenant_id, 4 строки реальных данных). Migration 20260504 падает на CREATE INDEX/POLICY по tenant_id. Варианты: (а) переименовать таблицу поставщиков-прайсов → `price_suppliers` в миграции + всех Python-файлах; (б) добавить tenant_id в существующую suppliers и объединить схемы. Решение нужно от Сергея.
 ```
 
 Если появляется блокер — формат: `- YYYY-MM-DD: что мешает, кто разблокирует, к какому сроку`.

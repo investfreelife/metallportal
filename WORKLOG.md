@@ -48,6 +48,12 @@ YYYY-MM-DD HH:MM | <agent>           | <emoji> | <что сделано>        
 2026-04-27 12:22 | windsurf | 🆕 | Создал components/CookieBanner.tsx — баннер Принять/Отказаться + localStorage                      | components/CookieBanner.tsx
 2026-04-27 12:23 | windsurf | 🔧 | SmartSearch.tsx: чекбокс согласия на ПДн + ссылка /privacy; кнопка заблокирована без ✓             | components/SmartSearch.tsx
 2026-04-27 12:24 | windsurf | 🔧 | Footer /privacy /oferta реальные ссылки; layout.tsx: CookieBanner подключён                       | components/layout/Footer.tsx, app/layout.tsx
+2026-04-27 17:08 | windsurf | ⚙️ | Скопирована миграция 20260504_supplier_pricing_v2 (11 таблиц + расширения price_items/contacts) | metallportal/supabase/migrations/20260504_supplier_pricing_v2.sql
+2026-04-27 17:09 | windsurf | 🆕 | Скопированы 9 Python-модулей suppliers/_base + suppliers/metallservice (loader, config, types) | harlan-ai/src/harlan_ai/suppliers/
+2026-04-27 17:10 | windsurf | 🆕 | CLI скрипт и smoke-тесты для парсера metallservice | harlan-ai/scripts/parse_supplier_pricing.py, harlan-ai/tests/suppliers/
+2026-04-27 17:11 | windsurf | 📋 | 10 .xls прайсов Металлсервис + notes.md + фикстуры в tests/fixtures | data/suppliers/metallservice/2026-04-24/, harlan-ai/tests/fixtures/metallservice/
+2026-04-27 17:12 | windsurf | ⚙️ | xlrd==1.2.0 + pyyaml==6.0.3 установлены; import MetallserviceLoader → OK | harlan-ai/pyproject.toml
+2026-04-27 17:15 | windsurf | 🚨 | БЛОКЕР: миграция 20260504 упала — `suppliers` в БД уже существует (CRM-схема, 4 строки, нет tenant_id). Нужно решение Сергея: переименовать price_suppliers или объединить | STATE.md §8
 ```
 
 <!-- Новые записи дописывать ниже этой строки -->
