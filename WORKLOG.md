@@ -74,4 +74,7 @@ YYYY-MM-DD HH:MM | <agent>           | <emoji> | <что сделано>        
 
 2026-04-27 15:20 | windsurf | 🔬 | Аудит products: скрипт audit_products.py + отчёт week2/PRODUCTS_AUDIT_REPORT.md. Итог: 3812 продуктов, dimensions=97.2%, steel_grade=73.4%, мусор=94, дубли=123, ОЦЕНКА=«осмысленный каталог», РЕКОМЕНДАЦИЯ=«чистить точечно» | harlan-ai/scripts/audit_products.py, harlan-ai/week2/PRODUCTS_AUDIT_REPORT.md
 
+2026-04-27 22:54 | windsurf | 📋 | ТЗ #18 Шаг 1: создан classify_categories.py, запущен → CATEGORIES_CLASSIFICATION.md. DELETE=79кат/3675prod, KEEP=71кат/137prod | harlan-ai/scripts/classify_categories.py, harlan-ai/week2/CATEGORIES_CLASSIFICATION.md
+2026-04-27 22:55 | windsurf | ⚙️ | ТЗ #18 шаблоны миграций: 20260508000000_products_catalog_fields.sql + 20260508000100_products_metallprokat_truncate.sql (PLACEHOLDER, не применять) | harlan-ai/migrations/
+
 <!-- Новые записи дописывать ниже этой строки -->

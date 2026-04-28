@@ -80,7 +80,8 @@ External: OpenRouter (Qwen3), Upstash Redis, Resend, Telegram, ЮKassa
 ## 5. СДЕЛАНО (последние 10, новые сверху)
 
 ```
-2026-04-27  🔬  Аудит products завершён: 3812 продуктов, dimensions=97.2%, steel_grade=73.4%, мусор=94, дубли=123. Оценка: осмысленный каталог → чистить точечно
+2026-04-27  �  ТЗ #18 Шаг 1: classify_categories.py запущен → CATEGORIES_CLASSIFICATION.md. DELETE=79 кат/3675 продуктов, KEEP=71 кат/137 продуктов. Ждём ОК Сергея.
+2026-04-27  �🔬  Аудит products завершён: 3812 продуктов, dimensions=97.2%, steel_grade=73.4%, мусор=94, дубли=123. Оценка: осмысленный каталог → чистить точечно
 2026-04-27  🔬  Dry-run v3: 13741 offers, out_of_scope=46%, matched=5.3% matchable, unmatched=44.6%. Smart key composer работает, но products.dimensions NULL у 96%
 2026-04-27  🆕  Smart key composer: profile.py (15 профилей + classify), composer.py, grades.py, engine v3, 94 теста PASSED
 2026-04-27  ✅  Week 2 Шаг 7 завершён: 10 uploads pending_review | 13741 offers | 3422 questions open
@@ -104,18 +105,18 @@ External: OpenRouter (Qwen3), Upstash Redis, Resend, Telegram, ЮKassa
 
 ## 6. ПРЯМО СЕЙЧАС
 
-Аудит products завершён. Ключевые цифры: 3812 продуктов, dimensions=97.2%, steel_grade=73.4%, мусор B=94 строки, дубли=123.
-Оценка: **осмысленный каталог** → рекомендация: **чистить точечно**.
-⚠️ Важно: dry-run v3 говорил «dimensions NULL у 96%», но аудит показывает 97.2% заполнены — скорее всего проблема была в формате/несовместимости с matcher, не в самих данных.
-Ждём решения Сергея: чистить точечно (steel_grade=26.6% пусто, мусор B, дубли) или ТЗ на полный снос.
+ТЗ #18 Шаг 1 ВЫПОЛНЕН. classify_categories.py → week2/CATEGORIES_CLASSIFICATION.md.
+Результат: **DELETE=79 кат / 3675 products**, KEEP=71 кат / 137 products, UNKNOWN=56 кат / 0 products.
+Все 5 навесов (137 продуктов) останутся. Миграционные .sql файлы созданы как шаблоны.
+⚠️ **СТОП: жду ОК Сергея на CATEGORIES_CLASSIFICATION.md перед Шагами 2 и 3.**
 
 ---
 
 ## 7. СЛЕДУЮЩИЙ ШАГ (одна задача)
 
-**Кто:** Сергей (решение)
-**Что:** На основе `week2/PRODUCTS_AUDIT_REPORT.md` принять решение: «осмысленный» → ТЗ на точечную чистку (steel_grade, мусор B, 50 категорий-сирот) + продолжаем matcher v4; «полный мусор» → ТЗ на снос + ETL.
-**Когда готово:** После прочтения отчёта Сергеем.
+**Кто:** Сергей (апрув)
+**Что:** Прочитать `harlan-ai/week2/CATEGORIES_CLASSIFICATION.md`, проверить список из 79 категорий DELETE. Написать «ОК» → Windsurf запускает Шаги 2 и 3.
+**Когда готово:** После апрува Сергея.
 
 ---
 
