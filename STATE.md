@@ -80,8 +80,9 @@ External: OpenRouter (Qwen3), Upstash Redis, Resend, Telegram, ЮKassa
 ## 5. СДЕЛАНО (последние 10, новые сверху)
 
 ```
+2026-04-28  🆕  ТЗ #19 catalog_sync: пакет парсера МС (types/mc_parser/http_crawler/local_loader/upserter) + CLI + миграция + 8 тестов PASSED
 2026-04-27  �  ТЗ #18 Шаг 1: classify_categories.py запущен → CATEGORIES_CLASSIFICATION.md. DELETE=79 кат/3675 продуктов, KEEP=71 кат/137 продуктов. Ждём ОК Сергея.
-2026-04-27  �🔬  Аудит products завершён: 3812 продуктов, dimensions=97.2%, steel_grade=73.4%, мусор=94, дубли=123. Оценка: осмысленный каталог → чистить точечно
+2026-04-27  �  Аудит products завершён: 3812 продуктов, dimensions=97.2%, steel_grade=73.4%, мусор=94, дубли=123. Оценка: осмысленный каталог → чистить точечно
 2026-04-27  🔬  Dry-run v3: 13741 offers, out_of_scope=46%, matched=5.3% matchable, unmatched=44.6%. Smart key composer работает, но products.dimensions NULL у 96%
 2026-04-27  🆕  Smart key composer: profile.py (15 профилей + classify), composer.py, grades.py, engine v3, 94 теста PASSED
 2026-04-27  ✅  Week 2 Шаг 7 завершён: 10 uploads pending_review | 13741 offers | 3422 questions open
@@ -105,18 +106,20 @@ External: OpenRouter (Qwen3), Upstash Redis, Resend, Telegram, ЮKassa
 
 ## 6. ПРЯМО СЕЙЧАС
 
-ТЗ #18 Шаг 1 ВЫПОЛНЕН. classify_categories.py → week2/CATEGORIES_CLASSIFICATION.md.
-Результат: **DELETE=79 кат / 3675 products**, KEEP=71 кат / 137 products, UNKNOWN=56 кат / 0 products.
-Все 5 навесов (137 продуктов) останутся. Миграционные .sql файлы созданы как шаблоны.
-⚠️ **СТОП: жду ОК Сергея на CATEGORIES_CLASSIFICATION.md перед Шагами 2 и 3.**
+ТЗ #19 catalog_sync завершён. Пакет `harlan_ai.catalog_sync` готов: парсер (JSON-LD + HTML), HTTP-краулер (BFS + robots.txt + anti-bot guard), локальный загрузчик, upserter (δ-sync по sha256), CLI. 8/8 тестов PASSED. CLI dry-run — 3 товара, 0 ошибок.
+Миграция `20260519000000_products_catalog_sync.sql` создана, **но НЕ применена** (блокер: ждём ТЗ #17 RECON + ТЗ #18 selective TRUNCATE).
+⚠️ СТОП: жду ОК Сергея на ТЗ #17 и ТЗ #18 перед --commit.
 
 ---
 
 ## 7. СЛЕДУЮЩИЙ ШАГ (одна задача)
 
-**Кто:** Сергей (апрув)
-**Что:** Прочитать `harlan-ai/week2/CATEGORIES_CLASSIFICATION.md`, проверить список из 79 категорий DELETE. Написать «ОК» → Windsurf запускает Шаги 2 и 3.
-**Когда готово:** После апрува Сергея.
+**Кто:** Сергей (решение)
+**Что:** Два блокера перед боевым прогоном каталога МС:
+  1. ТЗ #17 RECON — уточнить CSS-селекторы mc.ru (сейчас TODO-заглушки в mc_parser.py)
+  2. ТЗ #18 selective TRUNCATE — применить миграции products_catalog_fields + metallprokat_truncate
+После обоих: `python scripts/sync_mc_catalog.py --mode local --folder <folder> --commit`
+**Когда готово:** После ТЗ #17 + ТЗ #18.
 
 ---
 

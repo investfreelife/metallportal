@@ -77,4 +77,6 @@ YYYY-MM-DD HH:MM | <agent>           | <emoji> | <что сделано>        
 2026-04-27 22:54 | windsurf | 📋 | ТЗ #18 Шаг 1: создан classify_categories.py, запущен → CATEGORIES_CLASSIFICATION.md. DELETE=79кат/3675prod, KEEP=71кат/137prod | harlan-ai/scripts/classify_categories.py, harlan-ai/week2/CATEGORIES_CLASSIFICATION.md
 2026-04-27 22:55 | windsurf | ⚙️ | ТЗ #18 шаблоны миграций: 20260508000000_products_catalog_fields.sql + 20260508000100_products_metallprokat_truncate.sql (PLACEHOLDER, не применять) | harlan-ai/migrations/
 
+2026-04-28 06:04 | windsurf | 🆕 | ТЗ #19 catalog_sync: миграция products_catalog_sync + пакет catalog_sync (types/mc_parser/http_crawler/local_loader/upserter) + CLI sync_mc_catalog.py + 8 тестов PASSED | metallportal/supabase/migrations/20260519000000_products_catalog_sync.sql, harlan-ai/src/harlan_ai/catalog_sync/, harlan-ai/scripts/sync_mc_catalog.py, harlan-ai/tests/catalog_sync/, harlan-ai/pyproject.toml
+
 <!-- Новые записи дописывать ниже этой строки -->
