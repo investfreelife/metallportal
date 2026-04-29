@@ -77,6 +77,10 @@ YYYY-MM-DD HH:MM | <agent>           | <emoji> | <что сделано>        
 2026-04-27 22:54 | windsurf | 📋 | ТЗ #18 Шаг 1: создан classify_categories.py, запущен → CATEGORIES_CLASSIFICATION.md. DELETE=79кат/3675prod, KEEP=71кат/137prod | harlan-ai/scripts/classify_categories.py, harlan-ai/week2/CATEGORIES_CLASSIFICATION.md
 2026-04-27 22:55 | windsurf | ⚙️ | ТЗ #18 шаблоны миграций: 20260508000000_products_catalog_fields.sql + 20260508000100_products_metallprokat_truncate.sql (PLACEHOLDER, не применять) | harlan-ai/migrations/
 
-2026-04-28 06:04 | windsurf | 🆕 | ТЗ #19 catalog_sync: миграция products_catalog_sync + пакет catalog_sync (types/mc_parser/http_crawler/local_loader/upserter) + CLI sync_mc_catalog.py + 8 тестов PASSED | metallportal/supabase/migrations/20260519000000_products_catalog_sync.sql, harlan-ai/src/harlan_ai/catalog_sync/, harlan-ai/scripts/sync_mc_catalog.py, harlan-ai/tests/catalog_sync/, harlan-ai/pyproject.toml
+2026-04-28 06:04 | windsurf | 🆕 | ТЗ #19 catalog_sync: пакет catalog_sync (types/mc_parser/http_crawler/local_loader/upserter) + CLI sync_mc_catalog.py + 8 тестов PASSED | harlan-ai/src/harlan_ai/catalog_sync/, harlan-ai/scripts/sync_mc_catalog.py, harlan-ai/tests/catalog_sync/, harlan-ai/pyproject.toml
+
+2026-04-28 20:00 | windsurf | 🔬 | RECON #17: mc.ru JA3-блокировка TLS (HTTP-краулер невозможен), URL=/metalloprokat/*, табличный каталог с microdata (не JSON-LD), CSS-селекторы: td.TovName, td._razmer, td._mark, td._dlina. В XLS нет артикулов | harlan-ai/week2/MC_RECON_REPORT.md
+2026-04-28 20:05 | windsurf | 🔧 | Миграции консолидированы: 20260508000000 (6 полей: supplier_product_id, gost, source_url, source_supplier_id, raw_html_hash, last_synced_at + supplier_id nullable + UNIQUE index). Старая 20260519 удалена. Шаблоны из harlan-ai/migrations/ удалены | metallportal/supabase/migrations/20260508000000_products_catalog_fields.sql
+2026-04-28 20:06 | windsurf | 🗑️ | ТЗ #18 TRUNCATE ПРИМЕНЁН: 20260508000100 (DELETE 3675 products / 79 categories металлопрокат). Бэкап: products_archive_metallprokat_20260428. Осталось: 137 products / 71 categories | metallportal/supabase/migrations/20260508000100_products_metallprokat_truncate.sql
 
 <!-- Новые записи дописывать ниже этой строки -->

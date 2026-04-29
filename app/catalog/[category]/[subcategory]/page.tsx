@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const title = `${product.name} — цена, купить в Москве`;
   const specs = [product.dimensions, product.gost, product.steel_grade].filter(Boolean).join(", ");
-  const description = `${product.name}${specs ? ` (${specs})` : ""} — купить по выгодной цене с доставкой по Москве и всей России. МеталлПортал.`;
+  const description = `${product.name}${specs ? ` (${specs})` : ""} — купить по выгодной цене с доставкой по Москве и всей России. Харланметалл.`;
   const url = `/catalog/${params.category}/${params.subcategory}`;
 
   return {
@@ -103,7 +103,7 @@ export default async function SubcategoryPage({ params }: Props) {
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {enriched.filter((sub: any) => sub.totalProducts > 0).map((sub: any) => (
+            {enriched.map((sub: any) => (
               <CatalogCategoryCard
                 key={sub.id}
                 name={sub.name}
@@ -143,11 +143,11 @@ export default async function SubcategoryPage({ params }: Props) {
           {isHozblok && (
             <>
               <section className="mt-16 pt-10 border-t border-border">
-                <h2 className="text-3xl font-bold text-foreground mb-5">Навесы с хозблоком — МеталлПортал</h2>
+                <h2 className="text-3xl font-bold text-foreground mb-5">Навесы с хозблоком — Харланметалл</h2>
                 <p className="text-muted-foreground leading-relaxed mb-10 max-w-4xl">
                   Навес с хозблоком — это комбинированная конструкция: крытая стоянка для автомобиля и закрытое
                   подсобное помещение под одной кровлей. Одно решение заменяет отдельный гараж и хозяйственный блок.
-                  Собственный завод МеталлПортал выполняет полный цикл — от проектирования до монтажа.
+                  Собственный завод Харланметалл выполняет полный цикл — от проектирования до монтажа.
                 </p>
 
                 <div className="flex items-center gap-3 mb-4">
@@ -246,7 +246,7 @@ export default async function SubcategoryPage({ params }: Props) {
 
               <section className="mt-8">
                 <div className="bg-muted/40 rounded-xl p-5 space-y-3">
-                  <h3 className="text-xl font-bold text-foreground">Почему выбирают МеталлПортал</h3>
+                  <h3 className="text-xl font-bold text-foreground">Почему выбирают Харланметалл</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {[
                       "Собственный завод — цены без посредников",
@@ -270,9 +270,9 @@ export default async function SubcategoryPage({ params }: Props) {
           {isAvto && (
             <>
               <section className="mt-16 pt-10 border-t border-border">
-                <h2 className="text-3xl font-bold text-foreground mb-5">Навесы для автомобиля — МеталлПортал</h2>
+                <h2 className="text-3xl font-bold text-foreground mb-5">Навесы для автомобиля — Харланметалл</h2>
                 <p className="text-muted-foreground leading-relaxed mb-10 max-w-4xl">
-                  МеталлПортал производит металлические навесы для автомобиля с 2012 года. Карпорты изготавливаем по
+                  Харланметалл производит металлические навесы для автомобиля с 2012 года. Карпорты изготавливаем по
                   вашим размерам — одиночные и двухместные, на 1 или 2 автомобиля. Собственный завод,
                   монтаж «под ключ», гарантия 10 лет.
                 </p>
@@ -372,7 +372,7 @@ export default async function SubcategoryPage({ params }: Props) {
 
               <section className="mt-8">
                 <div className="bg-muted/40 rounded-xl p-5 space-y-3">
-                  <h3 className="text-xl font-bold text-foreground">Почему выбирают МеталлПортал</h3>
+                  <h3 className="text-xl font-bold text-foreground">Почему выбирают Харланметалл</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {[
                       "Собственный завод — цены без посредников",
@@ -396,9 +396,9 @@ export default async function SubcategoryPage({ params }: Props) {
           {isBesedka && (
             <>
               <section className="mt-16 pt-10 border-t border-border">
-                <h2 className="text-3xl font-bold text-foreground mb-5">Навес-беседка — МеталлПортал</h2>
+                <h2 className="text-3xl font-bold text-foreground mb-5">Навес-беседка — Харланметалл</h2>
                 <p className="text-muted-foreground leading-relaxed mb-10 max-w-4xl">
-                  МеталлПортал производит навесы-беседки на металлическом каркасе с декоративными элементами.
+                  Харланметалл производит навесы-беседки на металлическом каркасе с декоративными элементами.
                   Подходят для дачных участков, частных домов, коттеджей, кафе и зон отдыха. Собственный завод,
                   монтаж «под ключ», гарантия 10 лет.
                 </p>
@@ -498,7 +498,7 @@ export default async function SubcategoryPage({ params }: Props) {
 
               <section className="mt-8">
                 <div className="bg-muted/40 rounded-xl p-5 space-y-3">
-                  <h3 className="text-xl font-bold text-foreground">Почему выбирают МеталлПортал</h3>
+                  <h3 className="text-xl font-bold text-foreground">Почему выбирают Харланметалл</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {[
                       "Собственный завод — цены без посредников",
@@ -522,9 +522,9 @@ export default async function SubcategoryPage({ params }: Props) {
           {isParkovka && (
             <>
               <section className="mt-16 pt-10 border-t border-border">
-                <h2 className="text-3xl font-bold text-foreground mb-5">Навесы для парковок — МеталлПортал</h2>
+                <h2 className="text-3xl font-bold text-foreground mb-5">Навесы для парковок — Харланметалл</h2>
                 <p className="text-muted-foreground leading-relaxed mb-10 max-w-4xl">
-                  МеталлПортал проектирует и производит навесы для открытых парковок любой вместимости — от 5 до 500
+                  Харланметалл проектирует и производит навесы для открытых парковок любой вместимости — от 5 до 500
                   машино-мест. Металлический каркас по ГОСТ, кровля из поликарбоната, профнастила или металлочерепицы.
                   Монтаж «под ключ», гарантия 10 лет, проектная документация.
                 </p>
@@ -624,7 +624,7 @@ export default async function SubcategoryPage({ params }: Props) {
 
               <section className="mt-8">
                 <div className="bg-muted/40 rounded-xl p-5 space-y-3">
-                  <h3 className="text-xl font-bold text-foreground">Почему выбирают МеталлПортал</h3>
+                  <h3 className="text-xl font-bold text-foreground">Почему выбирают Харланметалл</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {[
                       "Собственный завод — цены без посредников",
@@ -648,9 +648,9 @@ export default async function SubcategoryPage({ params }: Props) {
           {isDacha && (
             <>
               <section className="mt-16 pt-10 border-t border-border">
-                <h2 className="text-3xl font-bold text-foreground mb-5">Навесы для дачи — МеталлПортал</h2>
+                <h2 className="text-3xl font-bold text-foreground mb-5">Навесы для дачи — Харланметалл</h2>
                 <p className="text-muted-foreground leading-relaxed mb-10 max-w-4xl">
-                  МеталлПортал производит навесы для дачи и загородного дома с 2012 года. Металлический каркас
+                  Харланметалл производит навесы для дачи и загородного дома с 2012 года. Металлический каркас
                   с деревянными элементами или полностью металлический — на выбор. Кровля из поликарбоната,
                   профнастила или металлочерепицы. Монтаж «под ключ», гарантия 10 лет.
                 </p>
@@ -750,7 +750,7 @@ export default async function SubcategoryPage({ params }: Props) {
 
               <section className="mt-8">
                 <div className="bg-muted/40 rounded-xl p-5 space-y-3">
-                  <h3 className="text-xl font-bold text-foreground">Почему выбирают МеталлПортал</h3>
+                  <h3 className="text-xl font-bold text-foreground">Почему выбирают Харланметалл</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {[
                       "Собственный завод — цены без посредников",
@@ -796,7 +796,7 @@ export default async function SubcategoryPage({ params }: Props) {
       name: product.name,
       description: `${product.name}${specs ? ` (${specs})` : ""} — купить в Москве с доставкой по России.`,
       sku: product.slug,
-      brand: { "@type": "Brand", name: "МеталлПортал" },
+      brand: { "@type": "Brand", name: "Харланметалл" },
     };
     if (product.image_url) productSchema.image = product.image_url;
     if (isFinite(minPrice)) {
@@ -806,7 +806,7 @@ export default async function SubcategoryPage({ params }: Props) {
         priceCurrency: "RUB",
         availability: "https://schema.org/InStock",
         url: `https://metallportal.vercel.app/catalog/${params.category}/${params.subcategory}`,
-        seller: { "@type": "Organization", name: "МеталлПортал" },
+        seller: { "@type": "Organization", name: "Харланметалл" },
       };
     }
 

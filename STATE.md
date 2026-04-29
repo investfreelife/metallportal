@@ -1,6 +1,6 @@
 # STATE.md — Harlan Steel: канонический источник истины
 
-> **Версия:** 2026-04-27 12:25 МСК
+> **Версия:** 2026-04-28 20:10 МСК
 > **Этот файл — единственная правда о состоянии проекта.**
 > Любой AI/разработчик ПЕРЕД работой читает целиком. ПОСЛЕ работы обновляет разделы 3, 5, 6, 7.
 > Полная документация (история, схема БД, детали) — в `MASTER.md`. Этот файл — короткий снимок «где мы стоим».
@@ -80,24 +80,19 @@ External: OpenRouter (Qwen3), Upstash Redis, Resend, Telegram, ЮKassa
 ## 5. СДЕЛАНО (последние 10, новые сверху)
 
 ```
-2026-04-28  🆕  ТЗ #19 catalog_sync: пакет парсера МС (types/mc_parser/http_crawler/local_loader/upserter) + CLI + миграция + 8 тестов PASSED
-2026-04-27  �  ТЗ #18 Шаг 1: classify_categories.py запущен → CATEGORIES_CLASSIFICATION.md. DELETE=79 кат/3675 продуктов, KEEP=71 кат/137 продуктов. Ждём ОК Сергея.
-2026-04-27  �  Аудит products завершён: 3812 продуктов, dimensions=97.2%, steel_grade=73.4%, мусор=94, дубли=123. Оценка: осмысленный каталог → чистить точечно
-2026-04-27  🔬  Dry-run v3: 13741 offers, out_of_scope=46%, matched=5.3% matchable, unmatched=44.6%. Smart key composer работает, но products.dimensions NULL у 96%
-2026-04-27  🆕  Smart key composer: profile.py (15 профилей + classify), composer.py, grades.py, engine v3, 94 теста PASSED
-2026-04-27  ✅  Week 2 Шаг 7 завершён: 10 uploads pending_review | 13741 offers | 3422 questions open
+2026-04-28  🔬  RECON #17: MC_RECON_REPORT.md — mc.ru JA3-блокировка (HTTP-краулер невозможен), URL=/metalloprokat/*, табличный каталог с microdata, CSS-селекторы найдены
+2026-04-28  ✅  ТЗ #18 миграция ПРИМЕНЕНА: 20260508000000 (6 полей + UNIQUE index) + 20260508000100 (DELETE 3675 products, 79 categories). products осталось: 137
+2026-04-28  🆕  ТЗ #19 catalog_sync: пакет catalog_sync (types/mc_parser/http_crawler/local_loader/upserter) + CLI + 8 тестов PASSED
+2026-04-28  🔧  Миграции консолидированы: 20260508+20260519 → одна 20260508000000. Старая 20260519 удалена
+2026-04-27  📋  ТЗ #18 Шаг 1: classify_categories.py → CATEGORIES_CLASSIFICATION.md. DELETE=79 кат/3675 prod, KEEP=71/137
+2026-04-27  🔬  Аудит products: 3812 prod, dimensions=97.2%, steel_grade=73.4%, мусор=94, дубли=123 → осмысленный каталог
+2026-04-27  🔬  Dry-run v3: 13741 offers, out_of_scope=46%, matched=5.3%, unmatched=44.6%. products.dimensions NULL 96%
+2026-04-27  🆕  Smart key composer: profile.py (15 профилей), composer.py, grades.py, engine v3, 94 теста PASSED
+2026-04-27  ✅  Week 2 Шаг 7: 10 uploads pending_review | 13741 offers | 3422 questions open
 2026-04-27  ✅  Week 2 шаг 1: миграция 20260504_supplier_pricing_v2 применена (price_suppliers + 10 таблиц)
-2026-04-27  🆕  Week 2 шаги 2-4: 9 Python-модулей suppliers/, CLI, тесты, 10 .xls прайсов — всё на месте
-2026-04-27  �  Фикс AI-поиска: fallback заменён с хардкоженных REF_PRICES на supabaseSearch (реальный прайс)
-2026-04-27  🆕  152-ФЗ: /privacy + /oferta страницы, CookieBanner, чекбокс ПДн в SmartSearch, Footer ссылки
-2026-04-27  ⚙️  Windsurf: STATE.md + .windsurfrules + WORKLOG.md → корень репо; vercel.json cron → hourly
-2026-04-27  📊  5 baseline цифр в STATE.md §9: fresh_7d=0%, no_price=1.2%, no_seo=100%, mismatch=5.4%, no_img=4.7%
-2026-04-27  🚨  152-ФЗ pre-flight: 0/8 закрыто — все 8 пунктов записаны как блокеры в раздел 8
-2026-04-27  ✅  validate_pricing() интегрирован в tasks.py::generate_kp + @with_validation на search_metal
-2026-04-26  ✅  Аудит прогнан: 5 882 DQ issues (stale:5191 warn, zero_price:259 crit, mismatch:204, missing:47+181)
-2026-04-26  ✅  Миграция 20260427_data_quality_queue.sql применена в Supabase
-2026-04-26  📋  Подготовлены артефакты Week 1: baseline, миграция, audit, validators, supplier checklist, cron route
-2026-04-26  📋  Создан STATE.md и регламент работы AI с проектом
+2026-04-27  🆕  Week 2 шаги 2-4: 9 Python-модулей suppliers/, CLI, тесты, 10 .xls прайсов
+2026-04-27  🔧  Фикс AI-поиска: fallback → supabaseSearch (реальный прайс)
+2026-04-27  🆕  152-ФЗ: /privacy + /oferta, CookieBanner, чекбокс ПДн в SmartSearch
 ```
 
 **Формат записи:** `YYYY-MM-DD  <emoji>  что сделано (одна строка)`. Эмодзи: 📋 план, ✅ деплой, 🔧 фикс, 🆕 новая фича, 🗑️ удалено.
@@ -106,20 +101,27 @@ External: OpenRouter (Qwen3), Upstash Redis, Resend, Telegram, ЮKassa
 
 ## 6. ПРЯМО СЕЙЧАС
 
-ТЗ #19 catalog_sync завершён. Пакет `harlan_ai.catalog_sync` готов: парсер (JSON-LD + HTML), HTTP-краулер (BFS + robots.txt + anti-bot guard), локальный загрузчик, upserter (δ-sync по sha256), CLI. 8/8 тестов PASSED. CLI dry-run — 3 товара, 0 ошибок.
-Миграция `20260519000000_products_catalog_sync.sql` создана, **но НЕ применена** (блокер: ждём ТЗ #17 RECON + ТЗ #18 selective TRUNCATE).
-⚠️ СТОП: жду ОК Сергея на ТЗ #17 и ТЗ #18 перед --commit.
+**RECON #17 завершён** → `week2/MC_RECON_REPORT.md`.
+**ТЗ #18 миграции применены** → products: 137 (навесы), categories: 71. Бэкап: `products_archive_metallprokat_20260428`.
+**ТЗ #19 catalog_sync** пакет готов, 8/8 тестов. Но mc_parser.py написан под JSON-LD карточки, а mc.ru — **табличный каталог с microdata**.
+
+**Ключевое открытие RECON:** mc.ru блокирует TLS для non-browser (JA3 fingerprinting). HTTP-краулер невозможен без Playwright. Структура сайта: `/metalloprokat/*` → таблица `<tr>` с `schema.org/Product` microdata. CSS-селекторы: `td.TovName`, `td._razmer`, `td._mark`, `td._dlina`. В XLS-прайсе **НЕТ артикулов** → нужен fuzzy matcher или synthetic key.
+
+**Требуется переписка mc_parser.py** под табличный формат (одна HTML-страница = десятки товаров).
 
 ---
 
 ## 7. СЛЕДУЮЩИЙ ШАГ (одна задача)
 
-**Кто:** Сергей (решение)
-**Что:** Два блокера перед боевым прогоном каталога МС:
-  1. ТЗ #17 RECON — уточнить CSS-селекторы mc.ru (сейчас TODO-заглушки в mc_parser.py)
-  2. ТЗ #18 selective TRUNCATE — применить миграции products_catalog_fields + metallprokat_truncate
-После обоих: `python scripts/sync_mc_catalog.py --mode local --folder <folder> --commit`
-**Когда готово:** После ТЗ #17 + ТЗ #18.
+**Кто:** Windsurf
+**Что:** Переписать `mc_parser.py` под табличный формат mc.ru:
+  1. `parse_category_page(html, source_url) → list[CatalogItem]` вместо `parse(html, url) → CatalogItem`
+  2. CSS-селекторы из MC_RECON_REPORT.md (td.TovName, td._razmer, td._mark, td._dlina)
+  3. microdata вместо JSON-LD (`<meta itemprop="name/category/description">`)
+  4. supplier_product_id = slug из href `td.TovName a`
+  5. Обновить local_loader, upserter, CLI, тесты
+**Блокер:** Нужны реальные HTML-страницы mc.ru (Сергей сохраняет вручную в браузере → `data/mc_html/`)
+**Когда готово:** После получения 3-5 HTML-файлов от Сергея.
 
 ---
 
@@ -138,9 +140,11 @@ External: OpenRouter (Qwen3), Upstash Redis, Resend, Telegram, ЮKassa
 - 2026-04-27: [ЗАКРЫТО ✅] Week 2 блокер suppliers → переименована в `price_suppliers` в миграции + Python-коде. CRM-таблица suppliers нетронута (4 строки).
 - 2026-04-27: [ЗАКРЫТО ✅] updated_at блокер: миграция 20260504_2 добавила updated_at + trigger, шаг 7 прошёл полностью.
 - 2026-04-27: [ЧАСТИЧНО ЗАКРЫТО ✅] Matcher dry-run v3: smart key composer решил проблему 2+3 (семантика mark/grade, unit).
-  Остаётся: products.dimensions NULL у 96% → нужен enrich_products.py --commit
-  4) 86 products имеют unit='ГОСТ XXXX-XX' (мусор)
-  Решение: выбрать стратегию мэтча. Боевой прогон ЗАБЛОКИРОВАН до решения Сергея.
+  Остаётся: products.dimensions NULL у 96% → нужен enrich_products.py --commit (НО: после TRUNCATE осталось 137 products — навесы, проблема dimensions теперь неактуальна для металлопроката)
+  4) 86 products имели unit='ГОСТ XXXX-XX' (мусор) — бОльшая часть удалена TRUNCATE
+  Решение: каталог МС заменит удалённые 3675 products; matcher v4 будет работать с новыми данными.
+- 2026-04-28: [БЛОКЕР ⚠️] mc.ru JA3-блокировка: HTTP-краулер невозможен. Сергей → сохранить 5-10 HTML-страниц mc.ru вручную в браузере → data/mc_html/
+- 2026-04-28: [БЛОКЕР ⚠️] mc_parser.py написан под JSON-LD карточки, а mc.ru — табличный каталог. Требуется переписка.
 ```
 
 Если появляется блокер — формат: `- YYYY-MM-DD: что мешает, кто разблокирует, к какому сроку`.
@@ -150,14 +154,19 @@ External: OpenRouter (Qwen3), Upstash Redis, Resend, Telegram, ЮKassa
 ## 9. КЛЮЧЕВЫЕ ЦИФРЫ (snapshot)
 
 ```
-Дата замера: 2026-04-26 (аудит прогнан, данные реальные)
+Дата замера: 2026-04-28 (после TRUNCATE металлопроката)
+
+Каталог:
+  products (всего):                                137     (было 3812; удалено 3675 металлопрокат)
+  products в архиве (recoverable):                 3675    (products_archive_metallprokat_20260428)
+  categories:                                      71      (было 150; удалено 79)
+  offers (supplier_price_offers):                  13741   (нетронуты)
+  offers с match:                                  0       (обнулены перед DELETE)
 
 Свежесть данных:
   fresh_7d (% price_items < 7 дней):              0 %     [цель Week 2: 45%]
-  no_price_link (% products без price_items):     1.2 %   (47 из 3 812)
-  no_seo_text (% products без seo_text):          100 %   (3 812 из 3 812)
-  price_mismatch_cross_supplier (% SKU > 10%):    5.4 %   (204 SKU)
-  missing_image (% products без image_url):       4.7 %   (181 из 3 812)
+  no_seo_text (% products без seo_text):          100 %   (137 из 137)
+  products с новыми полями catalog_sync:           0       [цель: заполнить после sync МС]
 
 Скорость:
   P95 search latency:                             60 863 ms   ⚠️ [цель Week 4: < 10 000 ms]

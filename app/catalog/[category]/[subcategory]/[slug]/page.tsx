@@ -27,10 +27,10 @@ const CANONICAL_REDIRECTS: Record<string, string> = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cat = await getCategoryBySlug(params.slug);
-  if (cat) return { title: `${cat.name} — купить в Москве | МеталлПортал` };
+  if (cat) return { title: `${cat.name} — купить в Москве | Харланметалл` };
   const product = await getProductBySlug(params.slug);
-  if (!product) return { title: "Не найдено | МеталлПортал" };
-  const title = `${product.name} цена купить в Москве | МеталлПортал`;
+  if (!product) return { title: "Не найдено | Харланметалл" };
+  const title = `${product.name} цена купить в Москве | Харланметалл`;
   const description = product.description
     ? product.description.slice(0, 155)
     : `${product.name} — купить оптом и в розницу в Москве.`;

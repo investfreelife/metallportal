@@ -34,7 +34,7 @@ export default function AdminSidebar() {
     <aside className="w-56 bg-[#16213e] border-r border-white/10 flex flex-col min-h-screen">
       <div className="p-5 border-b border-white/10">
         <Link href="/" className="block">
-          <div className="text-[#E8B86D] font-bold text-xl">МеталлПортал</div>
+          <div className="text-[#E8B86D] font-bold text-xl">Харланметалл</div>
           <div className="text-white/40 text-xs mt-0.5">Админ-панель</div>
         </Link>
         {session && (

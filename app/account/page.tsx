@@ -89,8 +89,15 @@ export default function AccountPage() {
       <div className="border-b border-border bg-card">
         <div className="container-main h-14 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-gold rounded" />
-            <span className="font-bold text-foreground">МЕТАЛЛПОРТАЛ</span>
+            <div className="flex flex-shrink-0">
+              <div className="w-7 h-7 flex items-center justify-center bg-gold">
+                <span className="text-black font-black text-sm leading-none" style={{ fontFamily: 'Georgia, serif' }}>Х</span>
+              </div>
+              <div className="w-7 h-7 flex items-center justify-center bg-foreground">
+                <span className="text-background font-black text-sm leading-none" style={{ fontFamily: 'Georgia, serif' }}>М</span>
+              </div>
+            </div>
+            <span className="font-bold text-foreground">Харланметалл</span>
           </Link>
           <button onClick={handleSignOut} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <LogOut size={14} /> Выйти

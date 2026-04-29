@@ -118,8 +118,17 @@ export default function AccountLoginPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 justify-center mb-10">
-          <div className="w-10 h-10 bg-gold rounded" />
-          <span className="text-2xl font-bold text-foreground">МЕТАЛЛПОРТАЛ</span>
+          <div className="flex flex-shrink-0">
+            <div className="w-10 h-10 flex items-center justify-center bg-gold">
+              <span className="text-black font-black text-xl leading-none" style={{ fontFamily: 'Georgia, serif' }}>Х</span>
+            </div>
+            <div className="w-10 h-10 flex items-center justify-center bg-foreground">
+              <span className="text-background font-black text-xl leading-none" style={{ fontFamily: 'Georgia, serif' }}>М</span>
+            </div>
+          </div>
+          <div className="leading-tight">
+            <span className="text-xl font-bold text-foreground">Харланметалл</span>
+          </div>
         </Link>
 
         {/* Card */}

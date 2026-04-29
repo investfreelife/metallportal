@@ -15,7 +15,7 @@ export async function updateSiteSetting(key: string, value: string): Promise<voi
 
 export function getDefaultSettings(): SiteSettings {
   return {
-    site_name: "МеталлПортал",
+    site_name: "Харланметалл",
     phone: "+7 (495) 925-11-55",
     telegram: "@metallportal",
     hero_title: "Металлопрокат и Металлоконструкции",

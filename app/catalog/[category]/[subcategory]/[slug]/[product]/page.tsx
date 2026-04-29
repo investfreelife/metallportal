@@ -11,8 +11,8 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = await getProductBySlug(params.product);
-  if (!product) return { title: "Товар не найден | МеталлПортал" };
-  const title = `${product.name} цена купить в Москве | МеталлПортал`;
+  if (!product) return { title: "Товар не найден | Харланметалл" };
+  const title = `${product.name} цена купить в Москве | Харланметалл`;
   const description = product.description
     ? product.description.slice(0, 155)
     : `${product.name} — купить оптом и в розницу в Москве.`;

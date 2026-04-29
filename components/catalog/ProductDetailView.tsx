@@ -63,7 +63,7 @@ export default function ProductDetailView({ product, priceItems, related, basePa
     name: product.name,
     description: product.description || undefined,
     sku: product.id,
-    brand: { "@type": "Brand", name: "МеталлПортал" },
+    brand: { "@type": "Brand", name: "Харланметалл" },
     ...(product.gost && {
       additionalProperty: [{ "@type": "PropertyValue", name: "ГОСТ", value: product.gost }],
     }),
@@ -75,7 +75,7 @@ export default function ProductDetailView({ product, priceItems, related, basePa
         availability: priceItems.some((p: any) => p.in_stock)
           ? "https://schema.org/InStock"
           : "https://schema.org/PreOrder",
-        seller: { "@type": "Organization", name: "МеталлПортал" },
+        seller: { "@type": "Organization", name: "Харланметалл" },
       },
     }),
   };
@@ -187,16 +187,16 @@ export default function ProductDetailView({ product, priceItems, related, basePa
       {!basePath.includes("metalloprokat") && (
         <>
           <section className="mt-16 pt-10 border-t border-border">
-            <h2 className="text-3xl font-bold text-foreground mb-5">{product.name} — купить в Москве | МеталлПортал</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-5">{product.name} — купить в Москве | Харланметалл</h2>
             <p className="text-muted-foreground leading-relaxed mb-8 max-w-4xl">
-              МеталлПортал производит и поставляет <strong className="text-foreground">{product.name.toLowerCase()}</strong> по всей России.
+              Харланметалл производит и поставляет <strong className="text-foreground">{product.name.toLowerCase()}</strong> по всей России.
               Собственное производство, контроль качества на каждом этапе, конкурентные цены без посредников.
               Полный пакет документов, работаем с юридическими и физическими лицами.
             </p>
 
             <div className="flex items-center gap-3 mb-4">
               <span className="text-2xl">✅</span>
-              <h3 className="text-2xl font-bold text-foreground">Почему выбирают МеталлПортал</h3>
+              <h3 className="text-2xl font-bold text-foreground">Почему выбирают Харланметалл</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-10">
               {[

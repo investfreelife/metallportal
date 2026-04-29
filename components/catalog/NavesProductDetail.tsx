@@ -32,7 +32,7 @@ export default function NavesProductDetail({ product, related, basePath }: Props
   const area = length && width ? Math.round(parseFloat(length) * parseFloat(width) * 100) / 100 : 0;
   const totalPrice = area > 0 && price > 0 ? Math.round(area * price) : 0;
 
-  const supplier = product.price_items?.[0]?.supplier?.company_name || product.supplier?.company_name || "МеталлПортал";
+  const supplier = product.price_items?.[0]?.supplier?.company_name || product.supplier?.company_name || "Харланметалл";
   const material = product.dimensions || "";
 
   const visibleRelated = related.slice(carouselIdx, carouselIdx + 4);
@@ -220,9 +220,9 @@ export default function NavesProductDetail({ product, related, basePath }: Props
 
       {/* SEO */}
       <section className="mt-16 pt-10 border-t border-border">
-        <h2 className="text-3xl font-bold text-foreground mb-5">{product.name} — купить в Москве | МеталлПортал</h2>
+        <h2 className="text-3xl font-bold text-foreground mb-5">{product.name} — купить в Москве | Харланметалл</h2>
         <p className="text-muted-foreground leading-relaxed mb-8 max-w-4xl">
-          МеталлПортал изготавливает <strong className="text-foreground">{product.name.toLowerCase()}</strong> на заказ
+          Харланметалл изготавливает <strong className="text-foreground">{product.name.toLowerCase()}</strong> на заказ
           по вашим размерам. Собственный завод, металлокаркас из профильной трубы по ГОСТ, кровля из качественных материалов.
           Монтаж «под ключ», гарантия 10 лет, расчёт стоимости за 1 рабочий день.
         </p>

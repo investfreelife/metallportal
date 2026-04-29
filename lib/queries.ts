@@ -155,10 +155,9 @@ export async function getFullCategoryTree(): Promise<any[]> {
           ...c,
           productCount: counts[c.id] || 0,
           totalProducts,
-          subcategories: children.filter((ch: any) => ch.totalProducts > 0),
+          subcategories: children,
         };
-      })
-      .filter((c: any) => c.totalProducts > 0);
+      });
 
   return buildLevel(null);
 }

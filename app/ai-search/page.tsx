@@ -3,7 +3,7 @@ import { SmartSearch } from "@/components/SmartSearch";
 import { Sparkles, Zap, Clock, CheckCircle2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Поиск с ИИ — МеталлПортал",
+  title: "Поиск с ИИ — Харланметалл",
   description: "Опишите нужный металлопрокат — ИИ подберёт из 12 000+ позиций и сформирует коммерческое предложение за секунды.",
   alternates: { canonical: "/ai-search" },
 };

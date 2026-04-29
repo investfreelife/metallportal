@@ -83,7 +83,7 @@ export default async function CategoryPage({ params }: Props) {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {enriched.filter((sub: any) => sub.totalProducts > 0).map((sub: any) => (
+          {enriched.map((sub: any) => (
             <CatalogCategoryCard
               key={sub.id}
               name={sub.name}
@@ -100,9 +100,9 @@ export default async function CategoryPage({ params }: Props) {
         {params.category === "gotovye-konstruktsii" && (
           <>
             <section className="mt-16 pt-10 border-t border-border">
-              <h2 className="text-3xl font-bold text-foreground mb-5">Готовые металлоконструкции — МеталлПортал</h2>
+              <h2 className="text-3xl font-bold text-foreground mb-5">Готовые металлоконструкции — Харланметалл</h2>
               <p className="text-muted-foreground leading-relaxed mb-10 max-w-4xl">
-                МеталлПортал производит и поставляет готовые металлоконструкции для строительства промышленных,
+                Харланметалл производит и поставляет готовые металлоконструкции для строительства промышленных,
                 коммерческих и сельскохозяйственных объектов по всей России. Полный цикл — от проектирования до монтажа под ключ.
               </p>
 
@@ -150,9 +150,9 @@ export default async function CategoryPage({ params }: Props) {
         {params.category === "navesy" && (
           <>
             <section className="mt-16 pt-10 border-t border-border">
-              <h2 className="text-3xl font-bold text-foreground mb-5">Металлические навесы на заказ — МеталлПортал</h2>
+              <h2 className="text-3xl font-bold text-foreground mb-5">Металлические навесы на заказ — Харланметалл</h2>
               <p className="text-muted-foreground leading-relaxed mb-10 max-w-4xl">
-                МеталлПортал производит металлические навесы с 2012 года. Собственный завод, собственный металлопрокат
+                Харланметалл производит металлические навесы с 2012 года. Собственный завод, собственный металлопрокат
                 и монтажная бригада позволяют контролировать качество на каждом этапе и держать цены ниже рыночных.
                 За 12 лет реализовано более 500 проектов — от навесов для одного автомобиля до промышленных
                 навесных конструкций площадью до 5 000 м².
@@ -312,7 +312,7 @@ export default async function CategoryPage({ params }: Props) {
                 <h3 className="text-2xl font-bold text-foreground">Доставка и монтаж по России</h3>
               </div>
               <p className="text-muted-foreground leading-relaxed mb-3 max-w-4xl">
-                МеталлПортал доставляет навесы собственным транспортом по Москве и Московской области.
+                Харланметалл доставляет навесы собственным транспортом по Москве и Московской области.
                 Доставка в регионы — через транспортные компании-партнёры. Конструкции поставляются
                 в разобранном виде с маркировкой элементов и монтажной схемой, либо монтируются под ключ.
               </p>
@@ -324,7 +324,7 @@ export default async function CategoryPage({ params }: Props) {
 
             <section className="mt-8">
               <div className="bg-muted/40 rounded-xl p-5 space-y-3">
-                <h3 className="text-xl font-bold text-foreground">Почему выбирают МеталлПортал</h3>
+                <h3 className="text-xl font-bold text-foreground">Почему выбирают Харланметалл</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {[
                     "Собственный завод — цены без посредников",
@@ -371,9 +371,9 @@ export default async function CategoryPage({ params }: Props) {
         {params.category === "metalloprokat" && (
           <>
             <section className="mt-16 pt-10 border-t border-border">
-              <h2 className="text-3xl font-bold text-foreground mb-5">Металлопрокат оптом и в розницу — МеталлПортал</h2>
+              <h2 className="text-3xl font-bold text-foreground mb-5">Металлопрокат оптом и в розницу — Харланметалл</h2>
               <p className="text-muted-foreground leading-relaxed mb-10 max-w-4xl">
-                МеталлПортал — крупный поставщик металлопроката для частных лиц, строительных компаний и промышленных
+                Харланметалл — крупный поставщик металлопроката для частных лиц, строительных компаний и промышленных
                 предприятий по всей России. Прямые договоры с заводами-производителями позволяют предлагать металл
                 оптом и в розницу по конкурентным ценам без посредников. Вся продукция соответствует ГОСТ.
               </p>
