@@ -100,11 +100,24 @@ function MobileProductRow({ product, productBasePath }: { product: any; productB
   );
 }
 
+function getLength(product: any): string {
+  if (product.length_options?.length) return product.length_options[0];
+  if (product.length) return String(product.length);
+  return "—";
+}
+
+function getRegion(product: any): string {
+  if (product.supplier?.city) return product.supplier.city;
+  if (product.supplier?.region) return product.supplier.region;
+  const pi = product.price_items?.find((p: any) => p.supplier?.city || p.supplier?.region);
+  if (pi) return pi.supplier?.city || pi.supplier?.region;
+  return "Москва";
+}
+
 function TableRow({ product, productBasePath }: { product: any; productBasePath: string }) {
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
   const price = getBestPrice(product);
-  const inStock = hasStock(product);
 
   const handleCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -114,6 +127,8 @@ function TableRow({ product, productBasePath }: { product: any; productBasePath:
     setTimeout(() => setAdded(false), 1800);
   };
 
+  const diameter = product.diameter ? String(product.diameter).replace(".", ",") : (product.dimensions || extractSize(product.name) || "—");
+
   return (
     <tr className="border-b border-border hover:bg-background/50 transition-colors">
       <td className="px-3 py-2.5">
@@ -121,47 +136,50 @@ function TableRow({ product, productBasePath }: { product: any; productBasePath:
           {product.name}
         </Link>
       </td>
-      <td className="px-3 py-2.5 text-sm text-muted-foreground hidden sm:table-cell">
-        {product.dimensions || extractSize(product.name) || "—"}
+      <td className="px-3 py-2.5 text-sm text-center text-muted-foreground">
+        {diameter}
       </td>
       <td className="px-3 py-2.5 text-sm text-muted-foreground hidden md:table-cell">
-        {product.gost || "—"}
+        {product.steel_grade || "—"}
       </td>
-      <td className="px-3 py-2.5">
-        {price ? (
-          <div>
-            {price.discount && <span className="text-xs text-muted-foreground line-through mr-2">{price.base.toLocaleString("ru-RU")}</span>}
-            <span className="text-sm font-bold text-gold whitespace-nowrap">
-              {(price.discount ?? price.base).toLocaleString("ru-RU")} ₽/{price.unit}
-            </span>
-          </div>
-        ) : (
-          <span className="text-sm text-muted-foreground">По запросу</span>
-        )}
-      </td>
-      <td className="px-3 py-2.5 hidden sm:table-cell">
-        <span className={`inline-block text-xs font-medium px-2 py-1 rounded ${inStock ? "bg-success/10 text-success" : "bg-muted text-muted-foreground"}`}>
-          {inStock ? "В наличии" : "Под заказ"}
-        </span>
+      <td className="px-3 py-2.5 text-sm text-center text-muted-foreground hidden md:table-cell">
+        {getLength(product)}
       </td>
       <td className="px-3 py-2.5 text-sm text-muted-foreground hidden lg:table-cell">
-        {getSupplierName(product)}
+        {getRegion(product)}
+      </td>
+      <td className="px-3 py-2.5 text-right">
+        {price ? (
+          <span className="text-sm font-bold text-gold whitespace-nowrap">
+            {price.base.toLocaleString("ru-RU")}
+          </span>
+        ) : (
+          <span className="text-sm text-muted-foreground">—</span>
+        )}
+      </td>
+      <td className="px-3 py-2.5 text-right">
+        {price?.discount ? (
+          <span className="text-sm font-bold text-gold whitespace-nowrap">
+            {price.discount.toLocaleString("ru-RU")}
+          </span>
+        ) : price ? (
+          <span className="text-sm font-bold text-gold whitespace-nowrap">
+            {price.base.toLocaleString("ru-RU")}
+          </span>
+        ) : (
+          <span className="text-sm text-muted-foreground">—</span>
+        )}
       </td>
       <td className="px-3 py-2.5">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleCart}
-            title="В корзину"
-            className={`w-8 h-8 rounded flex items-center justify-center transition-all flex-shrink-0 ${
-              added ? "bg-emerald-500/20 text-emerald-500" : "bg-gold/10 hover:bg-gold text-gold hover:text-black"
-            }`}
-          >
-            {added ? <Check size={14} /> : <ShoppingCart size={14} />}
-          </button>
-          <Link href={`${productBasePath}/${product.slug}`} className="text-xs border border-gold text-gold hover:bg-gold hover:text-black font-medium px-3 py-1.5 rounded transition-all whitespace-nowrap">
-            Подробнее
-          </Link>
-        </div>
+        <button
+          onClick={handleCart}
+          title="В корзину"
+          className={`w-8 h-8 rounded flex items-center justify-center transition-all flex-shrink-0 ${
+            added ? "bg-emerald-500/20 text-emerald-500" : "bg-gold/10 hover:bg-gold text-gold hover:text-black"
+          }`}
+        >
+          {added ? <Check size={14} /> : <ShoppingCart size={14} />}
+        </button>
       </td>
     </tr>
   );
@@ -182,12 +200,13 @@ export default function CatalogProductTable({ products, productBasePath }: Produ
         <table className="w-full text-left">
           <thead>
             <tr className="border-b border-border text-xs uppercase tracking-wider text-muted-foreground">
-              <th className="px-3 py-2.5 font-medium">Название</th>
-              <th className="px-3 py-2.5 font-medium hidden sm:table-cell">Размер</th>
-              <th className="px-3 py-2.5 font-medium hidden md:table-cell">ГОСТ</th>
-              <th className="px-3 py-2.5 font-medium">Цена/ед</th>
-              <th className="px-3 py-2.5 font-medium hidden sm:table-cell">Наличие</th>
-              <th className="px-3 py-2.5 font-medium hidden lg:table-cell">Поставщик</th>
+              <th className="px-3 py-2.5 font-medium">Продукция</th>
+              <th className="px-3 py-2.5 font-medium text-center">Размер</th>
+              <th className="px-3 py-2.5 font-medium hidden md:table-cell">Марка</th>
+              <th className="px-3 py-2.5 font-medium text-center hidden md:table-cell">Длина</th>
+              <th className="px-3 py-2.5 font-medium hidden lg:table-cell">Регион</th>
+              <th className="px-3 py-2.5 font-medium text-right">Цена, руб<br/><span className="normal-case font-normal">от 1 до 5т</span></th>
+              <th className="px-3 py-2.5 font-medium text-right">Цена, руб<br/><span className="normal-case font-normal">от 5 до 10т</span></th>
               <th className="px-3 py-2.5 font-medium"></th>
             </tr>
           </thead>
