@@ -2,9 +2,12 @@
  * POST /api/monitor/report
  * Claude анализирует system_logs за последний час и шлёт отчёт менеджеру в Telegram
  * Вызывается: вручную (кнопка в настройках) или по cron (vercel.json)
+ *
+ * Auth: Bearer ${CRON_SECRET} (Vercel cron) ИЛИ admin CRM session (manual trigger)
  */
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireAdmin } from '@/lib/apiAuth'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN!
@@ -19,7 +22,18 @@ async function getManagerId(): Promise<string | null> {
   return data?.value ?? null
 }
 
-export async function POST() {
+export async function POST(req: NextRequest) {
+  const cronSecret = process.env.CRON_SECRET
+  if (!cronSecret) {
+    return NextResponse.json({ error: 'CRON_SECRET not configured' }, { status: 500 })
+  }
+  const auth = req.headers.get('authorization')
+  const isCron = auth === `Bearer ${cronSecret}`
+  if (!isCron) {
+    const adminCheck = requireAdmin(req)
+    if (!adminCheck.ok) return adminCheck.error
+  }
+
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
