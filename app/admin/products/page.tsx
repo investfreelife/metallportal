@@ -237,19 +237,29 @@ export default function AdminProducts() {
     if (field === "price") {
       const price = parseFloat(value);
       if (!isNaN(price) && price >= 0) {
-        await fetch(`/api/admin/products/${id}/price`, {
+        const res = await fetch(`/api/admin/products/${id}/price`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ base_price: price }),
         });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          alert(`Не удалось сохранить цену: ${res.status} ${err.error ?? ""}`);
+          return;
+        }
         setProducts(prev => prev.map(p => p.id !== id ? p : { ...p, price_items: p.price_items?.map(pi => ({ ...pi, base_price: price })) }));
       }
     } else {
-      await fetch(`/api/admin/products/${id}`, {
+      const res = await fetch(`/api/admin/products/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ [field]: value || null }),
       });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        alert(`Не удалось сохранить ${field}: ${res.status} ${err.error ?? ""}`);
+        return;
+      }
       if (field === "category_id") {
         const cat = categories.find(c => c.id === value);
         setProducts(prev => prev.map(p => p.id !== id ? p : { ...p, [field]: value, category: cat ? { name: cat.name, slug: cat.slug } : p.category }));
