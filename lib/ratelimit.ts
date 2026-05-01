@@ -38,13 +38,31 @@ export const contactRatelimit = new Ratelimit({
 
 /**
  * Best-effort client IP from common Vercel/Cloudflare proxy headers.
- * Falls back to "unknown" — ratelimit then groups all unknowns into one
- * bucket which is acceptable for a defence-in-depth layer.
+ *
+ * Header priority:
+ *   1. cf-connecting-ip — set by Cloudflare, contains the true end-user IP
+ *      and CANNOT be spoofed by clients (CF strips/overwrites it on ingress).
+ *      This is the only stable source on harlansteel.ru (CF in front).
+ *   2. x-real-ip — Vercel native, used when CF is bypassed (preview URLs).
+ *   3. x-forwarded-for[0] — last-resort fallback; spoofable, but the first
+ *      hop is generally the trusted edge.
+ *
+ * Falls back to "unknown" — ratelimit then groups unknowns into one bucket,
+ * which is acceptable for a defence-in-depth layer.
+ *
+ * Closes prod-tail issue from W1-1 REPORT: x-forwarded-for chained through
+ * CF was rotating per-request, so spam-test only triggered 429 at attempt 10
+ * instead of 6.
  */
 export function getClientIp(req: Request): string {
+  const cfIp = req.headers.get('cf-connecting-ip')
+  if (cfIp) return cfIp.trim()
+
+  const realIp = req.headers.get('x-real-ip')
+  if (realIp) return realIp.trim()
+
   const forwarded = req.headers.get('x-forwarded-for')
   if (forwarded) return forwarded.split(',')[0].trim()
-  const realIp = req.headers.get('x-real-ip')
-  if (realIp) return realIp
+
   return 'unknown'
 }

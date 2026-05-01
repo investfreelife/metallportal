@@ -11,30 +11,30 @@ const NAV_ITEMS = [
   {
     label: "Металлопрокат",
     icon: "🔩",
-    href: "/catalog/metalloprokat",
+    href: "/catalog",
     children: [
-      { label: "Трубы и профиль", href: "/catalog/truby-i-profil", children: [
+      { label: "Трубы и профиль", href: "/catalog/truby", children: [
         { label: "Трубы ВГП", href: "/catalog/truba-vgp" },
         { label: "Трубы профильные", href: "/catalog/truba-profilnaya" },
         { label: "Трубы электросварные", href: "/catalog/truba-svarnaya" },
         { label: "Трубы бесшовные", href: "/catalog/truba-besshovnaya" },
       ]},
-      { label: "Арматура и сетка", href: "/catalog/armatura-i-setka", children: [
+      { label: "Арматура и сетка", href: "/catalog/sortovoy-prokat/armatura-katanka", children: [
         { label: "Арматура стальная", href: "/catalog/armatura-stalnaya" },
         { label: "Сетка сварная", href: "/catalog/setka-svarnaya" },
         { label: "Сетка кладочная", href: "/catalog/setka-kladochnaya" },
       ]},
-      { label: "Балки и швеллеры", href: "/catalog/balki-i-shvellery", children: [
+      { label: "Балки и швеллеры", href: "/catalog/sortovoy-prokat/balka-shveller", children: [
         { label: "Двутавровые балки", href: "/catalog/balka-dvutavr" },
         { label: "Швеллер", href: "/catalog/shveller" },
       ]},
-      { label: "Листы и плиты", href: "/catalog/listy-i-plity", children: [
+      { label: "Листы и плиты", href: "/catalog/listovoy-prokat", children: [
         { label: "Лист горячекатаный", href: "/catalog/list-goryachekatany" },
         { label: "Лист холоднокатаный", href: "/catalog/list-holodnokatany" },
         { label: "Лист оцинкованный", href: "/catalog/list-otsinkovanny" },
         { label: "Лист рифлёный", href: "/catalog/list-riflyony" },
       ]},
-      { label: "Уголки и полосы", href: "/catalog/ugolki-i-polosy", children: [
+      { label: "Уголки и полосы", href: "/catalog/sortovoy-prokat/ugolok", children: [
         { label: "Уголок равнополочный", href: "/catalog/ugolok-ravnopolochny" },
         { label: "Уголок неравнополочный", href: "/catalog/ugolok-neravnopolochny" },
         { label: "Полоса стальная", href: "/catalog/polosa-stalnaya" },
