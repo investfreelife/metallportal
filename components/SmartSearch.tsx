@@ -1,5 +1,6 @@
 'use client'
 import { useState, useRef } from 'react'
+import { Turnstile } from '@marsidev/react-turnstile'
 
 interface CartItem {
   name: string
@@ -29,6 +30,7 @@ export function SmartSearch() {
   const [form, setForm] = useState({ name: '', phone: '', email: '', comment: '', consent: false })
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [turnstileToken, setTurnstileToken] = useState('')
   const [advice, setAdvice] = useState('')           // совет AI-консультанта
   const [consulting, setConsulting] = useState(false) // AI думает...
   const [voiceText, setVoiceText] = useState('')    // живой текст пока говорит
@@ -213,9 +215,11 @@ export function SmartSearch() {
 
   const submitOrder = async () => {
     if (!result || !form.phone) return
+    if (!turnstileToken) { setError('Подтвердите что вы не робот'); return }
     setSubmitting(true)
+    setError('')
     try {
-      await fetch('/api/orders/create', {
+      const res = await fetch('/api/orders/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -223,8 +227,14 @@ export function SmartSearch() {
           total_price: result.total_price,
           contact: form,
           source: 'ai_search',
+          turnstile_token: turnstileToken,
         }),
       })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        setError(err.error ?? `Ошибка ${res.status}`)
+        return
+      }
       setStep('success')
     } finally {
       setSubmitting(false)
@@ -482,9 +492,19 @@ export function SmartSearch() {
         </span>
       </label>
 
+      <div className="mb-3 flex justify-center">
+        <Turnstile
+          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+          onSuccess={setTurnstileToken}
+          onExpire={() => setTurnstileToken('')}
+        />
+      </div>
+
+      {error && <p className="text-sm text-red-500 mb-2 text-center">{error}</p>}
+
       <button
         onClick={submitOrder}
-        disabled={!form.phone || !form.consent || submitting}
+        disabled={!form.phone || !form.consent || submitting || !turnstileToken}
         className="w-full bg-blue-600 text-white font-medium py-4 rounded-2xl hover:bg-blue-700 disabled:opacity-50 text-sm transition-colors"
       >
         {submitting ? 'Отправляю...' : '✓ Отправить заявку — мы перезвоним'}
