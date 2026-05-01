@@ -15,7 +15,8 @@ const PUBLIC_PREFIX = ['/_next/', '/favicon', '/api/auth/', '/track.js', '/partn
 const enc = new TextEncoder()
 
 async function verifyToken(token: string): Promise<boolean> {
-  const secret = process.env.SESSION_SECRET || 'dev-only-insecure-secret-CHANGE-IN-PRODUCTION'
+  const secret = process.env.SESSION_SECRET
+  if (!secret) throw new Error('SESSION_SECRET environment variable is required')
   const dot = token.lastIndexOf('.')
   if (dot === -1) return false
   const payload = token.slice(0, dot)
