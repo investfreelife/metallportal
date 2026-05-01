@@ -34,7 +34,7 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/catalog/armatura" className="text-sm text-foreground/60 hover:text-gold transition-colors">Арматура</Link>
+                <Link href="/catalog/sortovoy-prokat" className="text-sm text-foreground/60 hover:text-gold transition-colors">Арматура</Link>
               </li>
               <li>
                 <Link href="/catalog/truby" className="text-sm text-foreground/60 hover:text-gold transition-colors">Трубы</Link>
@@ -43,7 +43,7 @@ export default function Footer() {
                 <Link href="/catalog/listovoy-prokat" className="text-sm text-foreground/60 hover:text-gold transition-colors">Листовой металл</Link>
               </li>
               <li>
-                <Link href="/catalog/balki-shvellery" className="text-sm text-foreground/60 hover:text-gold transition-colors">Балки и швеллера</Link>
+                <Link href="/catalog/sortovoy-prokat" className="text-sm text-foreground/60 hover:text-gold transition-colors">Балки и швеллера</Link>
               </li>
             </ul>
           </div>
