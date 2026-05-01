@@ -1,12 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
 import { Save, RefreshCw } from "lucide-react";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 const FIELDS = [
   { section: "Контакты", fields: [
@@ -33,8 +27,10 @@ export default function AdminSettings() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.from("site_settings").select("key, value");
-      if (data) setSettings(Object.fromEntries(data.map((r: any) => [r.key, r.value ?? ""])));
+      const res = await fetch("/api/admin/site-settings", { cache: "no-store" });
+      if (!res.ok) return;
+      const data: Array<{ key: string; value: unknown }> = await res.json();
+      setSettings(Object.fromEntries(data.map(r => [r.key, String(r.value ?? "")])));
     })();
   }, []);
 
@@ -42,9 +38,12 @@ export default function AdminSettings() {
 
   const save = async () => {
     setSaving(true);
-    for (const [key, value] of Object.entries(settings)) {
-      await supabase.from("site_settings").upsert({ key, value, updated_at: new Date().toISOString() });
-    }
+    const entries = Object.entries(settings).map(([key, value]) => ({ key, value }));
+    await fetch("/api/admin/site-settings", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ entries }),
+    });
     setSaving(false); setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };

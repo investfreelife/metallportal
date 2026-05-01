@@ -1,12 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
 import { Save, RefreshCw, Eye } from "lucide-react";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 const DEFAULTS: Record<string, string> = {
   hero_title: "Металлопрокат и Металлоконструкции",
@@ -33,10 +27,12 @@ export default function HomepageEditor() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.from("site_settings").select("key, value");
-      if (data?.length) {
+      const res = await fetch("/api/admin/site-settings", { cache: "no-store" });
+      if (!res.ok) return;
+      const data: Array<{ key: string; value: unknown }> = await res.json();
+      if (data.length) {
         const map: Record<string, string> = {};
-        data.forEach((r: any) => { map[r.key] = r.value; });
+        data.forEach(r => { map[r.key] = String(r.value ?? ""); });
         setSettings(prev => ({ ...prev, ...map }));
       }
     })();
@@ -46,9 +42,12 @@ export default function HomepageEditor() {
 
   const save = async () => {
     setSaving(true);
-    for (const [key, value] of Object.entries(settings)) {
-      await supabase.from("site_settings").upsert({ key, value, updated_at: new Date().toISOString() });
-    }
+    const entries = Object.entries(settings).map(([key, value]) => ({ key, value }));
+    await fetch("/api/admin/site-settings", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ entries }),
+    });
     setSaving(false); setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };

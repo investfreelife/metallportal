@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { requireRole } from "@/lib/auth";
+
+export const runtime = 'nodejs';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -22,6 +25,8 @@ async function dbUpdate(table: string, col: string, matchCol: string, matchVal: 
 }
 
 export async function POST(req: NextRequest) {
+  const auth = await requireRole(["admin", "designer"]);
+  if (!auth.ok) return auth.error;
   try {
     const { photoId, url } = await req.json();
     if (!photoId) return NextResponse.json({ error: "Missing photoId" }, { status: 400 });

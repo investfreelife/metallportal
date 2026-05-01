@@ -3,7 +3,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LayoutDashboard, Home, Tag, Menu, Package, Settings, LogOut, Users, Image } from "lucide-react";
-import { getAdminSession, type AdminSession } from "./AdminGuard";
+import { createBrowserClient } from "@supabase/ssr";
+
+const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+);
+
+interface CurrentSession {
+  email: string;
+  full_name: string | null;
+  role: string | null;
+}
 
 const NAV_ADMIN = [
   { href: "/admin", icon: LayoutDashboard, label: "Дашборд" },
@@ -21,14 +32,34 @@ const NAV_DESIGNER = [
   { href: "/admin/products", icon: Package, label: "Товары" },
 ];
 
-
 export default function AdminSidebar() {
   const path = usePathname();
-  const [session, setSession] = useState<AdminSession | null>(null);
+  const [session, setSession] = useState<CurrentSession | null>(null);
 
-  useEffect(() => { setSession(getAdminSession()); }, []);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (cancelled || !user) return;
+      const res = await fetch("/api/admin/check-role", { cache: "no-store" });
+      const { role } = res.ok ? await res.json() : { role: null };
+      if (cancelled) return;
+      setSession({
+        email: user.email ?? "",
+        full_name: (user.user_metadata?.full_name as string | undefined) ?? null,
+        role,
+      });
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    window.location.href = "/admin";
+  };
 
   const nav = session?.role === "designer" ? NAV_DESIGNER : NAV_ADMIN;
+  const displayName = session?.full_name || session?.email || "";
 
   return (
     <aside className="w-56 bg-[#16213e] border-r border-white/10 flex flex-col min-h-screen">
@@ -40,12 +71,12 @@ export default function AdminSidebar() {
         {session && (
           <div className="mt-3 flex items-center gap-2">
             <div className="w-7 h-7 rounded-full bg-[#E8B86D]/20 flex items-center justify-center text-[#E8B86D] text-xs font-bold">
-              {session.name.slice(0, 1).toUpperCase()}
+              {displayName.slice(0, 1).toUpperCase()}
             </div>
             <div>
-              <div className="text-white text-xs font-medium">{session.name}</div>
+              <div className="text-white text-xs font-medium truncate max-w-[140px]">{displayName}</div>
               <div className="text-white/30 text-xs">
-                {session.role === "admin" ? "Администратор" : "Дизайнер"}
+                {session.role === "admin" ? "Администратор" : session.role === "designer" ? "Дизайнер" : "Менеджер"}
               </div>
             </div>
           </div>
@@ -67,7 +98,7 @@ export default function AdminSidebar() {
       </nav>
       <div className="p-3 border-t border-white/10">
         <button
-          onClick={() => { localStorage.removeItem("admin_session"); window.location.href = "/admin"; }}
+          onClick={handleSignOut}
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/40 hover:text-white hover:bg-white/5 w-full transition-all"
         >
           <LogOut size={16} />

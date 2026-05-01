@@ -1,12 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { createClient } from "@supabase/supabase-js";
 import { Search, Edit2, RefreshCw, Download, CheckSquare, Square, Upload, Layers, Image as ImageIcon, Loader2, Percent, Trash2, ChevronDown, ChevronRight, X } from "lucide-react";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 interface Category { id: string; name: string; slug: string; parent_id: string | null; }
 interface PriceItem { id: string; base_price: number; discount_price: number | null; }
@@ -243,11 +237,29 @@ export default function AdminProducts() {
     if (field === "price") {
       const price = parseFloat(value);
       if (!isNaN(price) && price >= 0) {
-        await supabase.from("price_items").update({ base_price: price }).eq("product_id", id);
+        const res = await fetch(`/api/admin/products/${id}/price`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ base_price: price }),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          alert(`Не удалось сохранить цену: ${res.status} ${err.error ?? ""}`);
+          return;
+        }
         setProducts(prev => prev.map(p => p.id !== id ? p : { ...p, price_items: p.price_items?.map(pi => ({ ...pi, base_price: price })) }));
       }
     } else {
-      await supabase.from("products").update({ [field]: value || null }).eq("id", id);
+      const res = await fetch(`/api/admin/products/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ [field]: value || null }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        alert(`Не удалось сохранить ${field}: ${res.status} ${err.error ?? ""}`);
+        return;
+      }
       if (field === "category_id") {
         const cat = categories.find(c => c.id === value);
         setProducts(prev => prev.map(p => p.id !== id ? p : { ...p, [field]: value, category: cat ? { name: cat.name, slug: cat.slug } : p.category }));
@@ -259,13 +271,17 @@ export default function AdminProducts() {
 
   const deleteProduct = async (product: Product) => {
     if (!confirm(`Удалить "${product.name}"?`)) return;
-    await supabase.from("products").delete().eq("id", product.id);
+    await fetch(`/api/admin/products/${product.id}`, { method: "DELETE" });
     setProducts(prev => prev.filter(p => p.id !== product.id));
   };
 
   const deleteSelected = async () => {
     if (!confirm(`Удалить ${selected.size} товаров? Это действие необратимо.`)) return;
-    await supabase.from("products").delete().in("id", Array.from(selected));
+    await fetch("/api/admin/products/bulk-delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids: Array.from(selected) }),
+    });
     setSelected(new Set()); load();
   };
 
@@ -273,15 +289,11 @@ export default function AdminProducts() {
     const pct = parseFloat(markup);
     if (isNaN(pct) || pct <= 0 || selected.size === 0) return;
     setMarkupApplying(true);
-    for (const productId of Array.from(selected)) {
-      const { data: items } = await supabase.from("price_items").select("id, base_price").eq("product_id", productId);
-      if (items) {
-        for (const item of items) {
-          const newPrice = Math.round(item.base_price * (1 + pct / 100) * 100) / 100;
-          await supabase.from("price_items").update({ base_price: newPrice }).eq("id", item.id);
-        }
-      }
-    }
+    await fetch("/api/admin/products/markup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids: Array.from(selected), pct }),
+    });
     setSelected(new Set()); setMarkup(""); setMarkupApplying(false); load();
   };
 
@@ -299,32 +311,40 @@ export default function AdminProducts() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    let q = supabase.from("products").select("id, name, slug, gost, steel_grade, unit, description, image_url, category_id, category:categories(name, slug), price_items(id, base_price, discount_price)")
-      .order("name").range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
-    if (search) q = q.ilike("name", `%${search}%`);
+    const params = new URLSearchParams();
+    params.set("limit", String(PAGE_SIZE));
+    params.set("offset", String(page * PAGE_SIZE));
+    if (search) params.set("search", search);
     if (catFilter) {
       const ids = getAllDescendantIds(catFilter);
-      q = ids.length === 1 ? q.eq("category_id", catFilter) : q.in("category_id", ids);
+      if (ids.length === 1) params.set("category_id", catFilter);
+      else params.set("category_ids", ids.join(","));
     }
-    const { data } = await q;
-    setProducts((data as unknown as Product[]) ?? []);
+    const res = await fetch(`/api/admin/products?${params.toString()}`, { cache: "no-store" });
+    const data: Product[] = res.ok ? await res.json() : [];
+    setProducts(data);
     setLoading(false);
   }, [page, search, catFilter, getAllDescendantIds]);
 
   useEffect(() => { load(); }, [load]);
 
   useEffect(() => {
-    supabase.from("categories").select("id, name, slug, parent_id").order("name")
-      .then(({ data }) => setCategories(data ?? []));
+    fetch("/api/admin/categories", { cache: "no-store" })
+      .then(r => r.ok ? r.json() : [])
+      .then((data: Category[]) => setCategories(data ?? []));
   }, []);
 
   const saveEdit = async () => {
     if (!editing) return;
     setSaving(true);
-    await supabase.from("products").update({
-      name: editing.name, gost: editing.gost, steel_grade: editing.steel_grade,
-      unit: editing.unit, description: editing.description,
-    }).eq("id", editing.id);
+    await fetch(`/api/admin/products/${editing.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: editing.name, gost: editing.gost, steel_grade: editing.steel_grade,
+        unit: editing.unit, description: editing.description,
+      }),
+    });
     if (editing.image_url !== products.find(p => p.id === editing.id)?.image_url) {
       await fetch("/api/admin/save-photo", {
         method: "POST", headers: { "Content-Type": "application/json" },

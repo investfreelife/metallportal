@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { requireRole } from "@/lib/auth";
+
+export const runtime = 'nodejs';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -7,6 +10,8 @@ const supabase = createClient(
 );
 
 export async function POST(req: NextRequest) {
+  const auth = await requireRole(["admin", "designer"]);
+  if (!auth.ok) return auth.error;
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File;
