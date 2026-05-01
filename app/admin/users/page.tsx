@@ -1,83 +1,77 @@
 "use client";
 import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
-import { Plus, Trash2, RefreshCw, Copy, Check, ShieldCheck, Brush } from "lucide-react";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { Plus, Trash2, Send, ShieldCheck, Brush, Briefcase, Loader2 } from "lucide-react";
 
 interface AdminUser {
   id: string;
-  name: string;
-  login: string;
-  password: string;
-  role: "admin" | "designer";
-  is_active: boolean;
+  email: string | null;
+  full_name: string | null;
+  role: "admin" | "designer" | "manager";
+  telegram_chat_id: string | null;
   created_at: string;
+  last_sign_in_at: string | null;
+  email_confirmed: boolean;
 }
 
-const ROLE_LABELS: Record<string, { label: string; icon: any; color: string }> = {
-  admin: { label: "Администратор", icon: ShieldCheck, color: "text-[#E8B86D]" },
-  designer: { label: "Дизайнер (фото)", icon: Brush, color: "text-blue-400" },
+const ROLE_LABELS: Record<string, { label: string; icon: React.ComponentType<{ size?: number }>; color: string; help: string }> = {
+  admin:    { label: "Администратор", icon: ShieldCheck, color: "text-[#E8B86D]", help: "Полный доступ ко всем разделам админки" },
+  designer: { label: "Дизайнер",      icon: Brush,        color: "text-blue-400",  help: "Только загрузка и изменение фото в каталоге" },
+  manager:  { label: "Менеджер",      icon: Briefcase,    color: "text-green-400", help: "Чаты + заявки + базовый каталог" },
 };
-
-function genPassword(len = 10) {
-  const chars = "abcdefghjkmnpqrstuvwxyz23456789";
-  return Array.from({ length: len }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
-}
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showAdd, setShowAdd] = useState(false);
-  const [copied, setCopied] = useState<string | null>(null);
-  const [newUser, setNewUser] = useState({ name: "", login: "", password: genPassword(), role: "designer" as "admin" | "designer" });
-  const [saving, setSaving] = useState(false);
+  const [showInvite, setShowInvite] = useState(false);
+  const [invite, setInvite] = useState({ email: "", full_name: "", role: "designer" as AdminUser["role"] });
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const load = async () => {
     setLoading(true);
-    const { data } = await supabase.from("admin_users").select("*").order("created_at");
-    setUsers(data ?? []);
+    const res = await fetch("/api/admin/users", { cache: "no-store" });
+    setUsers(res.ok ? await res.json() : []);
     setLoading(false);
   };
 
   useEffect(() => { load(); }, []);
 
-  const copyCredentials = (u: AdminUser) => {
-    const text = `Логин: ${u.login}\nПароль: ${u.password}\nСайт: ${window.location.origin}/admin`;
-    navigator.clipboard.writeText(text);
-    setCopied(u.id);
-    setTimeout(() => setCopied(null), 2000);
+  const sendInvite = async () => {
+    if (!invite.email.trim() || !invite.email.includes("@")) {
+      setError("Укажите email"); return;
+    }
+    setSubmitting(true); setError("");
+    const res = await fetch("/api/admin/users/invite", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(invite),
+    });
+    const data = await res.json();
+    setSubmitting(false);
+    if (!res.ok) { setError(data.error ?? "Ошибка"); return; }
+    setShowInvite(false);
+    setInvite({ email: "", full_name: "", role: "designer" });
+    load();
   };
 
-  const toggleActive = async (u: AdminUser) => {
-    await supabase.from("admin_users").update({ is_active: !u.is_active }).eq("id", u.id);
+  const changeRole = async (u: AdminUser, newRole: AdminUser["role"]) => {
+    if (u.role === newRole) return;
+    await fetch(`/api/admin/users/${u.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role: newRole }),
+    });
     load();
   };
 
   const deleteUser = async (u: AdminUser) => {
-    if (u.login === "admin") return;
-    if (!confirm(`Удалить пользователя ${u.name}?`)) return;
-    await supabase.from("admin_users").delete().eq("id", u.id);
-    load();
-  };
-
-  const createUser = async () => {
-    if (!newUser.name || !newUser.login || !newUser.password) return;
-    setSaving(true);
-    const { error } = await supabase.from("admin_users").insert({
-      name: newUser.name,
-      login: newUser.login.trim().toLowerCase(),
-      password: newUser.password,
-      role: newUser.role,
-      is_active: true,
-    });
-    if (error) { alert("Ошибка: " + error.message); setSaving(false); return; }
-    setShowAdd(false);
-    setNewUser({ name: "", login: "", password: genPassword(), role: "designer" });
-    setSaving(false);
+    if (!confirm(`Удалить ${u.email ?? u.full_name ?? "пользователя"}?`)) return;
+    const res = await fetch(`/api/admin/users/${u.id}`, { method: "DELETE" });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      alert(`Ошибка: ${data.error ?? res.status}`);
+      return;
+    }
     load();
   };
 
@@ -86,147 +80,131 @@ export default function AdminUsersPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-white">Пользователи</h1>
-          <p className="text-white/40 text-sm mt-0.5">Управление доступом в админ-панель</p>
+          <p className="text-white/40 text-sm mt-0.5">Доступ через Supabase Auth — приглашения по email</p>
         </div>
         <button
-          onClick={() => setShowAdd(true)}
+          onClick={() => setShowInvite(true)}
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#E8B86D] hover:bg-yellow-400 text-black font-bold text-sm"
         >
           <Plus size={14} /> Пригласить
         </button>
       </div>
 
-      {/* Roles reference */}
-      <div className="grid grid-cols-2 gap-4 mb-8">
-        {Object.entries(ROLE_LABELS).map(([role, { label, icon: Icon, color }]) => (
+      <div className="grid grid-cols-3 gap-4 mb-8">
+        {Object.entries(ROLE_LABELS).map(([role, { label, icon: Icon, color, help }]) => (
           <div key={role} className="bg-[#16213e] rounded-xl p-4 border border-white/5">
             <div className={`flex items-center gap-2 font-semibold text-sm mb-1 ${color}`}>
               <Icon size={14} /> {label}
             </div>
-            <p className="text-white/40 text-xs">
-              {role === "admin" ? "Полный доступ ко всем разделам админки" : "Только загрузка и изменение фото в разделах каталога"}
-            </p>
+            <p className="text-white/40 text-xs">{help}</p>
           </div>
         ))}
       </div>
 
-      {/* Add user form */}
-      {showAdd && (
+      {showInvite && (
         <div className="bg-[#16213e] rounded-xl p-6 border border-[#E8B86D]/30 mb-6">
-          <h3 className="text-white font-bold mb-4">Новый пользователь</h3>
+          <h3 className="text-white font-bold mb-4">Пригласить нового пользователя</h3>
           <div className="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="text-xs text-white/40 uppercase tracking-wider block mb-1">Email *</label>
+              <input
+                type="email"
+                value={invite.email}
+                onChange={e => setInvite(s => ({ ...s, email: e.target.value }))}
+                placeholder="user@example.com"
+                className="w-full bg-[#0d0d1a] border border-white/20 rounded px-3 py-2 text-sm text-white outline-none focus:border-[#E8B86D]"
+              />
+            </div>
             <div>
               <label className="text-xs text-white/40 uppercase tracking-wider block mb-1">Имя</label>
               <input
-                value={newUser.name}
-                onChange={e => setNewUser(s => ({ ...s, name: e.target.value }))}
+                value={invite.full_name}
+                onChange={e => setInvite(s => ({ ...s, full_name: e.target.value }))}
                 placeholder="Иван Иванов"
                 className="w-full bg-[#0d0d1a] border border-white/20 rounded px-3 py-2 text-sm text-white outline-none focus:border-[#E8B86D]"
               />
             </div>
-            <div>
-              <label className="text-xs text-white/40 uppercase tracking-wider block mb-1">Логин</label>
-              <input
-                value={newUser.login}
-                onChange={e => setNewUser(s => ({ ...s, login: e.target.value }))}
-                placeholder="ivan"
-                className="w-full bg-[#0d0d1a] border border-white/20 rounded px-3 py-2 text-sm text-white outline-none focus:border-[#E8B86D]"
-              />
-            </div>
-            <div>
-              <label className="text-xs text-white/40 uppercase tracking-wider block mb-1">Пароль</label>
-              <div className="flex gap-2">
-                <input
-                  value={newUser.password}
-                  onChange={e => setNewUser(s => ({ ...s, password: e.target.value }))}
-                  className="flex-1 bg-[#0d0d1a] border border-white/20 rounded px-3 py-2 text-sm text-white outline-none focus:border-[#E8B86D] font-mono"
-                />
-                <button
-                  onClick={() => setNewUser(s => ({ ...s, password: genPassword() }))}
-                  className="px-3 py-2 bg-white/5 hover:bg-white/10 rounded text-white/60 hover:text-white text-xs border border-white/10"
-                  title="Сгенерировать"
-                >
-                  <RefreshCw size={12} />
-                </button>
-              </div>
-            </div>
-            <div>
+            <div className="col-span-2">
               <label className="text-xs text-white/40 uppercase tracking-wider block mb-1">Роль</label>
               <select
-                value={newUser.role}
-                onChange={e => setNewUser(s => ({ ...s, role: e.target.value as any }))}
+                value={invite.role}
+                onChange={e => setInvite(s => ({ ...s, role: e.target.value as AdminUser["role"] }))}
                 className="w-full bg-[#0d0d1a] border border-white/20 rounded px-3 py-2 text-sm text-white outline-none focus:border-[#E8B86D]"
               >
-                <option value="designer">Дизайнер (только фото)</option>
-                <option value="admin">Администратор (полный доступ)</option>
+                {Object.entries(ROLE_LABELS).map(([role, { label }]) => (
+                  <option key={role} value={role}>{label}</option>
+                ))}
               </select>
             </div>
           </div>
+          {error && <p className="text-red-400 text-sm mb-3">{error}</p>}
           <div className="flex gap-3">
-            <button onClick={createUser} disabled={saving}
-              className="px-5 py-2 bg-[#E8B86D] text-black text-sm font-bold rounded-lg disabled:opacity-60">
-              {saving ? "Создание..." : "Создать и выдать доступ"}
+            <button onClick={sendInvite} disabled={submitting}
+              className="flex items-center gap-2 px-5 py-2 bg-[#E8B86D] text-black text-sm font-bold rounded-lg disabled:opacity-60">
+              {submitting ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
+              {submitting ? "Отправка..." : "Отправить приглашение"}
             </button>
-            <button onClick={() => setShowAdd(false)} className="px-4 py-2 text-white/40 text-sm hover:text-white">
+            <button onClick={() => { setShowInvite(false); setError(""); }} className="px-4 py-2 text-white/40 text-sm hover:text-white">
               Отмена
             </button>
           </div>
+          <p className="text-xs text-white/30 mt-3">
+            Пользователь получит письмо со ссылкой для установки пароля. После регистрации сможет войти на /admin.
+          </p>
         </div>
       )}
 
-      {/* Users list */}
       {loading ? (
         <div className="text-white/40 text-center py-10">Загрузка...</div>
       ) : (
         <div className="space-y-2">
           {users.map(u => {
             const roleInfo = ROLE_LABELS[u.role];
-            const RoleIcon = roleInfo.icon;
+            const RoleIcon = roleInfo?.icon ?? ShieldCheck;
             return (
-              <div key={u.id} className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${
-                u.is_active ? "bg-[#16213e] border-white/10" : "bg-[#16213e]/40 border-white/5 opacity-50"
-              }`}>
+              <div key={u.id} className="flex items-center gap-4 p-4 rounded-xl border bg-[#16213e] border-white/10">
                 <div className="w-10 h-10 rounded-full bg-[#E8B86D]/10 flex items-center justify-center text-[#E8B86D] font-bold text-sm flex-shrink-0">
-                  {u.name.slice(0, 1).toUpperCase()}
+                  {(u.full_name || u.email || "?").slice(0, 1).toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-white font-medium text-sm">{u.name}</span>
-                    <span className={`flex items-center gap-1 text-xs ${roleInfo.color}`}>
-                      <RoleIcon size={10} /> {roleInfo.label}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-white font-medium text-sm">{u.full_name ?? "(без имени)"}</span>
+                    <span className={`flex items-center gap-1 text-xs ${roleInfo?.color}`}>
+                      <RoleIcon size={10} /> {roleInfo?.label}
                     </span>
+                    {!u.email_confirmed && (
+                      <span className="text-xs text-yellow-400/80">приглашение не принято</span>
+                    )}
                   </div>
-                  <div className="flex items-center gap-3 mt-0.5">
-                    <span className="text-white/40 text-xs font-mono">логин: {u.login}</span>
-                    <span className="text-white/40 text-xs font-mono">пароль: {u.password}</span>
+                  <div className="flex items-center gap-3 mt-0.5 text-xs text-white/40 flex-wrap">
+                    <span className="font-mono">{u.email}</span>
+                    {u.last_sign_in_at && (
+                      <span>посл. вход {new Date(u.last_sign_in_at).toLocaleDateString("ru")}</span>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
-                  <button
-                    onClick={() => copyCredentials(u)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-[#E8B86D]/20 text-white/60 hover:text-[#E8B86D] text-xs transition-all"
-                    title="Скопировать данные для отправки"
+                  <select
+                    value={u.role}
+                    onChange={e => changeRole(u, e.target.value as AdminUser["role"])}
+                    className="bg-[#0d0d1a] border border-white/20 rounded px-2 py-1 text-xs text-white outline-none focus:border-[#E8B86D]"
                   >
-                    {copied === u.id ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
-                    {copied === u.id ? "Скопировано" : "Копировать"}
+                    {Object.entries(ROLE_LABELS).map(([role, { label }]) => (
+                      <option key={role} value={role}>{label}</option>
+                    ))}
+                  </select>
+                  <button onClick={() => deleteUser(u)} className="p-1.5 text-white/20 hover:text-red-400 transition-colors">
+                    <Trash2 size={14} />
                   </button>
-                  <button
-                    onClick={() => toggleActive(u)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                      u.is_active ? "bg-green-500/10 text-green-400 hover:bg-red-500/10 hover:text-red-400" : "bg-white/5 text-white/30 hover:bg-green-500/10 hover:text-green-400"
-                    }`}
-                  >
-                    {u.is_active ? "Активен" : "Отключён"}
-                  </button>
-                  {u.login !== "admin" && (
-                    <button onClick={() => deleteUser(u)} className="p-1.5 text-white/20 hover:text-red-400 transition-colors">
-                      <Trash2 size={14} />
-                    </button>
-                  )}
                 </div>
               </div>
             );
           })}
+          {!users.length && (
+            <div className="text-white/30 text-center py-10 text-sm">
+              Нет пользователей. Нажмите «Пригласить» чтобы добавить первого.
+            </div>
+          )}
         </div>
       )}
     </div>
