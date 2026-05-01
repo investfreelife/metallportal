@@ -19,13 +19,19 @@ export async function GET(req: NextRequest) {
   const url = new URL(req.url)
   const search = url.searchParams.get('search')?.trim()
   const categoryId = url.searchParams.get('category_id')
+  const categoryIdsParam = url.searchParams.get('category_ids')
   const limit = Math.min(parseInt(url.searchParams.get('limit') ?? '500'), 2000)
   const offset = parseInt(url.searchParams.get('offset') ?? '0')
 
   const admin = createAdminClient()
   let q = admin.from('products').select(SELECT_COLUMNS).order('name')
   if (search) q = q.ilike('name', `%${search}%`)
-  if (categoryId) q = q.eq('category_id', categoryId)
+  if (categoryIdsParam) {
+    const ids = categoryIdsParam.split(',').filter(Boolean)
+    if (ids.length) q = q.in('category_id', ids)
+  } else if (categoryId) {
+    q = q.eq('category_id', categoryId)
+  }
   q = q.range(offset, offset + limit - 1)
 
   const { data, error } = await q
