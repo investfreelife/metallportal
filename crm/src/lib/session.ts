@@ -10,10 +10,8 @@ export interface CrmSession {
 
 function getSecret(): string {
   const s = process.env.SESSION_SECRET
-  if (!s && process.env.NODE_ENV === 'production') {
-    console.error('[SECURITY] SESSION_SECRET not set in production!')
-  }
-  return s || 'dev-only-insecure-secret-CHANGE-IN-PRODUCTION'
+  if (!s) throw new Error('SESSION_SECRET environment variable is required')
+  return s
 }
 
 /** Sign payload with HMAC-SHA256 → payload.sig (base64url) */
