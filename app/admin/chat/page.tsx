@@ -1,11 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+const CHATS_POLL_MS = 5000;
+const MESSAGES_POLL_MS = 2500;
 
 interface Chat {
   id: string;
@@ -32,44 +29,49 @@ export default function AdminChatPage() {
   const [sending, setSending] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  // Load chats
+  // Poll chats list (replaces Supabase Realtime — see SECURITY_REVIEW B1).
   useEffect(() => {
+    let cancelled = false;
     const load = async () => {
-      const { data } = await supabase
-        .from("chats")
-        .select("*")
-        .order("last_message_at", { ascending: false });
-      setChats(data ?? []);
+      const res = await fetch("/api/admin/chats", { cache: "no-store" });
+      if (cancelled || !res.ok) return;
+      setChats(await res.json());
     };
     load();
-    const channel = supabase
-      .channel("chats-admin")
-      .on("postgres_changes", { event: "*", schema: "public", table: "chats" }, () => load())
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    const id = setInterval(load, CHATS_POLL_MS);
+    return () => { cancelled = true; clearInterval(id); };
   }, []);
 
-  // Load messages for active chat
+  // Poll messages for active chat. Uses ?since= for incremental fetches
+  // after the first load to avoid resending the whole thread each tick.
   useEffect(() => {
     if (!activeChat) return;
+    let cancelled = false;
+    let lastSince: string | null = null;
+    let initial = true;
+
     const load = async () => {
-      const { data } = await supabase
-        .from("messages")
-        .select("*")
-        .eq("chat_id", activeChat.id)
-        .order("created_at", { ascending: true });
-      setMessages(data ?? []);
+      const url = lastSince
+        ? `/api/admin/chats/${activeChat.id}/messages?since=${encodeURIComponent(lastSince)}`
+        : `/api/admin/chats/${activeChat.id}/messages`;
+      const res = await fetch(url, { cache: "no-store" });
+      if (cancelled || !res.ok) return;
+      const fresh: Message[] = await res.json();
+      if (!fresh.length) return;
+      lastSince = fresh[fresh.length - 1].created_at;
+      if (initial) {
+        setMessages(fresh);
+        initial = false;
+      } else {
+        setMessages(prev => [...prev, ...fresh]);
+      }
       setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
     };
+
+    setMessages([]);
     load();
-    const channel = supabase
-      .channel(`messages-${activeChat.id}`)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `chat_id=eq.${activeChat.id}` }, (payload) => {
-        setMessages((prev) => [...prev, payload.new as Message]);
-        setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    const id = setInterval(load, MESSAGES_POLL_MS);
+    return () => { cancelled = true; clearInterval(id); };
   }, [activeChat]);
 
   const sendMessage = async () => {
