@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
   // Upsert profile with role
   const { error: profErr } = await admin
     .from('profiles')
-    .upsert({ id: data.user.id, role, full_name: fullName }, { onConflict: 'id' })
+    .upsert({ id: data.user.id, role, full_name: fullName } as never, { onConflict: 'id' })
   if (profErr) {
     return NextResponse.json({ error: profErr.message }, { status: 500 })
   }

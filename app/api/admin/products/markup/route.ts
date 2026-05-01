@@ -31,12 +31,13 @@ export async function POST(req: NextRequest) {
 
   const factor = 1 + pct / 100
   let updated = 0
-  for (const it of items ?? []) {
+  const rows = (items ?? []) as Array<{ id: string; base_price: number | null }>
+  for (const it of rows) {
     if (typeof it.base_price !== 'number') continue
     const newPrice = Math.round(it.base_price * factor * 100) / 100
     const { error: upErr } = await admin
       .from('price_items')
-      .update({ base_price: newPrice })
+      .update({ base_price: newPrice } as never)
       .eq('id', it.id)
     if (!upErr) updated++
   }

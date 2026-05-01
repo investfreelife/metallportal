@@ -21,7 +21,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   }
 
   const admin = createAdminClient()
-  const { data, error } = await admin.from('products').update(body).eq('id', id).select().single()
+  const { data, error } = await admin.from('products').update(body as never).eq('id', id).select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json(data)
 }

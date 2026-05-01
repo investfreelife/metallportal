@@ -29,7 +29,15 @@ export async function GET() {
   if (authErr) return NextResponse.json({ error: authErr.message }, { status: 500 })
 
   const userMap = new Map(users.map(u => [u.id, u]))
-  const result = (profiles ?? []).map(p => {
+  type ProfileRow = {
+    id: string
+    full_name: string | null
+    role: string | null
+    telegram_chat_id: string | null
+    created_at: string | null
+  }
+  const profileRows = (profiles ?? []) as ProfileRow[]
+  const result = profileRows.map(p => {
     const u = userMap.get(p.id)
     return {
       id: p.id,

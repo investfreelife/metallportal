@@ -27,7 +27,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   if ('discount_price' in body) update.discount_price = body.discount_price ?? null
 
   const admin = createAdminClient()
-  const { data, error } = await admin.from('price_items').update(update).eq('product_id', id).select()
+  const { data, error } = await admin.from('price_items').update(update as never).eq('product_id', id).select()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json(data ?? [])
 }

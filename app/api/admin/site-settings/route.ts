@@ -54,7 +54,7 @@ export async function PUT(req: NextRequest) {
   const admin = createAdminClient()
   const now = new Date().toISOString()
   const { error } = await admin.from('site_settings').upsert(
-    entries.map(e => ({ key: e.key, value: e.value, updated_at: now })),
+    entries.map(e => ({ key: e.key, value: e.value, updated_at: now })) as never,
     { onConflict: 'key' },
   )
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })

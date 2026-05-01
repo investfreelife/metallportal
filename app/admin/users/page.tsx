@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Plus, Trash2, Send, ShieldCheck, Brush, Briefcase, Loader2 } from "lucide-react";
+import { Plus, Trash2, Send, ShieldCheck, Brush, Briefcase, Loader2, type LucideIcon } from "lucide-react";
 
 interface AdminUser {
   id: string;
@@ -13,7 +13,7 @@ interface AdminUser {
   email_confirmed: boolean;
 }
 
-const ROLE_LABELS: Record<string, { label: string; icon: React.ComponentType<{ size?: number }>; color: string; help: string }> = {
+const ROLE_LABELS: Record<string, { label: string; icon: LucideIcon; color: string; help: string }> = {
   admin:    { label: "Администратор", icon: ShieldCheck, color: "text-[#E8B86D]", help: "Полный доступ ко всем разделам админки" },
   designer: { label: "Дизайнер",      icon: Brush,        color: "text-blue-400",  help: "Только загрузка и изменение фото в каталоге" },
   manager:  { label: "Менеджер",      icon: Briefcase,    color: "text-green-400", help: "Чаты + заявки + базовый каталог" },
