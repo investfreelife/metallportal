@@ -1,8 +1,16 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const cronSecret = process.env.CRON_SECRET
+  if (!cronSecret) {
+    return NextResponse.json({ ok: false, error: 'CRON_SECRET not configured' }, { status: 500 })
+  }
+  const provided = req.headers.get('x-cron-secret') ?? req.headers.get('authorization')?.replace('Bearer ', '')
+  if (provided !== cronSecret) {
+    return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 })
+  }
+
   const aiUrl = process.env.NEXT_PUBLIC_AI_URL || 'https://ai.harlansteel.ru'
-  const cronSecret = process.env.CRON_SECRET || ''
 
   try {
     const res = await fetch(`${aiUrl}/api/cron/morning`, {
