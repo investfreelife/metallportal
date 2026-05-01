@@ -43,9 +43,15 @@ export async function POST(req: NextRequest) {
       price ? `Стоимость: ${Number(price).toLocaleString('ru')} ₽` : null,
     ].filter(Boolean).join('\n')
 
+    const webhookSecret = process.env.WEBHOOK_SECRET
+    if (!webhookSecret) throw new Error('WEBHOOK_SECRET environment variable is required')
+
     const crmRes = await fetch(CRM_WEBHOOK, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-webhook-secret': webhookSecret,
+      },
       body: JSON.stringify({
         type: formType,
         tenant_id: TENANT_ID,
