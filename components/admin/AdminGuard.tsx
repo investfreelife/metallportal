@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 import { createBrowserClient } from "@supabase/ssr";
 
 type Stage = "checking" | "logged_out" | "checking_role" | "denied" | "admin" | "designer";
@@ -128,6 +129,14 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
         >
           {submitting ? "Проверка..." : "Войти"}
         </button>
+        <div className="text-center mt-4">
+          <Link
+            href="/auth/forgot-password"
+            className="text-sm text-[#E8B86D]/70 hover:text-[#E8B86D] hover:underline"
+          >
+            Забыли пароль?
+          </Link>
+        </div>
       </form>
     </div>
   );
