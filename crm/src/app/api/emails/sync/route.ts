@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { ImapFlow } from 'imapflow'
 import { simpleParser } from 'mailparser'
+import { requireSession } from '@/lib/apiAuth'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 const CRM_URL = process.env.VERCEL_URL
@@ -16,6 +17,18 @@ function getSupabase() {
 }
 
 export async function POST(req: NextRequest) {
+  // Auth: Bearer ${CRON_SECRET} (Vercel cron) OR CRM session (UI manual sync)
+  const cronSecret = process.env.CRON_SECRET
+  if (!cronSecret) {
+    return NextResponse.json({ error: 'CRON_SECRET not configured' }, { status: 500 })
+  }
+  const auth = req.headers.get('authorization')
+  const isCron = auth === `Bearer ${cronSecret}`
+  if (!isCron) {
+    const sessionCheck = requireSession(req)
+    if (!sessionCheck.ok) return sessionCheck.error
+  }
+
   const { account_id } = await req.json().catch(() => ({}))
   const supabase = getSupabase()
 
