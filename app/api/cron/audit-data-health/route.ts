@@ -13,7 +13,7 @@ import { createClient } from '@supabase/supabase-js'
 
 export const maxDuration = 300
 
-const CRON_SECRET = process.env.CRON_SECRET || ''
+const CRON_SECRET = process.env.CRON_SECRET
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
 const TENANT_ID = process.env.TENANT_ID || 'a1000000-0000-0000-0000-000000000001'
@@ -188,8 +188,11 @@ async function runChecks() {
 }
 
 export async function POST(req: NextRequest) {
+  if (!CRON_SECRET) {
+    return NextResponse.json({ error: 'CRON_SECRET not configured' }, { status: 500 })
+  }
   const secret = req.headers.get('x-cron-secret') ?? req.headers.get('authorization')?.replace('Bearer ', '')
-  if (CRON_SECRET && secret !== CRON_SECRET) {
+  if (secret !== CRON_SECRET) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
 
