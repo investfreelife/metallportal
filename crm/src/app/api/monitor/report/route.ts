@@ -133,6 +133,6 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ ok: true, report: reportText, events: logs.length })
 }
 
-export async function GET() {
-  return POST()
+export async function GET(req: NextRequest) {
+  return POST(req)
 }
