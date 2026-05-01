@@ -353,6 +353,11 @@ CREATE POLICY chats_service_role ON public.chats
 DROP POLICY IF EXISTS "Пользователь видит свой профиль" ON public.profiles;
 DROP POLICY IF EXISTS "Пользователь обновляет свой профи" ON public.profiles;
 DROP POLICY IF EXISTS "Пользователь создаёт свой профиль" ON public.profiles;
+-- Variant B partial rollout (applied 2026-05-01 via Management API to unblock smoke):
+DROP POLICY IF EXISTS profiles_select_own ON public.profiles;
+DROP POLICY IF EXISTS profiles_select_admin ON public.profiles;
+DROP POLICY IF EXISTS profiles_update_own ON public.profiles;
+DROP POLICY IF EXISTS profiles_service_role ON public.profiles;
 
 CREATE POLICY profiles_owner ON public.profiles
   FOR ALL TO authenticated
