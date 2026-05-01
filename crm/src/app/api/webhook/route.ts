@@ -28,9 +28,11 @@ export async function POST(request: NextRequest) {
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
 
-  // Optional secret check
   const secret = process.env.WEBHOOK_SECRET
-  if (secret && request.headers.get('x-webhook-secret') !== secret) {
+  if (!secret) {
+    return NextResponse.json({ error: 'WEBHOOK_SECRET not configured' }, { status: 500 })
+  }
+  if (request.headers.get('x-webhook-secret') !== secret) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
 
