@@ -1,60 +1,48 @@
 import { test, expect } from '@playwright/test'
 
 /**
- * Полный flow формы контакта с Turnstile.
+ * Smoke-тест на API endpoint /api/contact с прохождением Turnstile + ratelimit.
  *
- * Чтобы тест прошёл стабильно, NEXT_PUBLIC_TURNSTILE_SITE_KEY на E2E-окружении
- * должен быть тестовым ключом Cloudflare:
- *   1x00000000000000000000AA — всегда проходит (managed-mode auto-pass)
- *   2x00000000000000000000AB — всегда фейлит (для negative-tests)
+ * UI-flow с реальным Turnstile-widget невозможен в headless Chrome — Cloudflare
+ * detect headless и не отдаёт токен (даже с тестовым sitekey). Проверять рендер
+ * iframe — задача визуальной регрессии, не E2E API.
  *
- * https://developers.cloudflare.com/turnstile/troubleshooting/testing/
+ * Здесь тестируем API-уровень: при правильно настроенном `TURNSTILE_SECRET_KEY`
+ * (на Preview = тестовый ключ `1x0000000000000000000000000000000AA`) сервер
+ * принимает ЛЮБОЙ непустой токен → возвращает 200 + создаёт лид в CRM.
  *
- * На прод-ключе Turnstile может пометить headless-браузер как подозрительный
- * и потребовать interactive challenge — тогда тест зависнет на ожидании токена.
+ * Этот тест проверяет полный chain через server: ratelimit → zod-validation →
+ * Turnstile-verify → forward в CRM webhook (с x-webhook-secret) → response.
  *
- * Форма CTASection (главная страница) — submits to /api/contact { type: 'quote' }.
- * /contacts (отдельная страница) на момент задачи показывает контактную
- * информацию, не форму — так что используем главную страницу как entry point.
+ * UI-форма с Turnstile-виджетом проверена вручную на проде: invisible managed
+ * mode пропускает обычных юзеров (Сергей: лид от 19:33 в CRM подтвердил).
  */
-test('CTA-форма на главной отправляет лид через /api/contact с Turnstile', async ({
-  page,
+test('API /api/contact принимает лид с тестовым Turnstile-токеном', async ({
+  request,
 }) => {
-  await page.goto('/')
-
-  // Ждём пока Turnstile widget смонтировался (iframe от challenges.cloudflare.com)
-  await page.waitForSelector('iframe[src*="challenges.cloudflare.com"]', {
-    timeout: 15_000,
+  const response = await request.post('/api/contact', {
+    data: {
+      name: 'E2E Playwright',
+      phone: '+79991111111',
+      type: 'callback',
+      message: 'API-level test через test Turnstile secret',
+      turnstile_token: 'E2E-DUMMY-TOKEN-CONTACT',
+    },
   })
 
-  // Заполняем форму
-  await page.locator('textarea').first().fill('E2E playwright test message')
-  await page.locator('input[type="tel"]').first().fill('+79991111111')
+  expect(response.status()).toBe(200)
+  const json = await response.json()
+  expect(json.ok).toBe(true)
+  expect(json.tg_link).toMatch(/^https:\/\/t\.me\//)
+})
 
-  // Даём Turnstile время автопройти (managed-mode на тестовом ключе)
-  await page.waitForTimeout(3_500)
-
-  // Перехватываем POST /api/contact и ждём ответа
-  const responsePromise = page.waitForResponse(
-    (resp) => resp.url().includes('/api/contact') && resp.request().method() === 'POST',
-    { timeout: 15_000 },
-  )
-
-  await page.locator('button[type="submit"]').first().click()
-
-  const response = await responsePromise
-  const status = response.status()
-  const json = await response.json().catch(() => ({}))
-
-  console.log('Contact form response:', status, json)
-
-  // Принимаем 200 OK или 403 (если ключ не тестовый — Turnstile не пройдёт автоматом)
-  expect(
-    [200, 403].includes(status),
-    `Expected 200 (testing key) or 403 (prod key without manual challenge), got ${status}`,
-  ).toBeTruthy()
-
-  if (status === 200) {
-    expect(json.ok).toBe(true)
-  }
+test('API /api/contact отклоняет POST без turnstile_token (zod 400)', async ({
+  request,
+}) => {
+  const response = await request.post('/api/contact', {
+    data: { name: 'X', phone: '+71112223344', type: 'callback' },
+  })
+  expect(response.status()).toBe(400)
+  const json = await response.json()
+  expect(json.error).toMatch(/[Cc]aptcha/)
 })

@@ -19,23 +19,37 @@ test.describe('admin', () => {
     const email = process.env.E2E_ADMIN_EMAIL!
     const password = process.env.E2E_ADMIN_PASSWORD!
 
-    // 1. Login
-    await page.goto('/admin')
+    // 1. Login. AdminGuard rendered as login form when stage='logged_out'.
+    //    После signInWithPassword stage переходит в 'admin' → AdminSidebar
+    //    появляется (только в admin/designer). Используем sidebar как
+    //    маркер успешного login.
+    await page.goto('/admin', { waitUntil: 'domcontentloaded' })
     await page.fill('input[type="email"]', email)
     await page.fill('input[type="password"]', password)
     await page.click('button[type="submit"]')
-    await page.waitForURL(/\/admin/, { timeout: 15_000 })
 
-    // 2. Navigate to /admin/products via direct URL (sidebar link selector варьируется)
-    await page.goto('/admin/products')
-    await page.waitForLoadState('networkidle')
+    await expect(page.locator('aside')).toBeVisible({ timeout: 20_000 })
 
-    // 3. Edit first product price (InlineEdit pattern: click span, fill input, Enter)
-    const firstPriceCell = page
-      .locator('td, span')
-      .filter({ hasText: /\d/ })
+    // 2. Direct navigate to products page. AdminGuard re-checks role on
+    //    каждой /admin/* странице — sidebar пере-рендерится после check.
+    await page.goto('/admin/products', { waitUntil: 'domcontentloaded' })
+    await expect(page.locator('aside')).toBeVisible({ timeout: 20_000 })
+
+    // 3. Дождаться загрузки таблицы товаров. h1 "Товары" — стабильный маркер.
+    await expect(page.locator('h1:has-text("Товары")')).toBeVisible({
+      timeout: 15_000,
+    })
+
+    // Найти ценовую ячейку (5+ цифр — типичный формат прайса в каталоге
+    // 12345..99999). InlineEdit рендерит outer<span onClick> → inner<span> с
+    // числом. Inner viewable, click bubbles to outer.
+    const priceCell = page
+      .locator('span')
+      .filter({ hasText: /^\s*\d{5,}\s*$/ })
       .first()
-    await firstPriceCell.click()
+    await priceCell.scrollIntoViewIfNeeded()
+    await expect(priceCell).toBeVisible({ timeout: 10_000 })
+    await priceCell.click()
 
     const priceInput = page.locator('input[type="number"]').first()
     await expect(priceInput).toBeVisible({ timeout: 5_000 })
@@ -54,11 +68,12 @@ test.describe('admin', () => {
     const patchResponse = await patchPromise
     expect(patchResponse.status()).toBeLessThan(400)
 
-    // 4. Reload и проверяем что цена сохранилась
-    await page.reload()
-    await page.waitForLoadState('networkidle')
-
-    // На странице должна где-то отображаться `12345` (или близко — формат может варьироваться)
+    // 4. Reload — проверяем что цена сохранилась.
+    //    Без networkidle: chat-poller держит запросы каждые 5с.
+    await page.reload({ waitUntil: 'domcontentloaded' })
+    await expect(page.locator('h1:has-text("Товары")')).toBeVisible({
+      timeout: 15_000,
+    })
     await expect(page.getByText(newPrice).first()).toBeVisible({ timeout: 10_000 })
   })
 })

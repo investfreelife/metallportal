@@ -26,8 +26,8 @@ interface Link {
 test('Header и Footer указывают на одни и те же slug-и для общих категорий', async ({
   page,
 }) => {
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
+  await page.goto('/', { waitUntil: 'domcontentloaded' })
+  // Не ждём networkidle — Cloudflare / Vercel / Turnstile держат сеть постоянно
 
   // Step 1: top-level header catalog links (already in DOM)
   const headerLinks: Link[] = await page.$$eval(
