@@ -8,7 +8,9 @@ const supabase = createClient(
 )
 
 function hashPwd(pwd: string) {
-  return crypto.createHash('sha256').update(pwd + (process.env.PASSWORD_SALT || 'harlan_salt_2024')).digest('hex')
+  const salt = process.env.PASSWORD_SALT
+  if (!salt) throw new Error('PASSWORD_SALT environment variable is required')
+  return crypto.createHash('sha256').update(pwd + salt).digest('hex')
 }
 
 export async function POST(req: NextRequest) {
