@@ -1,4 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { contactRatelimit, getClientIp } from '@/lib/ratelimit'
+import { verifyTurnstile } from '@/lib/turnstile'
+
+export const runtime = 'nodejs'
 
 const CRM_WEBHOOK = 'https://metallportal-crm2.vercel.app/api/webhook'
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
@@ -26,11 +30,38 @@ export async function OPTIONS() {
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate-limit by IP (5 / 5 min)
+    const ip = getClientIp(req)
+    const rl = await contactRatelimit.limit(ip)
+    if (!rl.success) {
+      return NextResponse.json(
+        { error: 'Слишком много заявок. Попробуйте через 5 минут.' },
+        {
+          status: 429,
+          headers: {
+            ...CORS,
+            'X-RateLimit-Limit': String(rl.limit),
+            'X-RateLimit-Remaining': String(rl.remaining),
+            'X-RateLimit-Reset': String(rl.reset),
+          },
+        },
+      )
+    }
+
     const body = await req.json()
-    const { name, phone, email, comment, message, date, time, product, area, price, type } = body
+    const { name, phone, email, comment, message, date, time, product, area, price, type, turnstile_token } = body
 
     if (!name && !phone && !email) {
       return NextResponse.json({ error: 'Укажите имя или телефон' }, { status: 400, headers: CORS })
+    }
+
+    // Cloudflare Turnstile (CAPTCHA)
+    if (typeof turnstile_token !== 'string' || !turnstile_token) {
+      return NextResponse.json({ error: 'Captcha required' }, { status: 400, headers: CORS })
+    }
+    const turnstileOk = await verifyTurnstile(turnstile_token, ip)
+    if (!turnstileOk) {
+      return NextResponse.json({ error: 'Captcha failed' }, { status: 403, headers: CORS })
     }
 
     const normalizedPhone = phone ? normalizePhone(phone) : null

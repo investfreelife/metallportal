@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { ArrowRight, Check } from "lucide-react";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 export default function CategoryCallbackCTA() {
   const [name, setName] = useState("");
@@ -8,17 +9,27 @@ export default function CategoryCallbackCTA() {
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [tgLink, setTgLink] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [error, setError] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name || !phone) return;
+    if (!turnstileToken) { setError("Подтвердите что вы не робот"); return; }
+    setError("");
     setLoading(true);
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, phone, type: "callback" }),
+        body: JSON.stringify({ name, phone, type: "callback", turnstile_token: turnstileToken }),
       });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        setError(err.error ?? `Ошибка ${res.status}`);
+        setLoading(false);
+        return;
+      }
       const data = await res.json();
       if (data.tg_link) setTgLink(data.tg_link);
       if (typeof window !== "undefined" && (window as Window & { mpTrack?: (t: string, d: object) => void }).mpTrack) {
@@ -77,12 +88,22 @@ export default function CategoryCallbackCTA() {
             />
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !turnstileToken}
               className="flex items-center justify-center gap-2 bg-gold hover:bg-yellow-400 disabled:opacity-50 text-black font-bold px-6 py-3 rounded-xl transition-all whitespace-nowrap text-sm"
             >
               {loading ? "Отправка..." : <>Получить КП <ArrowRight size={15} /></>}
             </button>
           </form>
+        </div>
+      )}
+      {!sent && (
+        <div className="mt-4 flex flex-col items-center gap-2">
+          <Turnstile
+            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+            onSuccess={setTurnstileToken}
+            onExpire={() => setTurnstileToken("")}
+          />
+          {error && <p className="text-sm text-red-500">{error}</p>}
         </div>
       )}
     </section>

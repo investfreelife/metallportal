@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Turnstile } from "@marsidev/react-turnstile";
 import { X, ArrowRight, ArrowLeft, Check } from "lucide-react";
 
 const TIME_SLOTS = [
@@ -40,6 +41,8 @@ export default function NavesOrderModal({ productName, price, area, onClose }: P
   const [phone, setPhone] = useState("");
   const [comment, setComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [error, setError] = useState("");
 
   const daysInMonth = getDaysInMonth(viewYear, viewMonth);
   const firstDay = getFirstDayOfWeek(viewYear, viewMonth);
@@ -64,9 +67,11 @@ export default function NavesOrderModal({ productName, price, area, onClose }: P
     `${d.getDate()} ${MONTHS_RU[d.getMonth()].toLowerCase()}, ${DAYS_RU[d.getDay() === 0 ? 6 : d.getDay()-1]}`;
 
   async function handleSubmit() {
+    if (!turnstileToken) { setError("Подтвердите что вы не робот"); return; }
+    setError("");
     setSubmitting(true);
     try {
-      await fetch("/api/contact", {
+      const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -75,8 +80,15 @@ export default function NavesOrderModal({ productName, price, area, onClose }: P
           time: selectedTime,
           product: productName,
           area, price,
+          turnstile_token: turnstileToken,
         }),
       });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        setError(err.error ?? `Ошибка ${res.status}`);
+        setSubmitting(false);
+        return;
+      }
       if (typeof window !== "undefined" && (window as Window & { mpTrack?: (t: string, d: object) => void }).mpTrack) {
         (window as Window & { mpTrack?: (t: string, d: object) => void }).mpTrack!("form_submit", { contact_name: name, contact_phone: phone });
       }
@@ -232,10 +244,20 @@ export default function NavesOrderModal({ productName, price, area, onClose }: P
               </div>
             </div>
 
-            <p className="text-xs text-muted-foreground mt-3 mb-5">
+            <p className="text-xs text-muted-foreground mt-3 mb-3">
               Нажимая кнопку, вы соглашаетесь с{" "}
               <a href="/privacy" className="text-gold hover:underline">политикой конфиденциальности</a>
             </p>
+
+            <div className="mb-3 flex justify-center">
+              <Turnstile
+                siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                onSuccess={setTurnstileToken}
+                onExpire={() => setTurnstileToken("")}
+                options={{ theme: "dark" }}
+              />
+            </div>
+            {error && <p className="text-sm text-red-500 mb-3 text-center">{error}</p>}
 
             <div className="flex gap-3">
               <button
@@ -245,7 +267,7 @@ export default function NavesOrderModal({ productName, price, area, onClose }: P
                 <ArrowLeft size={14} />
               </button>
               <button
-                disabled={!name || !phone || submitting}
+                disabled={!name || !phone || submitting || !turnstileToken}
                 onClick={handleSubmit}
                 className="flex-1 flex items-center justify-center gap-2 bg-gold hover:bg-yellow-400 disabled:opacity-40 disabled:cursor-not-allowed text-black font-bold py-3 rounded-xl transition-all"
               >

@@ -2,6 +2,7 @@
 
 import { Send, Check, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 export default function CTASection() {
   const [message, setMessage] = useState("");
@@ -10,16 +11,18 @@ export default function CTASection() {
   const [done, setDone] = useState(false);
   const [tgLink, setTgLink] = useState("");
   const [err, setErr] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!message.trim() && !phone.trim()) { setErr("Опишите запрос или укажите телефон"); return; }
+    if (!turnstileToken) { setErr("Подтвердите что вы не робот"); return; }
     setLoading(true); setErr("");
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone: phone || null, message, type: "quote" }),
+        body: JSON.stringify({ phone: phone || null, message, type: "quote", turnstile_token: turnstileToken }),
       });
       const data = await res.json();
       if (data.tg_link) setTgLink(data.tg_link);
@@ -80,12 +83,20 @@ export default function CTASection() {
                 />
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || !turnstileToken}
                   className="flex items-center gap-2 bg-gold hover:bg-yellow-400 disabled:opacity-50 text-black font-bold px-6 py-3 rounded transition-all"
                 >
                   {loading ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
                   {loading ? "" : "Отправить"}
                 </button>
+              </div>
+              <div className="mt-3 flex justify-center">
+                <Turnstile
+                  siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                  onSuccess={setTurnstileToken}
+                  onExpire={() => setTurnstileToken("")}
+                  options={{ theme: "dark" }}
+                />
               </div>
               {phone.replace(/\D/g, '').length >= 10 && (
                 <a

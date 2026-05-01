@@ -2,23 +2,33 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { CheckCircle, ArrowRight } from 'lucide-react'
+import { Turnstile } from '@marsidev/react-turnstile'
 
 export default function PartnerJoinPage() {
   const [form, setForm] = useState({ full_name: '', company_name: '', phone: '', email: '', ref_code: '' })
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
+  const [turnstileToken, setTurnstileToken] = useState('')
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!form.phone && !form.email) { setError('Укажите телефон или email'); return }
+    if (!turnstileToken) { setError('Подтвердите что вы не робот'); return }
     setLoading(true)
+    setError('')
     try {
-      await fetch('/api/contact', {
+      const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, source: 'partner_join', message: 'Заявка партнёра' }),
+        body: JSON.stringify({ ...form, source: 'partner_join', message: 'Заявка партнёра', turnstile_token: turnstileToken }),
       })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        setError(err.error ?? `Ошибка ${res.status}`)
+        setLoading(false)
+        return
+      }
       setDone(true)
     } catch {
       setError('Ошибка отправки, попробуйте ещё раз')
@@ -111,9 +121,17 @@ export default function PartnerJoinPage() {
                 className="w-full border border-border bg-input rounded-xl px-4 py-3 text-sm text-foreground focus:outline-none focus:border-gold transition-colors"
               />
 
+              <div className="flex justify-center">
+                <Turnstile
+                  siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                  onSuccess={setTurnstileToken}
+                  onExpire={() => setTurnstileToken('')}
+                />
+              </div>
+
               {error && <p className="text-red-500 text-sm">{error}</p>}
 
-              <button type="submit" disabled={loading}
+              <button type="submit" disabled={loading || !turnstileToken}
                 className="w-full flex items-center justify-center gap-2 bg-gold hover:bg-yellow-400 text-black font-bold py-3 rounded-xl transition-all disabled:opacity-50">
                 {loading ? 'Отправляю...' : <><span>Стать партнёром</span><ArrowRight size={16} /></>}
               </button>
