@@ -1,12 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { createClient } from "@supabase/supabase-js";
 import { Edit2, Plus, RefreshCw, Eye, EyeOff, Image, ChevronDown, ChevronRight, X } from "lucide-react";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 interface Category {
   id: string; name: string; slug: string; parent_id: string | null;
@@ -69,33 +63,46 @@ export default function AdminCategories() {
 
   const load = async () => {
     setLoading(true);
-    const { data } = await supabase.from("categories").select("*").order("sort_order");
-    setCats(data ?? []);
+    const res = await fetch("/api/admin/categories", { cache: "no-store" });
+    const data: Category[] = res.ok ? await res.json() : [];
+    setCats(data);
     setLoading(false);
   };
   useEffect(() => { load(); }, []);
 
+  const patchCategory = async (id: string, body: Partial<Category>) => {
+    await fetch(`/api/admin/categories/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  };
+
   const saveEdit = async () => {
     if (!editing) return;
     setSaving(true);
-    await supabase.from("categories").update({
+    await patchCategory(editing.id, {
       name: editing.name, slug: editing.slug,
       sort_order: editing.sort_order, is_active: editing.is_active, image_url: editing.image_url,
-    }).eq("id", editing.id);
+    });
     setSaving(false); setEditing(null); load();
   };
 
   const toggleActive = async (cat: Category) => {
-    await supabase.from("categories").update({ is_active: !cat.is_active }).eq("id", cat.id);
+    await patchCategory(cat.id, { is_active: !cat.is_active });
     load();
   };
 
   const addCategory = async () => {
     if (!newCat.name || !newCat.slug) return;
     const parentId = newCat.parent_id || (path.length > 0 ? path[path.length - 1].id : null);
-    await supabase.from("categories").insert({
-      name: newCat.name, slug: newCat.slug,
-      parent_id: parentId || null, is_active: true, sort_order: 999,
+    await fetch("/api/admin/categories", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: newCat.name, slug: newCat.slug,
+        parent_id: parentId || null, is_active: true, sort_order: 999,
+      }),
     });
     setNewCat({ name: "", slug: "", parent_id: "" });
     setShowAdd(false); load();
@@ -109,7 +116,7 @@ export default function AdminCategories() {
         body: JSON.stringify({ categoryId: cat.id, productName: cat.name, category: cat.slug }),
       });
       const data = await res.json();
-      if (data.imageUrl) { await supabase.from("categories").update({ image_url: data.imageUrl }).eq("id", cat.id); load(); }
+      if (data.imageUrl) { await patchCategory(cat.id, { image_url: data.imageUrl }); load(); }
     } catch { }
     setGenLoading(null);
   };
