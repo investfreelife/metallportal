@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/apiAuth'
 import { getSetting } from '@/lib/settings'
 
 const CRM_URL = 'https://metallportal-crm2.vercel.app'
@@ -7,7 +8,7 @@ const CRM_URL = 'https://metallportal-crm2.vercel.app'
 function getSupabase() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 }
 
@@ -26,6 +27,9 @@ async function sendTelegramMessage(chatId: string, text: string, token: string) 
 }
 
 export async function POST(req: NextRequest) {
+  const auth = requireAdmin(req)
+  if (!auth.ok) return auth.error
+
   const supabase = getSupabase()
   const {
     name,

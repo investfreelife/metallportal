@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/apiAuth'
 import { createClient } from '@/lib/supabase/server'
 
 const TENANT_ID = process.env.TENANT_ID || 'a1000000-0000-0000-0000-000000000001'
@@ -22,6 +23,9 @@ const CHANNEL_NAMES: Record<string, string> = {
 }
 
 export async function POST(req: NextRequest) {
+  const auth = requireAdmin(req)
+  if (!auth.ok) return auth.error
+
   const body = await req.json()
   const supabase = await createClient()
 

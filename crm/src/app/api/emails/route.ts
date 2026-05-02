@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { requireSession } from '@/lib/apiAuth'
 import { createClient } from '@supabase/supabase-js'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
@@ -7,11 +8,14 @@ const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 function getSupabase(): any {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 }
 
 export async function GET(req: NextRequest) {
+  const auth = requireSession(req)
+  if (!auth.ok) return auth.error
+
   const { searchParams } = new URL(req.url)
   const deal_id = searchParams.get('deal_id')
   const contact_id = searchParams.get('contact_id')
@@ -39,6 +43,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
+  const auth = requireSession(req)
+  if (!auth.ok) return auth.error
+
   const { id, is_read, is_starred, deal_id, contact_id } = await req.json()
   const supabase = getSupabase()
 

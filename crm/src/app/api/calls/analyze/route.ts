@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { requireSession } from '@/lib/apiAuth'
 import { createClient } from '@/lib/supabase/server'
 
 export async function POST(req: NextRequest) {
+  const auth = requireSession(req)
+  if (!auth.ok) return auth.error
+
   const { call_id, recording_url } = await req.json()
   const supabase = await createClient()
 

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { requireSession } from '@/lib/apiAuth'
 import { createClient } from '@supabase/supabase-js'
 import { getSetting } from '@/lib/settings'
 
@@ -9,11 +10,14 @@ const REFERER = 'https://metallportal-crm2.vercel.app'
 function getSupabase(): any {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 }
 
 export async function POST(req: NextRequest) {
+  const auth = requireSession(req)
+  if (!auth.ok) return auth.error
+
   const { command } = await req.json().catch(() => ({}))
   if (!command) return NextResponse.json({ error: 'Напишите команду' }, { status: 400 })
 
