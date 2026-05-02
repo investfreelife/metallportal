@@ -1,14 +1,18 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/apiAuth'
 
 function getSupabase() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 }
 
-export async function GET() {
+export async function GET(req: import('next/server').NextRequest) {
+  const auth = requireAdmin(req)
+  if (!auth.ok) return auth.error
+
   const supabase = getSupabase()
   const { data, error } = await supabase
     .from('admin_users')
@@ -20,6 +24,9 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const auth = requireAdmin(req)
+  if (!auth.ok) return auth.error
+
   const supabase = getSupabase()
   const { name, login, password, role = 'manager', telegram_username } = await req.json()
 
@@ -51,6 +58,9 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
+  const auth = requireAdmin(req)
+  if (!auth.ok) return auth.error
+
   const supabase = getSupabase()
   const { id, ...updates } = await req.json()
   if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 })

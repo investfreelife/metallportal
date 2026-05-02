@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { requireSession } from '@/lib/apiAuth'
 
 export async function POST(req: NextRequest) {
+  const auth = requireSession(req)
+  if (!auth.ok) return auth.error
+
   const { message } = await req.json().catch(() => ({}))
   const testMsg = message ?? 'Добрый день! Хочу узнать цену на арматуру 12мм, 5 тонн.'
 

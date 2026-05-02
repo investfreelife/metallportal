@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/apiAuth'
 import { getAllSettings, setSetting } from '@/lib/settings'
 
 const ALLOWED_KEYS = [
@@ -10,7 +11,10 @@ const ALLOWED_KEYS = [
   'WEBHOOK_SECRET',
 ]
 
-export async function GET() {
+export async function GET(req: import('next/server').NextRequest) {
+  const auth = requireAdmin(req)
+  if (!auth.ok) return auth.error
+
   const settings = await getAllSettings()
   // Mask secret keys — show only last 4 chars
   const masked: Record<string, string> = {}
@@ -27,6 +31,9 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const auth = requireAdmin(req)
+  if (!auth.ok) return auth.error
+
   const body = await req.json()
   const saved: string[] = []
 

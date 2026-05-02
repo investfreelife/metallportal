@@ -1,15 +1,19 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/apiAuth'
 
 function getSupabase() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 }
 
 /** GET /api/team/join?token=XXX — validate token, return user info */
 export async function GET(req: NextRequest) {
+  const auth = requireAdmin(req)
+  if (!auth.ok) return auth.error
+
   const token = req.nextUrl.searchParams.get('token')
   if (!token) return NextResponse.json({ error: 'token required' }, { status: 400 })
 
@@ -31,6 +35,9 @@ export async function GET(req: NextRequest) {
 
 /** POST /api/team/join — set new password, activate account */
 export async function POST(req: NextRequest) {
+  const auth = requireAdmin(req)
+  if (!auth.ok) return auth.error
+
   const { token, password } = await req.json()
   if (!token || !password) return NextResponse.json({ error: 'token + password required' }, { status: 400 })
   if (password.length < 6) return NextResponse.json({ error: 'Пароль слишком короткий' }, { status: 400 })

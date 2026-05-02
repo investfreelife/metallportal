@@ -1,16 +1,20 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import { requireSession } from '@/lib/apiAuth'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
 function getSupabase() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 }
 
 export async function POST(req: NextRequest) {
+  const auth = requireSession(req)
+  if (!auth.ok) return auth.error
+
   try {
     const { title, amount, stage, contact_id, expected_close_date } = await req.json()
     if (!title) return NextResponse.json({ error: 'title required' }, { status: 400 })

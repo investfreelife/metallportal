@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { requireSession } from '@/lib/apiAuth'
 import { createClient } from '@supabase/supabase-js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getSupabase(): any {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 }
 
@@ -15,6 +16,9 @@ const CHANNEL_MAP: Record<string, string> = {
 }
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const auth = requireSession(req)
+  if (!auth.ok) return auth.error
+
   const { id: contactId } = await params
   const supabase = getSupabase()
 

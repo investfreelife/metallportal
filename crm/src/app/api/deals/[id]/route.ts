@@ -1,14 +1,18 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import { requireSession } from '@/lib/apiAuth'
 
 function getSupabase() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const auth = requireSession(req)
+  if (!auth.ok) return auth.error
+
   const { id } = await params
   const body = await req.json()
   const supabase = getSupabase()
@@ -35,6 +39,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const auth = requireSession(_req)
+  if (!auth.ok) return auth.error
+
   const { id } = await params
   const supabase = getSupabase()
   const { error } = await supabase.from('deals').delete().eq('id', id)

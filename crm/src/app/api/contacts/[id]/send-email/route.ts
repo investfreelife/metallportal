@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { requireSession } from '@/lib/apiAuth'
 import { createClient } from '@supabase/supabase-js'
 import nodemailer from 'nodemailer'
 
@@ -6,11 +7,14 @@ import nodemailer from 'nodemailer'
 function getSupabase(): any {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 }
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const auth = requireSession(req)
+  if (!auth.ok) return auth.error
+
   const { id } = await params
   const { subject, body } = await req.json()
   if (!subject?.trim() || !body?.trim()) return NextResponse.json({ error: 'subject and body required' }, { status: 400 })

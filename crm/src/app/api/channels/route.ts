@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/apiAuth'
 import { createClient } from '@/lib/supabase/server'
 
 const TENANT_ID = process.env.TENANT_ID || 'a1000000-0000-0000-0000-000000000001'
 
-export async function GET() {
+export async function GET(req: import('next/server').NextRequest) {
+  const auth = requireAdmin(req)
+  if (!auth.ok) return auth.error
+
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('channels')
