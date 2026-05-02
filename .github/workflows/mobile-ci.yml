@@ -1,0 +1,32 @@
+name: Mobile CI
+
+# Mobile упрощённый: только lint + typecheck. Полный Expo-билд долгий и
+# требует EAS — добавим отдельной задачей если надо будет CI-builds для TestFlight.
+on:
+  pull_request:
+    paths:
+      - 'mobile/**'
+      - '.github/workflows/mobile-ci.yml'
+  push:
+    branches: [main]
+
+jobs:
+  lint-and-typecheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    defaults:
+      run:
+        working-directory: mobile
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: mobile/package-lock.json
+
+      - run: npm ci --legacy-peer-deps
+      - run: npm run lint --if-present
+      - run: npx tsc --noEmit

@@ -1,0 +1,45 @@
+name: E2E vs Preview
+
+# Триггерится Vercel'овским GitHub Deployments API после успешного preview-deploy.
+# Если эти события не приходят — проверь Vercel Dashboard → Project → Settings →
+# Git → "GitHub Deployments" должно быть включено.
+on:
+  deployment_status:
+
+jobs:
+  playwright:
+    if: github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Preview'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Чекаут именно того commit'а, для которого был создан preview —
+          # tests должны соответствовать коду, который реально задеплоен.
+          ref: ${{ github.event.deployment.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci --legacy-peer-deps
+
+      - run: npx playwright install --with-deps chromium
+
+      - name: Run E2E
+        env:
+          E2E_BASE_URL: ${{ github.event.deployment_status.target_url }}
+          VERCEL_BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+        run: npx playwright test
+
+      - name: Upload report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
