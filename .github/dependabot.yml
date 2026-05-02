@@ -1,0 +1,47 @@
+version: 2
+
+# Weekly Monday updates для всех 3 npm-проектов + сами actions.
+# Группируем prod/dev чтобы не плодить десятки PR — один групповой PR на стек.
+# Major-bumps НЕ группируем (нет update-types: major) — они приходят отдельными PR
+# чтобы каждый ревьюился вручную.
+updates:
+  # Web (корень)
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    open-pull-requests-limit: 5
+    groups:
+      production-dependencies:
+        dependency-type: 'production'
+        update-types: ['minor', 'patch']
+      dev-dependencies:
+        dependency-type: 'development'
+        update-types: ['minor', 'patch']
+
+  # CRM
+  - package-ecosystem: 'npm'
+    directory: '/crm'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    open-pull-requests-limit: 3
+    groups:
+      production-dependencies:
+        dependency-type: 'production'
+
+  # Mobile
+  - package-ecosystem: 'npm'
+    directory: '/mobile'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    open-pull-requests-limit: 3
+
+  # GitHub Actions сами (actions/checkout, setup-node и т.д.)
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'

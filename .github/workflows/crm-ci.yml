@@ -1,0 +1,61 @@
+name: CRM CI
+
+# Триггерится только если изменены файлы в crm/ или сам workflow.
+on:
+  pull_request:
+    paths:
+      - 'crm/**'
+      - '.github/workflows/crm-ci.yml'
+  push:
+    branches: [main]
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: crm
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: crm/package-lock.json
+
+      - run: npm ci --legacy-peer-deps
+
+      # Lint намеренно не запускается: 116 legacy-errors (no-explicit-any,
+      # react-hooks/*) — отдельная cleanup-задача. Конфиг (eslint.config.mjs)
+      # уже есть и работает локально через `npm run lint`.
+
+      - run: npx tsc --noEmit
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          # Нужен на build: API routes (/api/ref/join и др.) создают
+          # service-role-client на module-load.
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+
+  npm-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: crm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: crm/package-lock.json
+      - run: npm ci --legacy-peer-deps
+      - name: Audit (CRITICAL, prod only)
+        # Совпадает с web-ci.yml — high'и трекаются Dependabot'ом.
+        run: npm audit --audit-level=critical --omit=dev

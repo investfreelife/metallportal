@@ -10,8 +10,11 @@ export function ExternalLink(
     <Link
       target="_blank"
       {...props}
-      // @ts-expect-error: External URLs are not typed.
-      href={props.href}
+      // expo-router типизирует href как narrow union of internal routes,
+      // но мы намеренно передаём external URL'ы. Используем type-cast
+      // (раньше тут был ts-suppress-комментарий, но в новых типах expo-router
+      // он становился "unused" и валил tsc).
+      href={props.href as never}
       onPress={(e) => {
         if (Platform.OS !== 'web') {
           // Prevent the default behavior of linking to the default browser on native.

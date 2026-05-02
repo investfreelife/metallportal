@@ -1,0 +1,72 @@
+name: Web CI
+
+# Path-filtered: запускается только если изменены файлы web-проекта (корень).
+# CRM/mobile changes не триггерят этот workflow (у них свои).
+on:
+  pull_request:
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'lib/**'
+      - 'public/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'next.config.js'
+      - 'next.config.mjs'
+      - 'tsconfig.json'
+      - '.github/workflows/web-ci.yml'
+  push:
+    branches: [main]
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      # Lint намеренно не запускается: web никогда не имел `.eslintrc*`,
+      # `next lint` интерактивен в TTY. Cleanup + добавление конфига —
+      # отдельная задача (legacy codebase, не входит в W1-4).
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.NEXT_PUBLIC_TURNSTILE_SITE_KEY_TEST }}
+          # Нужен на build: некоторые API routes создают service-role-client
+          # на module-load (top-level), и Next "collect page data" падает,
+          # если переменной нет.
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+  npm-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci --legacy-peer-deps
+
+      # Только runtime deps на CRITICAL. HIGH'и в next@14 (Image-DoS, RSC-DoS,
+      # request smuggling) — known, фикс через major-bump до next@16, отдельная
+      # задача. Dependabot будет открывать PR'ы на minor/patch upgrades параллельно.
+      - name: Audit (CRITICAL, prod only)
+        run: npm audit --audit-level=critical --omit=dev
