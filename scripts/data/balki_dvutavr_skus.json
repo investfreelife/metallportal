@@ -1,0 +1,1846 @@
+[
+  {
+    "name": "Балка 10 Б1",
+    "slug": "balka-10-b1-s255-12000-gost35087",
+    "size": 10,
+    "series": "Б1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 99490,
+    "_dedup_count": 2,
+    "_all_prices": [
+      99490,
+      99990
+    ]
+  },
+  {
+    "name": "Балка 10 Б1",
+    "slug": "balka-10-b1-st3-12000-gost35087",
+    "size": 10,
+    "series": "Б1",
+    "steel_grade": "Ст3",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 99990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      99990
+    ]
+  },
+  {
+    "name": "Балка 10",
+    "slug": "balka-10-s255-12000-gost8239",
+    "size": 10,
+    "series": null,
+    "steel_grade": "С255",
+    "gost": "ГОСТ 8239(ГОСТ 35087)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 99590,
+    "_dedup_count": 2,
+    "_all_prices": [
+      99590,
+      99690,
+      99890,
+      99990
+    ]
+  },
+  {
+    "name": "Балка 10",
+    "slug": "balka-10-st3-12000-gost8239",
+    "size": 10,
+    "series": null,
+    "steel_grade": "Ст3",
+    "gost": "ГОСТ 8239(ГОСТ 35087)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 99890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      99890,
+      99990
+    ]
+  },
+  {
+    "name": "Балка 12 Б1",
+    "slug": "balka-12-b1-st3-12000-gost35087",
+    "size": 12,
+    "series": "Б1",
+    "steel_grade": "Ст3",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 98490,
+    "_dedup_count": 2,
+    "_all_prices": [
+      98490,
+      98990
+    ]
+  },
+  {
+    "name": "Балка 12 Б2",
+    "slug": "balka-12-b2-st3-12000-gost35087",
+    "size": 12,
+    "series": "Б2",
+    "steel_grade": "Ст3",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 99990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      99990
+    ]
+  },
+  {
+    "name": "Балка 12 Б2",
+    "slug": "balka-12-b2-s245-12000-gost35087",
+    "size": 12,
+    "series": "Б2",
+    "steel_grade": "С245",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 99990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      99990
+    ]
+  },
+  {
+    "name": "Балка 12",
+    "slug": "balka-12-st3-12000-gost8239",
+    "size": 12,
+    "series": null,
+    "steel_grade": "Ст3",
+    "gost": "ГОСТ 8239(ГОСТ 35087)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 101890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      101890,
+      101990
+    ]
+  },
+  {
+    "name": "Балка 14 Б1",
+    "slug": "balka-14-b1-s245-12000-gost35087",
+    "size": 14,
+    "series": "Б1",
+    "steel_grade": "С245",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 99990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      99990
+    ]
+  },
+  {
+    "name": "Балка 14 Б1",
+    "slug": "balka-14-b1-s255-12000-gost35087",
+    "size": 14,
+    "series": "Б1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 99990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      99990
+    ]
+  },
+  {
+    "name": "Балка 14 Б1",
+    "slug": "balka-14-b1-st3-12000-gost35087",
+    "size": 14,
+    "series": "Б1",
+    "steel_grade": "Ст3",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 99990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      99990
+    ]
+  },
+  {
+    "name": "Балка 14 Б2",
+    "slug": "balka-14-b2-s255-12000-gost35087",
+    "size": 14,
+    "series": "Б2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 102990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      102990
+    ]
+  },
+  {
+    "name": "Балка 16 Б1",
+    "slug": "balka-16-b1-st3-12000-gost35087",
+    "size": 16,
+    "series": "Б1",
+    "steel_grade": "Ст3",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 102990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      102990
+    ]
+  },
+  {
+    "name": "Балка 16 Б1",
+    "slug": "balka-16-b1-s255-12000-gost35087",
+    "size": 16,
+    "series": "Б1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 102990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      102990
+    ]
+  },
+  {
+    "name": "Балка 16 Б1",
+    "slug": "balka-16-b1-st3-nd-gostr57837",
+    "size": 16,
+    "series": "Б1",
+    "steel_grade": "Ст3",
+    "gost": "ГОСТ Р 57837-2017 (ГОСТ 26020)",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "base_price": 100990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      100990
+    ]
+  },
+  {
+    "name": "Балка 16 Б2",
+    "slug": "balka-16-b2-s255-12000-gost35087",
+    "size": 16,
+    "series": "Б2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 100990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      100990
+    ]
+  },
+  {
+    "name": "Балка 16 Б2",
+    "slug": "balka-16-b2-s245-12000-gost35087",
+    "size": 16,
+    "series": "Б2",
+    "steel_grade": "С245",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 100990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      100990
+    ]
+  },
+  {
+    "name": "Балка 16 Б2",
+    "slug": "balka-16-b2-st3-12000-gost35087",
+    "size": 16,
+    "series": "Б2",
+    "steel_grade": "Ст3",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 100990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      100990
+    ]
+  },
+  {
+    "name": "Балка 18 Б1",
+    "slug": "balka-18-b1-s255-12000-gost35087",
+    "size": 18,
+    "series": "Б1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 101490,
+    "_dedup_count": 2,
+    "_all_prices": [
+      101490,
+      101990
+    ]
+  },
+  {
+    "name": "Балка 18 Б1",
+    "slug": "balka-18-b1-st3-12000-gost35087",
+    "size": 18,
+    "series": "Б1",
+    "steel_grade": "Ст3",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 101990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      101990
+    ]
+  },
+  {
+    "name": "Балка 18",
+    "slug": "balka-18-s255-12000-gost8239",
+    "size": 18,
+    "series": null,
+    "steel_grade": "С255",
+    "gost": "ГОСТ 8239-93",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 99890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      99890,
+      99990
+    ]
+  },
+  {
+    "name": "Балка 18",
+    "slug": "balka-18-s255-12000-tu24107",
+    "size": 18,
+    "series": null,
+    "steel_grade": "С255",
+    "gost": "ТУ 24107-044-00186269-2018",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 99590,
+    "_dedup_count": 2,
+    "_all_prices": [
+      99590,
+      99690,
+      99890,
+      99990
+    ]
+  },
+  {
+    "name": "Балка 20 Б1",
+    "slug": "balka-20-b1-s255-12000-gost35087",
+    "size": 20,
+    "series": "Б1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 92900,
+    "_dedup_count": 2,
+    "_all_prices": [
+      92900,
+      93400
+    ]
+  },
+  {
+    "name": "Балка 20 Б2",
+    "slug": "balka-20-b2-s255-12000-gost35087",
+    "size": 20,
+    "series": "Б2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 93400,
+    "_dedup_count": 1,
+    "_all_prices": [
+      93400
+    ]
+  },
+  {
+    "name": "Балка 20 К1",
+    "slug": "balka-20-k1-s255-12000-gost35087",
+    "size": 20,
+    "series": "К1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 82800,
+    "_dedup_count": 3,
+    "_all_prices": [
+      82800,
+      83300
+    ]
+  },
+  {
+    "name": "Балка 20 К2",
+    "slug": "balka-20-k2-s255-12000-gost35087",
+    "size": 20,
+    "series": "К2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 83300,
+    "_dedup_count": 1,
+    "_all_prices": [
+      83300
+    ]
+  },
+  {
+    "name": "Балка 20 Ш1",
+    "slug": "balka-20-sh1-s255-12000-gost35087",
+    "size": 20,
+    "series": "Ш1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 83300,
+    "_dedup_count": 2,
+    "_all_prices": [
+      83300,
+      83800
+    ]
+  },
+  {
+    "name": "Балка 20 Ш2",
+    "slug": "balka-20-sh2-s255-12000-gost35087",
+    "size": 20,
+    "series": "Ш2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 83800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      83800
+    ]
+  },
+  {
+    "name": "Балка 24 М",
+    "slug": "balka-24-m-s255-12000-gost19425",
+    "size": 24,
+    "series": "М",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 19425-74",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 133990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      133990
+    ]
+  },
+  {
+    "name": "Балка 25 Б1",
+    "slug": "balka-25-b1-s255-12000-gost35087",
+    "size": 25,
+    "series": "Б1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 88100,
+    "_dedup_count": 1,
+    "_all_prices": [
+      88100
+    ]
+  },
+  {
+    "name": "Балка 25 Б2",
+    "slug": "balka-25-b2-s255-12000-gost35087",
+    "size": 25,
+    "series": "Б2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 87600,
+    "_dedup_count": 2,
+    "_all_prices": [
+      87600,
+      88100
+    ]
+  },
+  {
+    "name": "Балка 25 К1",
+    "slug": "balka-25-k1-s255-12000-gost35087",
+    "size": 25,
+    "series": "К1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 80900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      80900
+    ]
+  },
+  {
+    "name": "Балка 25 К2",
+    "slug": "balka-25-k2-s255-12000-gost35087",
+    "size": 25,
+    "series": "К2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 80900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      80900
+    ]
+  },
+  {
+    "name": "Балка 25 К4",
+    "slug": "balka-25-k4-s255-12000-gost35087",
+    "size": 25,
+    "series": "К4",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 80900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      80900
+    ]
+  },
+  {
+    "name": "Балка 25 К6",
+    "slug": "balka-25-k6-s255-11200-gost35087",
+    "size": 25,
+    "series": "К6",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 11200,
+    "length_options": [
+      "11200"
+    ],
+    "base_price": 80900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      80900
+    ]
+  },
+  {
+    "name": "Балка 25 Ш0",
+    "slug": "balka-25-sh0-s255-12000-gost35087",
+    "size": 25,
+    "series": "Ш0",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 82900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      82900
+    ]
+  },
+  {
+    "name": "Балка 25 Ш1",
+    "slug": "balka-25-sh1-s255-12000-gost35087",
+    "size": 25,
+    "series": "Ш1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 82400,
+    "_dedup_count": 2,
+    "_all_prices": [
+      82400,
+      82900
+    ]
+  },
+  {
+    "name": "Балка 25 Ш2",
+    "slug": "balka-25-sh2-s255-12000-gost35087",
+    "size": 25,
+    "series": "Ш2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 82900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      82900
+    ]
+  },
+  {
+    "name": "Балка 25 Ш3",
+    "slug": "balka-25-sh3-s255-12000-gost35087",
+    "size": 25,
+    "series": "Ш3",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 82900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      82900
+    ]
+  },
+  {
+    "name": "Балка 25 Ш4",
+    "slug": "balka-25-sh4-s255-12000-gost35087",
+    "size": 25,
+    "series": "Ш4",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 82900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      82900
+    ]
+  },
+  {
+    "name": "Балка 30 Б1",
+    "slug": "balka-30-b1-s255-12000-gost35087",
+    "size": 30,
+    "series": "Б1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 82800,
+    "_dedup_count": 2,
+    "_all_prices": [
+      82800,
+      83300
+    ]
+  },
+  {
+    "name": "Балка 30 Б2",
+    "slug": "balka-30-b2-s255-12000-gost35087",
+    "size": 30,
+    "series": "Б2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 82800,
+    "_dedup_count": 2,
+    "_all_prices": [
+      82800,
+      83300
+    ]
+  },
+  {
+    "name": "Балка 30 Б3",
+    "slug": "balka-30-b3-s255-12000-gost35087",
+    "size": 30,
+    "series": "Б3",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 83300,
+    "_dedup_count": 1,
+    "_all_prices": [
+      83300
+    ]
+  },
+  {
+    "name": "Балка 30 К1",
+    "slug": "balka-30-k1-s255-12000-gost35087",
+    "size": 30,
+    "series": "К1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 80400,
+    "_dedup_count": 2,
+    "_all_prices": [
+      80400,
+      80900
+    ]
+  },
+  {
+    "name": "Балка 30 К2",
+    "slug": "balka-30-k2-s255-12000-gost35087",
+    "size": 30,
+    "series": "К2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 80900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      80900
+    ]
+  },
+  {
+    "name": "Балка 30 К3",
+    "slug": "balka-30-k3-s255-12000-gost35087",
+    "size": 30,
+    "series": "К3",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 80900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      80900
+    ]
+  },
+  {
+    "name": "Балка 30 К4",
+    "slug": "balka-30-k4-s255-12000-gost35087",
+    "size": 30,
+    "series": "К4",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 80900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      80900
+    ]
+  },
+  {
+    "name": "Балка 30 К5",
+    "slug": "balka-30-k5-s255-12000-gost35087",
+    "size": 30,
+    "series": "К5",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 80900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      80900
+    ]
+  },
+  {
+    "name": "Балка 30 М",
+    "slug": "balka-30-m-s255-12000-gost19425",
+    "size": 30,
+    "series": "М",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 19425-74",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 133990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      133990
+    ]
+  },
+  {
+    "name": "Балка 30 Ш1",
+    "slug": "balka-30-sh1-s255-12000-gost35087",
+    "size": 30,
+    "series": "Ш1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 80400,
+    "_dedup_count": 2,
+    "_all_prices": [
+      80400,
+      80900
+    ]
+  },
+  {
+    "name": "Балка 30 Ш2",
+    "slug": "balka-30-sh2-s255-12000-gost35087",
+    "size": 30,
+    "series": "Ш2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 80900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      80900
+    ]
+  },
+  {
+    "name": "Балка 30 Ш3",
+    "slug": "balka-30-sh3-s255-12000-gost35087",
+    "size": 30,
+    "series": "Ш3",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 80900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      80900
+    ]
+  },
+  {
+    "name": "Балка 35 Б1",
+    "slug": "balka-35-b1-s255-12000-gost35087",
+    "size": 35,
+    "series": "Б1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 82400,
+    "_dedup_count": 2,
+    "_all_prices": [
+      82400,
+      82900
+    ]
+  },
+  {
+    "name": "Балка 35 Б1",
+    "slug": "balka-35-b1-st3-nd-gostr57837",
+    "size": 35,
+    "series": "Б1",
+    "steel_grade": "Ст3",
+    "gost": "ГОСТ Р 57837-2017(АСЧМ 20-93)",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "base_price": 71000,
+    "_dedup_count": 1,
+    "_all_prices": [
+      71000
+    ]
+  },
+  {
+    "name": "Балка 35 Б2",
+    "slug": "balka-35-b2-s255-12000-gost35087",
+    "size": 35,
+    "series": "Б2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 82900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      82900
+    ]
+  },
+  {
+    "name": "Балка 35 Б2",
+    "slug": "balka-35-b2-st3-12000-gost35087",
+    "size": 35,
+    "series": "Б2",
+    "steel_grade": "Ст3",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 82900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      82900
+    ]
+  },
+  {
+    "name": "Балка 35 К1",
+    "slug": "balka-35-k1-s255-12000-gost35087",
+    "size": 35,
+    "series": "К1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 80900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      80900
+    ]
+  },
+  {
+    "name": "Балка 35 К2",
+    "slug": "balka-35-k2-s255-12000-gost35087",
+    "size": 35,
+    "series": "К2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 85800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      85800
+    ]
+  },
+  {
+    "name": "Балка 35 Ш1",
+    "slug": "balka-35-sh1-s255-12000-gost35087",
+    "size": 35,
+    "series": "Ш1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 80900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      80900
+    ]
+  },
+  {
+    "name": "Балка 35 Ш2",
+    "slug": "balka-35-sh2-s255-12000-gost35087",
+    "size": 35,
+    "series": "Ш2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 80900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      80900
+    ]
+  },
+  {
+    "name": "Балка 36 М",
+    "slug": "balka-36-m-s255-12000-gost19425",
+    "size": 36,
+    "series": "М",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 19425-74",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 133990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      133990
+    ]
+  },
+  {
+    "name": "Балка 40 Б1",
+    "slug": "balka-40-b1-s255-12000-gost35087",
+    "size": 40,
+    "series": "Б1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 80400,
+    "_dedup_count": 2,
+    "_all_prices": [
+      80400,
+      80900
+    ]
+  },
+  {
+    "name": "Балка 40 Б2",
+    "slug": "balka-40-b2-st3-nd-gost35087",
+    "size": 40,
+    "series": "Б2",
+    "steel_grade": "Ст3",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "base_price": 80400,
+    "_dedup_count": 1,
+    "_all_prices": [
+      80400
+    ]
+  },
+  {
+    "name": "Балка 40 Б2",
+    "slug": "balka-40-b2-s255-12000-gost35087",
+    "size": 40,
+    "series": "Б2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 80900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      80900
+    ]
+  },
+  {
+    "name": "Балка 40 К1",
+    "slug": "balka-40-k1-s255-12000-gost35087",
+    "size": 40,
+    "series": "К1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 99400,
+    "_dedup_count": 1,
+    "_all_prices": [
+      99400
+    ]
+  },
+  {
+    "name": "Балка 40 К2",
+    "slug": "balka-40-k2-s255-12000-gost35087",
+    "size": 40,
+    "series": "К2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 100400,
+    "_dedup_count": 2,
+    "_all_prices": [
+      100400,
+      100900
+    ]
+  },
+  {
+    "name": "Балка 40 К4",
+    "slug": "balka-40-k4-s255-12000-gost35087",
+    "size": 40,
+    "series": "К4",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 100900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      100900
+    ]
+  },
+  {
+    "name": "Балка 40 К5",
+    "slug": "balka-40-k5-s255-12000-gost35087",
+    "size": 40,
+    "series": "К5",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 100900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      100900
+    ]
+  },
+  {
+    "name": "Балка 40 Ш1",
+    "slug": "balka-40-sh1-s255-12000-gost35087",
+    "size": 40,
+    "series": "Ш1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 79400,
+    "_dedup_count": 3,
+    "_all_prices": [
+      79400,
+      79900
+    ]
+  },
+  {
+    "name": "Балка 40 Ш1",
+    "slug": "balka-40-sh1-s255-nd-gostr57837",
+    "size": 40,
+    "series": "Ш1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ Р 57837(АСЧМ 20-93)",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "base_price": 79400,
+    "_dedup_count": 1,
+    "_all_prices": [
+      79400
+    ]
+  },
+  {
+    "name": "Балка 40 Ш2",
+    "slug": "balka-40-sh2-s255-12000-gost35087",
+    "size": 40,
+    "series": "Ш2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 79900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      79900
+    ]
+  },
+  {
+    "name": "Балка 40 Ш5",
+    "slug": "balka-40-sh5-s255-12000-gost35087",
+    "size": 40,
+    "series": "Ш5",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 79900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      79900
+    ]
+  },
+  {
+    "name": "Балка 40 Ш6",
+    "slug": "balka-40-sh6-s255-12000-gost35087",
+    "size": 40,
+    "series": "Ш6",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 79900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      79900
+    ]
+  },
+  {
+    "name": "Балка 45 Б1",
+    "slug": "balka-45-b1-s255-12000-gost35087",
+    "size": 45,
+    "series": "Б1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 79800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      79800
+    ]
+  },
+  {
+    "name": "Балка 45 Б2",
+    "slug": "balka-45-b2-s255-12000-gost35087",
+    "size": 45,
+    "series": "Б2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 79800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      79800
+    ]
+  },
+  {
+    "name": "Балка 45 М",
+    "slug": "balka-45-m-s255-12000-gost19425",
+    "size": 45,
+    "series": "М",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 19425-74",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 134990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      134990
+    ]
+  },
+  {
+    "name": "Балка 45 Ш1",
+    "slug": "balka-45-sh1-s255-12000-gost35087",
+    "size": 45,
+    "series": "Ш1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 86100,
+    "_dedup_count": 1,
+    "_all_prices": [
+      86100
+    ]
+  },
+  {
+    "name": "Балка 45 Ш2",
+    "slug": "balka-45-sh2-s255-12000-gost35087",
+    "size": 45,
+    "series": "Ш2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 86100,
+    "_dedup_count": 1,
+    "_all_prices": [
+      86100
+    ]
+  },
+  {
+    "name": "Балка 45 Ш2",
+    "slug": "balka-45-sh2-st3-12000-gost35087",
+    "size": 45,
+    "series": "Ш2",
+    "steel_grade": "Ст3",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 86100,
+    "_dedup_count": 1,
+    "_all_prices": [
+      86100
+    ]
+  },
+  {
+    "name": "Балка 45 Ш3",
+    "slug": "balka-45-sh3-s255-12000-gost35087",
+    "size": 45,
+    "series": "Ш3",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 86100,
+    "_dedup_count": 1,
+    "_all_prices": [
+      86100
+    ]
+  },
+  {
+    "name": "Балка 50 Б1",
+    "slug": "balka-50-b1-s255-12000-gost35087",
+    "size": 50,
+    "series": "Б1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 79800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      79800
+    ]
+  },
+  {
+    "name": "Балка 50 Б2",
+    "slug": "balka-50-b2-s255-12000-gost35087",
+    "size": 50,
+    "series": "Б2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 79800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      79800
+    ]
+  },
+  {
+    "name": "Балка 50 Б3",
+    "slug": "balka-50-b3-s255-12000-gost35087",
+    "size": 50,
+    "series": "Б3",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 79800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      79800
+    ]
+  },
+  {
+    "name": "Балка 50 Ш1",
+    "slug": "balka-50-sh1-s255-12000-gost35087",
+    "size": 50,
+    "series": "Ш1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 79900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      79900
+    ]
+  },
+  {
+    "name": "Балка 50 Ш1",
+    "slug": "balka-50-sh1-s255-nd-gostr57837",
+    "size": 50,
+    "series": "Ш1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ Р 57837(АСЧМ 20-93)",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "base_price": 79400,
+    "_dedup_count": 1,
+    "_all_prices": [
+      79400
+    ]
+  },
+  {
+    "name": "Балка 50 Ш2",
+    "slug": "balka-50-sh2-s255-12000-gost35087",
+    "size": 50,
+    "series": "Ш2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 84800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      84800
+    ]
+  },
+  {
+    "name": "Балка 50 Ш3",
+    "slug": "balka-50-sh3-s255-12000-gost35087",
+    "size": 50,
+    "series": "Ш3",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 84800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      84800
+    ]
+  },
+  {
+    "name": "Балка 55 Б1",
+    "slug": "balka-55-b1-s255-12000-gost35087",
+    "size": 55,
+    "series": "Б1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 79900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      79900
+    ]
+  },
+  {
+    "name": "Балка 55 Б1",
+    "slug": "balka-55-b1-s255-12000-gostr57837",
+    "size": 55,
+    "series": "Б1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ Р 57837-2017(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 79900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      79900
+    ]
+  },
+  {
+    "name": "Балка 55 Б2",
+    "slug": "balka-55-b2-s255-12000-gost35087",
+    "size": 55,
+    "series": "Б2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 79900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      79900
+    ]
+  },
+  {
+    "name": "Балка 60 Б1",
+    "slug": "balka-60-b1-s255-12000-gost35087",
+    "size": 60,
+    "series": "Б1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 79900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      79900
+    ]
+  },
+  {
+    "name": "Балка 60 Б2",
+    "slug": "balka-60-b2-s255-12000-gost35087",
+    "size": 60,
+    "series": "Б2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 84800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      84800
+    ]
+  },
+  {
+    "name": "Балка 60 Ш1",
+    "slug": "balka-60-sh1-s255-12000-gost35087",
+    "size": 60,
+    "series": "Ш1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 92800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      92800
+    ]
+  },
+  {
+    "name": "Балка 60 Ш2",
+    "slug": "balka-60-sh2-s255-12000-gost35087",
+    "size": 60,
+    "series": "Ш2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 94300,
+    "_dedup_count": 1,
+    "_all_prices": [
+      94300
+    ]
+  },
+  {
+    "name": "Балка 60 Ш3",
+    "slug": "balka-60-sh3-s255-12000-gost35087",
+    "size": 60,
+    "series": "Ш3",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 94300,
+    "_dedup_count": 1,
+    "_all_prices": [
+      94300
+    ]
+  },
+  {
+    "name": "Балка 60 Ш4",
+    "slug": "balka-60-sh4-s255-12000-gost35087",
+    "size": 60,
+    "series": "Ш4",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 94300,
+    "_dedup_count": 1,
+    "_all_prices": [
+      94300
+    ]
+  },
+  {
+    "name": "Балка 70 Б1",
+    "slug": "balka-70-b1-s255-12000-gost35087",
+    "size": 70,
+    "series": "Б1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 82400,
+    "_dedup_count": 1,
+    "_all_prices": [
+      82400
+    ]
+  },
+  {
+    "name": "Балка 70 Б1",
+    "slug": "balka-70-b1-s245-255-12000-gostr57837",
+    "size": 70,
+    "series": "Б1",
+    "steel_grade": "С245/255",
+    "gost": "ГОСТ Р 57837-2017(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 81900,
+    "_dedup_count": 1,
+    "_all_prices": [
+      81900
+    ]
+  },
+  {
+    "name": "Балка 70 Б2",
+    "slug": "balka-70-b2-s255-12000-gost35087",
+    "size": 70,
+    "series": "Б2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 83000,
+    "_dedup_count": 1,
+    "_all_prices": [
+      83000
+    ]
+  },
+  {
+    "name": "Балка 70 Б3",
+    "slug": "balka-70-b3-s255-12000-gost35087",
+    "size": 70,
+    "series": "Б3",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 83000,
+    "_dedup_count": 1,
+    "_all_prices": [
+      83000
+    ]
+  },
+  {
+    "name": "Балка 70 Б4",
+    "slug": "balka-70-b4-s255-12000-gost35087",
+    "size": 70,
+    "series": "Б4",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 83000,
+    "_dedup_count": 1,
+    "_all_prices": [
+      83000
+    ]
+  },
+  {
+    "name": "Балка 70 Ш1",
+    "slug": "balka-70-sh1-s255-12000-gost35087",
+    "size": 70,
+    "series": "Ш1",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 91300,
+    "_dedup_count": 1,
+    "_all_prices": [
+      91300
+    ]
+  },
+  {
+    "name": "Балка 70 Ш2",
+    "slug": "balka-70-sh2-st3-12000-gost35087",
+    "size": 70,
+    "series": "Ш2",
+    "steel_grade": "Ст3",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 92800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      92800
+    ]
+  },
+  {
+    "name": "Балка 70 Ш2",
+    "slug": "balka-70-sh2-s255-12000-gost35087",
+    "size": 70,
+    "series": "Ш2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 92800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      92800
+    ]
+  },
+  {
+    "name": "Балка 70 Ш2",
+    "slug": "balka-70-sh2-s255-nd-gostr57837",
+    "size": 70,
+    "series": "Ш2",
+    "steel_grade": "С255",
+    "gost": "ГОСТ Р 57837-2017(АСЧМ 20-93)",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "base_price": 77200,
+    "_dedup_count": 1,
+    "_all_prices": [
+      77200
+    ]
+  },
+  {
+    "name": "Балка 70 Ш3",
+    "slug": "balka-70-sh3-s255-12000-gost35087",
+    "size": 70,
+    "series": "Ш3",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 93300,
+    "_dedup_count": 1,
+    "_all_prices": [
+      93300
+    ]
+  },
+  {
+    "name": "Балка 70 Ш4",
+    "slug": "balka-70-sh4-s255-12000-gost35087",
+    "size": 70,
+    "series": "Ш4",
+    "steel_grade": "С255",
+    "gost": "ГОСТ 35087/Р 57837(АСЧМ 20-93)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 93300,
+    "_dedup_count": 1,
+    "_all_prices": [
+      93300
+    ]
+  }
+]
