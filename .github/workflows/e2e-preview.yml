@@ -24,11 +24,29 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - run: npm ci --legacy-peer-deps
+      # Vercel preview под SSO-protection: без VERCEL_AUTOMATION_BYPASS_SECRET
+      # тесты упрутся в Vercel-login HTML вместо приложения. Если секрет
+      # не выставлен — пропускаем шаг (workflow остаётся success).
+      - name: Check VERCEL_AUTOMATION_BYPASS_SECRET
+        id: bypass-check
+        env:
+          BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: |
+          if [ -z "$BYPASS" ]; then
+            echo "Bypass secret not set — E2E will be skipped."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
 
-      - run: npx playwright install --with-deps chromium
+      - if: steps.bypass-check.outputs.skip != 'true'
+        run: npm ci --legacy-peer-deps
+
+      - if: steps.bypass-check.outputs.skip != 'true'
+        run: npx playwright install --with-deps chromium
 
       - name: Run E2E
+        if: steps.bypass-check.outputs.skip != 'true'
         env:
           E2E_BASE_URL: ${{ github.event.deployment_status.target_url }}
           VERCEL_BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
@@ -37,7 +55,7 @@ jobs:
         run: npx playwright test
 
       - name: Upload report on failure
-        if: failure()
+        if: failure() && steps.bypass-check.outputs.skip != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
