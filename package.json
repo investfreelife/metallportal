@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "verify-nav": "tsx scripts/verify-nav.ts",
+    "build": "npm run verify-nav && next build",
     "start": "next start",
     "lint": "next lint",
     "db:push": "npx supabase db push",
