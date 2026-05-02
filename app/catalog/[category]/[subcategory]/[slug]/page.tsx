@@ -7,7 +7,12 @@ import {
 import CatalogView from "@/components/catalog/CatalogView";
 import ProductDetailView from "@/components/catalog/ProductDetailView";
 
-export const revalidate = 3600;
+// W2-3: было `revalidate = 3600` (ISR-кеш на час). Категории info-fields
+// (description / seo_text / gost_url / cta_*) могут редактироваться через
+// админку — час задержки → пользователь видит старое наполнение. Сокращаем
+// до 60 сек, что достаточно для UX, и не наказываем БД (~1 SELECT/мин на
+// уникальную страницу).
+export const revalidate = 60;
 
 interface Props {
   params: { category: string; subcategory: string; slug: string };
