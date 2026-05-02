@@ -54,7 +54,9 @@ test.describe('admin', () => {
     const priceInput = page.locator('input[type="number"]').first()
     await expect(priceInput).toBeVisible({ timeout: 5_000 })
 
-    const newPrice = '12345'
+    // Уникальная цена на каждый прогон — иначе тест не сработает повторно
+    // (если в прошлом проходе price уже = 12345, fill('12345') → val===value → save no-op).
+    const newPrice = String(10000 + Math.floor(Math.random() * 89999))
     await priceInput.fill(newPrice)
 
     // Перехватываем PATCH ответ
