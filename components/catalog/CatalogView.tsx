@@ -5,6 +5,7 @@ import Link from "next/link";
 import { LayoutGrid, List, ChevronDown, ChevronUp, Upload, Loader2, Layers } from "lucide-react";
 import CatalogProductTable from "./ProductTable";
 import CatalogProductCard from "./ProductCard";
+import CategoryInfoBlock, { hasCategoryInfo } from "./CategoryInfoBlock";
 import { useSetCatalogFilters } from "@/contexts/CatalogFiltersContext";
 
 async function compressAndUpload(file: File): Promise<string | null> {
@@ -394,6 +395,12 @@ export default function CatalogView({ category, subcategories, products, categor
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, filterOptions, hasActiveFilters, isNavesy]);
 
+  // W2-3: info-only режим. Категория имеет seo_text/description/gost_url, но
+  // продуктов под ней нет (например `armatura-a500sneu-a1000`). Скрываем
+  // subcategory chips, sort/view-toggle и продуктовую секцию — оставляем
+  // только описание + CTA.
+  const infoOnly = products.length === 0 && hasCategoryInfo(category);
+
   return (
     <div>
         {/* Breadcrumb */}
@@ -407,8 +414,14 @@ export default function CatalogView({ category, subcategories, products, categor
 
         <h1 className="text-3xl font-bold text-foreground mb-5">{category.name}</h1>
 
-        {/* Subcategory chips */}
-        {subcategories.length > 0 && (
+        {/* W2-3: info-block (description / seo_text markdown / GOST link / CTA).
+           Рендерится для info-only категорий (например `armatura-a500sneu-a1000`).
+           Если у категории нет ни одного из полей — компонент сам возвращает null. */}
+        <CategoryInfoBlock info={category} />
+
+        {/* Subcategory chips — скрываем в info-only режиме (категория без товаров,
+           но с описанием — нет смысла показывать пустые chips). */}
+        {subcategories.length > 0 && !infoOnly && (
           <div className="flex gap-2 flex-wrap mb-6">
             <button
               onClick={() => { setActiveSub(""); setPage(1); }}
@@ -439,7 +452,8 @@ export default function CatalogView({ category, subcategories, products, categor
           </div>
         )}
 
-        {/* Sort + View toggle */}
+        {/* Sort + View toggle — скрываем в info-only режиме (нечего сортировать). */}
+        {!infoOnly && (
         <div className="flex items-center justify-between gap-4 mb-4 flex-wrap">
           <div className="flex items-center gap-3 flex-wrap">
             <button
@@ -472,8 +486,11 @@ export default function CatalogView({ category, subcategories, products, categor
             </div>
           </div>
         </div>
+        )}
 
-        {/* Main: products only (filters are in left sidebar via context) */}
+        {/* Main: products only (filters are in left sidebar via context).
+            Скрыт целиком в info-only режиме — нечего показывать. */}
+        {!infoOnly && (
         <div>
           <main className="min-w-0">
             {paginatedProducts.length === 0 ? (
@@ -545,6 +562,7 @@ export default function CatalogView({ category, subcategories, products, categor
             )}
           </main>
         </div>
+        )}
     </div>
   );
 }
