@@ -1,6 +1,15 @@
 import Link from "next/link";
+import { fetchCategoriesTree, categoryHref } from "@/lib/categories";
 
-export default function Footer() {
+// Сколько root-категорий показывает блок "Продукция" в Footer'е. Меньше
+// чем в Header (5) — оставшиеся уезжают на /catalog. Если в БД < 5
+// активных root'ов — покажем сколько есть, без падения.
+const FOOTER_PRODUCTS_LIMIT = 5;
+
+export default async function Footer() {
+  const tree = await fetchCategoriesTree();
+  const topCategories = tree.slice(0, FOOTER_PRODUCTS_LIMIT);
+
   return (
     <footer className="bg-card border-t border-gold/20">
       <div className="max-w-[1440px] mx-auto px-8 py-12">
@@ -27,23 +36,29 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Products */}
+          {/* Products — data-driven из таблицы categories (W2-1) */}
           <div>
             <h4 className="text-foreground uppercase tracking-widest mb-4 text-sm">
               Продукция
             </h4>
             <ul className="space-y-2">
+              {topCategories.map((cat) => (
+                <li key={cat.id}>
+                  <Link
+                    href={categoryHref(cat)}
+                    className="text-sm text-foreground/60 hover:text-gold transition-colors"
+                  >
+                    {cat.name}
+                  </Link>
+                </li>
+              ))}
               <li>
-                <Link href="/catalog/sortovoy-prokat" className="text-sm text-foreground/60 hover:text-gold transition-colors">Арматура</Link>
-              </li>
-              <li>
-                <Link href="/catalog/truby" className="text-sm text-foreground/60 hover:text-gold transition-colors">Трубы</Link>
-              </li>
-              <li>
-                <Link href="/catalog/listovoy-prokat" className="text-sm text-foreground/60 hover:text-gold transition-colors">Листовой металл</Link>
-              </li>
-              <li>
-                <Link href="/catalog/sortovoy-prokat" className="text-sm text-foreground/60 hover:text-gold transition-colors">Балки и швеллера</Link>
+                <Link
+                  href="/catalog"
+                  className="text-sm text-gold/80 hover:text-gold transition-colors"
+                >
+                  Весь каталог →
+                </Link>
               </li>
             </ul>
           </div>
