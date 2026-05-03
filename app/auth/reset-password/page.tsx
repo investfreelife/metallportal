@@ -21,23 +21,54 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // Supabase parses #access_token from URL fragment automatically and
-  // fires PASSWORD_RECOVERY in onAuthStateChange. Listen and unlock form.
+  // Recovery flow can arrive in two shapes:
+  //   PKCE (default in @supabase/ssr): ?code=<pkce> in query
+  //   Implicit (legacy):              #access_token=...&type=recovery in hash
+  // @supabase/ssr's createBrowserClient auto-exchanges either form on mount,
+  // but the resulting event differs (SIGNED_IN for PKCE, PASSWORD_RECOVERY for
+  // implicit). We listen for both, plus poll getUser() as a final fallback.
   useEffect(() => {
+    let cancelled = false;
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY") setStage("ready");
+      if (cancelled) return;
+      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") {
+        setStage("ready");
+      }
     });
 
-    // If user lands here without a recovery token (or token already consumed)
-    // and there's no current session — show no_token state after a tick.
-    const timer = setTimeout(async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setStage((s) => (s === "checking" ? (user ? "ready" : "no_token") : s));
-    }, 800);
+    const init = async () => {
+      const url = new URL(window.location.href);
+      const errorDesc = url.searchParams.get("error_description") || url.hash.match(/error_description=([^&]*)/)?.[1];
+      if (errorDesc) {
+        if (!cancelled) {
+          setError(decodeURIComponent(errorDesc.replace(/\+/g, " ")));
+          setStage("no_token");
+        }
+        return;
+      }
+
+      // Poll for ~1.5s while @supabase/ssr exchanges the code/hash for a session.
+      for (let i = 0; i < 15; i++) {
+        if (cancelled) return;
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          if (!cancelled) setStage("ready");
+          return;
+        }
+        await new Promise((r) => setTimeout(r, 100));
+      }
+
+      if (!cancelled) {
+        setStage((s) => (s === "checking" ? "no_token" : s));
+      }
+    };
+
+    init();
 
     return () => {
+      cancelled = true;
       subscription.unsubscribe();
-      clearTimeout(timer);
     };
   }, []);
 
