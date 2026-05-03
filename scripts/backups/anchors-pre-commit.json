@@ -1,0 +1,35 @@
+{
+  "wave": "anchors (Анкерная техника)",
+  "branch": "feat/anchors-ankernaya-tehnika",
+  "head_before_seed": "ba4288ffe4863c02f9cd4ecf74b7dc387211f6e7",
+  "main_head": "ba4288ffe4863c02f9cd4ecf74b7dc387211f6e7",
+  "timestamp": "2026-05-03T20:31:59Z",
+  "counts_before_commit": {
+    "products_total": 1820,
+    "price_items_total": 2016,
+    "products_under_ankernaya_tehnika_l3": 0
+  },
+  "expected_after_commit": {
+    "products_total": 2046,
+    "price_items_total": 2242,
+    "delta_products": 226,
+    "delta_price_items": 226,
+    "delta_breakdown": "single-unit (шт): 226 × 1 = 226"
+  },
+  "category_uuid": "8c15bfa8-818a-4674-81d9-6a026bd36ca5",
+  "anchor_type_distribution": {
+    "ankernyy-bolt-s-gaykoy":      58,
+    "anker-klinovoy":              46,
+    "ankernyy-bolt":               39,
+    "ankernyy-bolt-s-polukoltsom": 21,
+    "ankernyy-bolt-s-koltsom":     20,
+    "ankernyy-bolt-g-obraznyy":    15,
+    "anker-ramnyy":                14,
+    "anker-zabivnoy":               6,
+    "anker-vsr":                    2,
+    "anker-klin":                   2,
+    "anker-latunnyy":               2,
+    "dyubel-gvozd-metallicheskiy":  1
+  },
+  "rollback": "DELETE FROM price_items WHERE product_id IN (SELECT id FROM products WHERE category_id = '8c15bfa8-818a-4674-81d9-6a026bd36ca5'); DELETE FROM products WHERE category_id = '8c15bfa8-818a-4674-81d9-6a026bd36ca5';"
+}
