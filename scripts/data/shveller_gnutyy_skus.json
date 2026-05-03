@@ -1,0 +1,869 @@
+[
+  {
+    "name": "Швеллер гнутый 50x40x3",
+    "slug": "shveller-gnutyy-50x40x3-12000",
+    "size": 50,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 63890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      63890,
+      63990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 60x32x3",
+    "slug": "shveller-gnutyy-60x32x3-12000",
+    "size": 60,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 63890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      63890,
+      63990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 60x32x4",
+    "slug": "shveller-gnutyy-60x32x4-12000",
+    "size": 60,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 62890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      62890,
+      62990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 60x50x3",
+    "slug": "shveller-gnutyy-60x50x3-12000",
+    "size": 60,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 61890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      61890,
+      61990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 80x32x4",
+    "slug": "shveller-gnutyy-80x32x4-12000",
+    "size": 80,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 61890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      61890,
+      61990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 80x40x3",
+    "slug": "shveller-gnutyy-80x40x3-12000",
+    "size": 80,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 61890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      61890,
+      61990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 80x50x4",
+    "slug": "shveller-gnutyy-80x50x4-12000",
+    "size": 80,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 61890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      61890,
+      61990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 80x60x3",
+    "slug": "shveller-gnutyy-80x60x3-12000",
+    "size": 80,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 61890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      61890,
+      61990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 80x60x4",
+    "slug": "shveller-gnutyy-80x60x4-12000",
+    "size": 80,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 61890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      61890,
+      61990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый низколегир 80x60x4",
+    "slug": "shveller-gnutyy-nl-80x60x4-12000",
+    "size": 80,
+    "is_nl": true,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 68790,
+    "_dedup_count": 1,
+    "_all_prices": [
+      68790,
+      68890
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 100x50x3",
+    "slug": "shveller-gnutyy-100x50x3-12000",
+    "size": 100,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 59890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      59890,
+      59990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 100x50x4",
+    "slug": "shveller-gnutyy-100x50x4-12000",
+    "size": 100,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 59890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      59890,
+      59990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 100x50x4",
+    "slug": "shveller-gnutyy-100x50x4-nd",
+    "size": 100,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "base_price": 63890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      63890,
+      63990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 100x50x5",
+    "slug": "shveller-gnutyy-100x50x5-12000",
+    "size": 100,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 59890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      59890,
+      59990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 120x50x3",
+    "slug": "shveller-gnutyy-120x50x3-12000",
+    "size": 120,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 63890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      63890,
+      63990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 120x50x3",
+    "slug": "shveller-gnutyy-120x50x3-nd",
+    "size": 120,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "base_price": 59890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      59890,
+      59990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 120x60x4",
+    "slug": "shveller-gnutyy-120x60x4-12000",
+    "size": 120,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 64890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      64890,
+      64990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 120x60x6",
+    "slug": "shveller-gnutyy-120x60x6-12000",
+    "size": 120,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 63890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      63890,
+      63990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 120x80x4",
+    "slug": "shveller-gnutyy-120x80x4-12000",
+    "size": 120,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 63890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      63890,
+      63990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 120x80x5",
+    "slug": "shveller-gnutyy-120x80x5-12000",
+    "size": 120,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 63890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      63890,
+      63990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый низколегир 120x60x4",
+    "slug": "shveller-gnutyy-nl-120x60x4-12000",
+    "size": 120,
+    "is_nl": true,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 78890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      78890,
+      78990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 140x50x4",
+    "slug": "shveller-gnutyy-140x50x4-12000",
+    "size": 140,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 61890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      61890,
+      61990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 140x60x4",
+    "slug": "shveller-gnutyy-140x60x4-12000",
+    "size": 140,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 59890,
+    "_dedup_count": 2,
+    "_all_prices": [
+      59890,
+      59990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 140x60x5",
+    "slug": "shveller-gnutyy-140x60x5-12000",
+    "size": 140,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 59890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      59890,
+      59990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 140x60x5",
+    "slug": "shveller-gnutyy-140x60x5-nd",
+    "size": 140,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "base_price": 59890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      59890,
+      59990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 140x60x6",
+    "slug": "shveller-gnutyy-140x60x6-12000",
+    "size": 140,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 59890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      59890,
+      59990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 160x50x4",
+    "slug": "shveller-gnutyy-160x50x4-12000",
+    "size": 160,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 62890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      62890,
+      62990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 160x60x4",
+    "slug": "shveller-gnutyy-160x60x4-12000",
+    "size": 160,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 59890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      59890,
+      59990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 160x60x5",
+    "slug": "shveller-gnutyy-160x60x5-12000",
+    "size": 160,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 63890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      63890,
+      63990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 160x60x6",
+    "slug": "shveller-gnutyy-160x60x6-12000",
+    "size": 160,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 59890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      59890,
+      59990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 160x80x4",
+    "slug": "shveller-gnutyy-160x80x4-12000",
+    "size": 160,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 59890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      59890,
+      59990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 160x80x4",
+    "slug": "shveller-gnutyy-160x80x4-nd",
+    "size": 160,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "base_price": 60890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      60890,
+      60990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 160x80x5",
+    "slug": "shveller-gnutyy-160x80x5-12000",
+    "size": 160,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 59890,
+    "_dedup_count": 2,
+    "_all_prices": [
+      59890,
+      59990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 160x80x6",
+    "slug": "shveller-gnutyy-160x80x6-12000",
+    "size": 160,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 59890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      59890,
+      59990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 180x50x4",
+    "slug": "shveller-gnutyy-180x50x4-12000",
+    "size": 180,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 59890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      59890,
+      59990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 180x60x4",
+    "slug": "shveller-gnutyy-180x60x4-12000",
+    "size": 180,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 59890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      59890,
+      59990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 180x60x4",
+    "slug": "shveller-gnutyy-180x60x4-nd",
+    "size": 180,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "base_price": 59890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      59890,
+      59990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 180x60x5",
+    "slug": "shveller-gnutyy-180x60x5-12000",
+    "size": 180,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 62890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      62890,
+      62990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 180x70x5",
+    "slug": "shveller-gnutyy-180x70x5-12000",
+    "size": 180,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 62890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      62890,
+      62990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 180x70x6",
+    "slug": "shveller-gnutyy-180x70x6-12000",
+    "size": 180,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 62890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      62890,
+      62990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 180x70x6",
+    "slug": "shveller-gnutyy-180x70x6-nd",
+    "size": 180,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "base_price": 57390,
+    "_dedup_count": 1,
+    "_all_prices": [
+      57390,
+      57490
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 180x80x5",
+    "slug": "shveller-gnutyy-180x80x5-12000",
+    "size": 180,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 62890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      62890,
+      62990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 200x100x5",
+    "slug": "shveller-gnutyy-200x100x5-12000",
+    "size": 200,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 68890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      68890,
+      68990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 200x100x6",
+    "slug": "shveller-gnutyy-200x100x6-12000",
+    "size": 200,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 68890,
+    "_dedup_count": 2,
+    "_all_prices": [
+      68890,
+      68990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 200x50x4",
+    "slug": "shveller-gnutyy-200x50x4-12000",
+    "size": 200,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 65790,
+    "_dedup_count": 1,
+    "_all_prices": [
+      65790,
+      65890
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 200x80x4",
+    "slug": "shveller-gnutyy-200x80x4-12000",
+    "size": 200,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 62890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      62890,
+      62990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 200x80x5",
+    "slug": "shveller-gnutyy-200x80x5-12000",
+    "size": 200,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 62890,
+    "_dedup_count": 2,
+    "_all_prices": [
+      62890,
+      62990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 200x80x6",
+    "slug": "shveller-gnutyy-200x80x6-12000",
+    "size": 200,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 69890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      69890,
+      69990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 250x125x6",
+    "slug": "shveller-gnutyy-250x125x6-12000",
+    "size": 250,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 69890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      69890,
+      69990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 250x60x5",
+    "slug": "shveller-gnutyy-250x60x5-12000",
+    "size": 250,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 63890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      63890,
+      63990
+    ]
+  },
+  {
+    "name": "Швеллер гнутый 250x60x6",
+    "slug": "shveller-gnutyy-250x60x6-12000",
+    "size": 250,
+    "is_nl": false,
+    "steel_grade": null,
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 63890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      63890,
+      63990
+    ]
+  }
+]
