@@ -1,0 +1,1285 @@
+[
+  {
+    "name": "Балка низколегированная",
+    "slug": "balka-nl-10-s345-12000",
+    "size": 10,
+    "series": null,
+    "steel_grade": "С345",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 105890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      105890,
+      105990
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б1",
+    "slug": "balka-nl-10-b1-s345-12000",
+    "size": 10,
+    "series": "Б1",
+    "steel_grade": "С345",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 109990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      109990
+    ]
+  },
+  {
+    "name": "Балка низколегированная",
+    "slug": "balka-nl-12-s345-12000",
+    "size": 12,
+    "series": null,
+    "steel_grade": "С345",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 105890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      105890,
+      105990
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б1",
+    "slug": "balka-nl-12-b1-s345-12000",
+    "size": 12,
+    "series": "Б1",
+    "steel_grade": "С345",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 101990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      101990
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б2",
+    "slug": "balka-nl-12-b2-s345-12000",
+    "size": 12,
+    "series": "Б2",
+    "steel_grade": "С345",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 104990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      104990
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б1",
+    "slug": "balka-nl-14-b1-s345-12000",
+    "size": 14,
+    "series": "Б1",
+    "steel_grade": "С345",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 106990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      106990
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б2",
+    "slug": "balka-nl-14-b2-09g2s-15-12000",
+    "size": 14,
+    "series": "Б2",
+    "steel_grade": "09Г2С-15",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 106990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      106990
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б1",
+    "slug": "balka-nl-16-b1-s355-12000",
+    "size": 16,
+    "series": "Б1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 109990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      109990
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б1",
+    "slug": "balka-nl-16-b1-s345-12000",
+    "size": 16,
+    "series": "Б1",
+    "steel_grade": "С345",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 109990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      109990
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б2",
+    "slug": "balka-nl-16-b2-s355-12000",
+    "size": 16,
+    "series": "Б2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 105990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      105990
+    ]
+  },
+  {
+    "name": "Балка низколегированная",
+    "slug": "balka-nl-18-s355-12000",
+    "size": 18,
+    "series": null,
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 107890,
+    "_dedup_count": 1,
+    "_all_prices": [
+      107890,
+      107990
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б1",
+    "slug": "balka-nl-18-b1-s355-12000",
+    "size": 18,
+    "series": "Б1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 109990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      109990
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б1",
+    "slug": "balka-nl-20-b1-s355-12000",
+    "size": 20,
+    "series": "Б1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 99300,
+    "_dedup_count": 1,
+    "_all_prices": [
+      99300
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б2",
+    "slug": "balka-nl-20-b2-s355-12000",
+    "size": 20,
+    "series": "Б2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 99300,
+    "_dedup_count": 1,
+    "_all_prices": [
+      99300
+    ]
+  },
+  {
+    "name": "Балка низколегированная К1",
+    "slug": "balka-nl-20-k1-s355-12000",
+    "size": 20,
+    "series": "К1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 89200,
+    "_dedup_count": 1,
+    "_all_prices": [
+      89200
+    ]
+  },
+  {
+    "name": "Балка низколегированная К2",
+    "slug": "balka-nl-20-k2-s355-12000",
+    "size": 20,
+    "series": "К2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 89200,
+    "_dedup_count": 1,
+    "_all_prices": [
+      89200
+    ]
+  },
+  {
+    "name": "Балка низколегированная К3",
+    "slug": "balka-nl-20-k3-s355-12000",
+    "size": 20,
+    "series": "К3",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 89200,
+    "_dedup_count": 1,
+    "_all_prices": [
+      89200
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш1",
+    "slug": "balka-nl-20-sh1-s355-12000",
+    "size": 20,
+    "series": "Ш1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 89700,
+    "_dedup_count": 1,
+    "_all_prices": [
+      89700
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш2",
+    "slug": "balka-nl-20-sh2-s355-12000",
+    "size": 20,
+    "series": "Ш2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 89700,
+    "_dedup_count": 1,
+    "_all_prices": [
+      89700
+    ]
+  },
+  {
+    "name": "Балка низколегированная М",
+    "slug": "balka-nl-24-m-s355-12000",
+    "size": 24,
+    "series": "М",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 141990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      141990
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б1",
+    "slug": "balka-nl-25-b1-s355-12000",
+    "size": 25,
+    "series": "Б1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 94000,
+    "_dedup_count": 1,
+    "_all_prices": [
+      94000
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б2",
+    "slug": "balka-nl-25-b2-s355-12000",
+    "size": 25,
+    "series": "Б2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 94000,
+    "_dedup_count": 1,
+    "_all_prices": [
+      94000
+    ]
+  },
+  {
+    "name": "Балка низколегированная К1",
+    "slug": "balka-nl-25-k1-s355-12000",
+    "size": 25,
+    "series": "К1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 86800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      86800
+    ]
+  },
+  {
+    "name": "Балка низколегированная К2",
+    "slug": "balka-nl-25-k2-s355-12000",
+    "size": 25,
+    "series": "К2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 86800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      86800
+    ]
+  },
+  {
+    "name": "Балка низколегированная К3",
+    "slug": "balka-nl-25-k3-s355-12000",
+    "size": 25,
+    "series": "К3",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 86800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      86800
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш1",
+    "slug": "balka-nl-25-sh1-s355-12000",
+    "size": 25,
+    "series": "Ш1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 88800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      88800
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш2",
+    "slug": "balka-nl-25-sh2-s355-12000",
+    "size": 25,
+    "series": "Ш2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 88800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      88800
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б1",
+    "slug": "balka-nl-30-b1-s355-12000",
+    "size": 30,
+    "series": "Б1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 89200,
+    "_dedup_count": 1,
+    "_all_prices": [
+      89200
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б2",
+    "slug": "balka-nl-30-b2-s355-12000",
+    "size": 30,
+    "series": "Б2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 89200,
+    "_dedup_count": 1,
+    "_all_prices": [
+      89200
+    ]
+  },
+  {
+    "name": "Балка низколегированная К1",
+    "slug": "balka-nl-30-k1-s355-12000",
+    "size": 30,
+    "series": "К1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 86800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      86800
+    ]
+  },
+  {
+    "name": "Балка низколегированная К2",
+    "slug": "balka-nl-30-k2-s355-12000",
+    "size": 30,
+    "series": "К2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 86800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      86800
+    ]
+  },
+  {
+    "name": "Балка низколегированная К3",
+    "slug": "balka-nl-30-k3-s355-12000",
+    "size": 30,
+    "series": "К3",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 86800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      86800
+    ]
+  },
+  {
+    "name": "Балка низколегированная К4",
+    "slug": "balka-nl-30-k4-s355-12000",
+    "size": 30,
+    "series": "К4",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 86800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      86800
+    ]
+  },
+  {
+    "name": "Балка низколегированная К5",
+    "slug": "balka-nl-30-k5-s355-12000",
+    "size": 30,
+    "series": "К5",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 86800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      86800
+    ]
+  },
+  {
+    "name": "Балка низколегированная М",
+    "slug": "balka-nl-30-m-s355-12000",
+    "size": 30,
+    "series": "М",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 142990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      142990
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш1",
+    "slug": "balka-nl-30-sh1-s355-12000",
+    "size": 30,
+    "series": "Ш1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 86800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      86800
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш2",
+    "slug": "balka-nl-30-sh2-s355-12000",
+    "size": 30,
+    "series": "Ш2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 86800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      86800
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б1",
+    "slug": "balka-nl-35-b1-s355-12000",
+    "size": 35,
+    "series": "Б1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 88800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      88800
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б2",
+    "slug": "balka-nl-35-b2-s355-12000",
+    "size": 35,
+    "series": "Б2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 88800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      88800
+    ]
+  },
+  {
+    "name": "Балка низколегированная К1",
+    "slug": "balka-nl-35-k1-s355-12000",
+    "size": 35,
+    "series": "К1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 86800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      86800
+    ]
+  },
+  {
+    "name": "Балка низколегированная К2",
+    "slug": "balka-nl-35-k2-s355-12000",
+    "size": 35,
+    "series": "К2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 91700,
+    "_dedup_count": 1,
+    "_all_prices": [
+      91700
+    ]
+  },
+  {
+    "name": "Балка низколегированная К3",
+    "slug": "balka-nl-35-k3-s355-12000",
+    "size": 35,
+    "series": "К3",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 91700,
+    "_dedup_count": 1,
+    "_all_prices": [
+      91700
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш2",
+    "slug": "balka-nl-35-sh2-s355-12000",
+    "size": 35,
+    "series": "Ш2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 86800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      86800
+    ]
+  },
+  {
+    "name": "Балка низколегированная М",
+    "slug": "balka-nl-36-m-s355-12000",
+    "size": 36,
+    "series": "М",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 141990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      141990
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б1",
+    "slug": "balka-nl-40-b1-s355-12000",
+    "size": 40,
+    "series": "Б1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 86800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      86800
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б2",
+    "slug": "balka-nl-40-b2-s355-12000",
+    "size": 40,
+    "series": "Б2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 86800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      86800
+    ]
+  },
+  {
+    "name": "Балка низколегированная К1",
+    "slug": "balka-nl-40-k1-s355-12000",
+    "size": 40,
+    "series": "К1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 105400,
+    "_dedup_count": 1,
+    "_all_prices": [
+      105400
+    ]
+  },
+  {
+    "name": "Балка низколегированная К2",
+    "slug": "balka-nl-40-k2-s355-12000",
+    "size": 40,
+    "series": "К2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 106800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      106800
+    ]
+  },
+  {
+    "name": "Балка низколегированная К3",
+    "slug": "balka-nl-40-k3-s355-12000",
+    "size": 40,
+    "series": "К3",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 106800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      106800
+    ]
+  },
+  {
+    "name": "Балка низколегированная К4",
+    "slug": "balka-nl-40-k4-s355-12000",
+    "size": 40,
+    "series": "К4",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 106800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      106800
+    ]
+  },
+  {
+    "name": "Балка низколегированная К5",
+    "slug": "balka-nl-40-k5-s355-12000",
+    "size": 40,
+    "series": "К5",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 106800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      106800
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш1",
+    "slug": "balka-nl-40-sh1-s355-12000",
+    "size": 40,
+    "series": "Ш1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 85800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      85800
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш2",
+    "slug": "balka-nl-40-sh2-s355-12000",
+    "size": 40,
+    "series": "Ш2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 85800,
+    "_dedup_count": 2,
+    "_all_prices": [
+      85800
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш3",
+    "slug": "balka-nl-40-sh3-s355-12000",
+    "size": 40,
+    "series": "Ш3",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 85800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      85800
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш4",
+    "slug": "balka-nl-40-sh4-s355-12000",
+    "size": 40,
+    "series": "Ш4",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 85800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      85800
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б1",
+    "slug": "balka-nl-45-b1-s355-12000",
+    "size": 45,
+    "series": "Б1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 85800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      85800
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б2",
+    "slug": "balka-nl-45-b2-s355-12000",
+    "size": 45,
+    "series": "Б2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 85800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      85800
+    ]
+  },
+  {
+    "name": "Балка низколегированная М",
+    "slug": "balka-nl-45-m-s355-12000",
+    "size": 45,
+    "series": "М",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 141990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      141990
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш1",
+    "slug": "balka-nl-45-sh1-s355-12000",
+    "size": 45,
+    "series": "Ш1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 92000,
+    "_dedup_count": 1,
+    "_all_prices": [
+      92000
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш2",
+    "slug": "balka-nl-45-sh2-s355-12000",
+    "size": 45,
+    "series": "Ш2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 92000,
+    "_dedup_count": 1,
+    "_all_prices": [
+      92000
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш1",
+    "slug": "balka-nl-50-sh1-s355-12000",
+    "size": 50,
+    "series": "Ш1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 85800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      85800
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш2",
+    "slug": "balka-nl-50-sh2-s355-12000",
+    "size": 50,
+    "series": "Ш2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 90700,
+    "_dedup_count": 1,
+    "_all_prices": [
+      90700
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш2",
+    "slug": "balka-nl-50-sh2-s355-10500",
+    "size": 50,
+    "series": "Ш2",
+    "steel_grade": "С355",
+    "length": 10500,
+    "length_options": [
+      "10500"
+    ],
+    "base_price": 90700,
+    "_dedup_count": 1,
+    "_all_prices": [
+      90700
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш3",
+    "slug": "balka-nl-50-sh3-s355-12000",
+    "size": 50,
+    "series": "Ш3",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 90700,
+    "_dedup_count": 1,
+    "_all_prices": [
+      90700
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш4",
+    "slug": "balka-nl-50-sh4-s355-12000",
+    "size": 50,
+    "series": "Ш4",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 90700,
+    "_dedup_count": 1,
+    "_all_prices": [
+      90700
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш5",
+    "slug": "balka-nl-50-sh5-s355-12000",
+    "size": 50,
+    "series": "Ш5",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 90700,
+    "_dedup_count": 1,
+    "_all_prices": [
+      90700
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б1",
+    "slug": "balka-nl-55-b1-s355-12000",
+    "size": 55,
+    "series": "Б1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 85800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      85800
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б2",
+    "slug": "balka-nl-55-b2-s355-12000",
+    "size": 55,
+    "series": "Б2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 85800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      85800
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б1",
+    "slug": "balka-nl-60-b1-s355-12000",
+    "size": 60,
+    "series": "Б1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 85800,
+    "_dedup_count": 1,
+    "_all_prices": [
+      85800
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б2",
+    "slug": "balka-nl-60-b2-s355-12000",
+    "size": 60,
+    "series": "Б2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 90700,
+    "_dedup_count": 1,
+    "_all_prices": [
+      90700
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш1",
+    "slug": "balka-nl-60-sh1-s355-12000",
+    "size": 60,
+    "series": "Ш1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 98700,
+    "_dedup_count": 1,
+    "_all_prices": [
+      98700
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш2",
+    "slug": "balka-nl-60-sh2-s355-12000",
+    "size": 60,
+    "series": "Ш2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 100200,
+    "_dedup_count": 1,
+    "_all_prices": [
+      100200
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш3",
+    "slug": "balka-nl-60-sh3-s355-12000",
+    "size": 60,
+    "series": "Ш3",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 100200,
+    "_dedup_count": 1,
+    "_all_prices": [
+      100200
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш4",
+    "slug": "balka-nl-60-sh4-s355-12000",
+    "size": 60,
+    "series": "Ш4",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 100200,
+    "_dedup_count": 1,
+    "_all_prices": [
+      100200
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б1",
+    "slug": "balka-nl-70-b1-s355-12000",
+    "size": 70,
+    "series": "Б1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 88300,
+    "_dedup_count": 1,
+    "_all_prices": [
+      88300
+    ]
+  },
+  {
+    "name": "Балка низколегированная Б2",
+    "slug": "balka-nl-70-b2-s355-12000",
+    "size": 70,
+    "series": "Б2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 89000,
+    "_dedup_count": 1,
+    "_all_prices": [
+      89000
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш1",
+    "slug": "balka-nl-70-sh1-s355-12000",
+    "size": 70,
+    "series": "Ш1",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 97200,
+    "_dedup_count": 1,
+    "_all_prices": [
+      97200
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш2",
+    "slug": "balka-nl-70-sh2-s355-12000",
+    "size": 70,
+    "series": "Ш2",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 98700,
+    "_dedup_count": 1,
+    "_all_prices": [
+      98700
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш4",
+    "slug": "balka-nl-70-sh4-s355-12000",
+    "size": 70,
+    "series": "Ш4",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 99200,
+    "_dedup_count": 1,
+    "_all_prices": [
+      99200
+    ]
+  },
+  {
+    "name": "Балка низколегированная Ш5",
+    "slug": "balka-nl-70-sh5-s355-12000",
+    "size": 70,
+    "series": "Ш5",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 99200,
+    "_dedup_count": 1,
+    "_all_prices": [
+      99200
+    ]
+  }
+]
