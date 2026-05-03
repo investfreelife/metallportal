@@ -90,6 +90,17 @@ test.describe('admin', () => {
     await expect(page.locator('h1:has-text("Товары")')).toBeVisible({
       timeout: 15_000,
     })
+
+    // Re-apply search filter — page.reload сбрасывает client state input'а.
+    // Без этого default sort by name видит anchors first (3-digit ₽/шт),
+    // newPrice (5-digit ₽/т у круга) на second/third page → not visible.
+    await page.fill('input[placeholder="Поиск по названию..."]', 'круг')
+    await page.waitForResponse(
+      (resp) =>
+        resp.url().includes('/api/admin/products') && resp.url().includes('search='),
+      { timeout: 10_000 },
+    )
+
     await expect(page.getByText(newPrice).first()).toBeVisible({ timeout: 10_000 })
   })
 })
