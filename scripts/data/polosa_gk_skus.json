@@ -1,0 +1,1617 @@
+[
+  {
+    "name": "Полоса горячекатаная г/к 12х6",
+    "slug": "polosa-12x6-st3-6000",
+    "category": "regular",
+    "size": 12,
+    "thickness": 6,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 57.32,
+    "price_per_ton": 97390.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 16х4",
+    "slug": "polosa-16x4-st3-6000",
+    "category": "regular",
+    "size": 16,
+    "thickness": 4,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 52.49,
+    "price_per_ton": 99890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 20х10",
+    "slug": "polosa-20x10-st3-6000",
+    "category": "regular",
+    "size": 20,
+    "thickness": 10,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 124.0,
+    "price_per_ton": 74890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 20х3 рез",
+    "slug": "polosa-20x3-rez-st3-6000",
+    "category": "regular",
+    "size": 20,
+    "thickness": 3,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 39.37,
+    "price_per_ton": 74890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 20х4",
+    "slug": "polosa-20x4-st3-6000",
+    "category": "regular",
+    "size": 20,
+    "thickness": 4,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 43.95,
+    "price_per_ton": 64390.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 20х5",
+    "slug": "polosa-20x5-st3-6000",
+    "category": "regular",
+    "size": 20,
+    "thickness": 5,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 60.73,
+    "price_per_ton": 71390.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 20х6",
+    "slug": "polosa-20x6-st3-6000",
+    "category": "regular",
+    "size": 20,
+    "thickness": 6,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 69.23,
+    "price_per_ton": 69890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 20х8",
+    "slug": "polosa-20x8-st3-6000",
+    "category": "regular",
+    "size": 20,
+    "thickness": 8,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 96.22,
+    "price_per_ton": 70390.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 25х3 рез",
+    "slug": "polosa-25x3-rez-st3-6000",
+    "category": "regular",
+    "size": 25,
+    "thickness": 3,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 52.52,
+    "price_per_ton": 74890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 25х4",
+    "slug": "polosa-25x4-st3-6000",
+    "category": "regular",
+    "size": 25,
+    "thickness": 4,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 54.75,
+    "price_per_ton": 64390.0,
+    "_dedup_count": 2
+  },
+  {
+    "name": "Полоса горячекатаная г/к 25х4 рез",
+    "slug": "polosa-25x4-rez-st3-6000",
+    "category": "regular",
+    "size": 25,
+    "thickness": 4,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 61.16,
+    "price_per_ton": 71900.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 25х5",
+    "slug": "polosa-25x5-st3-6000",
+    "category": "regular",
+    "size": 25,
+    "thickness": 5,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 74.15,
+    "price_per_ton": 69890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 25х6",
+    "slug": "polosa-25x6-st3-6000",
+    "category": "regular",
+    "size": 25,
+    "thickness": 6,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 89.29,
+    "price_per_ton": 69890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 25х8",
+    "slug": "polosa-25x8-st3-6000",
+    "category": "regular",
+    "size": 25,
+    "thickness": 8,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 119.0,
+    "price_per_ton": 69890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к оцинкованная 25х4",
+    "slug": "polosa-25x4-ocink-st3-6000",
+    "category": "ocink",
+    "size": 25,
+    "thickness": 4,
+    "is_rez": false,
+    "is_ocink": true,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": "оцинкованная",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 93.43,
+    "price_per_ton": 109890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к оцинкованная 25х4 К",
+    "slug": "polosa-25x4-ocink-k-st3-6000",
+    "category": "ocink",
+    "size": 25,
+    "thickness": 4,
+    "is_rez": false,
+    "is_ocink": true,
+    "is_k": true,
+    "steel_grade": "Ст3",
+    "coating": "оцинкованная",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 86.01,
+    "price_per_ton": 101150.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 30х10",
+    "slug": "polosa-30x10-st3-6000",
+    "category": "regular",
+    "size": 30,
+    "thickness": 10,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 182.0,
+    "price_per_ton": 71390.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 30х20",
+    "slug": "polosa-30x20-st3-6000",
+    "category": "regular",
+    "size": 30,
+    "thickness": 20,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 383.0,
+    "price_per_ton": 77390.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 30х4",
+    "slug": "polosa-30x4-st3-6000",
+    "category": "regular",
+    "size": 30,
+    "thickness": 4,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 55.89,
+    "price_per_ton": 54890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 30х5",
+    "slug": "polosa-30x5-st3-6000",
+    "category": "regular",
+    "size": 30,
+    "thickness": 5,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 76.53,
+    "price_per_ton": 59890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 30х6",
+    "slug": "polosa-30x6-st3-6000",
+    "category": "regular",
+    "size": 30,
+    "thickness": 6,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 110.0,
+    "price_per_ton": 71890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 30х8",
+    "slug": "polosa-30x8-st3-6000",
+    "category": "regular",
+    "size": 30,
+    "thickness": 8,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 152.0,
+    "price_per_ton": 74890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к оцинкованная 30х4",
+    "slug": "polosa-30x4-ocink-st3-6000",
+    "category": "ocink",
+    "size": 30,
+    "thickness": 4,
+    "is_rez": false,
+    "is_ocink": true,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": "оцинкованная",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 111.0,
+    "price_per_ton": 108890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 40х10",
+    "slug": "polosa-40x10-st3-6000",
+    "category": "regular",
+    "size": 40,
+    "thickness": 10,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 263.0,
+    "price_per_ton": 77390.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 40х20",
+    "slug": "polosa-40x20-st3-6000",
+    "category": "regular",
+    "size": 40,
+    "thickness": 20,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 526.0,
+    "price_per_ton": 77390.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 40х3 рез",
+    "slug": "polosa-40x3-rez-st3-6000",
+    "category": "regular",
+    "size": 40,
+    "thickness": 3,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 77.27,
+    "price_per_ton": 79890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 40х4",
+    "slug": "polosa-40x4-st3-6000",
+    "category": "regular",
+    "size": 40,
+    "thickness": 4,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 76.06,
+    "price_per_ton": 57390.0,
+    "_dedup_count": 2
+  },
+  {
+    "name": "Полоса горячекатаная г/к 40х5",
+    "slug": "polosa-40x5-st3-6000",
+    "category": "regular",
+    "size": 40,
+    "thickness": 5,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 95.91,
+    "price_per_ton": 56390.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 40х6",
+    "slug": "polosa-40x6-st3-6000",
+    "category": "regular",
+    "size": 40,
+    "thickness": 6,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 112.0,
+    "price_per_ton": 54890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 40х8",
+    "slug": "polosa-40x8-st3-6000",
+    "category": "regular",
+    "size": 40,
+    "thickness": 8,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 190.0,
+    "price_per_ton": 69890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к оцинкованная 40х4",
+    "slug": "polosa-40x4-ocink-st3-6000",
+    "category": "ocink",
+    "size": 40,
+    "thickness": 4,
+    "is_rez": false,
+    "is_ocink": true,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": "оцинкованная",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 130.0,
+    "price_per_ton": 98390.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к оцинкованная 40х4 К",
+    "slug": "polosa-40x4-ocink-k-st3-6000",
+    "category": "ocink",
+    "size": 40,
+    "thickness": 4,
+    "is_rez": false,
+    "is_ocink": true,
+    "is_k": true,
+    "steel_grade": "Ст3",
+    "coating": "оцинкованная",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 127.0,
+    "price_per_ton": 96200.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к оцинкованная 40х5",
+    "slug": "polosa-40x5-ocink-st3-6000",
+    "category": "ocink",
+    "size": 40,
+    "thickness": 5,
+    "is_rez": false,
+    "is_ocink": true,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": "оцинкованная",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 170.0,
+    "price_per_ton": 99890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к оцинкованная 40х5 К",
+    "slug": "polosa-40x5-ocink-k-st3-6000",
+    "category": "ocink",
+    "size": 40,
+    "thickness": 5,
+    "is_rez": false,
+    "is_ocink": true,
+    "is_k": true,
+    "steel_grade": "Ст3",
+    "coating": "оцинкованная",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 164.0,
+    "price_per_ton": 96200.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 50х10",
+    "slug": "polosa-50x10-st3-6000",
+    "category": "regular",
+    "size": 50,
+    "thickness": 10,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 288.0,
+    "price_per_ton": 69890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 50х12",
+    "slug": "polosa-50x12-st3-6000",
+    "category": "regular",
+    "size": 50,
+    "thickness": 12,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 386.0,
+    "price_per_ton": 77890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 50х3 рез",
+    "slug": "polosa-50x3-rez-08ps-sp-6000",
+    "category": "regular",
+    "size": 50,
+    "thickness": 3,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст08пс/сп",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 71.43,
+    "price_per_ton": 62890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 50х30",
+    "slug": "polosa-50x30-st3-6000",
+    "category": "regular",
+    "size": 50,
+    "thickness": 30,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 1016.0,
+    "price_per_ton": 81890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 50х4",
+    "slug": "polosa-50x4-st3-6000",
+    "category": "regular",
+    "size": 50,
+    "thickness": 4,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 89.0,
+    "price_per_ton": 53890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 50х5",
+    "slug": "polosa-50x5-st3-6000",
+    "category": "regular",
+    "size": 50,
+    "thickness": 5,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 118.0,
+    "price_per_ton": 55390.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 50х6",
+    "slug": "polosa-50x6-st3-6000",
+    "category": "regular",
+    "size": 50,
+    "thickness": 6,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 140.0,
+    "price_per_ton": 54890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 50х8",
+    "slug": "polosa-50x8-st3-6000",
+    "category": "regular",
+    "size": 50,
+    "thickness": 8,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 255.0,
+    "price_per_ton": 77390.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к оцинкованная 50х4",
+    "slug": "polosa-50x4-ocink-st3-6000",
+    "category": "ocink",
+    "size": 50,
+    "thickness": 4,
+    "is_rez": false,
+    "is_ocink": true,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": "оцинкованная",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 179.0,
+    "price_per_ton": 100890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к оцинкованная 50х5",
+    "slug": "polosa-50x5-ocink-6000",
+    "category": "ocink",
+    "size": 50,
+    "thickness": 5,
+    "is_rez": false,
+    "is_ocink": true,
+    "is_k": false,
+    "steel_grade": null,
+    "coating": "оцинкованная",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 223.0,
+    "price_per_ton": 99890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к оцинкованная 50х5 К",
+    "slug": "polosa-50x5-ocink-k-st3-6000",
+    "category": "ocink",
+    "size": 50,
+    "thickness": 5,
+    "is_rez": false,
+    "is_ocink": true,
+    "is_k": true,
+    "steel_grade": "Ст3",
+    "coating": "оцинкованная",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 206.0,
+    "price_per_ton": 97200.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 60х10 6м",
+    "slug": "polosa-60x10-st3-6000",
+    "category": "regular",
+    "size": 60,
+    "thickness": 10,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 371.0,
+    "price_per_ton": 74890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 60х16",
+    "slug": "polosa-60x16-st3-6000",
+    "category": "regular",
+    "size": 60,
+    "thickness": 16,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 593.0,
+    "price_per_ton": 74890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 60х20 6м",
+    "slug": "polosa-60x20-st3-6000",
+    "category": "regular",
+    "size": 60,
+    "thickness": 20,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 742.0,
+    "price_per_ton": 74890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 60х3 рез",
+    "slug": "polosa-60x3-rez-08ps-sp-6000",
+    "category": "regular",
+    "size": 60,
+    "thickness": 3,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст08пс/сп",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 88.16,
+    "price_per_ton": 62890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 60х4",
+    "slug": "polosa-60x4-st3-6000",
+    "category": "regular",
+    "size": 60,
+    "thickness": 4,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 109.0,
+    "price_per_ton": 54890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 60х5",
+    "slug": "polosa-60x5-st3-6000",
+    "category": "regular",
+    "size": 60,
+    "thickness": 5,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 139.0,
+    "price_per_ton": 54390.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 60х6",
+    "slug": "polosa-60x6-st3-6000",
+    "category": "regular",
+    "size": 60,
+    "thickness": 6,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 168.0,
+    "price_per_ton": 54890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 60х8",
+    "slug": "polosa-60x8-st3-6000",
+    "category": "regular",
+    "size": 60,
+    "thickness": 8,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 265.0,
+    "price_per_ton": 64890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 65х12",
+    "slug": "polosa-65x12-st3-6000",
+    "category": "regular",
+    "size": 65,
+    "thickness": 12,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 529.0,
+    "price_per_ton": 79890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 70х10",
+    "slug": "polosa-70x10-st3-6000",
+    "category": "regular",
+    "size": 70,
+    "thickness": 10,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 440.0,
+    "price_per_ton": 73890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 70х4",
+    "slug": "polosa-70x4-st3-6000",
+    "category": "regular",
+    "size": 70,
+    "thickness": 4,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 173.0,
+    "price_per_ton": 74890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 70х6",
+    "slug": "polosa-70x6-st3-6000",
+    "category": "regular",
+    "size": 70,
+    "thickness": 6,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 243.0,
+    "price_per_ton": 69890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 70х8",
+    "slug": "polosa-70x8-st3-6000",
+    "category": "regular",
+    "size": 70,
+    "thickness": 8,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 371.0,
+    "price_per_ton": 77890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 75х6",
+    "slug": "polosa-75x6-st3-6000",
+    "category": "regular",
+    "size": 75,
+    "thickness": 6,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 278.0,
+    "price_per_ton": 74890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 80х10",
+    "slug": "polosa-80x10-st3-6000",
+    "category": "regular",
+    "size": 80,
+    "thickness": 10,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 543.0,
+    "price_per_ton": 79890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 80х12",
+    "slug": "polosa-80x12-st3-6000",
+    "category": "regular",
+    "size": 80,
+    "thickness": 12,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 633.0,
+    "price_per_ton": 79890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 80х20",
+    "slug": "polosa-80x20-st3-6000",
+    "category": "regular",
+    "size": 80,
+    "thickness": 20,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 1081.0,
+    "price_per_ton": 81890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 80х3 рез",
+    "slug": "polosa-80x3-rez-st3-6000",
+    "category": "regular",
+    "size": 80,
+    "thickness": 3,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 125.0,
+    "price_per_ton": 62890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 80х3 рез",
+    "slug": "polosa-80x3-rez-08ps-sp-6000",
+    "category": "regular",
+    "size": 80,
+    "thickness": 3,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст08пс/сп",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 125.0,
+    "price_per_ton": 62890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 80х4",
+    "slug": "polosa-80x4-st3-6000",
+    "category": "regular",
+    "size": 80,
+    "thickness": 4,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 184.0,
+    "price_per_ton": 69890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 80х5",
+    "slug": "polosa-80x5-st3-6000",
+    "category": "regular",
+    "size": 80,
+    "thickness": 5,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 226.0,
+    "price_per_ton": 68890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 80х6",
+    "slug": "polosa-80x6-st3-6000",
+    "category": "regular",
+    "size": 80,
+    "thickness": 6,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 287.0,
+    "price_per_ton": 70390.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 80х8",
+    "slug": "polosa-80x8-st3-6000",
+    "category": "regular",
+    "size": 80,
+    "thickness": 8,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 407.0,
+    "price_per_ton": 74890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 90х10",
+    "slug": "polosa-90x10-st3-6000",
+    "category": "regular",
+    "size": 90,
+    "thickness": 10,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 582.0,
+    "price_per_ton": 68390.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 90х8",
+    "slug": "polosa-90x8-st3-6000",
+    "category": "regular",
+    "size": 90,
+    "thickness": 8,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 428.0,
+    "price_per_ton": 69890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 100х10",
+    "slug": "polosa-100x10-st3-6000",
+    "category": "regular",
+    "size": 100,
+    "thickness": 10,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 637.0,
+    "price_per_ton": 74890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 100х4",
+    "slug": "polosa-100x4-st3-6000",
+    "category": "regular",
+    "size": 100,
+    "thickness": 4,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 247.0,
+    "price_per_ton": 74890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 100х6 рез",
+    "slug": "polosa-100x6-rez-st3-6000",
+    "category": "regular",
+    "size": 100,
+    "thickness": 6,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 307.0,
+    "price_per_ton": 61890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 100х6 рез",
+    "slug": "polosa-100x6-rez-st20-6000",
+    "category": "regular",
+    "size": 100,
+    "thickness": 6,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст20",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 307.0,
+    "price_per_ton": 61890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 100х8",
+    "slug": "polosa-100x8-st3-6000",
+    "category": "regular",
+    "size": 100,
+    "thickness": 8,
+    "is_rez": false,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 475.0,
+    "price_per_ton": 71890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 120х4 рез",
+    "slug": "polosa-120x4-rez-st3-6000",
+    "category": "regular",
+    "size": 120,
+    "thickness": 4,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 245.0,
+    "price_per_ton": 61890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 120х6 рез",
+    "slug": "polosa-120x6-rez-st3-nd",
+    "category": "regular",
+    "size": 120,
+    "thickness": 6,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "price_per_meter": 385.0,
+    "price_per_ton": 62890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 120х6 рез",
+    "slug": "polosa-120x6-rez-st3-6000",
+    "category": "regular",
+    "size": 120,
+    "thickness": 6,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 385.0,
+    "price_per_ton": 62890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 120х8 рез",
+    "slug": "polosa-120x8-rez-st3-6000",
+    "category": "regular",
+    "size": 120,
+    "thickness": 8,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 499.0,
+    "price_per_ton": 62890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 150х10 рез",
+    "slug": "polosa-150x10-rez-st3-6000",
+    "category": "regular",
+    "size": 150,
+    "thickness": 10,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 767.0,
+    "price_per_ton": 61890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 150х3 рез",
+    "slug": "polosa-150x3-rez-08ps-sp5-6000",
+    "category": "regular",
+    "size": 150,
+    "thickness": 3,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст08пс/сп5",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 234.0,
+    "price_per_ton": 62890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 150х6 рез",
+    "slug": "polosa-150x6-rez-st3-6000",
+    "category": "regular",
+    "size": 150,
+    "thickness": 6,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 460.0,
+    "price_per_ton": 61890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 150х8 рез",
+    "slug": "polosa-150x8-rez-st3-6000",
+    "category": "regular",
+    "size": 150,
+    "thickness": 8,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 642.0,
+    "price_per_ton": 62890.0,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Полоса горячекатаная г/к 200х5 рез",
+    "slug": "polosa-200x5-rez-st3-6000",
+    "category": "regular",
+    "size": 200,
+    "thickness": 5,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 519.0,
+    "price_per_ton": 62890.0,
+    "_dedup_count": 2
+  },
+  {
+    "name": "Полоса горячекатаная г/к 200х8 рез",
+    "slug": "polosa-200x8-rez-st3-6000",
+    "category": "regular",
+    "size": 200,
+    "thickness": 8,
+    "is_rez": true,
+    "is_ocink": false,
+    "is_k": false,
+    "steel_grade": "Ст3",
+    "coating": null,
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 774.0,
+    "price_per_ton": 62890.0,
+    "_dedup_count": 1
+  }
+]
