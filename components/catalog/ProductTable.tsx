@@ -40,23 +40,32 @@ function getSupplierName(product: any): string {
 }
 
 /**
- * Primary (продажная) цена товара. Возвращает min среди price_items с
- * unit="т" (если есть), иначе среди всех. Это та цена которая идёт в
- * корзину и используется для сортировки.
+ * Приоритет единиц измерения для top-N rendering. Primary = первый
+ * available из списка, secondary = следующий. Все остальные хранятся
+ * в БД, но не рендерятся.
  *
- * Multi-unit (W2-8: ADR-0013) — у швеллера-горячекатаного есть и
- * руб/м и руб/т в БД как два price_items на product. Корзина считает
- * total в тоннах, поэтому за primary берём руб/т.
+ * Семантика: "т" — основная коммерческая единица для металлопроката,
+ * "м" — для штанг и протяжных профилей, "шт" — для изделий продаваемых
+ * 6м-длинами (нержавейка), "кг" — резерв.
+ *
+ * Расширено в W2-13 (ADR-0013 + 3-unit case): нержавейка имеет 3
+ * price_items (т+м+шт), UI показывает top-2 по этому приоритету.
  */
-function getBestPrice(product: any): { base: number; discount: number | null; unit: string } | null {
-  if (!product.price_items?.length) return null;
-  // Сначала пытаемся найти ton-price (приоритет для корзины).
-  const tonItems = product.price_items.filter(
-    (pi: any) => (pi.unit ?? product.unit) === "т",
+const UNIT_PRIORITY = ["т", "м", "шт", "кг"];
+
+/**
+ * Внутренний helper: выбирает min price_item по конкретной единице.
+ */
+function pickMinByUnit(
+  product: any,
+  unit: string,
+): { base: number; discount: number | null; unit: string } | null {
+  const items = product.price_items.filter(
+    (pi: any) => (pi.unit ?? product.unit) === unit,
   );
-  const pool = tonItems.length > 0 ? tonItems : product.price_items;
-  let best = pool[0];
-  for (const pi of pool) {
+  if (!items.length) return null;
+  let best = items[0];
+  for (const pi of items) {
     const price = pi.discount_price ?? pi.base_price;
     const bestPrice = best.discount_price ?? best.base_price;
     if (price < bestPrice) best = pi;
@@ -64,38 +73,49 @@ function getBestPrice(product: any): { base: number; discount: number | null; un
   return {
     base: best.base_price,
     discount: best.discount_price,
-    // Берём unit из price_item (multi-unit-aware), fallback на product.unit
-    // (для legacy SKU где price_item.unit может быть null).
+    unit: best.unit ?? product.unit ?? unit,
+  };
+}
+
+/**
+ * Primary (продажная) цена товара по UNIT_PRIORITY. Используется для
+ * корзины и сортировки.
+ *
+ * Backwards-compatible: legacy SKU с одним price_item (unit=null) →
+ * unit подбирается из product.unit fallback, всё работает как раньше.
+ */
+function getBestPrice(product: any): { base: number; discount: number | null; unit: string } | null {
+  if (!product.price_items?.length) return null;
+  // Top-priority unit с available price_item.
+  for (const u of UNIT_PRIORITY) {
+    const r = pickMinByUnit(product, u);
+    if (r) return r;
+  }
+  // Fallback: первый попавшийся (если unit не в priority list).
+  const best = product.price_items[0];
+  return {
+    base: best.base_price,
+    discount: best.discount_price,
     unit: best.unit ?? product.unit ?? "т",
   };
 }
 
 /**
- * Secondary цена в другой единице (например руб/м у швеллера, у которого
- * primary — руб/т). Используется только для отображения в каталоге как
- * additional info; в корзину не идёт. Возвращает null если у товара
- * только одна единица в price_items.
+ * Secondary цена в другой единице по UNIT_PRIORITY. Используется только
+ * для display в каталоге; в корзину не идёт. Возвращает null если у
+ * товара только одна единица в price_items.
  */
 function getSecondaryPrice(
   product: any,
   primaryUnit: string,
 ): { base: number; discount: number | null; unit: string } | null {
   if (!product.price_items?.length) return null;
-  const others = product.price_items.filter(
-    (pi: any) => (pi.unit ?? product.unit) !== primaryUnit,
-  );
-  if (!others.length) return null;
-  let best = others[0];
-  for (const pi of others) {
-    const price = pi.discount_price ?? pi.base_price;
-    const bestPrice = best.discount_price ?? best.base_price;
-    if (price < bestPrice) best = pi;
+  for (const u of UNIT_PRIORITY) {
+    if (u === primaryUnit) continue;
+    const r = pickMinByUnit(product, u);
+    if (r) return r;
   }
-  return {
-    base: best.base_price,
-    discount: best.discount_price,
-    unit: best.unit ?? product.unit ?? "т",
-  };
+  return null;
 }
 
 function hasStock(product: any): boolean {
