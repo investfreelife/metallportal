@@ -1,0 +1,470 @@
+[
+  {
+    "name": "Уголок 63х40х5",
+    "slug": "ugolok-63x40x5-st3-6000",
+    "h": 63,
+    "b": 40,
+    "t": 5,
+    "is_nl": false,
+    "steel_grade": "Ст3",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "base_price": 82490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      82490
+    ]
+  },
+  {
+    "name": "Уголок 63х40х5",
+    "slug": "ugolok-63x40x5-st3-12000",
+    "h": 63,
+    "b": 40,
+    "t": 5,
+    "is_nl": false,
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 82490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      82490
+    ]
+  },
+  {
+    "name": "Уголок 63х40х6",
+    "slug": "ugolok-63x40x6-st3-12000",
+    "h": 63,
+    "b": 40,
+    "t": 6,
+    "is_nl": false,
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 92490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      92490
+    ]
+  },
+  {
+    "name": "Уголок 75х50х5",
+    "slug": "ugolok-75x50x5-st3-12000",
+    "h": 75,
+    "b": 50,
+    "t": 5,
+    "is_nl": false,
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 72490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      72490
+    ]
+  },
+  {
+    "name": "Уголок 75х50х6",
+    "slug": "ugolok-75x50x6-st3-12000",
+    "h": 75,
+    "b": 50,
+    "t": 6,
+    "is_nl": false,
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 72490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      72490
+    ]
+  },
+  {
+    "name": "Уголок 100х63х6",
+    "slug": "ugolok-100x63x6-st3-12000",
+    "h": 100,
+    "b": 63,
+    "t": 6,
+    "is_nl": false,
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 69990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      69990
+    ]
+  },
+  {
+    "name": "Уголок 100х63х8",
+    "slug": "ugolok-100x63x8-st3-12000",
+    "h": 100,
+    "b": 63,
+    "t": 8,
+    "is_nl": false,
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 69990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      69990
+    ]
+  },
+  {
+    "name": "низколегированный уголок 125х80х10",
+    "slug": "ugolok-125x80x10-s345-12000",
+    "h": 125,
+    "b": 80,
+    "t": 10,
+    "is_nl": true,
+    "steel_grade": "С345",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 137990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      137990
+    ]
+  },
+  {
+    "name": "низколегированный уголок 125х80х8",
+    "slug": "ugolok-125x80x8-s345-12000",
+    "h": 125,
+    "b": 80,
+    "t": 8,
+    "is_nl": true,
+    "steel_grade": "С345",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 139990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      139990
+    ]
+  },
+  {
+    "name": "Уголок 125х80х10",
+    "slug": "ugolok-125x80x10-st3-12000",
+    "h": 125,
+    "b": 80,
+    "t": 10,
+    "is_nl": false,
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 129490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      129490
+    ]
+  },
+  {
+    "name": "Уголок 125х80х8",
+    "slug": "ugolok-125x80x8-st3-12000",
+    "h": 125,
+    "b": 80,
+    "t": 8,
+    "is_nl": false,
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 129490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      129490
+    ]
+  },
+  {
+    "name": "низколегированный уголок 140х90х10",
+    "slug": "ugolok-140x90x10-s345-12000",
+    "h": 140,
+    "b": 90,
+    "t": 10,
+    "is_nl": true,
+    "steel_grade": "С345",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 142490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      142490
+    ]
+  },
+  {
+    "name": "низколегированный уголок 140х90х8",
+    "slug": "ugolok-140x90x8-s345-12000",
+    "h": 140,
+    "b": 90,
+    "t": 8,
+    "is_nl": true,
+    "steel_grade": "С345",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 137990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      137990
+    ]
+  },
+  {
+    "name": "Уголок 140х90х10",
+    "slug": "ugolok-140x90x10-st3-12000",
+    "h": 140,
+    "b": 90,
+    "t": 10,
+    "is_nl": false,
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 129490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      129490
+    ]
+  },
+  {
+    "name": "Уголок 140х90х8",
+    "slug": "ugolok-140x90x8-st3-12000",
+    "h": 140,
+    "b": 90,
+    "t": 8,
+    "is_nl": false,
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 129490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      129490
+    ]
+  },
+  {
+    "name": "низколегированный уголок 160х100х10",
+    "slug": "ugolok-160x100x10-s355-12000",
+    "h": 160,
+    "b": 100,
+    "t": 10,
+    "is_nl": true,
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 133490,
+    "_dedup_count": 2,
+    "_all_prices": [
+      133490
+    ]
+  },
+  {
+    "name": "низколегированный уголок 160х100х12",
+    "slug": "ugolok-160x100x12-s355-12000",
+    "h": 160,
+    "b": 100,
+    "t": 12,
+    "is_nl": true,
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 141990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      141990
+    ]
+  },
+  {
+    "name": "низколегированный уголок 160х100х14",
+    "slug": "ugolok-160x100x14-s355-12000",
+    "h": 160,
+    "b": 100,
+    "t": 14,
+    "is_nl": true,
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 141990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      141990
+    ]
+  },
+  {
+    "name": "Уголок 160х100х10",
+    "slug": "ugolok-160x100x10-s255-12000",
+    "h": 160,
+    "b": 100,
+    "t": 10,
+    "is_nl": false,
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 126490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      126490
+    ]
+  },
+  {
+    "name": "Уголок 160х100х10",
+    "slug": "ugolok-160x100x10-st3-12000",
+    "h": 160,
+    "b": 100,
+    "t": 10,
+    "is_nl": false,
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 126490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      126490
+    ]
+  },
+  {
+    "name": "Уголок 160х100х12",
+    "slug": "ugolok-160x100x12-s255-12000",
+    "h": 160,
+    "b": 100,
+    "t": 12,
+    "is_nl": false,
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 128990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      128990
+    ]
+  },
+  {
+    "name": "низколегированный уголок 200х125х12",
+    "slug": "ugolok-200x125x12-s355-12000",
+    "h": 200,
+    "b": 125,
+    "t": 12,
+    "is_nl": true,
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 137490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      137490
+    ]
+  },
+  {
+    "name": "низколегированный уголок 200х125х14",
+    "slug": "ugolok-200x125x14-s345-12000",
+    "h": 200,
+    "b": 125,
+    "t": 14,
+    "is_nl": true,
+    "steel_grade": "С345",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 139990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      139990
+    ]
+  },
+  {
+    "name": "низколегированный уголок 200х125х16",
+    "slug": "ugolok-200x125x16-s355-12000",
+    "h": 200,
+    "b": 125,
+    "t": 16,
+    "is_nl": true,
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 141990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      141990
+    ]
+  },
+  {
+    "name": "Уголок 200х125х14",
+    "slug": "ugolok-200x125x14-s255-12000",
+    "h": 200,
+    "b": 125,
+    "t": 14,
+    "is_nl": false,
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 128490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      128490
+    ]
+  },
+  {
+    "name": "Уголок 200х125х16",
+    "slug": "ugolok-200x125x16-s255-12000",
+    "h": 200,
+    "b": 125,
+    "t": 16,
+    "is_nl": false,
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 134990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      134990
+    ]
+  }
+]
