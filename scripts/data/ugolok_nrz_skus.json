@@ -1,0 +1,302 @@
+[
+  {
+    "name": "Уголок нержавеющий никельсодержащий 20х3",
+    "slug": "ugolok-nrz-20x3-aisi304-6000",
+    "size": 20,
+    "thickness": 3,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 1512,
+    "price_per_meter": 252,
+    "price_per_ton": 276500,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Уголок нержавеющий никельсодержащий 25х3",
+    "slug": "ugolok-nrz-25x3-aisi304-6000",
+    "size": 25,
+    "thickness": 3,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 1836,
+    "price_per_meter": 306,
+    "price_per_ton": 266500,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Уголок нержавеющий никельсодержащий 30х3",
+    "slug": "ugolok-nrz-30x3-aisi304-6000",
+    "size": 30,
+    "thickness": 3,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 2208,
+    "price_per_meter": 368,
+    "price_per_ton": 256500,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Уголок нержавеющий никельсодержащий 30х4",
+    "slug": "ugolok-nrz-30x4-aisi304-6000",
+    "size": 30,
+    "thickness": 4,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 2928,
+    "price_per_meter": 488,
+    "price_per_ton": 256500,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Уголок нержавеющий никельсодержащий 35х3",
+    "slug": "ugolok-nrz-35x3-aisi304-6000",
+    "size": 35,
+    "thickness": 3,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 2520,
+    "price_per_meter": 420,
+    "price_per_ton": 256500,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Уголок нержавеющий никельсодержащий 40х3",
+    "slug": "ugolok-nrz-40x3-aisi304-6000",
+    "size": 40,
+    "thickness": 3,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 2916,
+    "price_per_meter": 486,
+    "price_per_ton": 256500,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Уголок нержавеющий никельсодержащий 40х4",
+    "slug": "ugolok-nrz-40x4-aisi304-6000",
+    "size": 40,
+    "thickness": 4,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 3816,
+    "price_per_meter": 636,
+    "price_per_ton": 256500,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Уголок нержавеющий никельсодержащий 50х4",
+    "slug": "ugolok-nrz-50x4-aisi304-6000",
+    "size": 50,
+    "thickness": 4,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 4806,
+    "price_per_meter": 801,
+    "price_per_ton": 256500,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Уголок нержавеющий никельсодержащий 50х5",
+    "slug": "ugolok-nrz-50x5-aisi321-6000",
+    "size": 50,
+    "thickness": 5,
+    "steel_grade": "AISI 321",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 7752,
+    "price_per_meter": 1292,
+    "price_per_ton": 331500,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Уголок нержавеющий никельсодержащий 50х5",
+    "slug": "ugolok-nrz-50x5-aisi304-6000",
+    "size": 50,
+    "thickness": 5,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 5940,
+    "price_per_meter": 990,
+    "price_per_ton": 256500,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Уголок нержавеющий никельсодержащий 60х5",
+    "slug": "ugolok-nrz-60x5-aisi304-6000",
+    "size": 60,
+    "thickness": 5,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 7092,
+    "price_per_meter": 1182,
+    "price_per_ton": 256500,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Уголок нержавеющий никельсодержащий 60х6",
+    "slug": "ugolok-nrz-60x6-aisi304-6000",
+    "size": 60,
+    "thickness": 6,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 9012,
+    "price_per_meter": 1502,
+    "price_per_ton": 256500,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Уголок нержавеющий никельсодержащий 70х5",
+    "slug": "ugolok-nrz-70x5-aisi304-6000",
+    "size": 70,
+    "thickness": 5,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 9012,
+    "price_per_meter": 1502,
+    "price_per_ton": 256500,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Уголок нержавеющий никельсодержащий 70х6",
+    "slug": "ugolok-nrz-70x6-aisi304-6000",
+    "size": 70,
+    "thickness": 6,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 10068,
+    "price_per_meter": 1678,
+    "price_per_ton": 256500,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Уголок нержавеющий никельсодержащий 70х7",
+    "slug": "ugolok-nrz-70x7-aisi304-6000",
+    "size": 70,
+    "thickness": 7,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 11646,
+    "price_per_meter": 1941,
+    "price_per_ton": 256500,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Уголок нержавеющий никельсодержащий 75х5",
+    "slug": "ugolok-nrz-75x5-aisi304-6000",
+    "size": 75,
+    "thickness": 5,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 9456,
+    "price_per_meter": 1576,
+    "price_per_ton": 256500,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Уголок нержавеющий никельсодержащий 80х8",
+    "slug": "ugolok-nrz-80x8-aisi304-6000",
+    "size": 80,
+    "thickness": 8,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 15762,
+    "price_per_meter": 2627,
+    "price_per_ton": 256500,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Уголок нержавеющий никельсодержащий 100х10",
+    "slug": "ugolok-nrz-100x10-aisi304-6000",
+    "size": 100,
+    "thickness": 10,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 23640,
+    "price_per_meter": 3940,
+    "price_per_ton": 256500,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Уголок нержавеющий никельсодержащий 100х6",
+    "slug": "ugolok-nrz-100x6-aisi316l-6000",
+    "size": 100,
+    "thickness": 6,
+    "steel_grade": "AISI 316L",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 28224,
+    "price_per_meter": 4704,
+    "price_per_ton": 491500,
+    "_dedup_count": 1
+  },
+  {
+    "name": "Уголок нержавеющий никельсодержащий 100х6",
+    "slug": "ugolok-nrz-100x6-aisi304-6000",
+    "size": 100,
+    "thickness": 6,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_piece": 15762,
+    "price_per_meter": 2627,
+    "price_per_ton": 256500,
+    "_dedup_count": 1
+  }
+]
