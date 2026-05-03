@@ -1,0 +1,3302 @@
+[
+  {
+    "name": "Проволока алюминиевая 1.6 ГОСТ 14838-78",
+    "slug": "provoloka-alyu-1p6-nd",
+    "section_slug": "provoloka-alyuminievaya",
+    "section_short": "alyu",
+    "size_raw": "1,6",
+    "size_num": 1.6,
+    "size_token": "1p6",
+    "modifiers": [],
+    "steel_grade": "АД1",
+    "grade_canonical": "АД1",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 584000.0,
+    "price_per_kg": null,
+    "base_price": 584000.0
+  },
+  {
+    "name": "Проволока алюминиевая 2 ГОСТ 14838-78",
+    "slug": "provoloka-alyu-2-nd",
+    "section_slug": "provoloka-alyuminievaya",
+    "section_short": "alyu",
+    "size_raw": "2",
+    "size_num": 2.0,
+    "size_token": "2",
+    "modifiers": [],
+    "steel_grade": "АД1",
+    "grade_canonical": "АД1",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 584000.0,
+    "price_per_kg": null,
+    "base_price": 584000.0
+  },
+  {
+    "name": "Проволока алюминиевая 3 ГОСТ 14838-78",
+    "slug": "provoloka-alyu-3-nd",
+    "section_slug": "provoloka-alyuminievaya",
+    "section_short": "alyu",
+    "size_raw": "3",
+    "size_num": 3.0,
+    "size_token": "3",
+    "modifiers": [],
+    "steel_grade": "АД1",
+    "grade_canonical": "АД1",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 570000.0,
+    "price_per_kg": null,
+    "base_price": 570000.0
+  },
+  {
+    "name": "Проволока алюминиевая 4 ГОСТ 14838-78",
+    "slug": "provoloka-alyu-4-nd",
+    "section_slug": "provoloka-alyuminievaya",
+    "section_short": "alyu",
+    "size_raw": "4",
+    "size_num": 4.0,
+    "size_token": "4",
+    "modifiers": [],
+    "steel_grade": "АД1",
+    "grade_canonical": "АД1",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 570000.0,
+    "price_per_kg": null,
+    "base_price": 570000.0
+  },
+  {
+    "name": "Проволока алюминиевая 5 ГОСТ 14838-78",
+    "slug": "provoloka-alyu-5-nd",
+    "section_slug": "provoloka-alyuminievaya",
+    "section_short": "alyu",
+    "size_raw": "5",
+    "size_num": 5.0,
+    "size_token": "5",
+    "modifiers": [],
+    "steel_grade": "АД1",
+    "grade_canonical": "АД1",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 570000.0,
+    "price_per_kg": null,
+    "base_price": 570000.0
+  },
+  {
+    "name": "Проволока алюминиевая 6 ГОСТ 14838-78",
+    "slug": "provoloka-alyu-6-nd",
+    "section_slug": "provoloka-alyuminievaya",
+    "section_short": "alyu",
+    "size_raw": "6",
+    "size_num": 6.0,
+    "size_token": "6",
+    "modifiers": [],
+    "steel_grade": "АД1",
+    "grade_canonical": "АД1",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 527000.0,
+    "price_per_kg": null,
+    "base_price": 527000.0
+  },
+  {
+    "name": "Проволока нихромовая 0.1",
+    "slug": "provoloka-nikh-0p1-h15n60-n-nd",
+    "section_slug": "provoloka-nikhromovaya",
+    "section_short": "nikh",
+    "size_raw": "0,1",
+    "size_num": 0.1,
+    "size_token": "0p1",
+    "modifiers": [],
+    "steel_grade": "Х15Н60-Н",
+    "grade_canonical": "Х15Н60-Н",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": true,
+    "price_per_ton": 1582390.0,
+    "price_per_kg": 1598.0,
+    "base_price": 1582390.0
+  },
+  {
+    "name": "Проволока нихромовая 0.16 б/с",
+    "slug": "provoloka-nikh-0p16-bs-h15n60-nd",
+    "section_slug": "provoloka-nikhromovaya",
+    "section_short": "nikh",
+    "size_raw": "0,16",
+    "size_num": 0.16,
+    "size_token": "0p16",
+    "modifiers": [
+      "bs"
+    ],
+    "steel_grade": "Х15Н60",
+    "grade_canonical": "Х15Н60",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": true,
+    "price_per_ton": 1368190.0,
+    "price_per_kg": 1384.0,
+    "base_price": 1368190.0
+  },
+  {
+    "name": "Проволока нихромовая 1",
+    "slug": "provoloka-nikh-1-h15n60-nd",
+    "section_slug": "provoloka-nikhromovaya",
+    "section_short": "nikh",
+    "size_raw": "1",
+    "size_num": 1.0,
+    "size_token": "1",
+    "modifiers": [],
+    "steel_grade": "Х15Н60",
+    "grade_canonical": "Х15Н60",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": true,
+    "price_per_ton": 1311900.0,
+    "price_per_kg": 1328.0,
+    "base_price": 1311900.0
+  },
+  {
+    "name": "Проволока нихромовая 1.4",
+    "slug": "provoloka-nikh-1p4-h15n60-nd",
+    "section_slug": "provoloka-nikhromovaya",
+    "section_short": "nikh",
+    "size_raw": "1,4",
+    "size_num": 1.4,
+    "size_token": "1p4",
+    "modifiers": [],
+    "steel_grade": "Х15Н60",
+    "grade_canonical": "Х15Н60",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": true,
+    "price_per_ton": 1263900.0,
+    "price_per_kg": 1280.0,
+    "base_price": 1263900.0
+  },
+  {
+    "name": "Проволока нихромовая 1.8",
+    "slug": "provoloka-nikh-1p8-h15n60-nd",
+    "section_slug": "provoloka-nikhromovaya",
+    "section_short": "nikh",
+    "size_raw": "1,8",
+    "size_num": 1.8,
+    "size_token": "1p8",
+    "modifiers": [],
+    "steel_grade": "Х15Н60",
+    "grade_canonical": "Х15Н60",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": true,
+    "price_per_ton": 1263900.0,
+    "price_per_kg": 1280.0,
+    "base_price": 1263900.0
+  },
+  {
+    "name": "Проволока нихромовая 2.5",
+    "slug": "provoloka-nikh-2p5-h15n60-nd",
+    "section_slug": "provoloka-nikhromovaya",
+    "section_short": "nikh",
+    "size_raw": "2,5",
+    "size_num": 2.5,
+    "size_token": "2p5",
+    "modifiers": [],
+    "steel_grade": "Х15Н60",
+    "grade_canonical": "Х15Н60",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": true,
+    "price_per_ton": 1263900.0,
+    "price_per_kg": 1280.0,
+    "base_price": 1263900.0
+  },
+  {
+    "name": "Проволока нихромовая 3.5",
+    "slug": "provoloka-nikh-3p5-h20n80-n-nd",
+    "section_slug": "provoloka-nikhromovaya",
+    "section_short": "nikh",
+    "size_raw": "3,5",
+    "size_num": 3.5,
+    "size_token": "3p5",
+    "modifiers": [],
+    "steel_grade": "Х20Н80-Н",
+    "grade_canonical": "Х20Н80-Н",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": true,
+    "price_per_ton": 1490990.0,
+    "price_per_kg": 1507.0,
+    "base_price": 1490990.0
+  },
+  {
+    "name": "Проволока нихромовая 3.5",
+    "slug": "provoloka-nikh-3p5-h15n60-nd",
+    "section_slug": "provoloka-nikhromovaya",
+    "section_short": "nikh",
+    "size_raw": "3,5",
+    "size_num": 3.5,
+    "size_token": "3p5",
+    "modifiers": [],
+    "steel_grade": "Х15Н60",
+    "grade_canonical": "Х15Н60",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": true,
+    "price_per_ton": 1251690.0,
+    "price_per_kg": 1268.0,
+    "base_price": 1251690.0
+  },
+  {
+    "name": "Проволока нихромовая 5",
+    "slug": "provoloka-nikh-5-h15n60-nd",
+    "section_slug": "provoloka-nikhromovaya",
+    "section_short": "nikh",
+    "size_raw": "5",
+    "size_num": 5.0,
+    "size_token": "5",
+    "modifiers": [],
+    "steel_grade": "Х15Н60",
+    "grade_canonical": "Х15Н60",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": true,
+    "price_per_ton": 806470.0,
+    "price_per_kg": 822.0,
+    "base_price": 806470.0
+  },
+  {
+    "name": "Проволока из сплавов с высоким сопротивлением 1.2",
+    "slug": "provoloka-vys-1p2-nd",
+    "section_slug": "provoloka-vysokoe-soprotivlenie",
+    "section_short": "vys",
+    "size_raw": "1,2",
+    "size_num": 1.2,
+    "size_token": "1p2",
+    "modifiers": [],
+    "steel_grade": "Х27Ю5Т",
+    "grade_canonical": "Х27Ю5Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 259190.0,
+    "price_per_kg": null,
+    "base_price": 259190.0
+  },
+  {
+    "name": "Проволока из сплавов с высоким сопротивлением 1.4",
+    "slug": "provoloka-vys-1p4-nd",
+    "section_slug": "provoloka-vysokoe-soprotivlenie",
+    "section_short": "vys",
+    "size_raw": "1,4",
+    "size_num": 1.4,
+    "size_token": "1p4",
+    "modifiers": [],
+    "steel_grade": "Х27Ю5Т",
+    "grade_canonical": "Х27Ю5Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 259190.0,
+    "price_per_kg": null,
+    "base_price": 259190.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.11",
+    "slug": "provoloka-nerzh-0p11-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,11",
+    "size_num": 0.11,
+    "size_token": "0p11",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 592000.0,
+    "price_per_kg": null,
+    "base_price": 592000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.13",
+    "slug": "provoloka-nerzh-0p13-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,13",
+    "size_num": 0.13,
+    "size_token": "0p13",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 572000.0,
+    "price_per_kg": null,
+    "base_price": 572000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.14",
+    "slug": "provoloka-nerzh-0p14-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,14",
+    "size_num": 0.14,
+    "size_token": "0p14",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 515000.0,
+    "price_per_kg": null,
+    "base_price": 515000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.14",
+    "slug": "provoloka-nerzh-0p14-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,14",
+    "size_num": 0.14,
+    "size_token": "0p14",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 572000.0,
+    "price_per_kg": null,
+    "base_price": 572000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.16",
+    "slug": "provoloka-nerzh-0p16-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,16",
+    "size_num": 0.16,
+    "size_token": "0p16",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 572000.0,
+    "price_per_kg": null,
+    "base_price": 572000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.16",
+    "slug": "provoloka-nerzh-0p16-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,16",
+    "size_num": 0.16,
+    "size_token": "0p16",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 430000.0,
+    "price_per_kg": null,
+    "base_price": 430000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.2",
+    "slug": "provoloka-nerzh-0p2-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,2",
+    "size_num": 0.2,
+    "size_token": "0p2",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 387000.0,
+    "price_per_kg": null,
+    "base_price": 387000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.2",
+    "slug": "provoloka-nerzh-0p2-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,2",
+    "size_num": 0.2,
+    "size_token": "0p2",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 462000.0,
+    "price_per_kg": null,
+    "base_price": 462000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.22",
+    "slug": "provoloka-nerzh-0p22-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,22",
+    "size_num": 0.22,
+    "size_token": "0p22",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 452000.0,
+    "price_per_kg": null,
+    "base_price": 452000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.24",
+    "slug": "provoloka-nerzh-0p24-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,24",
+    "size_num": 0.24,
+    "size_token": "0p24",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 366000.0,
+    "price_per_kg": null,
+    "base_price": 366000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.24",
+    "slug": "provoloka-nerzh-0p24-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,24",
+    "size_num": 0.24,
+    "size_token": "0p24",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 440000.0,
+    "price_per_kg": null,
+    "base_price": 440000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.25",
+    "slug": "provoloka-nerzh-0p25-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,25",
+    "size_num": 0.25,
+    "size_token": "0p25",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 432000.0,
+    "price_per_kg": null,
+    "base_price": 432000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.25",
+    "slug": "provoloka-nerzh-0p25-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,25",
+    "size_num": 0.25,
+    "size_token": "0p25",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 366000.0,
+    "price_per_kg": null,
+    "base_price": 366000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.28",
+    "slug": "provoloka-nerzh-0p28-aisi316l-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,28",
+    "size_num": 0.28,
+    "size_token": "0p28",
+    "modifiers": [],
+    "steel_grade": "AISI 316L",
+    "grade_canonical": "AISI 316L",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 527000.0,
+    "price_per_kg": null,
+    "base_price": 527000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.3",
+    "slug": "provoloka-nerzh-0p3-aisi321-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,3",
+    "size_num": 0.3,
+    "size_token": "0p3",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т AISI321 Х",
+    "grade_canonical": "AISI 321",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 430000.0,
+    "price_per_kg": null,
+    "base_price": 430000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.3",
+    "slug": "provoloka-nerzh-0p3-aisi316ti-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,3",
+    "size_num": 0.3,
+    "size_token": "0p3",
+    "modifiers": [],
+    "steel_grade": "AISI 316Ti",
+    "grade_canonical": "AISI 316Ti",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 612000.0,
+    "price_per_kg": null,
+    "base_price": 612000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.3",
+    "slug": "provoloka-nerzh-0p3-aisi302-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,3",
+    "size_num": 0.3,
+    "size_token": "0p3",
+    "modifiers": [],
+    "steel_grade": "EN 10270-3 1.4310 AISI 302",
+    "grade_canonical": "AISI 302",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 430000.0,
+    "price_per_kg": null,
+    "base_price": 430000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.3",
+    "slug": "provoloka-nerzh-0p3-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,3",
+    "size_num": 0.3,
+    "size_token": "0p3",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 361000.0,
+    "price_per_kg": null,
+    "base_price": 361000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.3",
+    "slug": "provoloka-nerzh-0p3-aisi430-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,3",
+    "size_num": 0.3,
+    "size_token": "0p3",
+    "modifiers": [],
+    "steel_grade": "AISI 430",
+    "grade_canonical": "AISI 430",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 377000.0,
+    "price_per_kg": null,
+    "base_price": 377000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.32",
+    "slug": "provoloka-nerzh-0p32-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,32",
+    "size_num": 0.32,
+    "size_token": "0p32",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 409000.0,
+    "price_per_kg": null,
+    "base_price": 409000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.32",
+    "slug": "provoloka-nerzh-0p32-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,32",
+    "size_num": 0.32,
+    "size_token": "0p32",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 361000.0,
+    "price_per_kg": null,
+    "base_price": 361000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.36",
+    "slug": "provoloka-nerzh-0p36-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,36",
+    "size_num": 0.36,
+    "size_token": "0p36",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 355000.0,
+    "price_per_kg": null,
+    "base_price": 355000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.36",
+    "slug": "provoloka-nerzh-0p36-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,36",
+    "size_num": 0.36,
+    "size_token": "0p36",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 409000.0,
+    "price_per_kg": null,
+    "base_price": 409000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.4",
+    "slug": "provoloka-nerzh-0p4-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,4",
+    "size_num": 0.4,
+    "size_token": "0p4",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 398000.0,
+    "price_per_kg": null,
+    "base_price": 398000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.4",
+    "slug": "provoloka-nerzh-0p4-aisi316ti-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,4",
+    "size_num": 0.4,
+    "size_token": "0p4",
+    "modifiers": [],
+    "steel_grade": "AISI 316Ti",
+    "grade_canonical": "AISI 316Ti",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 572000.0,
+    "price_per_kg": null,
+    "base_price": 572000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.4",
+    "slug": "provoloka-nerzh-0p4-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,4",
+    "size_num": 0.4,
+    "size_token": "0p4",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 350000.0,
+    "price_per_kg": null,
+    "base_price": 350000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.45",
+    "slug": "provoloka-nerzh-0p45-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,45",
+    "size_num": 0.45,
+    "size_token": "0p45",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 350000.0,
+    "price_per_kg": null,
+    "base_price": 350000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.45",
+    "slug": "provoloka-nerzh-0p45-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,45",
+    "size_num": 0.45,
+    "size_token": "0p45",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 398000.0,
+    "price_per_kg": null,
+    "base_price": 398000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.5",
+    "slug": "provoloka-nerzh-0p5-aisi430-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,5",
+    "size_num": 0.5,
+    "size_token": "0p5",
+    "modifiers": [],
+    "steel_grade": "AISI 430",
+    "grade_canonical": "AISI 430",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 377000.0,
+    "price_per_kg": null,
+    "base_price": 377000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.5",
+    "slug": "provoloka-nerzh-0p5-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,5",
+    "size_num": 0.5,
+    "size_token": "0p5",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 344000.0,
+    "price_per_kg": null,
+    "base_price": 344000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.6",
+    "slug": "provoloka-nerzh-0p6-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,6",
+    "size_num": 0.6,
+    "size_token": "0p6",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 398000.0,
+    "price_per_kg": null,
+    "base_price": 398000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.7 DIN 200",
+    "slug": "provoloka-nerzh-0p7-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,7",
+    "size_num": 0.7,
+    "size_token": "0p7",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 333000.0,
+    "price_per_kg": null,
+    "base_price": 333000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.7 DIN200",
+    "slug": "provoloka-nerzh-0p7-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,7",
+    "size_num": 0.7,
+    "size_token": "0p7",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 387000.0,
+    "price_per_kg": null,
+    "base_price": 387000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.8",
+    "slug": "provoloka-nerzh-0p8-aisi302-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,8",
+    "size_num": 0.8,
+    "size_token": "0p8",
+    "modifiers": [],
+    "steel_grade": "EN 10270-3 1.4310 AISI 302",
+    "grade_canonical": "AISI 302",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 374000.0,
+    "price_per_kg": null,
+    "base_price": 374000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.8 DIN 200",
+    "slug": "provoloka-nerzh-0p8-aisi304din-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,8",
+    "size_num": 0.8,
+    "size_token": "0p8",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10) DIN 200",
+    "grade_canonical": "AISI 304DIN",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 333000.0,
+    "price_per_kg": null,
+    "base_price": 333000.0
+  },
+  {
+    "name": "Проволока нержавеющая 0.9",
+    "slug": "provoloka-nerzh-0p9-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "0,9",
+    "size_num": 0.9,
+    "size_token": "0p9",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 312000.0,
+    "price_per_kg": null,
+    "base_price": 312000.0
+  },
+  {
+    "name": "Проволока нержавеющая 1",
+    "slug": "provoloka-nerzh-1-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1",
+    "size_num": 1.0,
+    "size_token": "1",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 347000.0,
+    "price_per_kg": null,
+    "base_price": 347000.0
+  },
+  {
+    "name": "Проволока нержавеющая 1 X (нагартованная)",
+    "slug": "provoloka-nerzh-1-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1",
+    "size_num": 1.0,
+    "size_token": "1",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 312000.0,
+    "price_per_kg": null,
+    "base_price": 312000.0
+  },
+  {
+    "name": "Проволока нержавеющая 1.2",
+    "slug": "provoloka-nerzh-1p2-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1,2",
+    "size_num": 1.2,
+    "size_token": "1p2",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 312000.0,
+    "price_per_kg": null,
+    "base_price": 312000.0
+  },
+  {
+    "name": "Проволока нержавеющая 1.2",
+    "slug": "provoloka-nerzh-1p2-aisi310s-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1,2",
+    "size_num": 1.2,
+    "size_token": "1p2",
+    "modifiers": [],
+    "steel_grade": "AISI 310S",
+    "grade_canonical": "AISI 310S",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 902000.0,
+    "price_per_kg": null,
+    "base_price": 902000.0
+  },
+  {
+    "name": "Проволока нержавеющая 1.2",
+    "slug": "provoloka-nerzh-1p2-aisi302-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1,2",
+    "size_num": 1.2,
+    "size_token": "1p2",
+    "modifiers": [],
+    "steel_grade": "EN 10270-3 1.4310 AISI 302",
+    "grade_canonical": "AISI 302",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 357000.0,
+    "price_per_kg": null,
+    "base_price": 357000.0
+  },
+  {
+    "name": "Проволока нержавеющая 1.2",
+    "slug": "provoloka-nerzh-1p2-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1,2",
+    "size_num": 1.2,
+    "size_token": "1p2",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 347000.0,
+    "price_per_kg": null,
+    "base_price": 347000.0
+  },
+  {
+    "name": "Проволока нержавеющая сварочная 1.2",
+    "slug": "provoloka-nerzh-1p2-er316l-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1,2",
+    "size_num": 1.2,
+    "size_token": "1p2",
+    "modifiers": [],
+    "steel_grade": "ER316L",
+    "grade_canonical": "ER316L",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 717000.0,
+    "price_per_kg": null,
+    "base_price": 717000.0
+  },
+  {
+    "name": "Проволока нержавеющая сварочная 1.2",
+    "slug": "provoloka-nerzh-1p2-er308lsi-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1,2",
+    "size_num": 1.2,
+    "size_token": "1p2",
+    "modifiers": [],
+    "steel_grade": "ER308 Lsi SD300 1",
+    "grade_canonical": "ER308Lsi",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 467000.0,
+    "price_per_kg": null,
+    "base_price": 467000.0
+  },
+  {
+    "name": "Проволока нержавеющая 1.4",
+    "slug": "provoloka-nerzh-1p4-aisi302-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1,4",
+    "size_num": 1.4,
+    "size_token": "1p4",
+    "modifiers": [],
+    "steel_grade": "EN 10270-3 1.4310 AISI 302",
+    "grade_canonical": "AISI 302",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 357000.0,
+    "price_per_kg": null,
+    "base_price": 357000.0
+  },
+  {
+    "name": "Проволока нержавеющая 1.4",
+    "slug": "provoloka-nerzh-1p4-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1,4",
+    "size_num": 1.4,
+    "size_token": "1p4",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 312000.0,
+    "price_per_kg": null,
+    "base_price": 312000.0
+  },
+  {
+    "name": "Проволока нержавеющая 1.5",
+    "slug": "provoloka-nerzh-1p5-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1,5",
+    "size_num": 1.5,
+    "size_token": "1p5",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т Х",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 375430.0,
+    "price_per_kg": null,
+    "base_price": 375430.0
+  },
+  {
+    "name": "Проволока нержавеющая 1.5",
+    "slug": "provoloka-nerzh-1p5-aisi302-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1,5",
+    "size_num": 1.5,
+    "size_token": "1p5",
+    "modifiers": [],
+    "steel_grade": "EN 10270-3 1.4310 AISI 302",
+    "grade_canonical": "AISI 302",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 357000.0,
+    "price_per_kg": null,
+    "base_price": 357000.0
+  },
+  {
+    "name": "Проволока нержавеющая 1.6",
+    "slug": "provoloka-nerzh-1p6-aisi310s-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1,6",
+    "size_num": 1.6,
+    "size_token": "1p6",
+    "modifiers": [],
+    "steel_grade": "AISI 310S",
+    "grade_canonical": "AISI 310S",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 902000.0,
+    "price_per_kg": null,
+    "base_price": 902000.0
+  },
+  {
+    "name": "Проволока нержавеющая 1.6",
+    "slug": "provoloka-nerzh-1p6-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1,6",
+    "size_num": 1.6,
+    "size_token": "1p6",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 312000.0,
+    "price_per_kg": null,
+    "base_price": 312000.0
+  },
+  {
+    "name": "Проволока нержавеющая 1.6",
+    "slug": "provoloka-nerzh-1p6-aisi201-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1,6",
+    "size_num": 1.6,
+    "size_token": "1p6",
+    "modifiers": [],
+    "steel_grade": "AISI 201 12Х15Г9НД",
+    "grade_canonical": "AISI 201",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 227000.0,
+    "price_per_kg": null,
+    "base_price": 227000.0
+  },
+  {
+    "name": "Проволока нержавеющая 1.6",
+    "slug": "provoloka-nerzh-1p6-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1,6",
+    "size_num": 1.6,
+    "size_token": "1p6",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 347000.0,
+    "price_per_kg": null,
+    "base_price": 347000.0
+  },
+  {
+    "name": "Проволока нержавеющая сварочная 1.6",
+    "slug": "provoloka-nerzh-1p6-er316l-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1,6",
+    "size_num": 1.6,
+    "size_token": "1p6",
+    "modifiers": [],
+    "steel_grade": "ER316L",
+    "grade_canonical": "ER316L",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 717000.0,
+    "price_per_kg": null,
+    "base_price": 717000.0
+  },
+  {
+    "name": "Проволока нержавеющая сварочная 1.6",
+    "slug": "provoloka-nerzh-1p6-er308lsi-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1,6",
+    "size_num": 1.6,
+    "size_token": "1p6",
+    "modifiers": [],
+    "steel_grade": "ER308 Lsi SD300",
+    "grade_canonical": "ER308Lsi",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 467000.0,
+    "price_per_kg": null,
+    "base_price": 467000.0
+  },
+  {
+    "name": "Проволока нержавеющая 1.8",
+    "slug": "provoloka-nerzh-1p8-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1,8",
+    "size_num": 1.8,
+    "size_token": "1p8",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 347000.0,
+    "price_per_kg": null,
+    "base_price": 347000.0
+  },
+  {
+    "name": "Проволока нержавеющая 1.8",
+    "slug": "provoloka-nerzh-1p8-aisi302-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "1,8",
+    "size_num": 1.8,
+    "size_token": "1p8",
+    "modifiers": [],
+    "steel_grade": "EN 10270-3 1.4310 AISI 302",
+    "grade_canonical": "AISI 302",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 357000.0,
+    "price_per_kg": null,
+    "base_price": 357000.0
+  },
+  {
+    "name": "Проволока нержавеющая 2",
+    "slug": "provoloka-nerzh-2-aisi201-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "2",
+    "size_num": 2.0,
+    "size_token": "2",
+    "modifiers": [],
+    "steel_grade": "AISI 201 12Х15Г9НД",
+    "grade_canonical": "AISI 201",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 200000.0,
+    "price_per_kg": null,
+    "base_price": 200000.0
+  },
+  {
+    "name": "Проволока нержавеющая 2",
+    "slug": "provoloka-nerzh-2-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "2",
+    "size_num": 2.0,
+    "size_token": "2",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 287000.0,
+    "price_per_kg": null,
+    "base_price": 287000.0
+  },
+  {
+    "name": "Проволока нержавеющая 2",
+    "slug": "provoloka-nerzh-2-aisi316ti-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "2",
+    "size_num": 2.0,
+    "size_token": "2",
+    "modifiers": [],
+    "steel_grade": "AISI 316Ti",
+    "grade_canonical": "AISI 316Ti",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 516000.0,
+    "price_per_kg": null,
+    "base_price": 516000.0
+  },
+  {
+    "name": "Проволока нержавеющая 2",
+    "slug": "provoloka-nerzh-2-aisi310s-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "2",
+    "size_num": 2.0,
+    "size_token": "2",
+    "modifiers": [],
+    "steel_grade": "AISI 310S",
+    "grade_canonical": "AISI 310S",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 657000.0,
+    "price_per_kg": null,
+    "base_price": 657000.0
+  },
+  {
+    "name": "Проволока нержавеющая 2",
+    "slug": "provoloka-nerzh-2-aisi316l-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "2",
+    "size_num": 2.0,
+    "size_token": "2",
+    "modifiers": [],
+    "steel_grade": "AISI 316L",
+    "grade_canonical": "AISI 316L",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 456000.0,
+    "price_per_kg": null,
+    "base_price": 456000.0
+  },
+  {
+    "name": "Проволока нержавеющая 2",
+    "slug": "provoloka-nerzh-2-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "2",
+    "size_num": 2.0,
+    "size_token": "2",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 323000.0,
+    "price_per_kg": null,
+    "base_price": 323000.0
+  },
+  {
+    "name": "Проволока нержавеющая сварочная 2",
+    "slug": "provoloka-nerzh-2-er316l-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "2",
+    "size_num": 2.0,
+    "size_token": "2",
+    "modifiers": [],
+    "steel_grade": "ER316L",
+    "grade_canonical": "ER316L",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 642000.0,
+    "price_per_kg": null,
+    "base_price": 642000.0
+  },
+  {
+    "name": "Проволока нержавеющая 2.5",
+    "slug": "provoloka-nerzh-2p5-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "2,5",
+    "size_num": 2.5,
+    "size_token": "2p5",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 323000.0,
+    "price_per_kg": null,
+    "base_price": 323000.0
+  },
+  {
+    "name": "Проволока нержавеющая 2.5",
+    "slug": "provoloka-nerzh-2p5-aisi201-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "2,5",
+    "size_num": 2.5,
+    "size_token": "2p5",
+    "modifiers": [],
+    "steel_grade": "AISI 201 12Х15Г9НД",
+    "grade_canonical": "AISI 201",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 200000.0,
+    "price_per_kg": null,
+    "base_price": 200000.0
+  },
+  {
+    "name": "Проволока нержавеющая 2.5",
+    "slug": "provoloka-nerzh-2p5-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "2,5",
+    "size_num": 2.5,
+    "size_token": "2p5",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 287000.0,
+    "price_per_kg": null,
+    "base_price": 287000.0
+  },
+  {
+    "name": "Проволока нержавеющая 2.5",
+    "slug": "provoloka-nerzh-2p5-aisi302-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "2,5",
+    "size_num": 2.5,
+    "size_token": "2p5",
+    "modifiers": [],
+    "steel_grade": "EN 10270-3 1.4310 AISI 302",
+    "grade_canonical": "AISI 302",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 335000.0,
+    "price_per_kg": null,
+    "base_price": 335000.0
+  },
+  {
+    "name": "Проволока нержавеющая 2.8",
+    "slug": "provoloka-nerzh-2p8-aisi430-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "2,8",
+    "size_num": 2.8,
+    "size_token": "2p8",
+    "modifiers": [],
+    "steel_grade": "AISI 430",
+    "grade_canonical": "AISI 430",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 201000.0,
+    "price_per_kg": null,
+    "base_price": 201000.0
+  },
+  {
+    "name": "Проволока нержавеющая 3",
+    "slug": "provoloka-nerzh-3-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "3",
+    "size_num": 3.0,
+    "size_token": "3",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 323000.0,
+    "price_per_kg": null,
+    "base_price": 323000.0
+  },
+  {
+    "name": "Проволока нержавеющая 3",
+    "slug": "provoloka-nerzh-3-aisi310s-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "3",
+    "size_num": 3.0,
+    "size_token": "3",
+    "modifiers": [],
+    "steel_grade": "AISI 310S",
+    "grade_canonical": "AISI 310S",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 657000.0,
+    "price_per_kg": null,
+    "base_price": 657000.0
+  },
+  {
+    "name": "Проволока нержавеющая 3",
+    "slug": "provoloka-nerzh-3-aisi302-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "3",
+    "size_num": 3.0,
+    "size_token": "3",
+    "modifiers": [],
+    "steel_grade": "EN 10270-3 1.4310 AISI 302",
+    "grade_canonical": "AISI 302",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 335000.0,
+    "price_per_kg": null,
+    "base_price": 335000.0
+  },
+  {
+    "name": "Проволока нержавеющая 3",
+    "slug": "provoloka-nerzh-3-aisi316ti-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "3",
+    "size_num": 3.0,
+    "size_token": "3",
+    "modifiers": [],
+    "steel_grade": "AISI 316Ti",
+    "grade_canonical": "AISI 316Ti",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 516000.0,
+    "price_per_kg": null,
+    "base_price": 516000.0
+  },
+  {
+    "name": "Проволока нержавеющая 3",
+    "slug": "provoloka-nerzh-3-aisi201-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "3",
+    "size_num": 3.0,
+    "size_token": "3",
+    "modifiers": [],
+    "steel_grade": "AISI 201 12Х15Г9НД",
+    "grade_canonical": "AISI 201",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 200000.0,
+    "price_per_kg": null,
+    "base_price": 200000.0
+  },
+  {
+    "name": "Проволока нержавеющая 3 BRIGHT DRAWN, BRIGHT",
+    "slug": "provoloka-nerzh-3-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "3",
+    "size_num": 3.0,
+    "size_token": "3",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 287000.0,
+    "price_per_kg": null,
+    "base_price": 287000.0
+  },
+  {
+    "name": "Проволока нержавеющая сварочная 3",
+    "slug": "provoloka-nerzh-3-er316l-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "3",
+    "size_num": 3.0,
+    "size_token": "3",
+    "modifiers": [],
+    "steel_grade": "ER316L",
+    "grade_canonical": "ER316L",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 642000.0,
+    "price_per_kg": null,
+    "base_price": 642000.0
+  },
+  {
+    "name": "Проволока нержавеющая 3.35",
+    "slug": "provoloka-nerzh-3p35-aisi304l-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "3,35",
+    "size_num": 3.35,
+    "size_token": "3p35",
+    "modifiers": [],
+    "steel_grade": "AISI 304 L (08Х18Н10)",
+    "grade_canonical": "AISI 304L",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 287000.0,
+    "price_per_kg": null,
+    "base_price": 287000.0
+  },
+  {
+    "name": "Проволока нержавеющая 3.5",
+    "slug": "provoloka-nerzh-3p5-aisi302-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "3,5",
+    "size_num": 3.5,
+    "size_token": "3p5",
+    "modifiers": [],
+    "steel_grade": "EN 10270-3 1.4310 AISI 302",
+    "grade_canonical": "AISI 302",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 335000.0,
+    "price_per_kg": null,
+    "base_price": 335000.0
+  },
+  {
+    "name": "Проволока нержавеющая 4",
+    "slug": "provoloka-nerzh-4-aisi302-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "4",
+    "size_num": 4.0,
+    "size_token": "4",
+    "modifiers": [],
+    "steel_grade": "EN 10270-3 1.4310 AISI 302",
+    "grade_canonical": "AISI 302",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 335000.0,
+    "price_per_kg": null,
+    "base_price": 335000.0
+  },
+  {
+    "name": "Проволока нержавеющая 4",
+    "slug": "provoloka-nerzh-4-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "4",
+    "size_num": 4.0,
+    "size_token": "4",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 287000.0,
+    "price_per_kg": null,
+    "base_price": 287000.0
+  },
+  {
+    "name": "Проволока нержавеющая 4",
+    "slug": "provoloka-nerzh-4-aisi201-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "4",
+    "size_num": 4.0,
+    "size_token": "4",
+    "modifiers": [],
+    "steel_grade": "AISI 201 12Х15Г9НД",
+    "grade_canonical": "AISI 201",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 200000.0,
+    "price_per_kg": null,
+    "base_price": 200000.0
+  },
+  {
+    "name": "Проволока нержавеющая 4",
+    "slug": "provoloka-nerzh-4-aisi430-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "4",
+    "size_num": 4.0,
+    "size_token": "4",
+    "modifiers": [],
+    "steel_grade": "AISI 430",
+    "grade_canonical": "AISI 430",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 201000.0,
+    "price_per_kg": null,
+    "base_price": 201000.0
+  },
+  {
+    "name": "Проволока нержавеющая 4",
+    "slug": "provoloka-nerzh-4-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "4",
+    "size_num": 4.0,
+    "size_token": "4",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 297000.0,
+    "price_per_kg": null,
+    "base_price": 297000.0
+  },
+  {
+    "name": "Проволока нержавеющая 4",
+    "slug": "provoloka-nerzh-4-aisi310s-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "4",
+    "size_num": 4.0,
+    "size_token": "4",
+    "modifiers": [],
+    "steel_grade": "AISI 310S",
+    "grade_canonical": "AISI 310S",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 657000.0,
+    "price_per_kg": null,
+    "base_price": 657000.0
+  },
+  {
+    "name": "Проволока нержавеющая сварочная 4",
+    "slug": "provoloka-nerzh-4-er316l-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "4",
+    "size_num": 4.0,
+    "size_token": "4",
+    "modifiers": [],
+    "steel_grade": "ER316L",
+    "grade_canonical": "ER316L",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 642000.0,
+    "price_per_kg": null,
+    "base_price": 642000.0
+  },
+  {
+    "name": "Проволока нержавеющая 4.5",
+    "slug": "provoloka-nerzh-4p5-aisi201-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "4,5",
+    "size_num": 4.5,
+    "size_token": "4p5",
+    "modifiers": [],
+    "steel_grade": "AISI 201 12Х15Г9НД",
+    "grade_canonical": "AISI 201",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 200000.0,
+    "price_per_kg": null,
+    "base_price": 200000.0
+  },
+  {
+    "name": "Проволока нержавеющая 4.5",
+    "slug": "provoloka-nerzh-4p5-aisi302-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "4,5",
+    "size_num": 4.5,
+    "size_token": "4p5",
+    "modifiers": [],
+    "steel_grade": "EN 10270-3 1.4310 AISI 302",
+    "grade_canonical": "AISI 302",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 335000.0,
+    "price_per_kg": null,
+    "base_price": 335000.0
+  },
+  {
+    "name": "Проволока нержавеющая 5",
+    "slug": "provoloka-nerzh-5-aisi201-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "5",
+    "size_num": 5.0,
+    "size_token": "5",
+    "modifiers": [],
+    "steel_grade": "AISI 201 12Х15Г9НД",
+    "grade_canonical": "AISI 201",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 200000.0,
+    "price_per_kg": null,
+    "base_price": 200000.0
+  },
+  {
+    "name": "Проволока нержавеющая 5",
+    "slug": "provoloka-nerzh-5-aisi302-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "5",
+    "size_num": 5.0,
+    "size_token": "5",
+    "modifiers": [],
+    "steel_grade": "EN 10270-3 1.4310 AISI 302",
+    "grade_canonical": "AISI 302",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 335000.0,
+    "price_per_kg": null,
+    "base_price": 335000.0
+  },
+  {
+    "name": "Проволока нержавеющая 5",
+    "slug": "provoloka-nerzh-5-aisi430-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "5",
+    "size_num": 5.0,
+    "size_token": "5",
+    "modifiers": [],
+    "steel_grade": "AISI 430",
+    "grade_canonical": "AISI 430",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 201000.0,
+    "price_per_kg": null,
+    "base_price": 201000.0
+  },
+  {
+    "name": "Проволока нержавеющая 5",
+    "slug": "provoloka-nerzh-5-aisi310s-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "5",
+    "size_num": 5.0,
+    "size_token": "5",
+    "modifiers": [],
+    "steel_grade": "AISI 310S",
+    "grade_canonical": "AISI 310S",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 657000.0,
+    "price_per_kg": null,
+    "base_price": 657000.0
+  },
+  {
+    "name": "Проволока нержавеющая 5",
+    "slug": "provoloka-nerzh-5-aisi316ti-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "5",
+    "size_num": 5.0,
+    "size_token": "5",
+    "modifiers": [],
+    "steel_grade": "AISI 316Ti",
+    "grade_canonical": "AISI 316Ti",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 516000.0,
+    "price_per_kg": null,
+    "base_price": 516000.0
+  },
+  {
+    "name": "Проволока нержавеющая 5 Х",
+    "slug": "provoloka-nerzh-5-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "5",
+    "size_num": 5.0,
+    "size_token": "5",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 297000.0,
+    "price_per_kg": null,
+    "base_price": 297000.0
+  },
+  {
+    "name": "Проволока нержавеющая сварочная 5",
+    "slug": "provoloka-nerzh-5-er316l-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "5",
+    "size_num": 5.0,
+    "size_token": "5",
+    "modifiers": [],
+    "steel_grade": "ER316L",
+    "grade_canonical": "ER316L",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 642000.0,
+    "price_per_kg": null,
+    "base_price": 642000.0
+  },
+  {
+    "name": "Проволока нержавеющая сварочная 5",
+    "slug": "provoloka-nerzh-5-er308l-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "5",
+    "size_num": 5.0,
+    "size_token": "5",
+    "modifiers": [],
+    "steel_grade": "ER308 L",
+    "grade_canonical": "ER308L",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 417000.0,
+    "price_per_kg": null,
+    "base_price": 417000.0
+  },
+  {
+    "name": "Проволока нержавеющая 5.5",
+    "slug": "provoloka-nerzh-5p5-aisi302-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "5,5",
+    "size_num": 5.5,
+    "size_token": "5p5",
+    "modifiers": [],
+    "steel_grade": "EN 10270-3 1.4310 AISI 302",
+    "grade_canonical": "AISI 302",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 335000.0,
+    "price_per_kg": null,
+    "base_price": 335000.0
+  },
+  {
+    "name": "Проволока нержавеющая 6",
+    "slug": "provoloka-nerzh-6-aisi304-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "6",
+    "size_num": 6.0,
+    "size_token": "6",
+    "modifiers": [],
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "grade_canonical": "AISI 304",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 287000.0,
+    "price_per_kg": null,
+    "base_price": 287000.0
+  },
+  {
+    "name": "Проволока нержавеющая 6",
+    "slug": "provoloka-nerzh-6-aisi410-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "6",
+    "size_num": 6.0,
+    "size_token": "6",
+    "modifiers": [],
+    "steel_grade": "AISI 410 12Х13",
+    "grade_canonical": "AISI 410",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 192000.0,
+    "price_per_kg": null,
+    "base_price": 192000.0
+  },
+  {
+    "name": "Проволока нержавеющая 6",
+    "slug": "provoloka-nerzh-6-aisi201-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "6",
+    "size_num": 6.0,
+    "size_token": "6",
+    "modifiers": [],
+    "steel_grade": "AISI 201 12Х15Г9НД",
+    "grade_canonical": "AISI 201",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 200000.0,
+    "price_per_kg": null,
+    "base_price": 200000.0
+  },
+  {
+    "name": "Проволока нержавеющая 6",
+    "slug": "provoloka-nerzh-6-aisi302-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "6",
+    "size_num": 6.0,
+    "size_token": "6",
+    "modifiers": [],
+    "steel_grade": "EN 10270-3 1.4310 AISI 302",
+    "grade_canonical": "AISI 302",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 335000.0,
+    "price_per_kg": null,
+    "base_price": 335000.0
+  },
+  {
+    "name": "Проволока нержавеющая 6 Х",
+    "slug": "provoloka-nerzh-6-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "6",
+    "size_num": 6.0,
+    "size_token": "6",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 297000.0,
+    "price_per_kg": null,
+    "base_price": 297000.0
+  },
+  {
+    "name": "Проволока нержавеющая 7",
+    "slug": "provoloka-nerzh-7-07cr25ni12mn2t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "7",
+    "size_num": 7.0,
+    "size_token": "7",
+    "modifiers": [],
+    "steel_grade": "07Cr25Ni12Mn2T",
+    "grade_canonical": "07Cr25Ni12Mn2T",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 531000.0,
+    "price_per_kg": null,
+    "base_price": 531000.0
+  },
+  {
+    "name": "Проволока нержавеющая 7",
+    "slug": "provoloka-nerzh-7-aisi302-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "7",
+    "size_num": 7.0,
+    "size_token": "7",
+    "modifiers": [],
+    "steel_grade": "EN 10270-3 1.4310 AISI 302",
+    "grade_canonical": "AISI 302",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 335000.0,
+    "price_per_kg": null,
+    "base_price": 335000.0
+  },
+  {
+    "name": "Проволока нержавеющая 10",
+    "slug": "provoloka-nerzh-10-aisi302-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "10",
+    "size_num": 10.0,
+    "size_token": "10",
+    "modifiers": [],
+    "steel_grade": "EN 10270-3 1.4310 AISI 302",
+    "grade_canonical": "AISI 302",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 335000.0,
+    "price_per_kg": null,
+    "base_price": 335000.0
+  },
+  {
+    "name": "Проволока нержавеющая 10",
+    "slug": "provoloka-nerzh-10-12h18n10t-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "10",
+    "size_num": 10.0,
+    "size_token": "10",
+    "modifiers": [],
+    "steel_grade": "12Х18Н10Т",
+    "grade_canonical": "12Х18Н10Т",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 323000.0,
+    "price_per_kg": null,
+    "base_price": 323000.0
+  },
+  {
+    "name": "Проволока нержавеющая 12",
+    "slug": "provoloka-nerzh-12-aisi302-nd",
+    "section_slug": "provoloka-nerzhaveyuschaya",
+    "section_short": "nerzh",
+    "size_raw": "12",
+    "size_num": 12.0,
+    "size_token": "12",
+    "modifiers": [],
+    "steel_grade": "EN 10270-3 1.4310 AISI 302",
+    "grade_canonical": "AISI 302",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 335000.0,
+    "price_per_kg": null,
+    "base_price": 335000.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 9389-75 2кл.",
+    "slug": "provoloka-pruzh-0p5-gost9389-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "0,5",
+    "size_num": 0.5,
+    "size_token": "0p5",
+    "modifiers": [
+      "gost9389"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 269990.0,
+    "price_per_kg": null,
+    "base_price": 269990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 9389-75 2кл.",
+    "slug": "provoloka-pruzh-0p6-gost9389-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "0,6",
+    "size_num": 0.6,
+    "size_token": "0p6",
+    "modifiers": [
+      "gost9389"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 271990.0,
+    "price_per_kg": null,
+    "base_price": 271990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 9389-75 2кл.",
+    "slug": "provoloka-pruzh-0p7-gost9389-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "0,7",
+    "size_num": 0.7,
+    "size_token": "0p7",
+    "modifiers": [
+      "gost9389"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 230990.0,
+    "price_per_kg": null,
+    "base_price": 230990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 9389-75 2кл.",
+    "slug": "provoloka-pruzh-0p8-gost9389-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "0,8",
+    "size_num": 0.8,
+    "size_token": "0p8",
+    "modifiers": [
+      "gost9389"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 180990.0,
+    "price_per_kg": null,
+    "base_price": 180990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 9389-75 2кл.",
+    "slug": "provoloka-pruzh-0p9-gost9389-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "0,9",
+    "size_num": 0.9,
+    "size_token": "0p9",
+    "modifiers": [
+      "gost9389"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 179990.0,
+    "price_per_kg": null,
+    "base_price": 179990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 9389-75 2кл.",
+    "slug": "provoloka-pruzh-1-gost9389-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "1",
+    "size_num": 1.0,
+    "size_token": "1",
+    "modifiers": [
+      "gost9389"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 169990.0,
+    "price_per_kg": null,
+    "base_price": 169990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 9389-75 2кл.",
+    "slug": "provoloka-pruzh-1p2-gost9389-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "1,2",
+    "size_num": 1.2,
+    "size_token": "1p2",
+    "modifiers": [
+      "gost9389"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 146990.0,
+    "price_per_kg": null,
+    "base_price": 146990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 9389-75 2кл.",
+    "slug": "provoloka-pruzh-1p4-gost9389-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "1,4",
+    "size_num": 1.4,
+    "size_token": "1p4",
+    "modifiers": [
+      "gost9389"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 97990.0,
+    "price_per_kg": null,
+    "base_price": 97990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 9389-75 2кл.",
+    "slug": "provoloka-pruzh-1p5-gost9389-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "1,5",
+    "size_num": 1.5,
+    "size_token": "1p5",
+    "modifiers": [
+      "gost9389"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 93990.0,
+    "price_per_kg": null,
+    "base_price": 93990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 9389-75 2кл.",
+    "slug": "provoloka-pruzh-1p6-gost9389-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "1,6",
+    "size_num": 1.6,
+    "size_token": "1p6",
+    "modifiers": [
+      "gost9389"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 89990.0,
+    "price_per_kg": null,
+    "base_price": 89990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 9389-75 2кл.",
+    "slug": "provoloka-pruzh-2-gost9389-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "2",
+    "size_num": 2.0,
+    "size_token": "2",
+    "modifiers": [
+      "gost9389"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 87990.0,
+    "price_per_kg": null,
+    "base_price": 87990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 14963-78 н-нт-хн",
+    "slug": "provoloka-pruzh-2p5-gost14963-60s2a-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "2,5",
+    "size_num": 2.5,
+    "size_token": "2p5",
+    "modifiers": [
+      "gost14963"
+    ],
+    "steel_grade": "60С2А",
+    "grade_canonical": "60С2А",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 192990.0,
+    "price_per_kg": null,
+    "base_price": 192990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 9389-75 2кл.",
+    "slug": "provoloka-pruzh-2p5-gost9389-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "2,5",
+    "size_num": 2.5,
+    "size_token": "2p5",
+    "modifiers": [
+      "gost9389"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 88990.0,
+    "price_per_kg": null,
+    "base_price": 88990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 9389-75 2кл.",
+    "slug": "provoloka-pruzh-2p8-gost9389-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "2,8",
+    "size_num": 2.8,
+    "size_token": "2p8",
+    "modifiers": [
+      "gost9389"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 98990.0,
+    "price_per_kg": null,
+    "base_price": 98990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 9389-75 2кл.",
+    "slug": "provoloka-pruzh-3-gost9389-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "3",
+    "size_num": 3.0,
+    "size_token": "3",
+    "modifiers": [
+      "gost9389"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 98990.0,
+    "price_per_kg": null,
+    "base_price": 98990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 9389-75 2кл.",
+    "slug": "provoloka-pruzh-3p5-gost9389-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "3,5",
+    "size_num": 3.5,
+    "size_token": "3p5",
+    "modifiers": [
+      "gost9389"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 98990.0,
+    "price_per_kg": null,
+    "base_price": 98990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 14963-78 н-нт-хн",
+    "slug": "provoloka-pruzh-4-gost14963-60s2a-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "4",
+    "size_num": 4.0,
+    "size_token": "4",
+    "modifiers": [
+      "gost14963"
+    ],
+    "steel_grade": "60С2А",
+    "grade_canonical": "60С2А",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 191990.0,
+    "price_per_kg": null,
+    "base_price": 191990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 9389-75 2кл.",
+    "slug": "provoloka-pruzh-4-gost9389-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "4",
+    "size_num": 4.0,
+    "size_token": "4",
+    "modifiers": [
+      "gost9389"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 98990.0,
+    "price_per_kg": null,
+    "base_price": 98990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 9389-75 2кл.",
+    "slug": "provoloka-pruzh-4p5-gost9389-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "4,5",
+    "size_num": 4.5,
+    "size_token": "4p5",
+    "modifiers": [
+      "gost9389"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 100990.0,
+    "price_per_kg": null,
+    "base_price": 100990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 14963-78 н-нт-хн",
+    "slug": "provoloka-pruzh-5-gost14963-60s2a-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "5",
+    "size_num": 5.0,
+    "size_token": "5",
+    "modifiers": [
+      "gost14963"
+    ],
+    "steel_grade": "60С2А",
+    "grade_canonical": "60С2А",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 181990.0,
+    "price_per_kg": null,
+    "base_price": 181990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 9389-75 2кл.",
+    "slug": "provoloka-pruzh-5-gost9389-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "5",
+    "size_num": 5.0,
+    "size_token": "5",
+    "modifiers": [
+      "gost9389"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 98990.0,
+    "price_per_kg": null,
+    "base_price": 98990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 9389-75 2кл.",
+    "slug": "provoloka-pruzh-6-gost9389-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "6",
+    "size_num": 6.0,
+    "size_token": "6",
+    "modifiers": [
+      "gost9389"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 98990.0,
+    "price_per_kg": null,
+    "base_price": 98990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 14963-78 н-нт-хн",
+    "slug": "provoloka-pruzh-8-gost14963-60s2a-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "8",
+    "size_num": 8.0,
+    "size_token": "8",
+    "modifiers": [
+      "gost14963"
+    ],
+    "steel_grade": "60С2А",
+    "grade_canonical": "60С2А",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 176990.0,
+    "price_per_kg": null,
+    "base_price": 176990.0
+  },
+  {
+    "name": "Проволока качественная пружинная ГОСТ 14963-78 н-нт-хн",
+    "slug": "provoloka-pruzh-10-gost14963-60s2a-nd",
+    "section_slug": "provoloka-pruzhinnaya",
+    "section_short": "pruzh",
+    "size_raw": "10",
+    "size_num": 10.0,
+    "size_token": "10",
+    "modifiers": [
+      "gost14963"
+    ],
+    "steel_grade": "60С2А",
+    "grade_canonical": "60С2А",
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 176990.0,
+    "price_per_kg": null,
+    "base_price": 176990.0
+  },
+  {
+    "name": "Проволока Вр-1 2.5 ТУ",
+    "slug": "provoloka-vr1-2p5-tu-nd",
+    "section_slug": "provoloka-vr-1",
+    "section_short": "vr1",
+    "size_raw": "2,5",
+    "size_num": 2.5,
+    "size_token": "2p5",
+    "modifiers": [
+      "tu"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 64890.0,
+    "price_per_kg": null,
+    "base_price": 64890.0
+  },
+  {
+    "name": "Проволока Вр-1 2.7 ТУ",
+    "slug": "provoloka-vr1-2p7-tu-nd",
+    "section_slug": "provoloka-vr-1",
+    "section_short": "vr1",
+    "size_raw": "2,7",
+    "size_num": 2.7,
+    "size_token": "2p7",
+    "modifiers": [
+      "tu"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 61890.0,
+    "price_per_kg": null,
+    "base_price": 61890.0
+  },
+  {
+    "name": "Проволока Вр-1 3 ГОСТ 6727-80",
+    "slug": "provoloka-vr1-3-gost-nd",
+    "section_slug": "provoloka-vr-1",
+    "section_short": "vr1",
+    "size_raw": "3",
+    "size_num": 3.0,
+    "size_token": "3",
+    "modifiers": [
+      "gost"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 61890.0,
+    "price_per_kg": null,
+    "base_price": 61890.0
+  },
+  {
+    "name": "Проволока Вр-1 3.5 ТУ",
+    "slug": "provoloka-vr1-3p5-tu-nd",
+    "section_slug": "provoloka-vr-1",
+    "section_short": "vr1",
+    "size_raw": "3,5",
+    "size_num": 3.5,
+    "size_token": "3p5",
+    "modifiers": [
+      "tu"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 61890.0,
+    "price_per_kg": null,
+    "base_price": 61890.0
+  },
+  {
+    "name": "Проволока Вр-1 3.7 ТУ",
+    "slug": "provoloka-vr1-3p7-tu-nd",
+    "section_slug": "provoloka-vr-1",
+    "section_short": "vr1",
+    "size_raw": "3,7",
+    "size_num": 3.7,
+    "size_token": "3p7",
+    "modifiers": [
+      "tu"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 59890.0,
+    "price_per_kg": null,
+    "base_price": 59890.0
+  },
+  {
+    "name": "Проволока Вр-1 3.8 ТУ",
+    "slug": "provoloka-vr1-3p8-tu-nd",
+    "section_slug": "provoloka-vr-1",
+    "section_short": "vr1",
+    "size_raw": "3,8",
+    "size_num": 3.8,
+    "size_token": "3p8",
+    "modifiers": [
+      "tu"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 59890.0,
+    "price_per_kg": null,
+    "base_price": 59890.0
+  },
+  {
+    "name": "Проволока Вр-1 4 ГОСТ 6727-80",
+    "slug": "provoloka-vr1-4-gost-nd",
+    "section_slug": "provoloka-vr-1",
+    "section_short": "vr1",
+    "size_raw": "4",
+    "size_num": 4.0,
+    "size_token": "4",
+    "modifiers": [
+      "gost"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 59890.0,
+    "price_per_kg": null,
+    "base_price": 59890.0
+  },
+  {
+    "name": "Проволока Вр-1 4.2 ТУ",
+    "slug": "provoloka-vr1-4p2-tu-nd",
+    "section_slug": "provoloka-vr-1",
+    "section_short": "vr1",
+    "size_raw": "4,2",
+    "size_num": 4.2,
+    "size_token": "4p2",
+    "modifiers": [
+      "tu"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 59890.0,
+    "price_per_kg": null,
+    "base_price": 59890.0
+  },
+  {
+    "name": "Проволока Вр-1 4.5 ТУ",
+    "slug": "provoloka-vr1-4p5-tu-nd",
+    "section_slug": "provoloka-vr-1",
+    "section_short": "vr1",
+    "size_raw": "4,5",
+    "size_num": 4.5,
+    "size_token": "4p5",
+    "modifiers": [
+      "tu"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 59890.0,
+    "price_per_kg": null,
+    "base_price": 59890.0
+  },
+  {
+    "name": "Проволока Вр-1 4.6 ТУ",
+    "slug": "provoloka-vr1-4p6-tu-nd",
+    "section_slug": "provoloka-vr-1",
+    "section_short": "vr1",
+    "size_raw": "4,6",
+    "size_num": 4.6,
+    "size_token": "4p6",
+    "modifiers": [
+      "tu"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 59890.0,
+    "price_per_kg": null,
+    "base_price": 59890.0
+  },
+  {
+    "name": "Проволока Вр-1 4.7 ТУ",
+    "slug": "provoloka-vr1-4p7-tu-nd",
+    "section_slug": "provoloka-vr-1",
+    "section_short": "vr1",
+    "size_raw": "4,7",
+    "size_num": 4.7,
+    "size_token": "4p7",
+    "modifiers": [
+      "tu"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 59890.0,
+    "price_per_kg": null,
+    "base_price": 59890.0
+  },
+  {
+    "name": "Проволока Вр-1 4.8 ТУ",
+    "slug": "provoloka-vr1-4p8-tu-nd",
+    "section_slug": "provoloka-vr-1",
+    "section_short": "vr1",
+    "size_raw": "4,8",
+    "size_num": 4.8,
+    "size_token": "4p8",
+    "modifiers": [
+      "tu"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 59890.0,
+    "price_per_kg": null,
+    "base_price": 59890.0
+  },
+  {
+    "name": "Проволока Вр-1 5 ГОСТ 6727-80",
+    "slug": "provoloka-vr1-5-gost-nd",
+    "section_slug": "provoloka-vr-1",
+    "section_short": "vr1",
+    "size_raw": "5",
+    "size_num": 5.0,
+    "size_token": "5",
+    "modifiers": [
+      "gost"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 59890.0,
+    "price_per_kg": null,
+    "base_price": 59890.0
+  },
+  {
+    "name": "Проволока Вр-1 5.5 ТУ",
+    "slug": "provoloka-vr1-5p5-tu-nd",
+    "section_slug": "provoloka-vr-1",
+    "section_short": "vr1",
+    "size_raw": "5,5",
+    "size_num": 5.5,
+    "size_token": "5p5",
+    "modifiers": [
+      "tu"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 59890.0,
+    "price_per_kg": null,
+    "base_price": 59890.0
+  },
+  {
+    "name": "Проволока Вр-1 5.7 ТУ",
+    "slug": "provoloka-vr1-5p7-tu-nd",
+    "section_slug": "provoloka-vr-1",
+    "section_short": "vr1",
+    "size_raw": "5,7",
+    "size_num": 5.7,
+    "size_token": "5p7",
+    "modifiers": [
+      "tu"
+    ],
+    "steel_grade": null,
+    "grade_canonical": null,
+    "length": null,
+    "length_options": [
+      "н/д"
+    ],
+    "multi_unit": false,
+    "price_per_ton": 59890.0,
+    "price_per_kg": null,
+    "base_price": 59890.0
+  }
+]

@@ -1,0 +1,37 @@
+{
+  "wave": "W2-16",
+  "branch": "feat/w2-16-provoloka",
+  "head_before_seed": "defa9ef0ed91daba2a28bbf07d2618f5ef382851",
+  "main_head": "defa9ef0ed91daba2a28bbf07d2618f5ef382851",
+  "timestamp": "2026-05-03T18:41:14Z",
+  "counts_before_commit": {
+    "products_total": 1659,
+    "price_items_total": 1846,
+    "products_under_provoloka_kanaty_l2": 0
+  },
+  "expected_after_commit": {
+    "products_total": 1820,
+    "price_items_total": 2016,
+    "delta_products": 161,
+    "delta_price_items": 170,
+    "delta_breakdown": "152 single-unit (т) + 9 multi-unit (т+кг) = 152*1 + 9*2 = 170"
+  },
+  "section_distribution": {
+    "provoloka-alyuminievaya": 6,
+    "provoloka-nikhromovaya": 9,
+    "provoloka-vysokoe-soprotivlenie": 2,
+    "provoloka-nerzhaveyuschaya": 105,
+    "provoloka-pruzhinnaya": 24,
+    "provoloka-vr-1": 15
+  },
+  "category_uuids": {
+    "provoloka-alyuminievaya": "54f84552-68ca-459f-8a62-1009ebcd89d0",
+    "provoloka-nikhromovaya": "9333ede9-d50c-45da-9d70-0e1c2c603a8a",
+    "provoloka-vysokoe-soprotivlenie": "32a48ca6-2c7c-4657-9fb3-7cf96becd627",
+    "provoloka-nerzhaveyuschaya": "aa543c9e-b706-4792-9954-f57b4e3ff02d",
+    "provoloka-pruzhinnaya": "e8bfec08-c7fe-4e98-8485-b9d799fe1f24",
+    "provoloka-vr-1": "3785d650-b593-4bf1-ae45-36e65ed8140c",
+    "provoloka-kanaty_l2_parent": "ee312f7a-249c-4013-93ac-295dccbf504e"
+  },
+  "rollback": "DELETE FROM price_items WHERE product_id IN (SELECT id FROM products WHERE category_id IN ('54f84552-68ca-459f-8a62-1009ebcd89d0','9333ede9-d50c-45da-9d70-0e1c2c603a8a','32a48ca6-2c7c-4657-9fb3-7cf96becd627','aa543c9e-b706-4792-9954-f57b4e3ff02d','e8bfec08-c7fe-4e98-8485-b9d799fe1f24','3785d650-b593-4bf1-ae45-36e65ed8140c')); DELETE FROM products WHERE category_id IN (...) AND slug LIKE 'provoloka-%';"
+}
