@@ -40,8 +40,22 @@ test.describe('admin', () => {
       timeout: 15_000,
     })
 
-    // Найти ценовую ячейку (5+ цифр — типичный формат прайса в каталоге
-    // 12345..99999). InlineEdit рендерит outer<span onClick> → inner<span> с
+    // Filter to predictable subset с big-price products (₽/т товары).
+    // По умолчанию admin/products сортируется alphabetical by name (.order('name')),
+    // поэтому "А..." товары первые. После W2-anchors волны (PR #35) первая
+    // строка — anchor с ценой 2.485 ₽/шт (3 digits + decimal), что breaks
+    // `\d{5,}` regex assumption. Search "круг" даёт subset где все цены
+    // в ₽/т (5-6 digits), что предсказуемо matches regex.
+    await page.fill('input[placeholder="Поиск по названию..."]', 'круг')
+    // Wait for debounced fetch: API call после изменения search.
+    await page.waitForResponse(
+      (resp) =>
+        resp.url().includes('/api/admin/products') && resp.url().includes('search='),
+      { timeout: 10_000 },
+    )
+
+    // Найти ценовую ячейку (5+ цифр — типичный формат прайса ₽/т в каталоге
+    // 12345..999999). InlineEdit рендерит outer<span onClick> → inner<span> с
     // числом. Inner viewable, click bubbles to outer.
     const priceCell = page
       .locator('span')
