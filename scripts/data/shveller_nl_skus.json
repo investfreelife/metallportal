@@ -1,0 +1,514 @@
+[
+  {
+    "name": "Швеллер низколегированный 8 П",
+    "slug": "shveller-nl-8-p-s355-12000",
+    "size": 8,
+    "type": "П",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 63490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      63490
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 8 П",
+    "slug": "shveller-nl-8-p-09g2s-15-12000",
+    "size": 8,
+    "type": "П",
+    "steel_grade": "09Г2С-15",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 63490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      63490
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 8 У",
+    "slug": "shveller-nl-8-u-09g2s-15-12000",
+    "size": 8,
+    "type": "У",
+    "steel_grade": "09Г2С-15",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 64490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      64490
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 10 П",
+    "slug": "shveller-nl-10-p-s355-12000",
+    "size": 10,
+    "type": "П",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 64990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      64990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 10 П",
+    "slug": "shveller-nl-10-p-09g2s-15-12000",
+    "size": 10,
+    "type": "П",
+    "steel_grade": "09Г2С-15",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 64990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      64990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 10 У",
+    "slug": "shveller-nl-10-u-09g2s-15-12000",
+    "size": 10,
+    "type": "У",
+    "steel_grade": "09Г2С-15",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 63990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      63990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 12 П",
+    "slug": "shveller-nl-12-p-s355-12000",
+    "size": 12,
+    "type": "П",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 67490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      67490
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 12 П",
+    "slug": "shveller-nl-12-p-09g2s-15-12000",
+    "size": 12,
+    "type": "П",
+    "steel_grade": "09Г2С-15",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 67490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      67490
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 12 У",
+    "slug": "shveller-nl-12-u-09g2s-15-12000",
+    "size": 12,
+    "type": "У",
+    "steel_grade": "09Г2С-15",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 71990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      71990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 14 П",
+    "slug": "shveller-nl-14-p-s355-12000",
+    "size": 14,
+    "type": "П",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 66990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      66990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 14 П",
+    "slug": "shveller-nl-14-p-09g2s-15-12000",
+    "size": 14,
+    "type": "П",
+    "steel_grade": "09Г2С-15",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 66990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      66990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 14 У",
+    "slug": "shveller-nl-14-u-09g2s-15-12000",
+    "size": 14,
+    "type": "У",
+    "steel_grade": "09Г2С-15",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 71490,
+    "_dedup_count": 1,
+    "_all_prices": [
+      71490
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 16 П",
+    "slug": "shveller-nl-16-p-s355-12000",
+    "size": 16,
+    "type": "П",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 67990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      67990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 16 П",
+    "slug": "shveller-nl-16-p-09g2s-15-12000",
+    "size": 16,
+    "type": "П",
+    "steel_grade": "09Г2С-15",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 67990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      67990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 16 У",
+    "slug": "shveller-nl-16-u-s355-12000",
+    "size": 16,
+    "type": "У",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 68990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      68990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 16 У",
+    "slug": "shveller-nl-16-u-09g2s-15-12000",
+    "size": 16,
+    "type": "У",
+    "steel_grade": "09Г2С-15",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 68990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      68990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 18 П",
+    "slug": "shveller-nl-18-p-s355-12000",
+    "size": 18,
+    "type": "П",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 76990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      76990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 18 П",
+    "slug": "shveller-nl-18-p-09g2s-15-12000",
+    "size": 18,
+    "type": "П",
+    "steel_grade": "09Г2С-15",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 76990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      76990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 18 У",
+    "slug": "shveller-nl-18-u-09g2s-15-12000",
+    "size": 18,
+    "type": "У",
+    "steel_grade": "09Г2С-15",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 72990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      72990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 20 П",
+    "slug": "shveller-nl-20-p-s355-12000",
+    "size": 20,
+    "type": "П",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 115990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      115990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 20 У",
+    "slug": "shveller-nl-20-u-s355-12000",
+    "size": 20,
+    "type": "У",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 123990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      123990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 22 П",
+    "slug": "shveller-nl-22-p-s355-12000",
+    "size": 22,
+    "type": "П",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 124990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      124990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 24 П",
+    "slug": "shveller-nl-24-p-s355-12000",
+    "size": 24,
+    "type": "П",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 109990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      109990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 24 У",
+    "slug": "shveller-nl-24-u-s355-12000",
+    "size": 24,
+    "type": "У",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 109990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      109990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 27 П",
+    "slug": "shveller-nl-27-p-s355-12000",
+    "size": 27,
+    "type": "П",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 134999,
+    "_dedup_count": 1,
+    "_all_prices": [
+      134999
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 27 У",
+    "slug": "shveller-nl-27-u-s355-12000",
+    "size": 27,
+    "type": "У",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 131650,
+    "_dedup_count": 1,
+    "_all_prices": [
+      131650
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 30 П",
+    "slug": "shveller-nl-30-p-s355-12000",
+    "size": 30,
+    "type": "П",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 134990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      134990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 30 П",
+    "slug": "shveller-nl-30-p-s345-12000",
+    "size": 30,
+    "type": "П",
+    "steel_grade": "С345",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 134990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      134990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 30 У",
+    "slug": "shveller-nl-30-u-s355-12000",
+    "size": 30,
+    "type": "У",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 129990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      129990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 30 У",
+    "slug": "shveller-nl-30-u-09g2s-14-12000",
+    "size": 30,
+    "type": "У",
+    "steel_grade": "09Г2С-14",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 129990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      129990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 40 П",
+    "slug": "shveller-nl-40-p-s355-12000",
+    "size": 40,
+    "type": "П",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 169990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      169990
+    ]
+  },
+  {
+    "name": "Швеллер низколегированный 40 У",
+    "slug": "shveller-nl-40-u-s355-12000",
+    "size": 40,
+    "type": "У",
+    "steel_grade": "С355",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "base_price": 152990,
+    "_dedup_count": 1,
+    "_all_prices": [
+      152990
+    ]
+  }
+]
