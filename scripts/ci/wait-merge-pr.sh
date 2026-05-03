@@ -24,6 +24,14 @@ PR="${1:?usage: $0 <PR_NUMBER> <commit_title>}"
 TITLE="${2:?usage: $0 <PR_NUMBER> <commit_title>}"
 REPO="${REPO:-investfreelife/metallportal}"
 
+echo "Allowing CI workflows to register (~30s buffer)..."
+# Bug fix (post-anchors PR #35): `gh pr checks --watch` exits when ALL
+# зарегистрированные на момент start checks settle. Если CI workflows
+# регистрируются ASYNC (Vercel сразу, playwright позже после triggering),
+# watch может exit before late-registering check'и появятся → false-positive.
+# Sleep даёт CI время зарегистрировать все expected checks.
+sleep 30
+
 echo "Waiting for ALL checks on PR #$PR to settle (including non-required)..."
 # `--watch` polls every 10s; exits 0 if all pass, 1 if any fail.
 # (Non-required checks like Vercel deploy still need to pass for our flow,
