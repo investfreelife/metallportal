@@ -39,15 +39,63 @@ function getSupplierName(product: any): string {
   return "—";
 }
 
+/**
+ * Primary (продажная) цена товара. Возвращает min среди price_items с
+ * unit="т" (если есть), иначе среди всех. Это та цена которая идёт в
+ * корзину и используется для сортировки.
+ *
+ * Multi-unit (W2-8: ADR-0013) — у швеллера-горячекатаного есть и
+ * руб/м и руб/т в БД как два price_items на product. Корзина считает
+ * total в тоннах, поэтому за primary берём руб/т.
+ */
 function getBestPrice(product: any): { base: number; discount: number | null; unit: string } | null {
   if (!product.price_items?.length) return null;
-  let best = product.price_items[0];
-  for (const pi of product.price_items) {
+  // Сначала пытаемся найти ton-price (приоритет для корзины).
+  const tonItems = product.price_items.filter(
+    (pi: any) => (pi.unit ?? product.unit) === "т",
+  );
+  const pool = tonItems.length > 0 ? tonItems : product.price_items;
+  let best = pool[0];
+  for (const pi of pool) {
     const price = pi.discount_price ?? pi.base_price;
     const bestPrice = best.discount_price ?? best.base_price;
     if (price < bestPrice) best = pi;
   }
-  return { base: best.base_price, discount: best.discount_price, unit: product.unit };
+  return {
+    base: best.base_price,
+    discount: best.discount_price,
+    // Берём unit из price_item (multi-unit-aware), fallback на product.unit
+    // (для legacy SKU где price_item.unit может быть null).
+    unit: best.unit ?? product.unit ?? "т",
+  };
+}
+
+/**
+ * Secondary цена в другой единице (например руб/м у швеллера, у которого
+ * primary — руб/т). Используется только для отображения в каталоге как
+ * additional info; в корзину не идёт. Возвращает null если у товара
+ * только одна единица в price_items.
+ */
+function getSecondaryPrice(
+  product: any,
+  primaryUnit: string,
+): { base: number; discount: number | null; unit: string } | null {
+  if (!product.price_items?.length) return null;
+  const others = product.price_items.filter(
+    (pi: any) => (pi.unit ?? product.unit) !== primaryUnit,
+  );
+  if (!others.length) return null;
+  let best = others[0];
+  for (const pi of others) {
+    const price = pi.discount_price ?? pi.base_price;
+    const bestPrice = best.discount_price ?? best.base_price;
+    if (price < bestPrice) best = pi;
+  }
+  return {
+    base: best.base_price,
+    discount: best.discount_price,
+    unit: best.unit ?? product.unit ?? "т",
+  };
 }
 
 function hasStock(product: any): boolean {
@@ -58,6 +106,7 @@ function MobileProductRow({ product, productBasePath }: { product: any; productB
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
   const price = getBestPrice(product);
+  const secondary = price ? getSecondaryPrice(product, price.unit) : null;
   const inStock = hasStock(product);
 
   const handleCart = (e: React.MouseEvent) => {
@@ -78,6 +127,11 @@ function MobileProductRow({ product, productBasePath }: { product: any; productB
           {price ? (
             <span className="text-sm font-bold text-gold whitespace-nowrap">
               {(price.discount ?? price.base).toLocaleString("ru-RU")} ₽/{price.unit}
+              {secondary && (
+                <span className="ml-1.5 text-xs font-normal text-muted-foreground">
+                  ({(secondary.discount ?? secondary.base).toLocaleString("ru-RU")} ₽/{secondary.unit})
+                </span>
+              )}
             </span>
           ) : (
             <span className="text-xs text-muted-foreground">По запросу</span>
@@ -118,6 +172,7 @@ function TableRow({ product, productBasePath }: { product: any; productBasePath:
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
   const price = getBestPrice(product);
+  const secondary = price ? getSecondaryPrice(product, price.unit) : null;
 
   const handleCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -150,9 +205,19 @@ function TableRow({ product, productBasePath }: { product: any; productBasePath:
       </td>
       <td className="px-3 py-2.5 text-right">
         {price ? (
-          <span className="text-sm font-bold text-gold whitespace-nowrap">
-            {price.base.toLocaleString("ru-RU")}
-          </span>
+          <div className="whitespace-nowrap">
+            <span className="text-sm font-bold text-gold">
+              {price.base.toLocaleString("ru-RU")}
+            </span>
+            {/* Multi-unit (W2-8): secondary цена в другой единице
+                (например руб/м, когда primary — руб/т). Renders как
+                мелкий subtext под основной ценой. */}
+            {secondary && (
+              <div className="text-[11px] text-muted-foreground leading-tight mt-0.5">
+                {(secondary.discount ?? secondary.base).toLocaleString("ru-RU")} ₽/{secondary.unit}
+              </div>
+            )}
+          </div>
         ) : (
           <span className="text-sm text-muted-foreground">—</span>
         )}

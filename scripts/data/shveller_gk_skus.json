@@ -1,0 +1,1243 @@
+[
+  {
+    "name": "Швеллер 5 П",
+    "slug": "shveller-gk-5-p-st3-12000",
+    "size": 5.0,
+    "type": "П",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 440,
+    "price_per_ton": 83990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      440
+    ],
+    "_all_ppt": [
+      83990
+    ]
+  },
+  {
+    "name": "Швеллер 5 П",
+    "slug": "shveller-gk-5-p-st3-6000",
+    "size": 5.0,
+    "type": "П",
+    "steel_grade": "Ст3",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 440,
+    "price_per_ton": 83990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      440
+    ],
+    "_all_ppt": [
+      83990
+    ]
+  },
+  {
+    "name": "Швеллер 5 У",
+    "slug": "shveller-gk-5-u-st3-6000",
+    "size": 5.0,
+    "type": "У",
+    "steel_grade": "Ст3",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 324,
+    "price_per_ton": 61990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      324
+    ],
+    "_all_ppt": [
+      61990
+    ]
+  },
+  {
+    "name": "Швеллер 5 У",
+    "slug": "shveller-gk-5-u-st3-12000",
+    "size": 5.0,
+    "type": "У",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 314,
+    "price_per_ton": 59990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      314
+    ],
+    "_all_ppt": [
+      59990
+    ]
+  },
+  {
+    "name": "Швеллер 6.5 П",
+    "slug": "shveller-gk-6-5-p-st3-12000",
+    "size": 6.5,
+    "type": "П",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 459,
+    "price_per_ton": 71990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      459
+    ],
+    "_all_ppt": [
+      71990
+    ]
+  },
+  {
+    "name": "Швеллер 6.5 П",
+    "slug": "shveller-gk-6-5-p-st3-6000",
+    "size": 6.5,
+    "type": "П",
+    "steel_grade": "Ст3",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 459,
+    "price_per_ton": 71990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      459
+    ],
+    "_all_ppt": [
+      71990
+    ]
+  },
+  {
+    "name": "Швеллер 6.5 У",
+    "slug": "shveller-gk-6-5-u-st3-12000",
+    "size": 6.5,
+    "type": "У",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 356,
+    "price_per_ton": 55790,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      356
+    ],
+    "_all_ppt": [
+      55790
+    ]
+  },
+  {
+    "name": "Швеллер 6.5 У",
+    "slug": "shveller-gk-6-5-u-st3-6000",
+    "size": 6.5,
+    "type": "У",
+    "steel_grade": "Ст3",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 356,
+    "price_per_ton": 55790,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      356
+    ],
+    "_all_ppt": [
+      55790
+    ]
+  },
+  {
+    "name": "Швеллер 8 П",
+    "slug": "shveller-gk-8-p-st3-6000",
+    "size": 8.0,
+    "type": "П",
+    "steel_grade": "Ст3",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 419,
+    "price_per_ton": 54990,
+    "_dedup_count": 2,
+    "_all_ppm": [
+      419
+    ],
+    "_all_ppt": [
+      54990
+    ]
+  },
+  {
+    "name": "Швеллер 8 П",
+    "slug": "shveller-gk-8-p-st3-12000",
+    "size": 8.0,
+    "type": "П",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 435,
+    "price_per_ton": 56990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      435
+    ],
+    "_all_ppt": [
+      56990
+    ]
+  },
+  {
+    "name": "Швеллер 8 П",
+    "slug": "shveller-gk-8-p-s255-6000",
+    "size": 8.0,
+    "type": "П",
+    "steel_grade": "С255",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 419,
+    "price_per_ton": 54990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      419
+    ],
+    "_all_ppt": [
+      54990
+    ]
+  },
+  {
+    "name": "Швеллер 8 П",
+    "slug": "shveller-gk-8-p-s255-12000",
+    "size": 8.0,
+    "type": "П",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 435,
+    "price_per_ton": 56990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      435
+    ],
+    "_all_ppt": [
+      56990
+    ]
+  },
+  {
+    "name": "Швеллер 8 У",
+    "slug": "shveller-gk-8-u-s255-12000",
+    "size": 8.0,
+    "type": "У",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 427,
+    "price_per_ton": 55990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      427
+    ],
+    "_all_ppt": [
+      55990
+    ]
+  },
+  {
+    "name": "Швеллер 8 У",
+    "slug": "shveller-gk-8-u-st3-12000",
+    "size": 8.0,
+    "type": "У",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 427,
+    "price_per_ton": 55990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      427
+    ],
+    "_all_ppt": [
+      55990
+    ]
+  },
+  {
+    "name": "Швеллер 8 У",
+    "slug": "shveller-gk-8-u-st3-6000",
+    "size": 8.0,
+    "type": "У",
+    "steel_grade": "Ст3",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 427,
+    "price_per_ton": 55990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      427
+    ],
+    "_all_ppt": [
+      55990
+    ]
+  },
+  {
+    "name": "Швеллер 10 П",
+    "slug": "shveller-gk-10-p-s255-6000",
+    "size": 10.0,
+    "type": "П",
+    "steel_grade": "С255",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 526,
+    "price_per_ton": 55490,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      526
+    ],
+    "_all_ppt": [
+      55490
+    ]
+  },
+  {
+    "name": "Швеллер 10 П",
+    "slug": "shveller-gk-10-p-st3-12000",
+    "size": 10.0,
+    "type": "П",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 491,
+    "price_per_ton": 54490,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      491
+    ],
+    "_all_ppt": [
+      54490
+    ]
+  },
+  {
+    "name": "Швеллер 10 П",
+    "slug": "shveller-gk-10-p-st3-6000",
+    "size": 10.0,
+    "type": "П",
+    "steel_grade": "Ст3",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 500,
+    "price_per_ton": 55490,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      500
+    ],
+    "_all_ppt": [
+      55490
+    ]
+  },
+  {
+    "name": "Швеллер 10 П",
+    "slug": "shveller-gk-10-p-s255-12000",
+    "size": 10.0,
+    "type": "П",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 491,
+    "price_per_ton": 54490,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      491
+    ],
+    "_all_ppt": [
+      54490
+    ]
+  },
+  {
+    "name": "Швеллер 10 У",
+    "slug": "shveller-gk-10-u-st3-12000",
+    "size": 10.0,
+    "type": "У",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 487,
+    "price_per_ton": 53990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      487
+    ],
+    "_all_ppt": [
+      53990
+    ]
+  },
+  {
+    "name": "Швеллер 10 У",
+    "slug": "shveller-gk-10-u-st3-6000",
+    "size": 10.0,
+    "type": "У",
+    "steel_grade": "Ст3",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 487,
+    "price_per_ton": 53990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      487
+    ],
+    "_all_ppt": [
+      53990
+    ]
+  },
+  {
+    "name": "Швеллер 12 П",
+    "slug": "shveller-gk-12-p-st3-12000",
+    "size": 12.0,
+    "type": "П",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 664,
+    "price_per_ton": 58990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      664
+    ],
+    "_all_ppt": [
+      58990
+    ]
+  },
+  {
+    "name": "Швеллер 12 П",
+    "slug": "shveller-gk-12-p-st3-6000",
+    "size": 12.0,
+    "type": "П",
+    "steel_grade": "Ст3",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 664,
+    "price_per_ton": 58990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      664
+    ],
+    "_all_ppt": [
+      58990
+    ]
+  },
+  {
+    "name": "Швеллер 12 П",
+    "slug": "shveller-gk-12-p-st3-11700",
+    "size": 12.0,
+    "type": "П",
+    "steel_grade": "Ст3",
+    "length": 11700,
+    "length_options": [
+      "11700"
+    ],
+    "price_per_meter": 663,
+    "price_per_ton": 58990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      663
+    ],
+    "_all_ppt": [
+      58990
+    ]
+  },
+  {
+    "name": "Швеллер 12 П",
+    "slug": "shveller-gk-12-p-s255-6000",
+    "size": 12.0,
+    "type": "П",
+    "steel_grade": "С255",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 664,
+    "price_per_ton": 58990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      664
+    ],
+    "_all_ppt": [
+      58990
+    ]
+  },
+  {
+    "name": "Швеллер 12 П",
+    "slug": "shveller-gk-12-p-s255-12000",
+    "size": 12.0,
+    "type": "П",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 664,
+    "price_per_ton": 58990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      664
+    ],
+    "_all_ppt": [
+      58990
+    ]
+  },
+  {
+    "name": "Швеллер 12 У",
+    "slug": "shveller-gk-12-u-st3-12000",
+    "size": 12.0,
+    "type": "У",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 669,
+    "price_per_ton": 59490,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      669
+    ],
+    "_all_ppt": [
+      59490
+    ]
+  },
+  {
+    "name": "Швеллер 12 У",
+    "slug": "shveller-gk-12-u-s255-12000",
+    "size": 12.0,
+    "type": "У",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 669,
+    "price_per_ton": 59490,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      669
+    ],
+    "_all_ppt": [
+      59490
+    ]
+  },
+  {
+    "name": "Швеллер 12 У",
+    "slug": "shveller-gk-12-u-st3-6000",
+    "size": 12.0,
+    "type": "У",
+    "steel_grade": "Ст3",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 690,
+    "price_per_ton": 59990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      690
+    ],
+    "_all_ppt": [
+      59990
+    ]
+  },
+  {
+    "name": "Швеллер 14 П",
+    "slug": "shveller-gk-14-p-st3-6000",
+    "size": 14.0,
+    "type": "П",
+    "steel_grade": "Ст3",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 785,
+    "price_per_ton": 58990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      785
+    ],
+    "_all_ppt": [
+      58990
+    ]
+  },
+  {
+    "name": "Швеллер 14 П",
+    "slug": "shveller-gk-14-p-s255-6000",
+    "size": 14.0,
+    "type": "П",
+    "steel_grade": "С255",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 785,
+    "price_per_ton": 58990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      785
+    ],
+    "_all_ppt": [
+      58990
+    ]
+  },
+  {
+    "name": "Швеллер 14 П",
+    "slug": "shveller-gk-14-p-st3-12000",
+    "size": 14.0,
+    "type": "П",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 785,
+    "price_per_ton": 58990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      785
+    ],
+    "_all_ppt": [
+      58990
+    ]
+  },
+  {
+    "name": "Швеллер 14 П",
+    "slug": "shveller-gk-14-p-s255-12000",
+    "size": 14.0,
+    "type": "П",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 785,
+    "price_per_ton": 58990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      785
+    ],
+    "_all_ppt": [
+      58990
+    ]
+  },
+  {
+    "name": "Швеллер 14 У",
+    "slug": "shveller-gk-14-u-s255-12000",
+    "size": 14.0,
+    "type": "У",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 805,
+    "price_per_ton": 60490,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      805
+    ],
+    "_all_ppt": [
+      60490
+    ]
+  },
+  {
+    "name": "Швеллер 14 У",
+    "slug": "shveller-gk-14-u-st3-6000",
+    "size": 14.0,
+    "type": "У",
+    "steel_grade": "Ст3",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 818,
+    "price_per_ton": 61490,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      818
+    ],
+    "_all_ppt": [
+      61490
+    ]
+  },
+  {
+    "name": "Швеллер 14 У",
+    "slug": "shveller-gk-14-u-st3-12000",
+    "size": 14.0,
+    "type": "У",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 805,
+    "price_per_ton": 60490,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      805
+    ],
+    "_all_ppt": [
+      60490
+    ]
+  },
+  {
+    "name": "Швеллер 16 П",
+    "slug": "shveller-gk-16-p-st3-12000",
+    "size": 16.0,
+    "type": "П",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 936,
+    "price_per_ton": 61490,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      936
+    ],
+    "_all_ppt": [
+      61490
+    ]
+  },
+  {
+    "name": "Швеллер 16 П",
+    "slug": "shveller-gk-16-p-s255-6000",
+    "size": 16.0,
+    "type": "П",
+    "steel_grade": "С255",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 944,
+    "price_per_ton": 61490,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      944
+    ],
+    "_all_ppt": [
+      61490
+    ]
+  },
+  {
+    "name": "Швеллер 16 П",
+    "slug": "shveller-gk-16-p-s255-12000",
+    "size": 16.0,
+    "type": "П",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 936,
+    "price_per_ton": 61490,
+    "_dedup_count": 2,
+    "_all_ppm": [
+      936,
+      944
+    ],
+    "_all_ppt": [
+      61490
+    ]
+  },
+  {
+    "name": "Швеллер 16 У",
+    "slug": "shveller-gk-16-u-st3-12000",
+    "size": 16.0,
+    "type": "У",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 960,
+    "price_per_ton": 62490,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      960
+    ],
+    "_all_ppt": [
+      62490
+    ]
+  },
+  {
+    "name": "Швеллер 16 У",
+    "slug": "shveller-gk-16-u-st3-6000",
+    "size": 16.0,
+    "type": "У",
+    "steel_grade": "Ст3",
+    "length": 6000,
+    "length_options": [
+      "6000"
+    ],
+    "price_per_meter": 960,
+    "price_per_ton": 62490,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      960
+    ],
+    "_all_ppt": [
+      62490
+    ]
+  },
+  {
+    "name": "Швеллер 18 П",
+    "slug": "shveller-gk-18-p-st3-12000",
+    "size": 18.0,
+    "type": "П",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 1181,
+    "price_per_ton": 66990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      1181
+    ],
+    "_all_ppt": [
+      66990
+    ]
+  },
+  {
+    "name": "Швеллер 18 П",
+    "slug": "shveller-gk-18-p-s255-12000",
+    "size": 18.0,
+    "type": "П",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 1181,
+    "price_per_ton": 66990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      1181
+    ],
+    "_all_ppt": [
+      66990
+    ]
+  },
+  {
+    "name": "Швеллер 18 У",
+    "slug": "shveller-gk-18-u-st3-12000",
+    "size": 18.0,
+    "type": "У",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 1207,
+    "price_per_ton": 68490,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      1207
+    ],
+    "_all_ppt": [
+      68490
+    ]
+  },
+  {
+    "name": "Швеллер 20 П",
+    "slug": "shveller-gk-20-p-s255-12000",
+    "size": 20.0,
+    "type": "П",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 2129,
+    "price_per_ton": 106990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      2129
+    ],
+    "_all_ppt": [
+      106990
+    ]
+  },
+  {
+    "name": "Швеллер 20 П",
+    "slug": "shveller-gk-20-p-st3-12000",
+    "size": 20.0,
+    "type": "П",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 2129,
+    "price_per_ton": 106990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      2129
+    ],
+    "_all_ppt": [
+      106990
+    ]
+  },
+  {
+    "name": "Швеллер 20 У",
+    "slug": "shveller-gk-20-u-s255-12000",
+    "size": 20.0,
+    "type": "У",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 2189,
+    "price_per_ton": 109990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      2189
+    ],
+    "_all_ppt": [
+      109990
+    ]
+  },
+  {
+    "name": "Швеллер 22 П",
+    "slug": "shveller-gk-22-p-st3-12000",
+    "size": 22.0,
+    "type": "П",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 2498,
+    "price_per_ton": 109990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      2498
+    ],
+    "_all_ppt": [
+      109990
+    ]
+  },
+  {
+    "name": "Швеллер 22 П",
+    "slug": "shveller-gk-22-p-s255-12000",
+    "size": 22.0,
+    "type": "П",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 2425,
+    "price_per_ton": 109990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      2425
+    ],
+    "_all_ppt": [
+      109990
+    ]
+  },
+  {
+    "name": "Швеллер 22 У",
+    "slug": "shveller-gk-22-u-s255-12000",
+    "size": 22.0,
+    "type": "У",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 2805,
+    "price_per_ton": 123490,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      2805
+    ],
+    "_all_ppt": [
+      123490
+    ]
+  },
+  {
+    "name": "Швеллер 24 П",
+    "slug": "shveller-gk-24-p-s255-12000",
+    "size": 24.0,
+    "type": "П",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 2528,
+    "price_per_ton": 97490,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      2528
+    ],
+    "_all_ppt": [
+      97490
+    ]
+  },
+  {
+    "name": "Швеллер 24 У",
+    "slug": "shveller-gk-24-u-s255-12000",
+    "size": 24.0,
+    "type": "У",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 2401,
+    "price_per_ton": 92490,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      2401
+    ],
+    "_all_ppt": [
+      92490
+    ]
+  },
+  {
+    "name": "Швеллер 27 П",
+    "slug": "shveller-gk-27-p-s255-12000",
+    "size": 27.0,
+    "type": "П",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 3804,
+    "price_per_ton": 126990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      3804
+    ],
+    "_all_ppt": [
+      126990
+    ]
+  },
+  {
+    "name": "Швеллер 27 П",
+    "slug": "shveller-gk-27-p-st3-12000",
+    "size": 27.0,
+    "type": "П",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 3804,
+    "price_per_ton": 126990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      3804
+    ],
+    "_all_ppt": [
+      126990
+    ]
+  },
+  {
+    "name": "Швеллер 27 У",
+    "slug": "shveller-gk-27-u-st3-12000",
+    "size": 27.0,
+    "type": "У",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 3804,
+    "price_per_ton": 126990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      3804
+    ],
+    "_all_ppt": [
+      126990
+    ]
+  },
+  {
+    "name": "Швеллер 27 У",
+    "slug": "shveller-gk-27-u-s255-12000",
+    "size": 27.0,
+    "type": "У",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 3804,
+    "price_per_ton": 126990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      3804
+    ],
+    "_all_ppt": [
+      126990
+    ]
+  },
+  {
+    "name": "Швеллер 30 П",
+    "slug": "shveller-gk-30-p-s255-12000",
+    "size": 30.0,
+    "type": "П",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 4402,
+    "price_per_ton": 128990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      4402
+    ],
+    "_all_ppt": [
+      128990
+    ]
+  },
+  {
+    "name": "Швеллер 30 У",
+    "slug": "shveller-gk-30-u-s255-12000",
+    "size": 30.0,
+    "type": "У",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 4428,
+    "price_per_ton": 125990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      4428
+    ],
+    "_all_ppt": [
+      125990
+    ]
+  },
+  {
+    "name": "Швеллер 30 У",
+    "slug": "shveller-gk-30-u-st3-12000",
+    "size": 30.0,
+    "type": "У",
+    "steel_grade": "Ст3",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 4266,
+    "price_per_ton": 125990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      4266
+    ],
+    "_all_ppt": [
+      125990
+    ]
+  },
+  {
+    "name": "Швеллер 40 П",
+    "slug": "shveller-gk-40-p-s255-12000",
+    "size": 40.0,
+    "type": "П",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 8317,
+    "price_per_ton": 163990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      8317
+    ],
+    "_all_ppt": [
+      163990
+    ]
+  },
+  {
+    "name": "Швеллер 40 У",
+    "slug": "shveller-gk-40-u-s275-12000",
+    "size": 40.0,
+    "type": "У",
+    "steel_grade": "С275 (МС400x100x50.1)",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 7680,
+    "price_per_ton": 145990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      7680
+    ],
+    "_all_ppt": [
+      145990
+    ]
+  },
+  {
+    "name": "Швеллер 40 У",
+    "slug": "shveller-gk-40-u-s255-12000",
+    "size": 40.0,
+    "type": "У",
+    "steel_grade": "С255",
+    "length": 12000,
+    "length_options": [
+      "12000"
+    ],
+    "price_per_meter": 7626,
+    "price_per_ton": 145990,
+    "_dedup_count": 1,
+    "_all_ppm": [
+      7626
+    ],
+    "_all_ppt": [
+      145990
+    ]
+  }
+]
