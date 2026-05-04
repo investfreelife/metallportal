@@ -1,0 +1,1161 @@
+[
+  {
+    "slug": "shestigrannik-12-st45-nd",
+    "name": "Шестигранник конструкционный г/к 12 Ст45",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 12,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 12
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-12-st35-nd",
+    "name": "Шестигранник конструкционный г/к 12 Ст35",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 12,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 12
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-14-40h-nd",
+    "name": "Шестигранник конструкционный г/к 14 40Х",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 14,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 14
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-14-09g2s-nd",
+    "name": "Шестигранник конструкционный г/к 14 09Г2С",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 14,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 14
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-14-st35-nd",
+    "name": "Шестигранник конструкционный г/к 14 Ст35",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 14,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 14
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-14-st20-nd",
+    "name": "Шестигранник конструкционный г/к 14 Ст20",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 14,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 14
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-17-40h-nd",
+    "name": "Шестигранник конструкционный г/к 17 40Х",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 17,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 17
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-17-09g2s-nd",
+    "name": "Шестигранник конструкционный г/к 17 09Г2С",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 17,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 17
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-17-st35-nd",
+    "name": "Шестигранник конструкционный г/к 17 Ст35",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 17,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 17
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-17-st20-nd",
+    "name": "Шестигранник конструкционный г/к 17 Ст20",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 17,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 17
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-19-40h-nd",
+    "name": "Шестигранник конструкционный г/к 19 40Х",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 19,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 19
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-19-st45-nd",
+    "name": "Шестигранник конструкционный г/к 19 Ст45",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 19,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 19
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-19-st35-nd",
+    "name": "Шестигранник конструкционный г/к 19 Ст35",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 19,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 19
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-22-40h-nd",
+    "name": "Шестигранник конструкционный г/к 22 40Х",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 22,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 22
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-22-09g2s-nd",
+    "name": "Шестигранник конструкционный г/к 22 09Г2С",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 22,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 22
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-22-st45-nd",
+    "name": "Шестигранник конструкционный г/к 22 Ст45",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 22,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 22
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-22-st35-nd",
+    "name": "Шестигранник конструкционный г/к 22 Ст35",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 22,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 22
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-22-st20-nd",
+    "name": "Шестигранник конструкционный г/к 22 Ст20",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 22,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 22
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-24-40h-nd",
+    "name": "Шестигранник конструкционный г/к 24 40Х",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 24,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 24
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-24-09g2s-nd",
+    "name": "Шестигранник конструкционный г/к 24 09Г2С",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 24,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 24
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-24-st45-nd",
+    "name": "Шестигранник конструкционный г/к 24 Ст45",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 24,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 24
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-24-st20-nd",
+    "name": "Шестигранник конструкционный г/к 24 Ст20",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 24,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 24
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-27-40h-nd",
+    "name": "Шестигранник конструкционный г/к 27 40Х",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 27,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 27
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-27-09g2s-nd",
+    "name": "Шестигранник конструкционный г/к 27 09Г2С",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 27,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 27
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-27-st45-nd",
+    "name": "Шестигранник конструкционный г/к 27 Ст45",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 27,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 27
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-27-st20-nd",
+    "name": "Шестигранник конструкционный г/к 27 Ст20",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 27,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 27
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-30-40h-nd",
+    "name": "Шестигранник конструкционный г/к 30 40Х",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 30,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 30
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-30-09g2s-nd",
+    "name": "Шестигранник конструкционный г/к 30 09Г2С",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 30,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 30
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-30-st45-nd",
+    "name": "Шестигранник конструкционный г/к 30 Ст45",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 30,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 30
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-30-st35-nd",
+    "name": "Шестигранник конструкционный г/к 30 Ст35",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 30,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 30
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-30-st20-nd",
+    "name": "Шестигранник конструкционный г/к 30 Ст20",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 30,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 30
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-32-40h-nd",
+    "name": "Шестигранник конструкционный г/к 32 40Х",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 32,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 32
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-32-09g2s-nd",
+    "name": "Шестигранник конструкционный г/к 32 09Г2С",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 32,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 32
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-32-st45-nd",
+    "name": "Шестигранник конструкционный г/к 32 Ст45",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 32,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 32
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-32-st20-nd",
+    "name": "Шестигранник конструкционный г/к 32 Ст20",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 32,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 32
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-36-40h-nd",
+    "name": "Шестигранник конструкционный г/к 36 40Х",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 36,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 36
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-36-st45-nd",
+    "name": "Шестигранник конструкционный г/к 36 Ст45",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 36,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 36
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-36-st35-nd",
+    "name": "Шестигранник конструкционный г/к 36 Ст35",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 36,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 36
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-36-st20-nd",
+    "name": "Шестигранник конструкционный г/к 36 Ст20",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 36,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 36
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-41-40h-nd",
+    "name": "Шестигранник конструкционный г/к 41 40Х",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 41,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 41
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-41-09g2s-nd",
+    "name": "Шестигранник конструкционный г/к 41 09Г2С",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 41,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 41
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-41-st45-nd",
+    "name": "Шестигранник конструкционный г/к 41 Ст45",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 41,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 41
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-41-st35-nd",
+    "name": "Шестигранник конструкционный г/к 41 Ст35",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 41,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 41
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-41-st20-nd",
+    "name": "Шестигранник конструкционный г/к 41 Ст20",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 41,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 41
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-46-09g2s-nd",
+    "name": "Шестигранник конструкционный г/к 46 09Г2С",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 46,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 46
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 85790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-46-40h-nd",
+    "name": "Шестигранник конструкционный г/к 46 40Х",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 46,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 46
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 84790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-46-st45-nd",
+    "name": "Шестигранник конструкционный г/к 46 Ст45",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 46,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 46
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 77790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-50-09g2s-nd",
+    "name": "Шестигранник конструкционный г/к 50 09Г2С",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 50,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 50
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 85790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-50-st45-nd",
+    "name": "Шестигранник конструкционный г/к 50 Ст45",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 50,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 50
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 77790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-50-st35-nd",
+    "name": "Шестигранник конструкционный г/к 50 Ст35",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 50,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 50
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 77790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-50-st20-nd",
+    "name": "Шестигранник конструкционный г/к 50 Ст20",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 50,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 50
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 77790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-52-09g2s-nd",
+    "name": "Шестигранник конструкционный г/к 52 09Г2С",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 52,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 52
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 85790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-55-09g2s-nd",
+    "name": "Шестигранник конструкционный г/к 55 09Г2С",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 55,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 55
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 85790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-55-40h-nd",
+    "name": "Шестигранник конструкционный г/к 55 40Х",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 55,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 55
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 84790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-65-09g2s-nd",
+    "name": "Шестигранник конструкционный г/к 65 09Г2С",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 65,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 65
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 85790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-65-40h-nd",
+    "name": "Шестигранник конструкционный г/к 65 40Х",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 65,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 65
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 84790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-65-st35-nd",
+    "name": "Шестигранник конструкционный г/к 65 Ст35",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 65,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 65
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 77790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-65-st20-nd",
+    "name": "Шестигранник конструкционный г/к 65 Ст20",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 65,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 65
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 77790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-75-09g2s-nd",
+    "name": "Шестигранник конструкционный г/к 75 09Г2С",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 75,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 75
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 86790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-75-st45-nd",
+    "name": "Шестигранник конструкционный г/к 75 Ст45",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 75,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 75
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 80790.0
+      }
+    ]
+  },
+  {
+    "slug": "shestigrannik-75-st35-nd",
+    "name": "Шестигранник конструкционный г/к 75 Ст35",
+    "category_slug": "shestigrannik-konstruktsionnyy",
+    "category_id": "166f018f-738a-4130-9350-275e05d63981",
+    "diameter": 75,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": {
+      "sH_mm": 75
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 80790.0
+      }
+    ]
+  }
+]
