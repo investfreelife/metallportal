@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
 import Hero from "@/components/home/Hero";
 import TrustCounters from "@/components/home/TrustCounters";
 import ProductGrid from "@/components/home/ProductGrid";
@@ -28,7 +29,7 @@ const organizationSchema = {
   "@type": "Organization",
   name: "Харланметалл",
   alternateName: "Харланметалл",
-  url: "https://metallportal.vercel.app",
+  url: SITE_URL,
   description:
     "B2B/B2C маркетплейс металлопроката, труб, арматуры и другой металлопродукции. Прямые поставки от производителей по всей России.",
   address: {

@@ -1,11 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { Search, ChevronDown, FileUp, Menu, X, ShoppingCart } from "lucide-react";
+import { Search, ChevronDown, FileUp, Menu, X, ShoppingCart, Phone } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useCart } from "@/contexts/CartContext";
 import SearchBar from "@/components/layout/SearchBar";
+import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_TEL } from "@/lib/contact";
+
+/**
+ * Reach Метрики из любого client-компонента — типобезопасный wrapper.
+ * Если counter не подключён (env пуст) — no-op, без console-ошибок.
+ */
+function trackMetrikaGoal(goal: string) {
+  if (typeof window === "undefined") return;
+  const ym = (window as unknown as { ym?: (id: number, action: string, target: string) => void }).ym;
+  const id = Number(process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID);
+  if (!ym || !id) return;
+  ym(id, "reachGoal", goal);
+}
 
 /**
  * Public-facing nav-item shape, отдаваемый сервером.
@@ -214,6 +227,14 @@ export default function HeaderClient({ navItems }: HeaderClientProps) {
           <SearchBar />
 
           <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
+            <a
+              href={`tel:${CONTACT_PHONE_TEL}`}
+              onClick={() => trackMetrikaGoal("phone_click_header")}
+              className="flex items-center gap-2 text-foreground hover:text-gold transition-colors font-semibold text-sm whitespace-nowrap"
+            >
+              <Phone size={18} className="text-gold" />
+              {CONTACT_PHONE_DISPLAY}
+            </a>
             <Link
               href="/cart"
               className="relative p-2 hover:text-gold transition-colors"
@@ -232,6 +253,14 @@ export default function HeaderClient({ navItems }: HeaderClientProps) {
           </div>
 
           <div className="ml-auto lg:hidden flex items-center gap-1">
+            <a
+              href={`tel:${CONTACT_PHONE_TEL}`}
+              onClick={() => trackMetrikaGoal("phone_click_header_mobile")}
+              aria-label={`Позвонить ${CONTACT_PHONE_DISPLAY}`}
+              className="p-2 hover:text-gold transition-colors"
+            >
+              <Phone size={20} className="text-gold" />
+            </a>
             <button
               className="p-2 hover:text-gold transition-colors"
               onClick={() => {

@@ -8,6 +8,7 @@ import {
   getProductBySlug, getProductPriceItems, getRelatedProducts, getProductCounts, sumCounts,
 } from "@/lib/queries";
 import { supabase } from "@/lib/supabase";
+import { SITE_URL } from "@/lib/site";
 import CatalogView from "@/components/catalog/CatalogView";
 import CatalogCategoryCard from "@/components/catalog/CatalogCategoryCard";
 import ProductDetailView from "@/components/catalog/ProductDetailView";
@@ -805,7 +806,7 @@ export default async function SubcategoryPage({ params }: Props) {
         price: minPrice.toFixed(2),
         priceCurrency: "RUB",
         availability: "https://schema.org/InStock",
-        url: `https://metallportal.vercel.app/catalog/${params.category}/${params.subcategory}`,
+        url: `${SITE_URL}/catalog/${params.category}/${params.subcategory}`,
         seller: { "@type": "Organization", name: "Харланметалл" },
       };
     }

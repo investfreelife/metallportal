@@ -1,5 +1,11 @@
 import Link from "next/link";
+import { Phone, Mail, MapPin, Clock } from "lucide-react";
 import { fetchCategoriesTree, categoryHref } from "@/lib/categories";
+import {
+  CONTACT_PHONE_DISPLAY,
+  CONTACT_PHONE_TEL,
+  CONTACT_EMAIL,
+} from "@/lib/contact";
 
 // Сколько root-категорий показывает блок "Продукция" в Footer'е. Меньше
 // чем в Header (5) — оставшиеся уезжают на /catalog. Если в БД < 5
@@ -13,7 +19,7 @@ export default async function Footer() {
   return (
     <footer className="bg-card border-t border-gold/20">
       <div className="max-w-[1440px] mx-auto px-8 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-4">
@@ -34,6 +40,43 @@ export default async function Footer() {
               Премиальный B2B портал металлопродукции, соединяющий проверенных
               поставщиков с серьёзными покупателями.
             </p>
+          </div>
+
+          {/* Contacts (NAP) — phone + email + address + hours
+              Источник истины: lib/contact.ts. Адрес дублируется с /contacts
+              (placeholder, ждёт уточнения от Сергея). */}
+          <div>
+            <h4 className="text-foreground uppercase tracking-widest mb-4 text-sm">
+              Контакты
+            </h4>
+            <ul className="space-y-3 text-sm">
+              <li>
+                <a
+                  href={`tel:${CONTACT_PHONE_TEL}`}
+                  className="flex items-center gap-2 text-foreground hover:text-gold transition-colors"
+                >
+                  <Phone size={16} className="text-gold flex-shrink-0" />
+                  <span className="font-bold">{CONTACT_PHONE_DISPLAY}</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`mailto:${CONTACT_EMAIL}`}
+                  className="flex items-center gap-2 text-foreground/80 hover:text-gold transition-colors"
+                >
+                  <Mail size={16} className="text-gold flex-shrink-0" />
+                  {CONTACT_EMAIL}
+                </a>
+              </li>
+              <li className="flex items-start gap-2 text-foreground/80">
+                <MapPin size={16} className="text-gold mt-0.5 flex-shrink-0" />
+                <span>Москва, ул. Промышленная, 15</span>
+              </li>
+              <li className="flex items-start gap-2 text-foreground/80">
+                <Clock size={16} className="text-gold mt-0.5 flex-shrink-0" />
+                <span>Пн–Пт 9:00–18:00 МСК</span>
+              </li>
+            </ul>
           </div>
 
           {/* Products — data-driven из таблицы categories (W2-1) */}
@@ -63,16 +106,15 @@ export default async function Footer() {
             </ul>
           </div>
 
-          {/* Company */}
+          {/* Company — fix href="#"; "Вакансии" удалены (страницы нет) */}
           <div>
             <h4 className="text-foreground uppercase tracking-widest mb-4 text-sm">
               Компания
             </h4>
             <ul className="space-y-2">
-              <li><Link href="#" className="text-sm text-foreground/60 hover:text-gold transition-colors">О нас</Link></li>
-              <li><Link href="#" className="text-sm text-foreground/60 hover:text-gold transition-colors">Наши поставщики</Link></li>
-              <li><Link href="#" className="text-sm text-foreground/60 hover:text-gold transition-colors">Вакансии</Link></li>
-              <li><Link href="#" className="text-sm text-foreground/60 hover:text-gold transition-colors">Контакты</Link></li>
+              <li><Link href="/about" className="text-sm text-foreground/60 hover:text-gold transition-colors">О нас</Link></li>
+              <li><Link href="/supplier" className="text-sm text-foreground/60 hover:text-gold transition-colors">Наши поставщики</Link></li>
+              <li><Link href="/contacts" className="text-sm text-foreground/60 hover:text-gold transition-colors">Контакты</Link></li>
             </ul>
           </div>
 
@@ -90,15 +132,21 @@ export default async function Footer() {
           </div>
         </div>
 
-        {/* Bottom */}
+        {/* Bottom — Telegram реальный (@harlansteel, см. /contacts);
+            VK / YouTube handles нет, ссылки убраны вместо href="#". */}
         <div className="pt-8 border-t border-gold/10 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-foreground/40 text-sm">
             © {new Date().getFullYear()} Харланметалл. Все права защищены.
           </p>
           <div className="flex gap-6">
-            <a href="#" className="text-foreground/40 hover:text-gold transition-colors text-sm uppercase tracking-wider">VK</a>
-            <a href="#" className="text-foreground/40 hover:text-gold transition-colors text-sm uppercase tracking-wider">Telegram</a>
-            <a href="#" className="text-foreground/40 hover:text-gold transition-colors text-sm uppercase tracking-wider">YouTube</a>
+            <a
+              href="https://t.me/harlansteel"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground/40 hover:text-gold transition-colors text-sm uppercase tracking-wider"
+            >
+              Telegram
+            </a>
           </div>
         </div>
       </div>
