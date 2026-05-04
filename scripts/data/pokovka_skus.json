@@ -1,0 +1,1393 @@
+[
+  {
+    "slug": "pokovka-300-vcm-st09g2s-nd",
+    "name": "Поковка 300 ВЦМ Ст09Г2С",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 300,
+    "length": null,
+    "steel_grade": "Ст09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 300,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 157300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-320-mo-vcm-st09g2s-nd",
+    "name": "Поковка 320 м/о ВЦМ Ст09Г2С",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 320,
+    "length": null,
+    "steel_grade": "Ст09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 320,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "mo",
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 183800.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-345-mo-vcm-st09g2s-nd",
+    "name": "Поковка 345 м/о ВЦМ Ст09Г2С",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 345,
+    "length": null,
+    "steel_grade": "Ст09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 345,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "mo",
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 183800.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-350-st09g2s-nd",
+    "name": "Поковка 350 Ст09Г2С",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 350,
+    "length": null,
+    "steel_grade": "Ст09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 350,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 156300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-350-vcm-st20-nd",
+    "name": "Поковка 350 ВЦМ Ст20",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 350,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 350,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 149300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-350-vcm-st09g2s-nd",
+    "name": "Поковка 350 ВЦМ Ст09Г2С",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 350,
+    "length": null,
+    "steel_grade": "Ст09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 350,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 156300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-360-30hma-nd",
+    "name": "Поковка 360 30ХМА",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 360,
+    "length": null,
+    "steel_grade": "30ХМА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 360,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 193300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-360-st20-nd",
+    "name": "Поковка 360 Ст20",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 360,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 360,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 149300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-360-40hn2ma-nd",
+    "name": "Поковка 360 40ХН2МА",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 360,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 360,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 232300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-360-st45-nd",
+    "name": "Поковка 360 Ст45",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 360,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 360,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 149300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-360-vcm-40h-nd",
+    "name": "Поковка 360 ВЦМ 40Х",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 360,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 360,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 157300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-360-iran-40h-nd",
+    "name": "Поковка 360 Иран 40Х",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 360,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 360,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "iran"
+      ],
+      "origin": "Иран"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 155800.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-360-iran-st45-nd",
+    "name": "Поковка 360 Иран Ст45",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 360,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 360,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "iran"
+      ],
+      "origin": "Иран"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 151800.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-360-mo-vcm-st45-nd",
+    "name": "Поковка 360 м/о ВЦМ Ст45",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 360,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 360,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "mo",
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 171200.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-370-40h-nd",
+    "name": "Поковка 370 40Х",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 370,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 370,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 157300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-370-st45-nd",
+    "name": "Поковка 370 Ст45",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 370,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 370,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 149300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-370-vcm-40h-nd",
+    "name": "Поковка 370 ВЦМ 40Х",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 370,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 370,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 157300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-370-mo-vcm-40h-nd",
+    "name": "Поковка 370 м/о ВЦМ 40Х",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 370,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 370,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "mo",
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 183900.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-370-iran-st20-nd",
+    "name": "Поковка 370 Иран Ст20",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 370,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 370,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "iran"
+      ],
+      "origin": "Иран"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 151800.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-380-st45-nd",
+    "name": "Поковка 380 Ст45",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 380,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 380,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 149300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-380-40h-nd",
+    "name": "Поковка 380 40Х",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 380,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 380,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 157300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-380-vcm-40h-nd",
+    "name": "Поковка 380 ВЦМ 40Х",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 380,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 380,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 157300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-380-vcm-40hn2ma-nd",
+    "name": "Поковка 380 ВЦМ 40ХН2МА",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 380,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 380,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 232300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-390-st09g2s-nd",
+    "name": "Поковка 390 Ст09Г2С",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 390,
+    "length": null,
+    "steel_grade": "Ст09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 390,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 156300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-390-40h-nd",
+    "name": "Поковка 390 40Х",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 390,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 390,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 157300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-390-vcm-40h-nd",
+    "name": "Поковка 390 ВЦМ 40Х",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 390,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 390,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 157300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-400-st45-nd",
+    "name": "Поковка 400 Ст45",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 400,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 400,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 149300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-400-st20-nd",
+    "name": "Поковка 400 Ст20",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 400,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 400,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 149300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-400-40hn2ma-nd",
+    "name": "Поковка 400 40ХН2МА",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 400,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 400,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 232300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-400-st09g2s-nd",
+    "name": "Поковка 400 Ст09Г2С",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 400,
+    "length": null,
+    "steel_grade": "Ст09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 400,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 157300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-400-40h-nd",
+    "name": "Поковка 400 40Х",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 400,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 400,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 157300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-400-30hma-nd",
+    "name": "Поковка 400 30ХМА",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 400,
+    "length": null,
+    "steel_grade": "30ХМА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 400,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 193300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-400-vcm-40h-nd",
+    "name": "Поковка 400 ВЦМ 40Х",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 400,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 400,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 157300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-410-mo-vcm-st45-nd",
+    "name": "Поковка 410 м/о ВЦМ Ст45",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 410,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 410,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "mo",
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 171200.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-420-st09g2s-nd",
+    "name": "Поковка 420 Ст09Г2С",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 420,
+    "length": null,
+    "steel_grade": "Ст09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 420,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 157300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-420-st45-nd",
+    "name": "Поковка 420 Ст45",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 420,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 420,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 149300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-420-st20-nd",
+    "name": "Поковка 420 Ст20",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 420,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 420,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 149300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-420-40hn2ma-nd",
+    "name": "Поковка 420 40ХН2МА",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 420,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 420,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 232300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-420-vcm-38h2nma-nd",
+    "name": "Поковка 420 ВЦМ 38Х2НМА",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 420,
+    "length": null,
+    "steel_grade": "38Х2НМА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 420,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 235300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-420-vcm-st09g2s-nd",
+    "name": "Поковка 420 ВЦМ Ст09Г2С",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 420,
+    "length": null,
+    "steel_grade": "Ст09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 420,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 157300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-425-vtm-30hgsa-nd",
+    "name": "Поковка 425 ВТМ 30ХГСА",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 425,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 425,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "vtm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 190300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-425-mo-vcm-st45-nd",
+    "name": "Поковка 425 м/о ВЦМ Ст45",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 425,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 425,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "mo",
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 171200.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-430-40hn2ma-nd",
+    "name": "Поковка 430 40ХН2МА",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 430,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 430,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 232300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-430-vcm-38h2nma-nd",
+    "name": "Поковка 430 ВЦМ 38Х2НМА",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 430,
+    "length": null,
+    "steel_grade": "38Х2НМА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 430,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 235300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-430-vcm-40h-nd",
+    "name": "Поковка 430 ВЦМ 40Х",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 430,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 430,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 157300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-450-30hgsa-nd",
+    "name": "Поковка 450 30ХГСА",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 450,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 450,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 190300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-450-30hma-nd",
+    "name": "Поковка 450 30ХМА",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 450,
+    "length": null,
+    "steel_grade": "30ХМА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 450,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 193300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-450-st45-nd",
+    "name": "Поковка 450 Ст45",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 450,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 450,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 148300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-450-40hn2ma-nd",
+    "name": "Поковка 450 40ХН2МА",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 450,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 450,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 232300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-450-vcm-30hgsa-nd",
+    "name": "Поковка 450 ВЦМ 30ХГСА",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 450,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 450,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 190300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-450-vcm-st20-nd",
+    "name": "Поковка 450 ВЦМ Ст20",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 450,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 450,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 149300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-480-40h-nd",
+    "name": "Поковка 480 40Х",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 480,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 480,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 157300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-480-vcm-40h-nd",
+    "name": "Поковка 480 ВЦМ 40Х",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 480,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 480,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "vcm"
+      ]
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 157300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-500-st45-nd",
+    "name": "Поковка 500 Ст45",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 500,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 500,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 149300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-500-30hgsa-nd",
+    "name": "Поковка 500 30ХГСА",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 500,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 500,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 190300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-500-30hma-nd",
+    "name": "Поковка 500 30ХМА",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 500,
+    "length": null,
+    "steel_grade": "30ХМА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 500,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 193300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-500-40h-nd",
+    "name": "Поковка 500 40Х",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 500,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 500,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 131800.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-510-iran-st45-nd",
+    "name": "Поковка 510 Иран Ст45",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 510,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 510,
+      "process": "прессовая с отжигом",
+      "modifiers": [
+        "iran"
+      ],
+      "origin": "Иран"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 151800.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-530-st45-nd",
+    "name": "Поковка 530 Ст45",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 530,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 530,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 148300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-550-st45-nd",
+    "name": "Поковка 550 Ст45",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 550,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 550,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 149300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-550-40h-nd",
+    "name": "Поковка 550 40Х",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 550,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 550,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 157300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-550-st09g2s-nd",
+    "name": "Поковка 550 Ст09Г2С",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 550,
+    "length": null,
+    "steel_grade": "Ст09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 550,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 156300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-550-30hgsa-nd",
+    "name": "Поковка 550 30ХГСА",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 550,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 550,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 190300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-560-st09g2s-nd",
+    "name": "Поковка 560 Ст09Г2С",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 560,
+    "length": null,
+    "steel_grade": "Ст09Г2С",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 560,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 156300.0
+      }
+    ]
+  },
+  {
+    "slug": "pokovka-560-st45-nd",
+    "name": "Поковка 560 Ст45",
+    "category_slug": "pokovka",
+    "category_id": "e0a8b886-0385-4a6b-9618-093e2a25b1e9",
+    "diameter": 560,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 560,
+      "process": "прессовая с отжигом"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 149300.0
+      }
+    ]
+  }
+]
