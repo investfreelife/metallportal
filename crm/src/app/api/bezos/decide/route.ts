@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { bezosDecide, bezosLearn, bezosChat } from '@/lib/ai/bezos'
 import { createClient } from '@/lib/supabase/server'
+import { requireSession } from '@/lib/apiAuth'
 
 const TENANT_ID = process.env.TENANT_ID || 'a1000000-0000-0000-0000-000000000001'
 
 export async function POST(req: NextRequest) {
+  const auth = requireSession(req)
+  if (!auth.ok) return auth.error
+
   const { action, params } = await req.json()
   const supabase = await createClient()
 

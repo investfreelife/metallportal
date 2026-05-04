@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireRole, requireSession } from '@/lib/apiAuth'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
@@ -11,7 +12,10 @@ function getSupabase(): any {
   )
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const auth = requireSession(req)
+  if (!auth.ok) return auth.error
+
   const supabase = getSupabase()
   const { data: rows } = await supabase.from('tenant_settings')
     .select('key, value').eq('tenant_id', TENANT_ID)
@@ -29,7 +33,10 @@ export async function GET() {
   })
 }
 
-export async function DELETE() {
+export async function DELETE(req: NextRequest) {
+  const auth = requireRole(req, ['owner', 'admin'])
+  if (!auth.ok) return auth.error
+
   const supabase = getSupabase()
   await supabase.from('tenant_settings').delete()
     .eq('tenant_id', TENANT_ID)

@@ -4,10 +4,14 @@
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { getSetting } from '@/lib/settings'
+import { requireRole } from '@/lib/apiAuth'
 
 const WEBHOOK_URL = 'https://metallportal.vercel.app/api/telegram/webhook'
 
 export async function POST(req: NextRequest) {
+  const auth = requireRole(req, ['owner', 'admin'])
+  if (!auth.ok) return auth.error
+
   const token = await getSetting('TELEGRAM_BOT_TOKEN')
   if (!token) return NextResponse.json({ error: 'TELEGRAM_BOT_TOKEN не задан. Сначала сохраните токен бота.' }, { status: 400 })
 
@@ -58,7 +62,10 @@ export async function POST(req: NextRequest) {
   })
 }
 
-export async function DELETE() {
+export async function DELETE(req: NextRequest) {
+  const auth = requireRole(req, ['owner', 'admin'])
+  if (!auth.ok) return auth.error
+
   const token = await getSetting('TELEGRAM_BOT_TOKEN')
   if (!token) return NextResponse.json({ error: 'No token' }, { status: 400 })
 

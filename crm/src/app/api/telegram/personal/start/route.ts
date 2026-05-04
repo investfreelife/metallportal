@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { TelegramClient } from 'telegram'
 import { StringSession } from 'telegram/sessions'
 import { createClient } from '@supabase/supabase-js'
+import { requireRole } from '@/lib/apiAuth'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
@@ -26,6 +27,9 @@ async function getApiCreds(supabase: ReturnType<typeof getSupabase>) {
 }
 
 export async function POST(req: NextRequest) {
+  const auth = requireRole(req, ['owner', 'admin'])
+  if (!auth.ok) return auth.error
+
   const { phone } = await req.json().catch(() => ({}))
   if (!phone) return NextResponse.json({ error: 'Нужен номер телефона' }, { status: 400 })
 

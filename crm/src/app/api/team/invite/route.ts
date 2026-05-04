@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAdmin } from '@/lib/apiAuth'
+import { requireRole } from '@/lib/apiAuth'
 import { getSetting } from '@/lib/settings'
 
 const CRM_URL = 'https://metallportal-crm2.vercel.app'
@@ -27,7 +27,7 @@ async function sendTelegramMessage(chatId: string, text: string, token: string) 
 }
 
 export async function POST(req: NextRequest) {
-  const auth = requireAdmin(req)
+  const auth = requireRole(req, ['owner', 'admin'])
   if (!auth.ok) return auth.error
 
   const supabase = getSupabase()

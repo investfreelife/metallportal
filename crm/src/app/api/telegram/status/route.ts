@@ -2,10 +2,14 @@
  * GET /api/telegram/status
  * Returns current bot connection status
  */
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getSetting } from '@/lib/settings'
+import { requireSession } from '@/lib/apiAuth'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const auth = requireSession(req)
+  if (!auth.ok) return auth.error
+
   const token = await getSetting('TELEGRAM_BOT_TOKEN')
   if (!token) return NextResponse.json({ connected: false, reason: 'no_token' })
 

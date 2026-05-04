@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { analyzeNewLead } from '@/lib/ai'
 import { notifyManager } from '@/lib/telegram'
 import { logEvent } from '@/lib/logger'
+import { requireSharedSecret } from '@/lib/apiAuth'
 
 /**
  * Generic webhook endpoint for forms on metallportal.ru
@@ -23,18 +24,15 @@ import { logEvent } from '@/lib/logger'
  *   utm_source?, utm_campaign?
  */
 export async function POST(request: NextRequest) {
+  // PUBLIC BY DESIGN: external form-submission webhook from metallportal.ru.
+  // Protected by shared secret in `x-webhook-secret` header (timing-safe compare).
+  const auth = requireSharedSecret(request, 'WEBHOOK_SECRET', 'x-webhook-secret')
+  if (!auth.ok) return auth.error
+
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
-
-  const secret = process.env.WEBHOOK_SECRET
-  if (!secret) {
-    return NextResponse.json({ error: 'WEBHOOK_SECRET not configured' }, { status: 500 })
-  }
-  if (request.headers.get('x-webhook-secret') !== secret) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
-  }
 
   let body: Record<string, unknown>
   try {

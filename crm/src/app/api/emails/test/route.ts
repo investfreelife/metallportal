@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { ImapFlow } from 'imapflow'
 import nodemailer from 'nodemailer'
+import { requireRole } from '@/lib/apiAuth'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
@@ -14,6 +15,9 @@ function getSupabase(): any {
 }
 
 export async function POST(req: NextRequest) {
+  const auth = requireRole(req, ['owner', 'manager', 'admin'])
+  if (!auth.ok) return auth.error
+
   const { account_id, test_send = false } = await req.json().catch(() => ({}))
   if (!account_id) return NextResponse.json({ error: 'account_id обязателен' }, { status: 400 })
 

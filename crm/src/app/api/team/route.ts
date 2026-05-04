@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAdmin } from '@/lib/apiAuth'
+import { requireRole, requireSession } from '@/lib/apiAuth'
 
 function getSupabase() {
   return createClient(
@@ -9,8 +9,9 @@ function getSupabase() {
   )
 }
 
-export async function GET(req: import('next/server').NextRequest) {
-  const auth = requireAdmin(req)
+export async function GET(req: NextRequest) {
+  // Anyone with a session can see the team list (read-only).
+  const auth = requireSession(req)
   if (!auth.ok) return auth.error
 
   const supabase = getSupabase()
@@ -24,7 +25,8 @@ export async function GET(req: import('next/server').NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const auth = requireAdmin(req)
+  // Creating users — owner/admin only.
+  const auth = requireRole(req, ['owner', 'admin'])
   if (!auth.ok) return auth.error
 
   const supabase = getSupabase()
@@ -58,7 +60,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  const auth = requireAdmin(req)
+  // Mutating users (role, status, etc) — owner/admin only.
+  const auth = requireRole(req, ['owner', 'admin'])
   if (!auth.ok) return auth.error
 
   const supabase = getSupabase()

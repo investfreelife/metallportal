@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireRole } from '@/lib/apiAuth'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -7,6 +8,10 @@ const supabase = createClient(
 )
 
 export async function POST(req: NextRequest) {
+  // Financial: payout creation — owners only.
+  const auth = requireRole(req, ['owner', 'admin'])
+  if (!auth.ok) return auth.error
+
   const { partner_id, bank_card, bank_name } = await req.json()
 
   const { data: partner } = await supabase.from('referral_partners').select('*').eq('id', partner_id).single()

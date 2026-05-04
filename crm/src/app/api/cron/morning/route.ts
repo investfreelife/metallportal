@@ -1,14 +1,12 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { requireCronSecret } from '@/lib/apiAuth'
 
-export async function GET(req: Request) {
-  const cronSecret = process.env.CRON_SECRET
-  if (!cronSecret) {
-    return new NextResponse('CRON_SECRET not configured', { status: 500 })
-  }
-  const auth = req.headers.get('authorization')
-  if (auth !== `Bearer ${cronSecret}`) {
-    return new NextResponse('Unauthorized', { status: 401 })
-  }
+export async function GET(req: NextRequest) {
+  // PUBLIC BY DESIGN: cron job, secret-protected via CRON_SECRET.
+  const auth = requireCronSecret(req)
+  if (!auth.ok) return auth.error
+
+  const cronSecret = process.env.CRON_SECRET ?? ''
 
   await fetch(
     `${process.env.NEXT_PUBLIC_AI_URL}/api/cron/morning`,

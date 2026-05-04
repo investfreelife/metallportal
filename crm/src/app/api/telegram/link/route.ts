@@ -4,13 +4,17 @@
  * Manager opens t.me/BOT?start=manager_TOKEN → bot saves their chat_id
  */
 import { createClient } from '@supabase/supabase-js'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getSetting } from '@/lib/settings'
+import { requireRole } from '@/lib/apiAuth'
 import crypto from 'crypto'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
-export async function POST() {
+export async function POST(req: NextRequest) {
+  const auth = requireRole(req, ['owner', 'admin'])
+  if (!auth.ok) return auth.error
+
   const token = await getSetting('TELEGRAM_BOT_TOKEN')
   if (!token) return NextResponse.json({ error: 'TELEGRAM_BOT_TOKEN не задан' }, { status: 400 })
 

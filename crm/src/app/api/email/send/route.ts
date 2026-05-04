@@ -1,12 +1,16 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { sendEmail, buildProposalEmail, buildOrderConfirmEmail } from '@/lib/email'
+import { requireRole } from '@/lib/apiAuth'
 
 /**
- * POST /api/email/send
+ * POST /api/email/send (legacy — prefer /api/emails/send)
  * Body: { queue_item_id?, to, template?, subject?, html?, contact_id?, name?, company?, message?, items?, total? }
  */
 export async function POST(request: NextRequest) {
+  const auth = requireRole(request, ['owner', 'manager', 'admin'])
+  if (!auth.ok) return auth.error
+
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!

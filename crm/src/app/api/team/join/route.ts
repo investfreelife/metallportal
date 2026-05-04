@@ -1,6 +1,16 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAdmin } from '@/lib/apiAuth'
+import { checkRateLimit } from '@/lib/rateLimit'
+
+/**
+ * PUBLIC BY DESIGN: invited team-member self-onboarding.
+ * The single-use `invite_token` is the credential; rate-limited per IP to
+ * mitigate token-guessing attacks. (Tokens are 16 random uppercase chars
+ * = ~80 bits of entropy — brute-force not feasible at 30 req/min.)
+ *
+ * NOTE: previously gated by `requireAdmin`, which broke the activation
+ * flow (invitee has no session yet). c001 corrects this.
+ */
 
 function getSupabase() {
   return createClient(
@@ -11,8 +21,9 @@ function getSupabase() {
 
 /** GET /api/team/join?token=XXX — validate token, return user info */
 export async function GET(req: NextRequest) {
-  const auth = requireAdmin(req)
-  if (!auth.ok) return auth.error
+  if (!checkRateLimit(req, 'team-join-get', 30, 60_000)) {
+    return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
+  }
 
   const token = req.nextUrl.searchParams.get('token')
   if (!token) return NextResponse.json({ error: 'token required' }, { status: 400 })
@@ -35,8 +46,9 @@ export async function GET(req: NextRequest) {
 
 /** POST /api/team/join — set new password, activate account */
 export async function POST(req: NextRequest) {
-  const auth = requireAdmin(req)
-  if (!auth.ok) return auth.error
+  if (!checkRateLimit(req, 'team-join-post', 10, 60_000)) {
+    return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
+  }
 
   const { token, password } = await req.json()
   if (!token || !password) return NextResponse.json({ error: 'token + password required' }, { status: 400 })

@@ -1,0 +1,5544 @@
+[
+  {
+    "slug": "krug-10-st20-nd",
+    "name": "Круг г/к конструкционный 10 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 10,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 55790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-10-st65g-nd",
+    "name": "Круг г/к конструкционный 10 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 10,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 74790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-12-st20-nd",
+    "name": "Круг г/к конструкционный 12 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 12,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 55790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-12-st65g-nd",
+    "name": "Круг г/к конструкционный 12 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 12,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 72790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-12-st45-nd",
+    "name": "Круг г/к конструкционный 12 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 12,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 55790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-12-st35-nd",
+    "name": "Круг г/к конструкционный 12 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 12,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 55790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-12-40h-nd",
+    "name": "Круг г/к конструкционный 12 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 12,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 59790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-14-40h-nd",
+    "name": "Круг г/к конструкционный 14 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 14,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-14-st20-nd",
+    "name": "Круг г/к конструкционный 14 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 14,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-14-st65g-nd",
+    "name": "Круг г/к конструкционный 14 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 14,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 72790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-14-st45-nd",
+    "name": "Круг г/к конструкционный 14 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 14,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-14-st35-nd",
+    "name": "Круг г/к конструкционный 14 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 14,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-16-30hgsa-nd",
+    "name": "Круг г/к конструкционный 16 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 16,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-16-09g2s-nd",
+    "name": "Круг г/к конструкционный 16 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 16,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-16-40h-nd",
+    "name": "Круг г/к конструкционный 16 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 16,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-16-st45-nd",
+    "name": "Круг г/к конструкционный 16 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 16,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-16-st20-nd",
+    "name": "Круг г/к конструкционный 16 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 16,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-16-st35-nd",
+    "name": "Круг г/к конструкционный 16 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 16,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-18-st35-nd",
+    "name": "Круг г/к конструкционный 18 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 18,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-18-st45-nd",
+    "name": "Круг г/к конструкционный 18 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 18,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-18-st20-nd",
+    "name": "Круг г/к конструкционный 18 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 18,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-18-40h-nd",
+    "name": "Круг г/к конструкционный 18 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 18,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-20-20h-nd",
+    "name": "Круг г/к конструкционный 20 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 20,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 53790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-20-40h-nd",
+    "name": "Круг г/к конструкционный 20 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 20,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-20-st35-nd",
+    "name": "Круг г/к конструкционный 20 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 20,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-20-st65g-nd",
+    "name": "Круг г/к конструкционный 20 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 20,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 72790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-20-st45-nd",
+    "name": "Круг г/к конструкционный 20 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 20,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-20-st20-nd",
+    "name": "Круг г/к конструкционный 20 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 20,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-20-09g2s-nd",
+    "name": "Круг г/к конструкционный 20 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 20,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-22-30hgsa-nd",
+    "name": "Круг г/к конструкционный 22 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 22,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-22-40h-nd",
+    "name": "Круг г/к конструкционный 22 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 22,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-22-09g2s-nd",
+    "name": "Круг г/к конструкционный 22 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 22,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-22-st45-nd",
+    "name": "Круг г/к конструкционный 22 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 22,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-22-st20-nd",
+    "name": "Круг г/к конструкционный 22 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 22,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-22-st35-nd",
+    "name": "Круг г/к конструкционный 22 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 22,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-24-st20-nd",
+    "name": "Круг г/к конструкционный 24 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 24,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-24-st45-nd",
+    "name": "Круг г/к конструкционный 24 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 24,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-24-40h-nd",
+    "name": "Круг г/к конструкционный 24 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 24,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-24-st35-nd",
+    "name": "Круг г/к конструкционный 24 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 24,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-24-09g2s-nd",
+    "name": "Круг г/к конструкционный 24 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 24,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-25-st45-nd",
+    "name": "Круг г/к конструкционный 25 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 25,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-25-40h-nd",
+    "name": "Круг г/к конструкционный 25 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 25,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-25-09g2s-nd",
+    "name": "Круг г/к конструкционный 25 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 25,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-25-st35-nd",
+    "name": "Круг г/к конструкционный 25 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 25,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-25-st20-nd",
+    "name": "Круг г/к конструкционный 25 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 25,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-25-20h-nd",
+    "name": "Круг г/к конструкционный 25 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 25,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 53790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-25-30hgsa-nd",
+    "name": "Круг г/к конструкционный 25 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 25,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-26-st45-nd",
+    "name": "Круг г/к конструкционный 26 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 26,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-26-st20-nd",
+    "name": "Круг г/к конструкционный 26 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 26,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-26-st35-nd",
+    "name": "Круг г/к конструкционный 26 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 26,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-28-st45-nd",
+    "name": "Круг г/к конструкционный 28 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 28,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-28-st20-nd",
+    "name": "Круг г/к конструкционный 28 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 28,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-28-st35-nd",
+    "name": "Круг г/к конструкционный 28 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 28,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-28-09g2s-nd",
+    "name": "Круг г/к конструкционный 28 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 28,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-28-40h-nd",
+    "name": "Круг г/к конструкционный 28 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 28,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-30-st35-nd",
+    "name": "Круг г/к конструкционный 30 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 30,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-30-18hgt-nd",
+    "name": "Круг г/к конструкционный 30 18ХГТ",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 30,
+    "length": null,
+    "steel_grade": "18ХГТ",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-30-40h-nd",
+    "name": "Круг г/к конструкционный 30 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 30,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-30-09g2s-nd",
+    "name": "Круг г/к конструкционный 30 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 30,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-30-st20-nd",
+    "name": "Круг г/к конструкционный 30 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 30,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-30-20h-nd",
+    "name": "Круг г/к конструкционный 30 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 30,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 53790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-30-st65g-nd",
+    "name": "Круг г/к конструкционный 30 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 30,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 72790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-30-30hgsa-nd",
+    "name": "Круг г/к конструкционный 30 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 30,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-30-st45-nd",
+    "name": "Круг г/к конструкционный 30 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 30,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-32-09g2s-nd",
+    "name": "Круг г/к конструкционный 32 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 32,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-32-st35-nd",
+    "name": "Круг г/к конструкционный 32 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 32,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-32-st20-nd",
+    "name": "Круг г/к конструкционный 32 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 32,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-32-30hgsa-nd",
+    "name": "Круг г/к конструкционный 32 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 32,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-32-st45-nd",
+    "name": "Круг г/к конструкционный 32 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 32,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-32-40h-nd",
+    "name": "Круг г/к конструкционный 32 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 32,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-34-20h-nd",
+    "name": "Круг г/к конструкционный 34 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 34,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 53790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-34-40h-nd",
+    "name": "Круг г/к конструкционный 34 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 34,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-34-st45-nd",
+    "name": "Круг г/к конструкционный 34 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 34,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-34-st20-nd",
+    "name": "Круг г/к конструкционный 34 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 34,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-34-st35-nd",
+    "name": "Круг г/к конструкционный 34 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 34,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-35-st45-nd",
+    "name": "Круг г/к конструкционный 35 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 35,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-35-40h-nd",
+    "name": "Круг г/к конструкционный 35 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 35,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-36-st45-nd",
+    "name": "Круг г/к конструкционный 36 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 36,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-36-st20-nd",
+    "name": "Круг г/к конструкционный 36 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 36,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-36-st35-nd",
+    "name": "Круг г/к конструкционный 36 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 36,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-36-30hgsa-nd",
+    "name": "Круг г/к конструкционный 36 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 36,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-36-09g2s-nd",
+    "name": "Круг г/к конструкционный 36 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 36,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-36-20h-nd",
+    "name": "Круг г/к конструкционный 36 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 36,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 53790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-38-40h-nd",
+    "name": "Круг г/к конструкционный 38 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 38,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-38-st35-nd",
+    "name": "Круг г/к конструкционный 38 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 38,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-38-st45-nd",
+    "name": "Круг г/к конструкционный 38 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 38,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-38-st20-nd",
+    "name": "Круг г/к конструкционный 38 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 38,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-40-40h-nd",
+    "name": "Круг г/к конструкционный 40 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 40,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-40-18hgt-nd",
+    "name": "Круг г/к конструкционный 40 18ХГТ",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 40,
+    "length": null,
+    "steel_grade": "18ХГТ",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-40-st45-nd",
+    "name": "Круг г/к конструкционный 40 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 40,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-40-09g2s-nd",
+    "name": "Круг г/к конструкционный 40 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 40,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-40-st65g-nd",
+    "name": "Круг г/к конструкционный 40 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 40,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 72790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-40-20h-nd",
+    "name": "Круг г/к конструкционный 40 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 40,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 53790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-40-st20-nd",
+    "name": "Круг г/к конструкционный 40 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 40,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-40-st35-nd",
+    "name": "Круг г/к конструкционный 40 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 40,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-42-st35-nd",
+    "name": "Круг г/к конструкционный 42 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 42,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-42-st20-nd",
+    "name": "Круг г/к конструкционный 42 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 42,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-42-09g2s-nd",
+    "name": "Круг г/к конструкционный 42 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 42,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-42-18hgt-nd",
+    "name": "Круг г/к конструкционный 42 18ХГТ",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 42,
+    "length": null,
+    "steel_grade": "18ХГТ",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-42-st45-nd",
+    "name": "Круг г/к конструкционный 42 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 42,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-45-40h-nd",
+    "name": "Круг г/к конструкционный 45 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 45,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-45-30hgsa-nd",
+    "name": "Круг г/к конструкционный 45 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 45,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-45-st35-nd",
+    "name": "Круг г/к конструкционный 45 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 45,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-45-09g2s-nd",
+    "name": "Круг г/к конструкционный 45 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 45,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-48-09g2s-nd",
+    "name": "Круг г/к конструкционный 48 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 48,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-48-st20-nd",
+    "name": "Круг г/к конструкционный 48 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 48,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-48-40h-nd",
+    "name": "Круг г/к конструкционный 48 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 48,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-48-st45-nd",
+    "name": "Круг г/к конструкционный 48 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 48,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-50-30hgsa-nd",
+    "name": "Круг г/к конструкционный 50 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 50,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-50-09g2s-nd",
+    "name": "Круг г/к конструкционный 50 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 50,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-50-40h-nd",
+    "name": "Круг г/к конструкционный 50 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 50,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-50-st35-nd",
+    "name": "Круг г/к конструкционный 50 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 50,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-50-20h-nd",
+    "name": "Круг г/к конструкционный 50 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 50,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 53790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-50-st65g-nd",
+    "name": "Круг г/к конструкционный 50 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 50,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 72790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-50-st20-nd",
+    "name": "Круг г/к конструкционный 50 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 50,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-52-st35-nd",
+    "name": "Круг г/к конструкционный 52 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 52,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-52-st20-nd",
+    "name": "Круг г/к конструкционный 52 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 52,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-52-40h-nd",
+    "name": "Круг г/к конструкционный 52 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 52,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-54-st35-nd",
+    "name": "Круг г/к конструкционный 54 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 54,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-56-30hgsa-nd",
+    "name": "Круг г/к конструкционный 56 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 56,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-56-st35-nd",
+    "name": "Круг г/к конструкционный 56 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 56,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-56-st45-nd",
+    "name": "Круг г/к конструкционный 56 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 56,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-56-st20-nd",
+    "name": "Круг г/к конструкционный 56 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 56,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-56-09g2s-nd",
+    "name": "Круг г/к конструкционный 56 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 56,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-56-20h-nd",
+    "name": "Круг г/к конструкционный 56 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 56,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 53790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-60-st35-nd",
+    "name": "Круг г/к конструкционный 60 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 60,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-60-18hgt-nd",
+    "name": "Круг г/к конструкционный 60 18ХГТ",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 60,
+    "length": null,
+    "steel_grade": "18ХГТ",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-60-30hgsa-nd",
+    "name": "Круг г/к конструкционный 60 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 60,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-60-20h-nd",
+    "name": "Круг г/к конструкционный 60 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 60,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 53790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-60-38h2myua-nd",
+    "name": "Круг г/к конструкционный 60 38Х2МЮА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 60,
+    "length": null,
+    "steel_grade": "38Х2МЮА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 115790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-60-40h-nd",
+    "name": "Круг г/к конструкционный 60 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 60,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-60-st65g-nd",
+    "name": "Круг г/к конструкционный 60 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 60,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 72790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-60-st45-nd",
+    "name": "Круг г/к конструкционный 60 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 60,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-65-40h-nd",
+    "name": "Круг г/к конструкционный 65 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 65,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-65-st20-nd",
+    "name": "Круг г/к конструкционный 65 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 65,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-65-30hgsa-nd",
+    "name": "Круг г/к конструкционный 65 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 65,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-65-st45-nd",
+    "name": "Круг г/к конструкционный 65 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 65,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-65-20h-nd",
+    "name": "Круг г/к конструкционный 65 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 65,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 53790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-70-38h2myua-nd",
+    "name": "Круг г/к конструкционный 70 38Х2МЮА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 70,
+    "length": null,
+    "steel_grade": "38Х2МЮА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 115790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-70-st45-nd",
+    "name": "Круг г/к конструкционный 70 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 70,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-70-40h-nd",
+    "name": "Круг г/к конструкционный 70 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 70,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-70-st35-nd",
+    "name": "Круг г/к конструкционный 70 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 70,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-70-18hgt-nd",
+    "name": "Круг г/к конструкционный 70 18ХГТ",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 70,
+    "length": null,
+    "steel_grade": "18ХГТ",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-70-st65g-nd",
+    "name": "Круг г/к конструкционный 70 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 70,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 72790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-70-30hgsa-nd",
+    "name": "Круг г/к конструкционный 70 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 70,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-75-st35-nd",
+    "name": "Круг г/к конструкционный 75 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 75,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-75-20h-nd",
+    "name": "Круг г/к конструкционный 75 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 75,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 53790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-75-st20-nd",
+    "name": "Круг г/к конструкционный 75 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 75,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-75-st45-nd",
+    "name": "Круг г/к конструкционный 75 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 75,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-75-30hgsa-nd",
+    "name": "Круг г/к конструкционный 75 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 75,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-75-09g2s-nd",
+    "name": "Круг г/к конструкционный 75 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 75,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-80-40h-nd",
+    "name": "Круг г/к конструкционный 80 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 80,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-80-38h2myua-nd",
+    "name": "Круг г/к конструкционный 80 38Х2МЮА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 80,
+    "length": null,
+    "steel_grade": "38Х2МЮА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 115790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-80-st45-nd",
+    "name": "Круг г/к конструкционный 80 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 80,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-80-18hgt-nd",
+    "name": "Круг г/к конструкционный 80 18ХГТ",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 80,
+    "length": null,
+    "steel_grade": "18ХГТ",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-80-st65g-nd",
+    "name": "Круг г/к конструкционный 80 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 80,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 72790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-80-st20-nd",
+    "name": "Круг г/к конструкционный 80 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 80,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 48790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-80-30hgsa-nd",
+    "name": "Круг г/к конструкционный 80 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 80,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 56790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-85-st45-nd",
+    "name": "Круг г/к конструкционный 85 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 85,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-85-40h-nd",
+    "name": "Круг г/к конструкционный 85 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 85,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-85-st20-nd",
+    "name": "Круг г/к конструкционный 85 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 85,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-85-09g2s-nd",
+    "name": "Круг г/к конструкционный 85 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 85,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-90-st45-nd",
+    "name": "Круг г/к конструкционный 90 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 90,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-90-st20-nd",
+    "name": "Круг г/к конструкционный 90 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 90,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-90-st65g-nd",
+    "name": "Круг г/к конструкционный 90 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 90,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 72790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-90-40h-nd",
+    "name": "Круг г/к конструкционный 90 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 90,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-90-st35-nd",
+    "name": "Круг г/к конструкционный 90 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 90,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-90-38h2myua-nd",
+    "name": "Круг г/к конструкционный 90 38Х2МЮА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 90,
+    "length": null,
+    "steel_grade": "38Х2МЮА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 115790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-90-09g2s-nd",
+    "name": "Круг г/к конструкционный 90 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 90,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-90-30hgsa-nd",
+    "name": "Круг г/к конструкционный 90 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 90,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 59790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-95-st35-nd",
+    "name": "Круг г/к конструкционный 95 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 95,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-95-40h-nd",
+    "name": "Круг г/к конструкционный 95 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 95,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-95-09g2s-nd",
+    "name": "Круг г/к конструкционный 95 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 95,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-95-st45-nd",
+    "name": "Круг г/к конструкционный 95 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 95,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-95-30hgsa-nd",
+    "name": "Круг г/к конструкционный 95 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 95,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 59790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-95-st20-nd",
+    "name": "Круг г/к конструкционный 95 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 95,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-100-38h2myua-nd",
+    "name": "Круг г/к конструкционный 100 38Х2МЮА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 100,
+    "length": null,
+    "steel_grade": "38Х2МЮА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 115790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-100-st65g-nd",
+    "name": "Круг г/к конструкционный 100 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 100,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 72790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-100-40h-nd",
+    "name": "Круг г/к конструкционный 100 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 100,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-100-18hgt-nd",
+    "name": "Круг г/к конструкционный 100 18ХГТ",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 100,
+    "length": null,
+    "steel_grade": "18ХГТ",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 59790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-100-st35-nd",
+    "name": "Круг г/к конструкционный 100 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 100,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-100-09g2s-nd",
+    "name": "Круг г/к конструкционный 100 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 100,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-100-st45-nd",
+    "name": "Круг г/к конструкционный 100 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 100,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-100-20h-nd",
+    "name": "Круг г/к конструкционный 100 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 100,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-100-st20-nd",
+    "name": "Круг г/к конструкционный 100 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 100,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 51790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-100-30hgsa-nd",
+    "name": "Круг г/к конструкционный 100 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 100,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 59790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-105-st35-nd",
+    "name": "Круг г/к конструкционный 105 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 105,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-105-st20-nd",
+    "name": "Круг г/к конструкционный 105 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 105,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-105-st45-nd",
+    "name": "Круг г/к конструкционный 105 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 105,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-105-09g2s-nd",
+    "name": "Круг г/к конструкционный 105 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 105,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-110-40h-nd",
+    "name": "Круг г/к конструкционный 110 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 110,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-110-38h2myua-nd",
+    "name": "Круг г/к конструкционный 110 38Х2МЮА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 110,
+    "length": null,
+    "steel_grade": "38Х2МЮА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 119790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-110-st45-nd",
+    "name": "Круг г/к конструкционный 110 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 110,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-110-st65g-nd",
+    "name": "Круг г/к конструкционный 110 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 110,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 72790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-110-st20-nd",
+    "name": "Круг г/к конструкционный 110 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 110,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-110-20h-nd",
+    "name": "Круг г/к конструкционный 110 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 110,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-110-18hgt-nd",
+    "name": "Круг г/к конструкционный 110 18ХГТ",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 110,
+    "length": null,
+    "steel_grade": "18ХГТ",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 64790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-110-30hgsa-nd",
+    "name": "Круг г/к конструкционный 110 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 110,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 64790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-110-st35-nd",
+    "name": "Круг г/к конструкционный 110 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 110,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-115-st35-nd",
+    "name": "Круг г/к конструкционный 115 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 115,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-120-st45-nd",
+    "name": "Круг г/к конструкционный 120 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 120,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-120-st20-nd",
+    "name": "Круг г/к конструкционный 120 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 120,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-120-18hgt-nd",
+    "name": "Круг г/к конструкционный 120 18ХГТ",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 120,
+    "length": null,
+    "steel_grade": "18ХГТ",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 64790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-120-20h-nd",
+    "name": "Круг г/к конструкционный 120 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 120,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-120-st35-nd",
+    "name": "Круг г/к конструкционный 120 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 120,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-120-30hgsa-nd",
+    "name": "Круг г/к конструкционный 120 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 120,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 64790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-120-38h2myua-nd",
+    "name": "Круг г/к конструкционный 120 38Х2МЮА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 120,
+    "length": null,
+    "steel_grade": "38Х2МЮА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 119790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-120-09g2s-nd",
+    "name": "Круг г/к конструкционный 120 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 120,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-120-40h-nd",
+    "name": "Круг г/к конструкционный 120 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 120,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-130-st35-nd",
+    "name": "Круг г/к конструкционный 130 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 130,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-130-st20-nd",
+    "name": "Круг г/к конструкционный 130 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 130,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-130-30hgsa-nd",
+    "name": "Круг г/к конструкционный 130 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 130,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 64790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-130-09g2s-nd",
+    "name": "Круг г/к конструкционный 130 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 130,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-130-st45-nd",
+    "name": "Круг г/к конструкционный 130 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 130,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-130-40h-nd",
+    "name": "Круг г/к конструкционный 130 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 130,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-130-20h-nd",
+    "name": "Круг г/к конструкционный 130 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 130,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-130-18hgt-nd",
+    "name": "Круг г/к конструкционный 130 18ХГТ",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 130,
+    "length": null,
+    "steel_grade": "18ХГТ",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 64790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-140-st65g-nd",
+    "name": "Круг г/к конструкционный 140 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 140,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 72790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-140-st35-nd",
+    "name": "Круг г/к конструкционный 140 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 140,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-140-30hgsa-nd",
+    "name": "Круг г/к конструкционный 140 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 140,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 64790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-140-20h-nd",
+    "name": "Круг г/к конструкционный 140 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 140,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-140-40h-nd",
+    "name": "Круг г/к конструкционный 140 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 140,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-140-st20-nd",
+    "name": "Круг г/к конструкционный 140 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 140,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-140-09g2s-nd",
+    "name": "Круг г/к конструкционный 140 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 140,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-140-38h2myua-nd",
+    "name": "Круг г/к конструкционный 140 38Х2МЮА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 140,
+    "length": null,
+    "steel_grade": "38Х2МЮА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 121790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-140-st45-nd",
+    "name": "Круг г/к конструкционный 140 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 140,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-150-30hgsa-nd",
+    "name": "Круг г/к конструкционный 150 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 150,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 64790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-150-st35-nd",
+    "name": "Круг г/к конструкционный 150 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 150,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-150-st20-nd",
+    "name": "Круг г/к конструкционный 150 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 150,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-150-20h-nd",
+    "name": "Круг г/к конструкционный 150 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 150,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-150-st45-nd",
+    "name": "Круг г/к конструкционный 150 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 150,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-150-38h2myua-nd",
+    "name": "Круг г/к конструкционный 150 38Х2МЮА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 150,
+    "length": null,
+    "steel_grade": "38Х2МЮА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 121790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-150-st65g-nd",
+    "name": "Круг г/к конструкционный 150 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 150,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 72790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-160-40h-nd",
+    "name": "Круг г/к конструкционный 160 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 160,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-160-30hgsa-nd",
+    "name": "Круг г/к конструкционный 160 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 160,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 64790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-160-09g2s-nd",
+    "name": "Круг г/к конструкционный 160 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 160,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-160-20h-nd",
+    "name": "Круг г/к конструкционный 160 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 160,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-160-38h2myua-nd",
+    "name": "Круг г/к конструкционный 160 38Х2МЮА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 160,
+    "length": null,
+    "steel_grade": "38Х2МЮА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 121790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-160-st65g-nd",
+    "name": "Круг г/к конструкционный 160 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 160,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 72790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-160-st45-nd",
+    "name": "Круг г/к конструкционный 160 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 160,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-160-st35-nd",
+    "name": "Круг г/к конструкционный 160 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 160,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-160-st20-nd",
+    "name": "Круг г/к конструкционный 160 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 160,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-170-18hgt-nd",
+    "name": "Круг г/к конструкционный 170 18ХГТ",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 170,
+    "length": null,
+    "steel_grade": "18ХГТ",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 72790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-170-38h2myua-nd",
+    "name": "Круг г/к конструкционный 170 38Х2МЮА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 170,
+    "length": null,
+    "steel_grade": "38Х2МЮА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 121790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-170-st35-nd",
+    "name": "Круг г/к конструкционный 170 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 170,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-170-st45-nd",
+    "name": "Круг г/к конструкционный 170 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 170,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-170-40h-nd",
+    "name": "Круг г/к конструкционный 170 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 170,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-170-20h-nd",
+    "name": "Круг г/к конструкционный 170 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 170,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-170-09g2s-nd",
+    "name": "Круг г/к конструкционный 170 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 170,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 64390.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-170-st20-nd",
+    "name": "Круг г/к конструкционный 170 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 170,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-170-st65g-nd",
+    "name": "Круг г/к конструкционный 170 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 170,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 72790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-180-st45-nd",
+    "name": "Круг г/к конструкционный 180 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 180,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-180-st35-nd",
+    "name": "Круг г/к конструкционный 180 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 180,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-180-40h-nd",
+    "name": "Круг г/к конструкционный 180 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 180,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-180-st20-nd",
+    "name": "Круг г/к конструкционный 180 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 180,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 54790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-180-20h-nd",
+    "name": "Круг г/к конструкционный 180 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 180,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 58790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-180-30hgsa-nd",
+    "name": "Круг г/к конструкционный 180 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 180,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 70790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-180-38h2myua-nd",
+    "name": "Круг г/к конструкционный 180 38Х2МЮА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 180,
+    "length": null,
+    "steel_grade": "38Х2МЮА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 121790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-180-09g2s-nd",
+    "name": "Круг г/к конструкционный 180 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 180,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 64390.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-190-st20-nd",
+    "name": "Круг г/к конструкционный 190 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 190,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 63790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-190-38h2myua-nd",
+    "name": "Круг г/к конструкционный 190 38Х2МЮА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 190,
+    "length": null,
+    "steel_grade": "38Х2МЮА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 124790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-200-st45-nd",
+    "name": "Круг г/к конструкционный 200 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 200,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 63790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-200-st65g-nd",
+    "name": "Круг г/к конструкционный 200 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 200,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-200-38h2myua-nd",
+    "name": "Круг г/к конструкционный 200 38Х2МЮА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 200,
+    "length": null,
+    "steel_grade": "38Х2МЮА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 124790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-200-st20-nd",
+    "name": "Круг г/к конструкционный 200 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 200,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 63790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-200-30hgsa-nd",
+    "name": "Круг г/к конструкционный 200 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 200,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 82790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-200-40h-nd",
+    "name": "Круг г/к конструкционный 200 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 200,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 69790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-210-st35-nd",
+    "name": "Круг г/к конструкционный 210 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 210,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 67390.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-210-40h-nd",
+    "name": "Круг г/к конструкционный 210 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 210,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-210-st20-nd",
+    "name": "Круг г/к конструкционный 210 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 210,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 67390.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-210-09g2s-nd",
+    "name": "Круг г/к конструкционный 210 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 210,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 74790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-210-st45-nd",
+    "name": "Круг г/к конструкционный 210 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 210,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 67390.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-210-38h2myua-nd",
+    "name": "Круг г/к конструкционный 210 38Х2МЮА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 210,
+    "length": null,
+    "steel_grade": "38Х2МЮА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 124790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-210-20h-nd",
+    "name": "Круг г/к конструкционный 210 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 210,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 73790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-220-38h2myua-nd",
+    "name": "Круг г/к конструкционный 220 38Х2МЮА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 220,
+    "length": null,
+    "steel_grade": "38Х2МЮА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 124790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-220-st45-nd",
+    "name": "Круг г/к конструкционный 220 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 220,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 67390.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-220-st20-nd",
+    "name": "Круг г/к конструкционный 220 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 220,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 67390.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-220-09g2s-nd",
+    "name": "Круг г/к конструкционный 220 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 220,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 74790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-220-st65g-nd",
+    "name": "Круг г/к конструкционный 220 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 220,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-220-18hgt-nd",
+    "name": "Круг г/к конструкционный 220 18ХГТ",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 220,
+    "length": null,
+    "steel_grade": "18ХГТ",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 86790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-230-st20-nd",
+    "name": "Круг г/к конструкционный 230 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 230,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 67390.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-230-st65g-nd",
+    "name": "Круг г/к конструкционный 230 Ст65Г",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 230,
+    "length": null,
+    "steel_grade": "Ст65Г",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 89790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-230-st45-nd",
+    "name": "Круг г/к конструкционный 230 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 230,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 67390.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-230-18hgt-nd",
+    "name": "Круг г/к конструкционный 230 18ХГТ",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 230,
+    "length": null,
+    "steel_grade": "18ХГТ",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 86790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-230-40h-nd",
+    "name": "Круг г/к конструкционный 230 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 230,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-230-st35-nd",
+    "name": "Круг г/к конструкционный 230 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 230,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 67390.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-230-30hgsa-nd",
+    "name": "Круг г/к конструкционный 230 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 230,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 86790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-240-18hgt-nd",
+    "name": "Круг г/к конструкционный 240 18ХГТ",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 240,
+    "length": null,
+    "steel_grade": "18ХГТ",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 86790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-240-st20-nd",
+    "name": "Круг г/к конструкционный 240 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 240,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 67390.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-240-40h-nd",
+    "name": "Круг г/к конструкционный 240 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 240,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-240-st45-nd",
+    "name": "Круг г/к конструкционный 240 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 240,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 67390.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-240-38h2myua-nd",
+    "name": "Круг г/к конструкционный 240 38Х2МЮА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 240,
+    "length": null,
+    "steel_grade": "38Х2МЮА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 129790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-240-st35-nd",
+    "name": "Круг г/к конструкционный 240 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 240,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 67390.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-240-09g2s-nd",
+    "name": "Круг г/к конструкционный 240 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 240,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 78790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-240-30hgsa-nd",
+    "name": "Круг г/к конструкционный 240 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 240,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 86790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-250-18hgt-nd",
+    "name": "Круг г/к конструкционный 250 18ХГТ",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 250,
+    "length": null,
+    "steel_grade": "18ХГТ",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 86790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-250-38h2myua-nd",
+    "name": "Круг г/к конструкционный 250 38Х2МЮА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 250,
+    "length": null,
+    "steel_grade": "38Х2МЮА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 129790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-250-st20-nd",
+    "name": "Круг г/к конструкционный 250 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 250,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 67390.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-250-30hgsa-nd",
+    "name": "Круг г/к конструкционный 250 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 250,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 86790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-250-09g2s-nd",
+    "name": "Круг г/к конструкционный 250 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 250,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 78790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-250-st45-nd",
+    "name": "Круг г/к конструкционный 250 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 250,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 67390.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-250-40h-nd",
+    "name": "Круг г/к конструкционный 250 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 250,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-250-20h-nd",
+    "name": "Круг г/к конструкционный 250 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 250,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-260-30hgsa-nd",
+    "name": "Круг г/к конструкционный 260 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 260,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 92790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-260-20h-nd",
+    "name": "Круг г/к конструкционный 260 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 260,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 94790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-260-st20-nd",
+    "name": "Круг г/к конструкционный 260 Ст20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 260,
+    "length": null,
+    "steel_grade": "Ст20",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-260-40h-nd",
+    "name": "Круг г/к конструкционный 260 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 260,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 89790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-260-09g2s-nd",
+    "name": "Круг г/к конструкционный 260 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 260,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 87790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-260-st45-nd",
+    "name": "Круг г/к конструкционный 260 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 260,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-270-st45-nd",
+    "name": "Круг г/к конструкционный 270 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 270,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-270-40h-nd",
+    "name": "Круг г/к конструкционный 270 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 270,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 89790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-270-st35-nd",
+    "name": "Круг г/к конструкционный 270 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 270,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 79790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-270-18hgt-nd",
+    "name": "Круг г/к конструкционный 270 18ХГТ",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 270,
+    "length": null,
+    "steel_grade": "18ХГТ",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 99790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-270-09g2s-nd",
+    "name": "Круг г/к конструкционный 270 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 270,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 88790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-280-st35-nd",
+    "name": "Круг г/к конструкционный 280 Ст35",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 280,
+    "length": null,
+    "steel_grade": "Ст35",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 87790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-280-40h-nd",
+    "name": "Круг г/к конструкционный 280 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 280,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 94790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-280-st45-nd",
+    "name": "Круг г/к конструкционный 280 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 280,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 87790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-280-20h-nd",
+    "name": "Круг г/к конструкционный 280 20Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 280,
+    "length": null,
+    "steel_grade": "20Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 94790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-280-30hgsa-nd",
+    "name": "Круг г/к конструкционный 280 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 280,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 99790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-280-18hgt-nd",
+    "name": "Круг г/к конструкционный 280 18ХГТ",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 280,
+    "length": null,
+    "steel_grade": "18ХГТ",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 99790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-280-09g2s-nd",
+    "name": "Круг г/к конструкционный 280 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 280,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 94790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-290-30hgsa-nd",
+    "name": "Круг г/к конструкционный 290 30ХГСА",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 290,
+    "length": null,
+    "steel_grade": "30ХГСА",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 99790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-290-st45-nd",
+    "name": "Круг г/к конструкционный 290 Ст45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 290,
+    "length": null,
+    "steel_grade": "Ст45",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 87790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-290-40h-nd",
+    "name": "Круг г/к конструкционный 290 40Х",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 290,
+    "length": null,
+    "steel_grade": "40Х",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 94790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-290-18hgt-nd",
+    "name": "Круг г/к конструкционный 290 18ХГТ",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 290,
+    "length": null,
+    "steel_grade": "18ХГТ",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 99790.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-290-09g2s-nd",
+    "name": "Круг г/к конструкционный 290 09Г2С",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 290,
+    "length": null,
+    "steel_grade": "09Г2С",
+    "primary_unit": "т",
+    "dimensions": null,
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 94790.0
+      }
+    ]
+  }
+]
