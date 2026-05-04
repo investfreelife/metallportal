@@ -1,0 +1,23 @@
+[
+  {
+    "slug": "list-most-30x2500x12000-15hsnd-nd",
+    "name": "Лист горячекатаный мостострой 30×2500×12000 15ХСНД",
+    "category_slug": "list-mostostroitelnyy",
+    "category_id": "00ecc7b2-c5f1-4f74-8ef7-a03c1776fd86",
+    "thickness": 30.0,
+    "length": 12000,
+    "steel_grade": "15ХСНД",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 30.0,
+      "width_mm": 2500,
+      "length_mm": 12000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 144990.0
+      }
+    ]
+  }
+]
