@@ -1,0 +1,530 @@
+[
+  {
+    "slug": "list-dupleks-4x1500x6000-2205-nd",
+    "name": "Лист дуплексный 4×1500×6000 2205 (S32205)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 4.0,
+    "length": 6000,
+    "steel_grade": "2205 (S32205)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 4.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2205",
+      "uns_grade": "S32205",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 446996.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-6x1500x6000-2205-nd",
+    "name": "Лист дуплексный 6×1500×6000 2205 (S32205)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 6.0,
+    "length": 6000,
+    "steel_grade": "2205 (S32205)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 6.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2205",
+      "uns_grade": "S32205",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 446996.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-6x1500x6000-2507-nd",
+    "name": "Лист дуплексный 6×1500×6000 2507 (S32750)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 6.0,
+    "length": 6000,
+    "steel_grade": "2507 (S32750)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 6.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2507",
+      "uns_grade": "S32750",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 603012.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-8x1500x6000-2205-nd",
+    "name": "Лист дуплексный 8×1500×6000 2205 (S32205)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 8.0,
+    "length": 6000,
+    "steel_grade": "2205 (S32205)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 8.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2205",
+      "uns_grade": "S32205",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 446996.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-10x1500x6000-2205-nd",
+    "name": "Лист дуплексный 10×1500×6000 2205 (S32205)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 10.0,
+    "length": 6000,
+    "steel_grade": "2205 (S32205)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 10.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2205",
+      "uns_grade": "S32205",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 446996.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-10x1500x6000-2507-nd",
+    "name": "Лист дуплексный 10×1500×6000 2507 (S32750)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 10.0,
+    "length": 6000,
+    "steel_grade": "2507 (S32750)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 10.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2507",
+      "uns_grade": "S32750",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 603012.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-12x1500x6000-2205-nd",
+    "name": "Лист дуплексный 12×1500×6000 2205 (S32205)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 12.0,
+    "length": 6000,
+    "steel_grade": "2205 (S32205)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 12.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2205",
+      "uns_grade": "S32205",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 446996.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-12x1500x6000-2507-nd",
+    "name": "Лист дуплексный 12×1500×6000 2507 (S32750)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 12.0,
+    "length": 6000,
+    "steel_grade": "2507 (S32750)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 12.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2507",
+      "uns_grade": "S32750",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 603012.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-14x1500x6000-2205-nd",
+    "name": "Лист дуплексный 14×1500×6000 2205 (S32205)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 14.0,
+    "length": 6000,
+    "steel_grade": "2205 (S32205)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 14.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2205",
+      "uns_grade": "S32205",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 456828.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-14x1500x6000-2507-nd",
+    "name": "Лист дуплексный 14×1500×6000 2507 (S32750)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 14.0,
+    "length": 6000,
+    "steel_grade": "2507 (S32750)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 14.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2507",
+      "uns_grade": "S32750",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 603012.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-16x1500x6000-2205-nd",
+    "name": "Лист дуплексный 16×1500×6000 2205 (S32205)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 16.0,
+    "length": 6000,
+    "steel_grade": "2205 (S32205)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 16.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2205",
+      "uns_grade": "S32205",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 456828.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-16x1500x6000-2507-nd",
+    "name": "Лист дуплексный 16×1500×6000 2507 (S32750)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 16.0,
+    "length": 6000,
+    "steel_grade": "2507 (S32750)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 16.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2507",
+      "uns_grade": "S32750",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 603012.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-20x1500x6000-2205-nd",
+    "name": "Лист дуплексный 20×1500×6000 2205 (S32205)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 20.0,
+    "length": 6000,
+    "steel_grade": "2205 (S32205)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 20.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2205",
+      "uns_grade": "S32205",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 456828.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-20x1500x6000-2507-nd",
+    "name": "Лист дуплексный 20×1500×6000 2507 (S32750)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 20.0,
+    "length": 6000,
+    "steel_grade": "2507 (S32750)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 20.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2507",
+      "uns_grade": "S32750",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 603012.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-25x1500x6000-2507-nd",
+    "name": "Лист дуплексный 25×1500×6000 2507 (S32750)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 25.0,
+    "length": 6000,
+    "steel_grade": "2507 (S32750)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 25.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2507",
+      "uns_grade": "S32750",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 603012.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-30x1500x6000-2205-nd",
+    "name": "Лист дуплексный 30×1500×6000 2205 (S32205)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 30.0,
+    "length": 6000,
+    "steel_grade": "2205 (S32205)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 30.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2205",
+      "uns_grade": "S32205",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 456828.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-30x1500x6000-2507-nd",
+    "name": "Лист дуплексный 30×1500×6000 2507 (S32750)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 30.0,
+    "length": 6000,
+    "steel_grade": "2507 (S32750)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 30.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2507",
+      "uns_grade": "S32750",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 603012.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-40x1500x6000-2205-nd",
+    "name": "Лист дуплексный 40×1500×6000 2205 (S32205)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 40.0,
+    "length": 6000,
+    "steel_grade": "2205 (S32205)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 40.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2205",
+      "uns_grade": "S32205",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 456828.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-40x1500x6000-2507-nd",
+    "name": "Лист дуплексный 40×1500×6000 2507 (S32750)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 40.0,
+    "length": 6000,
+    "steel_grade": "2507 (S32750)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 40.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2507",
+      "uns_grade": "S32750",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 603012.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-45x1500x6000-2507-nd",
+    "name": "Лист дуплексный 45×1500×6000 2507 (S32750)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 45.0,
+    "length": 6000,
+    "steel_grade": "2507 (S32750)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 45.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2507",
+      "uns_grade": "S32750",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 603012.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-50x1500x6000-2205-nd",
+    "name": "Лист дуплексный 50×1500×6000 2205 (S32205)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 50.0,
+    "length": 6000,
+    "steel_grade": "2205 (S32205)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 50.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2205",
+      "uns_grade": "S32205",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 456828.0
+      }
+    ]
+  },
+  {
+    "slug": "list-dupleks-50x1500x6000-2507-nd",
+    "name": "Лист дуплексный 50×1500×6000 2507 (S32750)",
+    "category_slug": "list-dupleksnyy",
+    "category_id": "7f1a33a7-b21c-411d-afef-99ba6354eb61",
+    "thickness": 50.0,
+    "length": 6000,
+    "steel_grade": "2507 (S32750)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 50.0,
+      "width_mm": 1500,
+      "length_mm": 6000,
+      "astm_grade": "2507",
+      "uns_grade": "S32750",
+      "surface": "No1"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 603012.0
+      }
+    ]
+  }
+]
