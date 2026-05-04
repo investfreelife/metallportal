@@ -1,0 +1,1636 @@
+[
+  {
+    "slug": "list-ocink-0p35x1250-zn100-st02-zakaz-nd",
+    "name": "Лист оцинкованный 0.35х1250 Zn100 длина под заказ",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.35,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.35,
+      "width_mm": 1250,
+      "coating": "Zn100",
+      "zakaz": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 110890.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p35x1250x2500-zn100-st02-nd",
+    "name": "Лист оцинкованный 0.35х1250х2500 Zn100 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.35,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.35,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn100",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 948.0
+      },
+      {
+        "unit": "т",
+        "base_price": 109790.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p4x1250x2500-zn100-st02-nd",
+    "name": "Лист оцинкованный 0.4х1250х2500 Zn100 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.4,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.4,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn100",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1107.0
+      },
+      {
+        "unit": "т",
+        "base_price": 99790.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p45x1250-zn100-st02-zakaz-nd",
+    "name": "Лист оцинкованный 0.45х1250 Zn100 длина под заказ",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.45,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.45,
+      "width_mm": 1250,
+      "coating": "Zn100",
+      "zakaz": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 93590.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p45x1250x2500-kr-st08ps-nd",
+    "name": "Лист оцинкованный 0.45х1250х2500 2 кл КР пром_пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.45,
+    "length": null,
+    "steel_grade": "Ст08пс",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.45,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "2 кл КР",
+      "finish": "КР пром_пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 967.0
+      },
+      {
+        "unit": "т",
+        "base_price": 87190.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p45x1250x2500-zn100-st02-nd",
+    "name": "Лист оцинкованный 0.45х1250х2500 Zn100 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.45,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.45,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn100",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1018.0
+      },
+      {
+        "unit": "т",
+        "base_price": 91690.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p5x1000x2000-kr-st08ps-nd",
+    "name": "Лист оцинкованный 0.5х1000х2000 1х2 2 кл КР пром_пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.5,
+    "length": null,
+    "steel_grade": "Ст08пс",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1000,
+      "length_mm": 2000,
+      "coating": "2 кл КР",
+      "finish": "КР пром_пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 666.0
+      },
+      {
+        "unit": "т",
+        "base_price": 84390.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p5x1000x2000-zn140-st02-nd",
+    "name": "Лист оцинкованный 0.5х1000х2000 Zn140 М пас 1х2",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.5,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1000,
+      "length_mm": 2000,
+      "coating": "Zn140",
+      "finish": "М пас",
+      "alt_size": "1х2"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 716.0
+      },
+      {
+        "unit": "т",
+        "base_price": 90690.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p5x1250-zn100-140-st02-zakaz-nd",
+    "name": "Лист оцинкованный 0.5х1250 Zn100-140 длина под заказ",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.5,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1250,
+      "coating": "Zn100-140",
+      "zakaz": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 95590.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p5x1250x2500-kr-st08ps-nd",
+    "name": "Лист оцинкованный 0.5х1250х2500 2 кл КР пром_пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.5,
+    "length": null,
+    "steel_grade": "Ст08пс",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "2 кл КР",
+      "finish": "КР пром_пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1107.0
+      },
+      {
+        "unit": "т",
+        "base_price": 84690.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p5x1250x2500-zn100-st02-nd",
+    "name": "Лист оцинкованный 0.5х1250х2500 Zn100 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.5,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn100",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1125.0
+      },
+      {
+        "unit": "т",
+        "base_price": 91190.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p5x1250x2500-zn140-st02-nd",
+    "name": "Лист оцинкованный 0.5х1250х2500 Zn140 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.5,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn140",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1150.0
+      },
+      {
+        "unit": "т",
+        "base_price": 93290.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p5x1250x2500-zn275-st02-nd",
+    "name": "Лист оцинкованный 0.5х1250х2500 Zn275 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.5,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn275",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1289.0
+      },
+      {
+        "unit": "т",
+        "base_price": 104590.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p55x1250-zn100-140-st02-zakaz-nd",
+    "name": "Лист оцинкованный 0.55х1250 Zn100-140 длина под заказ",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.55,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.55,
+      "width_mm": 1250,
+      "coating": "Zn100-140",
+      "zakaz": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 96590.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p55x1250x2500-kr-st08ps-nd",
+    "name": "Лист оцинкованный 0.55х1250х2500 2 кл КР пром_пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.55,
+    "length": null,
+    "steel_grade": "Ст08пс",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.55,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "2 кл КР",
+      "finish": "КР пром_пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1114.0
+      },
+      {
+        "unit": "т",
+        "base_price": 82290.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p55x1250x2500-zn100-st02-nd",
+    "name": "Лист оцинкованный 0.55х1250х2500 Zn100 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.55,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.55,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn100",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1236.0
+      },
+      {
+        "unit": "т",
+        "base_price": 91090.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p55x1250x2500-zn140-st02-nd",
+    "name": "Лист оцинкованный 0.55х1250х2500 Zn140 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.55,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.55,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn140",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1226.0
+      },
+      {
+        "unit": "т",
+        "base_price": 90390.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p6x1250x2500-zn100-st02-nd",
+    "name": "Лист оцинкованный 0.6х1250х2500 Zn100 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.6,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.6,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn100",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1344.0
+      },
+      {
+        "unit": "т",
+        "base_price": 90790.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p6x1250x2500-zn140-st02-nd",
+    "name": "Лист оцинкованный 0.6х1250х2500 Zn140 М пром_пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.6,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.6,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn140",
+      "finish": "М пром_пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1225.0
+      },
+      {
+        "unit": "т",
+        "base_price": 82690.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p7x1000x2000-zn140-st02-nd",
+    "name": "Лист оцинкованный 0.7х1000х2000 Zn140 М пас 1х2",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.7,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.7,
+      "width_mm": 1000,
+      "length_mm": 2000,
+      "coating": "Zn140",
+      "finish": "М пас",
+      "alt_size": "1х2"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 967.0
+      },
+      {
+        "unit": "т",
+        "base_price": 87490.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p7x1250-zn100-140-st02-zakaz-nd",
+    "name": "Лист оцинкованный 0.7х1250 Zn100-140 длина под заказ",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.7,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.7,
+      "width_mm": 1250,
+      "coating": "Zn100-140",
+      "zakaz": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 88990.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p7x1250x2500-kr-st08ps-nd",
+    "name": "Лист оцинкованный 0.7х1250х2500 2 кл КР пром_пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.7,
+    "length": null,
+    "steel_grade": "Ст08пс",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.7,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "2 кл КР",
+      "finish": "КР пром_пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1374.0
+      },
+      {
+        "unit": "т",
+        "base_price": 77190.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p7x1250x2500-zn100-st02-nd",
+    "name": "Лист оцинкованный 0.7х1250х2500 Zn100 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.7,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.7,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn100",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1439.0
+      },
+      {
+        "unit": "т",
+        "base_price": 83290.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p7x1250x2500-zn140-st02-nd",
+    "name": "Лист оцинкованный 0.7х1250х2500 Zn140 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.7,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.7,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn140",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1520.0
+      },
+      {
+        "unit": "т",
+        "base_price": 87990.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p7x1250x2500-zn275-st02-nd",
+    "name": "Лист оцинкованный 0.7х1250х2500 Zn275 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.7,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.7,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn275",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1691.0
+      },
+      {
+        "unit": "т",
+        "base_price": 97990.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p7x1500x3000-zn140-st02-nd",
+    "name": "Лист оцинкованный 0.7х1500х3000 Zn140 М пас 1,5х3,0",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.7,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.7,
+      "width_mm": 1500,
+      "length_mm": 3000,
+      "coating": "Zn140",
+      "finish": "М пас",
+      "alt_size": "1,5х3,0"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 2247.0
+      },
+      {
+        "unit": "т",
+        "base_price": 90390.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p8x1250-zn100-140-st02-zakaz-nd",
+    "name": "Лист оцинкованный 0.8х1250 Zn100-140 длина под заказ",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.8,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1250,
+      "coating": "Zn100-140",
+      "zakaz": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 85290.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p8x1250x2000-zn140-st02-nd",
+    "name": "Лист оцинкованный 0.8х1250х2000 Zn140 М пас 1,25 х2",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.8,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1250,
+      "length_mm": 2000,
+      "coating": "Zn140",
+      "finish": "М пас",
+      "alt_size": "1,25 х2"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1337.0
+      },
+      {
+        "unit": "т",
+        "base_price": 84690.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p8x1250x2500-kr-st08ps-nd",
+    "name": "Лист оцинкованный 0.8х1250х2500 2 кл КР пром_пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.8,
+    "length": null,
+    "steel_grade": "Ст08пс",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "2 кл КР",
+      "finish": "КР пром_пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1483.0
+      },
+      {
+        "unit": "т",
+        "base_price": 75050.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p8x1250x2500-zn100-st02-nd",
+    "name": "Лист оцинкованный 0.8х1250х2500 Zn100 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.8,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn100",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1664.0
+      },
+      {
+        "unit": "т",
+        "base_price": 84290.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p8x1250x2500-zn140-st02-nd",
+    "name": "Лист оцинкованный 0.8х1250х2500 Zn140 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.8,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn140",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1684.0
+      },
+      {
+        "unit": "т",
+        "base_price": 85290.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p8x1250x2500-zn275-st02-nd",
+    "name": "Лист оцинкованный 0.8х1250х2500 Zn275 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.8,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn275",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1882.0
+      },
+      {
+        "unit": "т",
+        "base_price": 95390.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p8x1500x3000-zn140-st02-nd",
+    "name": "Лист оцинкованный 0.8х1500х3000 Zn140 М пас 1,5х3",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.8,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1500,
+      "length_mm": 3000,
+      "coating": "Zn140",
+      "finish": "М пас",
+      "alt_size": "1,5х3"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 2464.0
+      },
+      {
+        "unit": "т",
+        "base_price": 86690.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p9x1250x2000-zn140-st02-nd",
+    "name": "Лист оцинкованный 0.9х1250х2000 Zn140 М пас 1.25х2",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.9,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.9,
+      "width_mm": 1250,
+      "length_mm": 2000,
+      "coating": "Zn140",
+      "finish": "М пас",
+      "alt_size": "1.25х2"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1512.0
+      },
+      {
+        "unit": "т",
+        "base_price": 85090.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p9x1250x2500-kr-st08ps-nd",
+    "name": "Лист оцинкованный 0.9х1250х2500 2 кл КР пром_пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.9,
+    "length": null,
+    "steel_grade": "Ст08пс",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.9,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "2 кл КР",
+      "finish": "КР пром_пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1660.0
+      },
+      {
+        "unit": "т",
+        "base_price": 74690.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p9x1250x2500-zn100-st02-nd",
+    "name": "Лист оцинкованный 0.9х1250х2500 Zn100 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.9,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.9,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn100",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1874.0
+      },
+      {
+        "unit": "т",
+        "base_price": 84390.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-0p9x1250x2500-zn140-st02-nd",
+    "name": "Лист оцинкованный 0.9х1250х2500 Zn140 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 0.9,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 0.9,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn140",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1903.0
+      },
+      {
+        "unit": "т",
+        "base_price": 85690.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-1x1250-zn100-140-st02-zakaz-nd",
+    "name": "Лист оцинкованный 1х1250 Zn100-140 длина под заказ",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 1.0,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1250,
+      "coating": "Zn100-140",
+      "zakaz": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 85090.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-1x1250x2500-kr-st08ps-nd",
+    "name": "Лист оцинкованный 1х1250х2500 2 кл КР пром_пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 1.0,
+    "length": null,
+    "steel_grade": "Ст08пс",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "2 кл КР",
+      "finish": "КР пром_пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 1810.0
+      },
+      {
+        "unit": "т",
+        "base_price": 73290.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-1x1250x2500-zn140-st02-nd",
+    "name": "Лист оцинкованный 1х1250х2500 Zn140 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 1.0,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn140",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 2033.0
+      },
+      {
+        "unit": "т",
+        "base_price": 82390.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-1x1250x2500-zn275-st02-nd",
+    "name": "Лист оцинкованный 1х1250х2500 М пас Zn275",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 1.0,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn275",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 2230.0
+      },
+      {
+        "unit": "т",
+        "base_price": 90390.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-1x1500x3000-zn140-st02-nd",
+    "name": "Лист оцинкованный 1х1500х3000 Zn140 М пас 1,5х3",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 1.0,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1500,
+      "length_mm": 3000,
+      "coating": "Zn140",
+      "finish": "М пас",
+      "alt_size": "1,5х3"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 2988.0
+      },
+      {
+        "unit": "т",
+        "base_price": 84090.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-1p2x1250x2500-kr-st08ps-nd",
+    "name": "Лист оцинкованный 1.2х1250х2500 2 кл КР пром_пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 1.2,
+    "length": null,
+    "steel_grade": "Ст08пс",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 1.2,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "2 кл КР",
+      "finish": "КР пром_пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 2093.0
+      },
+      {
+        "unit": "т",
+        "base_price": 70590.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-1p2x1250x2500-zn100-st02-nd",
+    "name": "Лист оцинкованный 1.2х1250х2500 Zn100 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 1.2,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 1.2,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn100",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 2390.0
+      },
+      {
+        "unit": "т",
+        "base_price": 80690.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-1p2x1250x2500-zn140-st02-nd",
+    "name": "Лист оцинкованный 1.2х1250х2500 Zn140 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 1.2,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 1.2,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn140",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 2417.0
+      },
+      {
+        "unit": "т",
+        "base_price": 81590.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-1p5x1250-zn100-140-st02-zakaz-nd",
+    "name": "Лист оцинкованный 1.5х1250 Zn100-140 длина под заказ",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 1.5,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1250,
+      "coating": "Zn100-140",
+      "zakaz": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 82090.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-1p5x1250x2500-kr-st08ps-nd",
+    "name": "Лист оцинкованный 1.5х1250х2500 2 кл КР пром_пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 1.5,
+    "length": null,
+    "steel_grade": "Ст08пс",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "2 кл КР",
+      "finish": "КР пром_пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 2712.0
+      },
+      {
+        "unit": "т",
+        "base_price": 73190.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-1p5x1250x2500-zn140-st02-nd",
+    "name": "Лист оцинкованный 1.5х1250х2500 Zn140 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 1.5,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn140",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 2995.0
+      },
+      {
+        "unit": "т",
+        "base_price": 80890.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-1p5x1250x2500-zn275-st02-nd",
+    "name": "Лист оцинкованный 1.5х1250х2500 Zn275 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 1.5,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn275",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 3271.0
+      },
+      {
+        "unit": "т",
+        "base_price": 88390.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-1p5x1500x3000-zn140-st02-nd",
+    "name": "Лист оцинкованный 1.5х1500х3000 Zn140 М пас 1,5х3",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 1.5,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1500,
+      "length_mm": 3000,
+      "coating": "Zn140",
+      "finish": "М пас",
+      "alt_size": "1,5х3"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 4376.0
+      },
+      {
+        "unit": "т",
+        "base_price": 82090.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-1p8x1250x2500-zn140-st02-nd",
+    "name": "Лист оцинкованный 1.8х1250х2500 Zn140 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 1.8,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 1.8,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn140",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 3448.0
+      },
+      {
+        "unit": "т",
+        "base_price": 77590.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-2x1000x2000-zn140-st02-nd",
+    "name": "Лист оцинкованный 2х1000х2000 Zn140 М пас 1х2",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 2.0,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 2.0,
+      "width_mm": 1000,
+      "length_mm": 2000,
+      "coating": "Zn140",
+      "finish": "М пас",
+      "alt_size": "1х2"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 2553.0
+      },
+      {
+        "unit": "т",
+        "base_price": 80790.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-2x1250-zn100-140-st02-zakaz-nd",
+    "name": "Лист оцинкованный 2х1250 Zn100-140 длина под заказ",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 2.0,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 2.0,
+      "width_mm": 1250,
+      "coating": "Zn100-140",
+      "zakaz": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 81390.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-2x1250x2500-zn140-st02-nd",
+    "name": "Лист оцинкованный 2х1250х2500 Zn140 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 2.0,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 2.0,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn140",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 3895.0
+      },
+      {
+        "unit": "т",
+        "base_price": 78890.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-2x1250x2500-zn275-st02-nd",
+    "name": "Лист оцинкованный 2х1250х2500 Zn275 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 2.0,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 2.0,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn275",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 4258.0
+      },
+      {
+        "unit": "т",
+        "base_price": 86290.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-2x1500x3000-zn140-st02-nd",
+    "name": "Лист оцинкованный 2х1500х3000 Zn140 М пас 1,5х3",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 2.0,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 2.0,
+      "width_mm": 1500,
+      "length_mm": 3000,
+      "coating": "Zn140",
+      "finish": "М пас",
+      "alt_size": "1,5х3"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 5743.0
+      },
+      {
+        "unit": "т",
+        "base_price": 80790.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-2x600x1200-zn140-st02-nd",
+    "name": "Лист оцинкованный 2х600х1200 Zn140 М пас т",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 2.0,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 2.0,
+      "width_mm": 600,
+      "length_mm": 1200,
+      "coating": "Zn140",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 901.0
+      },
+      {
+        "unit": "т",
+        "base_price": 79190.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-2p5x1250x2500-zn140-st02-nd",
+    "name": "Лист оцинкованный 2.5х1250х2500 Zn140 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 2.5,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 2.5,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn140",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 4899.0
+      },
+      {
+        "unit": "т",
+        "base_price": 79390.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-3x1250-zn100-140-st02-zakaz-nd",
+    "name": "Лист оцинкованный 3х1250 Zn100-140 длина под заказ",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 3.0,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 3.0,
+      "width_mm": 1250,
+      "coating": "Zn100-140",
+      "zakaz": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 80790.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-3x1250x2500-zn140-st02-nd",
+    "name": "Лист оцинкованный 3х1250х2500 Zn140 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 3.0,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 3.0,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn140",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 6041.0
+      },
+      {
+        "unit": "т",
+        "base_price": 78990.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-3x1250x2500-zn275-st02-nd",
+    "name": "Лист оцинкованный 3х1250х2500 Zn275 М пас",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 3.0,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 3.0,
+      "width_mm": 1250,
+      "length_mm": 2500,
+      "coating": "Zn275",
+      "finish": "М пас"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 6416.0
+      },
+      {
+        "unit": "т",
+        "base_price": 86690.0
+      }
+    ]
+  },
+  {
+    "slug": "list-ocink-3x1500x3000-zn140-st02-nd",
+    "name": "Лист оцинкованный 3х1500х3000 Zn140 М пас1,5х3",
+    "category_slug": "list-otsinkovannyy",
+    "category_id": "fc886e63-fc86-4cbf-acb5-83a61dba91bb",
+    "thickness": 3.0,
+    "length": null,
+    "steel_grade": "Ст02",
+    "primary_unit": "шт",
+    "dimensions": {
+      "thickness_mm": 3.0,
+      "width_mm": 1500,
+      "length_mm": 3000,
+      "coating": "Zn140",
+      "alt_size": "1,5х3"
+    },
+    "prices": [
+      {
+        "unit": "шт",
+        "base_price": 8615.0
+      },
+      {
+        "unit": "т",
+        "base_price": 80790.0
+      }
+    ]
+  }
+]
