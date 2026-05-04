@@ -1,10 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server'
+import crypto from 'crypto'
 import { createClient } from '@/lib/supabase/server'
 import { bezosWeeklyReport, BezosContext } from '@/lib/ai/bezos'
+import { requireSession } from '@/lib/apiAuth'
 
 const TENANT_ID = process.env.TENANT_ID || 'a1000000-0000-0000-0000-000000000001'
 
-export async function POST(_req: NextRequest) {
+function checkInternalSecret(request: NextRequest): boolean {
+  const expected = process.env.INTERNAL_API_SECRET
+  const provided = request.headers.get('x-internal-secret')
+  if (!expected || !provided) return false
+  const a = Buffer.from(provided)
+  const b = Buffer.from(expected)
+  if (a.length !== b.length) return false
+  try {
+    return crypto.timingSafeEqual(a, b)
+  } catch {
+    return false
+  }
+}
+
+export async function POST(req: NextRequest) {
+  // Accept session (manager triggers from UI) OR internal secret (cron loopback).
+  const auth = requireSession(req)
+  if (!auth.ok && !checkInternalSecret(req)) return auth.error
+
   const supabase = await createClient()
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
 

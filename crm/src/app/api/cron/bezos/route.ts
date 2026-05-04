@@ -1,14 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { requireCronSecret } from '@/lib/apiAuth'
 
 export async function GET(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET
-  if (!cronSecret) {
-    return new NextResponse('CRON_SECRET not configured', { status: 500 })
-  }
-  const authHeader = req.headers.get('authorization')
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return new NextResponse('Unauthorized', { status: 401 })
-  }
+  // PUBLIC BY DESIGN: cron job, secret-protected via CRON_SECRET.
+  const auth = requireCronSecret(req)
+  if (!auth.ok) return auth.error
 
   const today = new Date()
   if (today.getDay() !== 1) {
@@ -16,9 +12,13 @@ export async function GET(req: NextRequest) {
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://metallportal-crm2.vercel.app'
+  const internalSecret = process.env.INTERNAL_API_SECRET ?? ''
   const res = await fetch(`${baseUrl}/api/bezos/report`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Internal-Secret': internalSecret,
+    },
   })
 
   const data = await res.json()

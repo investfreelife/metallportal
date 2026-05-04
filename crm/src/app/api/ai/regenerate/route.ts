@@ -5,6 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { getSetting } from '@/lib/settings'
+import { requireRole } from '@/lib/apiAuth'
 
 function getSupabase() {
   return createClient(
@@ -14,6 +15,9 @@ function getSupabase() {
 }
 
 export async function POST(req: NextRequest) {
+  const auth = requireRole(req, ['owner', 'manager', 'admin'])
+  if (!auth.ok) return auth.error
+
   const { queue_id, instruction, current_content, ai_reasoning } = await req.json()
   if (!queue_id || !instruction) {
     return NextResponse.json({ error: 'queue_id and instruction required' }, { status: 400 })

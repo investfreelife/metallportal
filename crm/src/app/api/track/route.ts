@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import { checkRateLimit } from '@/lib/rateLimit'
 
 function getSupabase() {
   return createClient(
@@ -30,6 +31,11 @@ export async function OPTIONS() {
 }
 
 export async function POST(request: NextRequest) {
+  // PUBLIC BY DESIGN: site-tracking pixel from metallportal.ru — rate-limited.
+  if (!checkRateLimit(request, 'track', 120, 60_000)) {
+    return NextResponse.json({ error: 'Rate limited' }, { status: 429, headers: CORS })
+  }
+
   const supabase = getSupabase()
 
   let body: Record<string, unknown>

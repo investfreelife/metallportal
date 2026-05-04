@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { requireRole } from '@/lib/apiAuth'
 
 const TENANT_ID = process.env.TENANT_ID || 'a1000000-0000-0000-0000-000000000001'
 
@@ -12,6 +13,9 @@ const POST_TYPES = [
 ]
 
 export async function POST(req: NextRequest) {
+  const auth = requireRole(req, ['owner', 'manager', 'admin'])
+  if (!auth.ok) return auth.error
+
   const { platform, post_type } = await req.json()
   const type = POST_TYPES.find(t => t.type === post_type) || POST_TYPES[Math.floor(Math.random() * POST_TYPES.length)]
 

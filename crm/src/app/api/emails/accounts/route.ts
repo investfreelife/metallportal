@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireRole } from '@/lib/apiAuth'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
@@ -18,7 +19,10 @@ const PROVIDER_PRESETS: Record<string, { smtp_host: string; smtp_port: number; i
   custom: { smtp_host: '',                 smtp_port: 587, smtp_secure: false, imap_host: '',                 imap_port: 993, imap_tls: true },
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const auth = requireRole(req, ['owner', 'manager', 'admin'])
+  if (!auth.ok) return auth.error
+
   const supabase = getSupabase()
   const { data, error } = await supabase.from('email_accounts')
     .select('id, email, display_name, provider, status, last_synced_at, last_error, is_default, smtp_host, imap_host')
@@ -29,6 +33,9 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const auth = requireRole(req, ['owner', 'manager', 'admin'])
+  if (!auth.ok) return auth.error
+
   const body = await req.json()
   const { email, display_name, provider = 'custom', smtp_pass, imap_pass, smtp_host, imap_host, smtp_port, imap_port } = body
 
@@ -60,6 +67,9 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const auth = requireRole(req, ['owner', 'manager', 'admin'])
+  if (!auth.ok) return auth.error
+
   const { id } = await req.json()
   const supabase = getSupabase()
   const { error } = await supabase.from('email_accounts').delete().eq('id', id).eq('tenant_id', TENANT_ID)

@@ -1,19 +1,42 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import crypto from 'crypto'
 import { evaluateAndImprove } from '@/lib/ai'
+import { requireRole } from '@/lib/apiAuth'
 
 /**
  * PATCH /api/ai/queue/:id/:action
  * action: approve | reject | snooze1 | snooze3 | snooze24
  *
  * Called by:
- *  - CRM UI (QueueClient)
- *  - Telegram callback handler (main site webhook)
+ *  - CRM UI (QueueClient) → cookie session
+ *  - Telegram callback handler (CRM bot loopback) → X-Internal-Secret header
+ *  - Main site webhook → X-Internal-Secret header
  */
+
+function checkInternalSecret(request: NextRequest): boolean {
+  const expected = process.env.INTERNAL_API_SECRET
+  const provided = request.headers.get('x-internal-secret')
+  if (!expected || !provided) return false
+  const a = Buffer.from(provided)
+  const b = Buffer.from(expected)
+  if (a.length !== b.length) return false
+  try {
+    return crypto.timingSafeEqual(a, b)
+  } catch {
+    return false
+  }
+}
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string; action: string }> }
 ) {
+  // Accept either a valid CRM session (UI/manager call)
+  // OR a valid X-Internal-Secret header (bot loopback / main-site webhook).
+  const auth = requireRole(request, ['owner', 'manager', 'admin'])
+  if (!auth.ok && !checkInternalSecret(request)) return auth.error
+
   const { id, action } = await params
 
   let managerFeedback: string | null = null

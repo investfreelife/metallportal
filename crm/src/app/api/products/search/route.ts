@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireSession } from '@/lib/apiAuth'
 
 function getSupabase() {
   return createClient(
@@ -9,6 +10,9 @@ function getSupabase() {
 }
 
 export async function GET(req: NextRequest) {
+  const auth = requireSession(req)
+  if (!auth.ok) return auth.error
+
   const q = new URL(req.url).searchParams.get('q')?.trim()
   if (!q || q.length < 2) return NextResponse.json([])
 

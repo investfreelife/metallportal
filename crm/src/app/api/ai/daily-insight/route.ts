@@ -1,6 +1,7 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { getSetting, setSetting } from '@/lib/settings'
+import { requireSession } from '@/lib/apiAuth'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 const REFERER = 'https://metallportal-crm2.vercel.app'
@@ -13,7 +14,10 @@ function getSupabase(): any {
   )
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const auth = requireSession(req)
+  if (!auth.ok) return auth.error
+
   const today = new Date().toISOString().split('T')[0]
   const cacheKey = `ai_insight_${today}`
 

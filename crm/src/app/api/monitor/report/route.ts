@@ -7,7 +7,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { requireAdmin } from '@/lib/apiAuth'
+import { requireCronSecret, requireRole } from '@/lib/apiAuth'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN!
@@ -23,15 +23,11 @@ async function getManagerId(): Promise<string | null> {
 }
 
 export async function POST(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET
-  if (!cronSecret) {
-    return NextResponse.json({ error: 'CRON_SECRET not configured' }, { status: 500 })
-  }
-  const auth = req.headers.get('authorization')
-  const isCron = auth === `Bearer ${cronSecret}`
-  if (!isCron) {
-    const adminCheck = requireAdmin(req)
-    if (!adminCheck.ok) return adminCheck.error
+  // Dual auth: Vercel cron (CRON_SECRET) OR a CRM session with sufficient role.
+  const cron = requireCronSecret(req)
+  if (!cron.ok) {
+    const role = requireRole(req, ['owner', 'manager', 'admin'])
+    if (!role.ok) return role.error
   }
 
   const supabase = createClient(

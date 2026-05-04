@@ -10,9 +10,25 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { getSetting } from '@/lib/settings'
+import { checkRateLimit } from '@/lib/rateLimit'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 const CRM_URL = 'https://metallportal-crm2.vercel.app'
+
+/**
+ * PUBLIC BY DESIGN: Telegram bot webhook (api.telegram.org → here).
+ *
+ * Protection:
+ *  - If TELEGRAM_WEBHOOK_SECRET env is set, we verify the
+ *    `X-Telegram-Bot-Api-Secret-Token` header (Telegram-supported,
+ *    set via setWebhook?secret_token=…). When env not set, falls back
+ *    to rate-limit only (back-compat with current production deploy).
+ *  - Rate-limit per-IP — Telegram uses a small set of edge IPs.
+ *
+ * ⚠ Escalation: enabling secret_token requires updating
+ *    `/api/telegram/setup` to pass it on setWebhook + re-registering.
+ *    Tracked as follow-up ТЗ.
+ */
 
 function getSupabase() {
   return createClient(
@@ -71,10 +87,14 @@ async function handleCrmCallback(token: string, cb: {
   const action = actionMap[actionRaw]
   if (!action) return true
 
-  // Call CRM PATCH API
+  // Call CRM PATCH API (loopback — authenticate via X-Internal-Secret)
+  const internalSecret = process.env.INTERNAL_API_SECRET ?? ''
   await fetch(`${CRM_URL}/api/ai/queue/${queueId}/${action}`, {
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Internal-Secret': internalSecret,
+    },
   }).catch(() => {})
 
   const labels: Record<string, string> = {
@@ -91,6 +111,20 @@ async function handleCrmCallback(token: string, cb: {
 // ─── Main handler ──────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
+  // Optional Telegram secret_token check (when env is set)
+  const expectedSecret = process.env.TELEGRAM_WEBHOOK_SECRET
+  if (expectedSecret) {
+    const provided = req.headers.get('x-telegram-bot-api-secret-token')
+    if (provided !== expectedSecret) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+  }
+
+  // Rate-limit (per-IP) — defensive even when secret_token is configured
+  if (!checkRateLimit(req, 'telegram-bot', 600, 60_000)) {
+    return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
+  }
+
   const token = await getSetting('TELEGRAM_BOT_TOKEN')
   if (!token) return NextResponse.json({ ok: true })
 
@@ -344,5 +378,6 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET() {
+  // PUBLIC BY DESIGN: health check, no sensitive info exposed.
   return NextResponse.json({ ok: true, service: 'MetallPortal CRM Bot Webhook' })
 }

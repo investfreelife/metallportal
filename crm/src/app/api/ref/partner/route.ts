@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireRole } from '@/lib/apiAuth'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -7,6 +8,10 @@ const supabase = createClient(
 )
 
 export async function GET(req: NextRequest) {
+  // Admin partner-lookup — owner only (exposes partner data).
+  const auth = requireRole(req, ['owner', 'admin'])
+  if (!auth.ok) return auth.error
+
   const code = req.nextUrl.searchParams.get('code')
   const email = req.nextUrl.searchParams.get('email')
 

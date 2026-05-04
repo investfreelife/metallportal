@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { checkRateLimit } from '@/lib/rateLimit'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -7,6 +8,11 @@ const supabase = createClient(
 )
 
 export async function POST(req: NextRequest) {
+  // PUBLIC BY DESIGN: partner referral signup — rate-limited.
+  if (!checkRateLimit(req, 'ref-register', 30, 60_000)) {
+    return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
+  }
+
   const { ref_code, contact_id, name, email, company, source } = await req.json()
 
   if (!ref_code) return NextResponse.json({ ok: false, error: 'Нет ref_code' })
