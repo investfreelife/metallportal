@@ -36,6 +36,16 @@ export const contactRatelimit = new Ratelimit({
   prefix: 'rl:contact',
 })
 
+// Semantic catalog search via /api/catalog/rag-search (#c007).
+// Each call performs an OpenAI embedding round-trip — costs ~$0.00002, so
+// per-IP throttling is mainly to prevent abuse, not protect spend.
+export const ragSearchRatelimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(30, '1 m'),
+  analytics: true,
+  prefix: 'rl:rag-search',
+})
+
 /**
  * Best-effort client IP from common Vercel/Cloudflare proxy headers.
  *
