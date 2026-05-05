@@ -1,3 +1,5 @@
+import { formatDimensions } from "@/lib/formatDimensions";
+
 interface SpecsTableProps {
   product: any;
 }
@@ -13,7 +15,7 @@ export default function SpecsTable({ product }: SpecsTableProps) {
         ? `${product.weight_per_meter} кг`
         : null,
     },
-    { label: "Размер", value: product.dimensions },
+    { label: "Размер", value: formatDimensions(product.dimensions) || null },
     { label: "Диаметр", value: product.diameter ? `${product.diameter} мм` : null },
     { label: "Толщина", value: product.thickness ? `${product.thickness} мм` : null },
     { label: "Покрытие", value: product.coating },

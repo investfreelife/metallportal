@@ -5,6 +5,7 @@ import { ArrowRight, Shield, Wrench, Star, FileText, ChevronLeft, ChevronRight, 
 import NavesOrderModal from "./NavesOrderModal";
 import PhotoEditable from "@/components/admin/PhotoEditable";
 import CategoryCallbackCTA from "@/components/catalog/CategoryCallbackCTA";
+import { formatDimensions } from "@/lib/formatDimensions";
 
 const FEATURES = [
   { icon: Wrench, title: "Долговечность", desc: "Стальной каркас из профильной трубы по ГОСТ 30245-2003. Антикоррозийная обработка и порошковое окрашивание. Срок службы — свыше 30 лет." },
@@ -33,7 +34,7 @@ export default function NavesProductDetail({ product, related, basePath }: Props
   const totalPrice = area > 0 && price > 0 ? Math.round(area * price) : 0;
 
   const supplier = product.price_items?.[0]?.supplier?.company_name || product.supplier?.company_name || "Харланметалл";
-  const material = product.dimensions || "";
+  const material = formatDimensions(product.dimensions) || "";
 
   const visibleRelated = related.slice(carouselIdx, carouselIdx + 4);
   const canPrev = carouselIdx > 0;

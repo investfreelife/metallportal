@@ -110,7 +110,15 @@ export default function ProductTabs({ description, gost, steel_grade, material, 
                   {Object.entries(specs).filter(([, v]) => v).map(([k, v]) => (
                     <tr key={k} className="border-b border-border/50 odd:bg-muted/20">
                       <td className="py-2 px-3 text-muted-foreground w-1/2">{k}</td>
-                      <td className="py-2 px-3 font-medium text-foreground">{v}</td>
+                      <td className="py-2 px-3 font-medium text-foreground">
+                        {/* Defensive type-guard: после Pavel'овой migration
+                            #c006 dimensions JSONB иногда попадает сюда как
+                            object → React Error #31. Stringify-fallback для
+                            любых non-primitive значений. */}
+                        {typeof v === "string" || typeof v === "number"
+                          ? v
+                          : JSON.stringify(v)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
