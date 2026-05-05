@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { MapPin, Phone, Mail, Clock, MessageCircle } from 'lucide-react'
 import CTASection from '@/components/home/CTASection'
+import Breadcrumbs from '@/components/seo/Breadcrumbs'
 
 export const metadata: Metadata = {
   title: 'Контакты — Harlan Steel | Металлопрокат',
@@ -12,6 +13,7 @@ export default function ContactsPage() {
   return (
     <>
       <div className="container-main py-10">
+        <Breadcrumbs items={[{ name: 'Контакты' }]} />
         <h1 className="text-3xl font-bold text-foreground mb-2">Контакты</h1>
         <p className="text-muted-foreground mb-10">Мы всегда готовы ответить на ваши вопросы</p>
 

@@ -12,6 +12,7 @@ import { SITE_URL } from "@/lib/site";
 import CatalogView from "@/components/catalog/CatalogView";
 import CatalogCategoryCard from "@/components/catalog/CatalogCategoryCard";
 import ProductDetailView from "@/components/catalog/ProductDetailView";
+import Breadcrumbs from "@/components/seo/Breadcrumbs";
 
 export const revalidate = 3600;
 
@@ -86,17 +87,13 @@ export default async function SubcategoryPage({ params }: Props) {
 
       return (
         <div>
-          <nav className="text-sm text-muted-foreground mb-4">
-            <Link href="/" className="hover:text-gold transition-colors">Главная</Link>
-            <span className="mx-2">/</span>
-            <Link href="/catalog" className="hover:text-gold transition-colors">Каталог</Link>
-            <span className="mx-2">/</span>
-            <Link href={`/catalog/${params.category}`} className="hover:text-gold transition-colors">
-              {parentCategory?.name || params.category}
-            </Link>
-            <span className="mx-2">/</span>
-            <span className="text-foreground">{category.name}</span>
-          </nav>
+          <Breadcrumbs
+            items={[
+              { name: "Каталог", href: "/catalog" },
+              { name: parentCategory?.name || params.category, href: `/catalog/${params.category}` },
+              { name: category.name },
+            ]}
+          />
 
           <h1 className="text-3xl font-bold text-foreground mb-2">{category.name}</h1>
           {category.description && (
@@ -132,6 +129,13 @@ export default async function SubcategoryPage({ params }: Props) {
       const isNavesy = params.category === "navesy";
       return (
         <div>
+          <Breadcrumbs
+            items={[
+              { name: "Каталог", href: "/catalog" },
+              { name: parentCategory?.name || params.category, href: `/catalog/${params.category}` },
+              { name: result.category.name },
+            ]}
+          />
           <CatalogView
             category={result.category}
             subcategories={result.subcategories}
@@ -816,6 +820,13 @@ export default async function SubcategoryPage({ params }: Props) {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+        />
+        <Breadcrumbs
+          items={[
+            { name: "Каталог", href: "/catalog" },
+            { name: parentCategory?.name || params.category, href: `/catalog/${params.category}` },
+            { name: product.name },
+          ]}
         />
         <ProductDetailView
           product={product}

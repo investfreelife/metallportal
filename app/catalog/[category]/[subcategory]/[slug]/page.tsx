@@ -6,6 +6,7 @@ import {
 } from "@/lib/queries";
 import CatalogView from "@/components/catalog/CatalogView";
 import ProductDetailView from "@/components/catalog/ProductDetailView";
+import Breadcrumbs from "@/components/seo/Breadcrumbs";
 
 // W2-3: было `revalidate = 3600` (ISR-кеш на час). Категории info-fields
 // (description / seo_text / gost_url / cta_*) могут редактироваться через
@@ -48,6 +49,18 @@ export default async function SlugPage({ params }: Props) {
     redirect(CANONICAL_REDIRECTS[params.slug]);
   }
 
+  // Look up parent + grandparent для breadcrumb chain
+  const [grandparent, parent] = await Promise.all([
+    getCategoryBySlug(params.category),
+    getCategoryBySlug(params.subcategory),
+  ]);
+
+  const baseChain = [
+    { name: "Каталог", href: "/catalog" },
+    { name: grandparent?.name || params.category, href: `/catalog/${params.category}` },
+    { name: parent?.name || params.subcategory, href: `/catalog/${params.category}/${params.subcategory}` },
+  ];
+
   // 1. Check if slug is a category
   const category = await getCategoryBySlug(params.slug);
 
@@ -56,13 +69,16 @@ export default async function SlugPage({ params }: Props) {
     const result = await getCategoryWithChildren(params.slug);
     if (result) {
       return (
-        <CatalogView
-          category={result.category}
-          subcategories={result.subcategories}
-          products={result.products}
-          categorySlug={params.slug}
-          productBasePath={`/catalog/${params.category}/${params.subcategory}/${params.slug}`}
-        />
+        <>
+          <Breadcrumbs items={[...baseChain, { name: result.category.name }]} />
+          <CatalogView
+            category={result.category}
+            subcategories={result.subcategories}
+            products={result.products}
+            categorySlug={params.slug}
+            productBasePath={`/catalog/${params.category}/${params.subcategory}/${params.slug}`}
+          />
+        </>
       );
     }
   }
@@ -75,12 +91,15 @@ export default async function SlugPage({ params }: Props) {
       getRelatedProducts(product.category_id, product.id, 6),
     ]);
     return (
-      <ProductDetailView
-        product={product}
-        priceItems={priceItems}
-        related={related}
-        basePath={`/catalog/${params.category}/${params.subcategory}`}
-      />
+      <>
+        <Breadcrumbs items={[...baseChain, { name: product.name }]} />
+        <ProductDetailView
+          product={product}
+          priceItems={priceItems}
+          related={related}
+          basePath={`/catalog/${params.category}/${params.subcategory}`}
+        />
+      </>
     );
   }
 

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Breadcrumbs from '@/components/seo/Breadcrumbs'
 
 export const metadata: Metadata = {
   title: 'Публичная оферта — Харланметалл',
@@ -16,6 +17,7 @@ const DATE = '27 апреля 2026 г.'
 export default function OfertaPage() {
   return (
     <div className="container-main py-10 max-w-4xl">
+      <Breadcrumbs items={[{ name: 'Публичная оферта' }]} />
       <h1 className="text-3xl font-bold text-foreground mb-2">
         Публичная оферта
       </h1>

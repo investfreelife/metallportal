@@ -9,6 +9,7 @@ import CookieBanner from "@/components/CookieBanner";
 import { CartProvider } from "@/contexts/CartContext";
 import { SITE_URL } from "@/lib/site";
 import YandexMetrika from "@/components/analytics/YandexMetrika";
+import SiteSchemas from "@/components/seo/SiteSchemas";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ru" suppressHydrationWarning>
       <body className="min-h-screen bg-background text-foreground transition-colors duration-200">
+        <SiteSchemas />
         <ThemeProvider>
           <CartProvider>
             <Header />

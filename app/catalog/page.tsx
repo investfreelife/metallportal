@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getFullCategoryTree } from "@/lib/queries";
 import type { Metadata } from "next";
+import Breadcrumbs from "@/components/seo/Breadcrumbs";
 
 export const revalidate = 3600;
 
@@ -15,13 +16,7 @@ export default async function CatalogPage() {
 
   return (
     <div>
-      <nav className="text-sm text-muted-foreground mb-4">
-        <Link href="/" className="hover:text-gold transition-colors">
-          Главная
-        </Link>
-        <span className="mx-2">/</span>
-        <span className="text-foreground">Каталог</span>
-      </nav>
+      <Breadcrumbs items={[{ name: "Каталог" }]} />
 
       <h1 className="text-3xl font-bold text-foreground mb-2">
         Каталог металлопроката
