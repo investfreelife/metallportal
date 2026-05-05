@@ -9,7 +9,7 @@ const supabase = createClient(
 
 export async function POST(req: NextRequest) {
   // PUBLIC BY DESIGN: partner referral signup — rate-limited.
-  if (!checkRateLimit(req, 'ref-register', 30, 60_000)) {
+  if (!(await checkRateLimit(req, 'ref-register', 30, 60_000))) {
     return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
   }
 

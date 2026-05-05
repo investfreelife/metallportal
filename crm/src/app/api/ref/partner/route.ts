@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { requireRole } from '@/lib/apiAuth'
+import { checkRateLimit } from '@/lib/rateLimit'
+
+/**
+ * PUBLIC BY DESIGN: partner portal data endpoint.
+ *
+ * The `code` (ref_code, 16+ uppercase chars from join token) or `email`
+ * query param acts as a shared-secret for the partner's own dashboard.
+ * Rate-limited per-IP to mitigate guessing.
+ *
+ * TODO: replace with proper partner-token cookie auth — see backlog
+ * ТЗ c011_partner-portal-proper-auth-flow.
+ */
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -8,9 +19,9 @@ const supabase = createClient(
 )
 
 export async function GET(req: NextRequest) {
-  // Admin partner-lookup — owner only (exposes partner data).
-  const auth = requireRole(req, ['owner', 'admin'])
-  if (!auth.ok) return auth.error
+  if (!(await checkRateLimit(req, 'ref-partner', 30, 60_000))) {
+    return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
+  }
 
   const code = req.nextUrl.searchParams.get('code')
   const email = req.nextUrl.searchParams.get('email')

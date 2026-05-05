@@ -9,7 +9,7 @@ const supabase = createClient(
 
 export async function GET(req: NextRequest) {
   // PUBLIC BY DESIGN: referral tracking redirect — rate-limited.
-  if (!checkRateLimit(req, 'ref-track', 60, 60_000)) {
+  if (!(await checkRateLimit(req, 'ref-track', 60, 60_000))) {
     return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
   }
 

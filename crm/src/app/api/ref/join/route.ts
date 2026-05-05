@@ -18,7 +18,7 @@ function generateCode(name: string): string {
 
 export async function POST(req: NextRequest) {
   // PUBLIC BY DESIGN: partner-program signup — rate-limited.
-  if (!checkRateLimit(req, 'ref-join', 10, 60_000)) {
+  if (!(await checkRateLimit(req, 'ref-join', 10, 60_000))) {
     return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
   }
 

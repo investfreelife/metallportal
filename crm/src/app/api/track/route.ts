@@ -32,7 +32,7 @@ export async function OPTIONS() {
 
 export async function POST(request: NextRequest) {
   // PUBLIC BY DESIGN: site-tracking pixel from metallportal.ru — rate-limited.
-  if (!checkRateLimit(request, 'track', 120, 60_000)) {
+  if (!(await checkRateLimit(request, 'track', 120, 60_000))) {
     return NextResponse.json({ error: 'Rate limited' }, { status: 429, headers: CORS })
   }
 
