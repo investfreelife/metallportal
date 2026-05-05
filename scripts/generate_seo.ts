@@ -8,6 +8,11 @@ import OpenAI from "openai";
 import { writeFileSync, mkdirSync } from "fs";
 import { join } from "path";
 import { readFileSync } from "fs";
+import {
+  LLM_MODEL_STRUCTURED,
+  LLM_MODEL_FALLBACK,
+  shouldFallbackOnError,
+} from "../lib/llm-models";
 
 try {
   const env = readFileSync(join(process.cwd(), ".env.local"), "utf-8");
@@ -64,16 +69,35 @@ const SYSTEM = `Ты — SEO-копирайтер для B2B металлото�
 Отвечай ТОЛЬКО JSON: { "h1": "...", "intro": "...", "sections": [{"h2": "...", "text": "..."}, ...] }`;
 
 async function generateSeoArticle(type: typeof PRODUCT_TYPES[0]) {
-  const res = await openai.chat.completions.create({
-    model: "openai/gpt-4o-mini",
-    messages: [
-      { role: "system", content: SYSTEM },
-      { role: "user", content: `Напиши SEO-статью для: ${type.name}. ГОСТ: ${type.gost}. Марка стали: ${type.grade}.` },
-    ],
-    response_format: { type: "json_object" },
+  const messages = [
+    { role: "system" as const, content: SYSTEM },
+    { role: "user" as const, content: `Напиши SEO-статью для: ${type.name}. ГОСТ: ${type.gost}. Марка стали: ${type.grade}.` },
+  ];
+  const baseParams = {
+    messages,
+    response_format: { type: "json_object" as const },
     temperature: 0.7,
     max_tokens: 2000,
-  });
+  };
+
+  // SEO articles need strict JSON shape — Gemini structured by default;
+  // on rate-limit fall back to paid gpt-4o-mini.
+  let res;
+  try {
+    res = await openai.chat.completions.create({
+      model: LLM_MODEL_STRUCTURED,
+      ...baseParams,
+    });
+  } catch (e: any) {
+    if (e?.status && shouldFallbackOnError(e.status)) {
+      res = await openai.chat.completions.create({
+        model: LLM_MODEL_FALLBACK,
+        ...baseParams,
+      });
+    } else {
+      throw e;
+    }
+  }
 
   const text = res.choices[0].message.content ?? "";
   return JSON.parse(text);

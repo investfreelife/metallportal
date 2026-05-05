@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireSession } from '@/lib/apiAuth'
 import { createClient } from '@supabase/supabase-js'
+import {
+  LLM_MODEL_GENERAL,
+  LLM_MODEL_FALLBACK,
+  shouldFallbackOnError,
+} from '@/lib/llm-models'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getSupabase(): any {
@@ -34,11 +39,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const systemPrompt = `Ты менеджер по продажам металлопроката. Отвечай кратко, по-русски, профессионально и дружелюбно. Клиент: ${contact?.full_name ?? 'клиент'}, сегмент: ${contact?.ai_segment ?? 'неизвестно'}.`
   const userMsg = `Клиент написал: "${last_message}". Напиши ответ менеджера (2-3 предложения).`
 
-  // Try OpenRouter (openai/gpt-4o-mini) — key already in project
+  // Try OpenRouter — primary free model; fall back to paid gpt-4o-mini on
+  // rate-limit / outage. After this we still cascade to Anthropic / OpenAI direct.
   const openrouterKey = process.env.OPENROUTER_API_KEY
   if (openrouterKey && last_message) {
-    try {
-      const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    const callOpenRouter = (model: string) =>
+      fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -47,7 +53,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
           'X-Title': 'МеталлПортал CRM',
         },
         body: JSON.stringify({
-          model: 'openai/gpt-4o-mini',
+          model,
           max_tokens: 200,
           messages: [
             { role: 'system', content: systemPrompt },
@@ -55,6 +61,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
           ],
         }),
       })
+    try {
+      let resp = await callOpenRouter(LLM_MODEL_GENERAL)
+      if (!resp.ok && shouldFallbackOnError(resp.status)) {
+        resp = await callOpenRouter(LLM_MODEL_FALLBACK)
+      }
       const ai = await resp.json()
       const text = ai.choices?.[0]?.message?.content?.trim()
       if (text) return NextResponse.json({ text, channel: recommendedChannel, source: 'openrouter' })

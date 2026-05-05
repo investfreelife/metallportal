@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireSession } from '@/lib/apiAuth'
 import { createClient } from '@/lib/supabase/server'
+import {
+  LLM_MODEL_STRUCTURED,
+  LLM_MODEL_FALLBACK,
+  shouldFallbackOnError,
+} from '@/lib/llm-models'
 
 export async function POST(req: NextRequest) {
   const auth = requireSession(req)
@@ -37,11 +42,10 @@ export async function POST(req: NextRequest) {
   }
 
   if (transcript && openrouterKey) {
-    const analysisRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${openrouterKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'openai/gpt-4o-mini',
+    // Build call once — body identical for primary (free) и fallback (paid) attempts.
+    const buildBody = (model: string) =>
+      JSON.stringify({
+        model,
         messages: [{
           role: 'system',
           content: 'Ты анализируешь звонки менеджеров по продажам металлопроката. Отвечай строго в JSON.'
@@ -51,7 +55,20 @@ export async function POST(req: NextRequest) {
         }],
         max_tokens: 600,
       })
+
+    // Free-tier first; on rate-limit / outage fall back to paid gpt-4o-mini.
+    let analysisRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${openrouterKey}`, 'Content-Type': 'application/json' },
+      body: buildBody(LLM_MODEL_STRUCTURED),
     })
+    if (!analysisRes.ok && shouldFallbackOnError(analysisRes.status)) {
+      analysisRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${openrouterKey}`, 'Content-Type': 'application/json' },
+        body: buildBody(LLM_MODEL_FALLBACK),
+      })
+    }
 
     const analysisData = await analysisRes.json()
     let analysis: any = {}
