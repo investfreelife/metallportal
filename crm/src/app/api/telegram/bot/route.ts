@@ -121,7 +121,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Rate-limit (per-IP) — defensive even when secret_token is configured
-  if (!checkRateLimit(req, 'telegram-bot', 600, 60_000)) {
+  if (!(await checkRateLimit(req, 'telegram-bot', 600, 60_000))) {
     return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
   }
 

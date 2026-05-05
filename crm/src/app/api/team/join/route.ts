@@ -21,7 +21,7 @@ function getSupabase() {
 
 /** GET /api/team/join?token=XXX — validate token, return user info */
 export async function GET(req: NextRequest) {
-  if (!checkRateLimit(req, 'team-join-get', 30, 60_000)) {
+  if (!(await checkRateLimit(req, 'team-join-get', 30, 60_000))) {
     return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
   }
 
@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
 
 /** POST /api/team/join — set new password, activate account */
 export async function POST(req: NextRequest) {
-  if (!checkRateLimit(req, 'team-join-post', 10, 60_000)) {
+  if (!(await checkRateLimit(req, 'team-join-post', 10, 60_000))) {
     return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
   }
 
