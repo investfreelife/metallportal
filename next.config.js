@@ -60,6 +60,15 @@ const nextConfig = {
   // Sending them to the right new location preserves SEO + UX.
   async redirects() {
     return [
+      // W2-22 #i006 restructure (lesson 091): профнастил перенесён из дублирующего
+      // L1 metalloprokat в canonical listovoy-prokat → profnastil-proflist.
+      // Старые URL (Yandex/Google cache + external links) перенаправляются на новые.
+      // Catch-all для всех потомков (3 L3 + ~935 SKU pages).
+      {
+        source: "/catalog/metalloprokat/profnastil/:path*",
+        destination: "/catalog/listovoy-prokat/profnastil-proflist/:path*",
+        permanent: true,
+      },
       { source: "/catalog/metalloprokat",   destination: "/catalog",                 permanent: true },
       { source: "/catalog/armatura",        destination: "/catalog/sortovoy-prokat", permanent: true },
       { source: "/catalog/balki-shvellery", destination: "/catalog/sortovoy-prokat", permanent: true },
