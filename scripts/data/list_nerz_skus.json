@@ -1,0 +1,4613 @@
+[
+  {
+    "slug": "list-nerz-hk-0p4x1000x2000-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 0.4х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.4,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.4,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 188010.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 1221.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p5x1000-aisi409l-2b-nd",
+    "name": "Лист нержавеющий х/к 0.5х1000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.5,
+    "length": null,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 177390.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p5x1000-aisi439-2b-nd",
+    "name": "Лист нержавеющий х/к 0.5х1000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.5,
+    "length": null,
+    "steel_grade": "AISI 439",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 439",
+      "grade_gost": null
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 207040.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p5x1000-rulon-aisi430-bape-nd",
+    "name": "Лист нержавеющий х/к 0.5х1000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.5,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 185530.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p5x1000x2000-aisi409l-2b-nd",
+    "name": "Лист нержавеющий х/к 0.5х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.5,
+    "length": 2000,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null,
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 177390.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 1413.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p5x1000x2000-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 0.5х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.5,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 168050.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 1365.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p5x1000x2000-aisi439-2b-nd",
+    "name": "Лист нержавеющий х/к 0.5х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.5,
+    "length": 2000,
+    "steel_grade": "AISI 439",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 439",
+      "grade_gost": null,
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 207040.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p5x1000x2000-aisi430-2bpe-nd",
+    "name": "Лист нержавеющий х/к 0.5х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.5,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 179540.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 1421.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p5x1000x2000-aisi430-4nlpe-nd",
+    "name": "Лист нержавеющий х/к 0.5х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.5,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "protective_film": "LPE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 186480.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p5x1000x2000-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 0.5х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.5,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 175750.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 1391.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p5x1000x2000-aisi430-bape-nd",
+    "name": "Лист нержавеющий х/к 0.5х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.5,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 185530.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 1507.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p5x1000x2000-aisi430-ba-nd",
+    "name": "Лист нержавеющий х/к 0.5х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.5,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 162410.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 1294.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p5x1250-rulon-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 0.5х1250 BA+PE (зеркальный)",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.5,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 185530.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p5x1250x2500-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 0.5х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.5,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "manufacturer": "ЧМК"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 178760.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 2268.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p5x1250x2500-aisi430-2bpe-nd",
+    "name": "Лист нержавеющий х/к 0.5х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.5,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 186500.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 2366.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p5x1250x2500-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 0.5х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.5,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 190070.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 2412.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p5x1250x2500-aisi430-bape-nd",
+    "name": "Лист нержавеющий х/к 0.5х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.5,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 185530.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 2354.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p5x1500x3000-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 0.5х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.5,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 187900.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 3299.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p5x30-rulon-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 0.5х30 2B+PI",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.5,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.5,
+      "width_mm": 30,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 194160.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p6x1000x2000-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 0.6х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.6,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.6,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 179940.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 1644.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p6x1250x2500-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 0.6х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.6,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.6,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 174710.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 2571.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p6x1250x2500-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 0.6х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.6,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.6,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 190070.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 2894.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p6x1250x2500-aisi430-bape-nd",
+    "name": "Лист нержавеющий х/к 0.6х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.6,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.6,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 188010.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 2862.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p7x1000x2000-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 0.7х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.7,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.7,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 157940.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 1795.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p7x1250x2500-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 0.7х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.7,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.7,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 161280.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 2865.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p7x1250x2500-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 0.7х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.7,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.7,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 174230.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 3095.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p7x1250x2500-aisi430-bape-nd",
+    "name": "Лист нержавеющий х/к 0.7х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.7,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.7,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 171360.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 3044.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p7x1500x3000-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 0.7х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.7,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.7,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 177940.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 4389.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1000-rulon-aisi444-2b-nd",
+    "name": "Лист нержавеющий х/к 0.8х1000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": null,
+    "steel_grade": "AISI 444 (02Х18М2БТ)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 444",
+      "grade_gost": "02Х18М2БТ",
+      "is_coil": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 413480.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1000-aisi409l-2b-nd",
+    "name": "Лист нержавеющий х/к 0.8х1000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": null,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 174690.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1000-rulon-aisi430-ba-nd",
+    "name": "Лист нержавеющий х/к 0.8х1000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 154100.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1000-rulon-aisi430-bapi-nd",
+    "name": "Лист нержавеющий х/к 0.8х1000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true,
+      "protective_film": "PI"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 149590.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1000x2000-aisi409l-2b-nd",
+    "name": "Лист нержавеющий х/к 0.8х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": 2000,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null,
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 174690.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 2270.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1000x2000-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 0.8х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "manufacturer": "ЧМК"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 162920.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 2117.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1000x2000-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 0.8х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 180800.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 2349.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1000x2000-aisi430-bape-nd",
+    "name": "Лист нержавеющий х/к 0.8х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 173810.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 2258.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1250-rulon-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 0.8х1250 4N (шлифованный)",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 154990.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1250x2500-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 0.8х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "manufacturer": "ЧМК"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 163050.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 3310.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1250x2500-aisi439-2b-nd",
+    "name": "Лист нержавеющий х/к 0.8х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": 2500,
+    "steel_grade": "AISI 439",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 439",
+      "grade_gost": null,
+      "length_mm": 2500
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 226260.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 4507.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1250x2500-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 0.8х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 179880.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 3652.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1250x2500-aisi430-bape-nd",
+    "name": "Лист нержавеющий х/к 0.8х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 173030.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 3513.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1250x2500-aisi430-deco1pe-nd",
+    "name": "Лист нержавеющий х/к 0.8х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "DECO1",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 203650.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1250x2500-aisi430-deco8pe-nd",
+    "name": "Лист нержавеющий х/к 0.8х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "DECO8",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 192330.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 3709.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1250x2500-aisi430-deco9pe-nd",
+    "name": "Лист нержавеющий х/к 0.8х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "DECO9",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 192330.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 3904.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1500-rulon-aisi430-4n-nd",
+    "name": "Лист нержавеющий х/к 0.8х1500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 167440.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1500-rulon-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 0.8х1500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 182000.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1500x3000-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 0.8х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 156560.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 4577.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p8x1500x3000-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 0.8х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.8,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.8,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 182000.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 5320.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p9x1000x2000-aisi409l-2b-nd",
+    "name": "Лист нержавеющий х/к 0.9х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.9,
+    "length": 2000,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.9,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null,
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 172010.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-0p95x1000x2000-aisi409l-2b-nd",
+    "name": "Лист нержавеющий х/к 0.95х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 0.95,
+    "length": 2000,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 0.95,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null,
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 172010.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1000-rulon-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 1х1000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 176370.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1000-aisi439-2b-nd",
+    "name": "Лист нержавеющий х/к 1х1000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": null,
+    "steel_grade": "AISI 439",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 439",
+      "grade_gost": null
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 202510.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1000-aisi409l-2b-nd",
+    "name": "Лист нержавеющий х/к 1х1000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": null,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 180830.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1000x2000-aisi409l-2b-nd",
+    "name": "Лист нержавеющий х/к 1х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": 2000,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null,
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 180830.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 2882.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1000x2000-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 1х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 176370.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 2653.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1000x2000-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 1х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 176000.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 2858.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1000x2000-aisi430-ba-nd",
+    "name": "Лист нержавеющий х/к 1х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 182290.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1000x2000-aisi430-bape-nd",
+    "name": "Лист нержавеющий х/к 1х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 176000.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 2858.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1219-aisi409l-2b-nd",
+    "name": "Лист нержавеющий х/к 1х1219 2B (матовый)",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": null,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1219,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 174690.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1219x2500-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 1х1219х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1219,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 169010.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1240x2500-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 1х1240х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1240,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 169010.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1250-aisi439-2b-nd",
+    "name": "Лист нержавеющий х/к 1х1250 2B (матовый)",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": null,
+    "steel_grade": "AISI 439",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 439",
+      "grade_gost": null
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 202510.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1250-rulon-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 1х1250 4N (шлифованный)",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 168570.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1250x2500-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 1х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 174070.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 4417.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1250x2500-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 1х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 174070.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 4417.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1250x2500-aisi430-balpe-nd",
+    "name": "Лист нержавеющий х/к 1х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "LPE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 188940.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1250x2500-aisi430-bape-nd",
+    "name": "Лист нержавеющий х/к 1х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 172420.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 4375.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1250x2500-aisi430-deco1pe-nd",
+    "name": "Лист нержавеющий х/к 1х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "DECO1",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 192330.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 4705.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1250x2500-aisi430-deco8pe-nd",
+    "name": "Лист нержавеющий х/к 1х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "DECO8",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 192330.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 4705.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1250x2500-aisi430-deco9pe-nd",
+    "name": "Лист нержавеющий х/к 1х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "DECO9",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 217350.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 5317.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1500-rulon-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 1х1500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 154990.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1500-rulon-aisi430-4n-nd",
+    "name": "Лист нержавеющий х/к 1х1500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 172530.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1500-rulon-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 1х1500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 178760.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1500x3000-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 1х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 158620.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 5796.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1x1500x3000-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 1х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.0,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.0,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 178760.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 6532.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p2x1000x2000-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 1.2х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.2,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.2,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 158620.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 3091.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p2x1000x2000-aisi409l-2b-nd",
+    "name": "Лист нержавеющий х/к 1.2х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.2,
+    "length": 2000,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.2,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null,
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 174690.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p2x1250-aisi439-2b-nd",
+    "name": "Лист нержавеющий х/к 1.2х1250 2B (матовый)",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.2,
+    "length": null,
+    "steel_grade": "AISI 439",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.2,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 439",
+      "grade_gost": null
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 202510.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p2x1250-aisi409l-2b-nd",
+    "name": "Лист нержавеющий х/к 1.2х1250 2B (матовый)",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.2,
+    "length": null,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.2,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 174690.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p2x1250-rulon-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 1.2х1250 2B (матовый)",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.2,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.2,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 157510.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p2x1250x2500-aisi409-2b-nd",
+    "name": "Лист нержавеющий х/к 1.2х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.2,
+    "length": 2500,
+    "steel_grade": "AISI 409 (03Х13)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.2,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 409",
+      "grade_gost": "03Х13",
+      "length_mm": 2500
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 139080.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p2x1250x2500-aisi409l-2b-nd",
+    "name": "Лист нержавеющий х/к 1.2х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.2,
+    "length": 2500,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.2,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null,
+      "length_mm": 2500
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 174690.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p2x1250x2500-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 1.2х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.2,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.2,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "manufacturer": "ЧМК"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 153470.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 4673.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p2x1250x2500-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 1.2х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.2,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.2,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 177140.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 5394.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p2x1250x2500-aisi430-bape-nd",
+    "name": "Лист нержавеющий х/к 1.2х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.2,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.2,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 176000.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 5359.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p2x1250x2500-aisi430-bapi-nd",
+    "name": "Лист нержавеющий х/к 1.2х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.2,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.2,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PI"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 171010.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p2x1500x2500-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 1.2х1500х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.2,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.2,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 162940.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 5842.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p2x1500x3000-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 1.2х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.2,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.2,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 179680.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 7879.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p2x1500x3000-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 1.2х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.2,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.2,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 179660.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 7878.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p4x1000-aisi409l-2b-nd",
+    "name": "Лист нержавеющий х/к 1.4х1000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.4,
+    "length": null,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.4,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 174690.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1000-rulon-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 1.5х1000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 152730.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1000-aisi409l-2b-nd",
+    "name": "Лист нержавеющий х/к 1.5х1000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": null,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 191210.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1000x2000-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 1.5х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "manufacturer": "ЧМК"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 152730.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 3721.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1000x2000-aisi409l-2b-nd",
+    "name": "Лист нержавеющий х/к 1.5х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": 2000,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null,
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 174690.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 4238.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1000x2000-aisi430-2bpe-nd",
+    "name": "Лист нержавеющий х/к 1.5х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 160650.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 3913.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1000x2000-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 1.5х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 179000.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 4360.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1000x2000-aisi430-bape-nd",
+    "name": "Лист нержавеющий х/к 1.5х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 176490.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 4299.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1000x3000-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 1.5х1000х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 166070.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1250-rulon-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 1.5х1250 2B (матовый)",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 165000.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1250-aisi409l-2b-nd",
+    "name": "Лист нержавеющий х/к 1.5х1250 2B (матовый)",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": null,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 172010.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1250x2500-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 1.5х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "manufacturer": "ЧМК"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 165000.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 6280.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1250x2500-aisi430-2bpe-nd",
+    "name": "Лист нержавеющий х/к 1.5х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 168570.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 6416.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1250x2500-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 1.5х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 178580.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 6797.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1250x2500-aisi430-balaserpe-nd",
+    "name": "Лист нержавеющий х/к 1.5х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "LASER PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 182160.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1250x2500-aisi430-bape-nd",
+    "name": "Лист нержавеющий х/к 1.5х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 174230.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 6632.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1250x2500-aisi430-bapi-nd",
+    "name": "Лист нержавеющий х/к 1.5х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PI"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 178830.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1250x2500-aisi430-deco1pe-nd",
+    "name": "Лист нержавеющий х/к 1.5х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "DECO1",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 223330.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1250x2500-aisi430-deco8pe-nd",
+    "name": "Лист нержавеющий х/к 1.5х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "DECO8",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 223330.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 9838.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1250x2500-aisi430-deco9pe-nd",
+    "name": "Лист нержавеющий х/к 1.5х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "DECO9",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 226840.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 8335.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1500x3000-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 1.5х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 161790.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 8868.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1500x3000-aisi410s-2b-nd",
+    "name": "Лист нержавеющий х/к 1.5х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": 3000,
+    "steel_grade": "AISI 410S (08Х13)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 410S",
+      "grade_gost": "08Х13",
+      "length_mm": 3000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 160830.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-1p5x1500x3000-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 1.5х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 1.5,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 1.5,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 184000.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 10085.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-2x1000x2000-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 2х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 2.0,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 2.0,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "manufacturer": "ЧМК"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 163000.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 5294.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-2x1000x2000-aisi430-2bpe-nd",
+    "name": "Лист нержавеющий х/к 2х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 2.0,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 2.0,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 166000.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 5392.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-2x1000x2000-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 2х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 2.0,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 2.0,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 174230.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 5659.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-2x1000x2000-aisi430-bape-nd",
+    "name": "Лист нержавеющий х/к 2х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 2.0,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 2.0,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 179000.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 5814.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-2x1250-rulon-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 2х1250 2B (матовый)",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 2.0,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 2.0,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 169700.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-2x1250x2500-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 2х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 2.0,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 2.0,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "manufacturer": "ЧМК"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 169700.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 8612.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-2x1250x2500-aisi430-2bpe-nd",
+    "name": "Лист нержавеющий х/к 2х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 2.0,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 2.0,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 170840.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 8670.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-2x1250x2500-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 2х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 2.0,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 2.0,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 187460.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 9514.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-2x1250x2500-aisi430-bape-nd",
+    "name": "Лист нержавеющий х/к 2х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 2.0,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 2.0,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "BA",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 189000.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 9592.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-2x1500x3000-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 2х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 2.0,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 2.0,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 182000.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 13301.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-2x1500x3000-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 2х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 2.0,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 2.0,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 191200.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 13973.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-2p5x1000x2000-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 2.5х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 2.5,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 2.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 153870.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 6247.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-2p5x1000x2000-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 2.5х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 2.5,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 2.5,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 159530.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-2p5x1250x2500-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 2.5х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 2.5,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 2.5,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "manufacturer": "ЧМК"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 176000.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 11165.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-2p5x1250x2500-aisi430-2bpe-nd",
+    "name": "Лист нержавеющий х/к 2.5х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 2.5,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 2.5,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 179000.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 11355.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-2p5x1500x3000-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 2.5х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 2.5,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 2.5,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 167890.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-2p5x1500x3000-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 2.5х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 2.5,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 2.5,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 169630.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-3x1250x2500-aisi430-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 3х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 3.0,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 3.0,
+      "width_mm": 1250,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 156000.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-3x1500x3000-aisi410s-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 3х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 3.0,
+    "length": 3000,
+    "steel_grade": "AISI 410S (08Х13)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 3.0,
+      "width_mm": 1500,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 410S",
+      "grade_gost": "08Х13",
+      "length_mm": 3000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 189060.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-3x1000-rulon-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 3х1000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 3.0,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 3.0,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 166000.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-3x1000x2000-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 3х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 3.0,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 3.0,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "manufacturer": "ЧМК"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 166000.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 8088.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-3x1000x2000-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 3х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 3.0,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 3.0,
+      "width_mm": 1000,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 166300.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-3x1250-rulon-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 3х1250 2B (матовый)",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 3.0,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 3.0,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 176000.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-3x1250x2500-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 3х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 3.0,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 3.0,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "manufacturer": "ЧМК"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 176000.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 13398.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-3x1250x2500-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 3х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 3.0,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 3.0,
+      "width_mm": 1250,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 179000.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 13626.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-3x1500-rulon-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 3х1500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 3.0,
+    "length": null,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 3.0,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "is_coil": true
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 153870.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-3x1500x3000-aisi430-2b-nd",
+    "name": "Лист нержавеющий х/к 3х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 3.0,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 3.0,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 153870.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 16867.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-3x1500x3000-aisi410s-2b-nd",
+    "name": "Лист нержавеющий х/к 3х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 3.0,
+    "length": 3000,
+    "steel_grade": "AISI 410S (08Х13)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 3.0,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 410S",
+      "grade_gost": "08Х13",
+      "length_mm": 3000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 160830.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-3x1500x3000-aisi430-4npe-nd",
+    "name": "Лист нержавеющий х/к 3х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 3.0,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 3.0,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "4N",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000,
+      "protective_film": "PE"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 168570.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 18479.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-4x1000x2000-aisi430-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 4х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 4.0,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 4.0,
+      "width_mm": 1000,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 170260.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 11060.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-4x1250x2500-aisi409l-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 4х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 4.0,
+    "length": 2500,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 4.0,
+      "width_mm": 1250,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null,
+      "length_mm": 2500
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 162390.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-4x1250x2500-aisi430-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 4х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 4.0,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 4.0,
+      "width_mm": 1250,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 170260.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 17281.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-4x1250x2500-aisi410s-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 4х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 4.0,
+    "length": 2500,
+    "steel_grade": "AISI 410S (08Х13)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 4.0,
+      "width_mm": 1250,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 410S",
+      "grade_gost": "08Х13",
+      "length_mm": 2500
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 158350.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-4x1500x3000-aisi430-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 4х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 4.0,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 4.0,
+      "width_mm": 1500,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 170260.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-4x1500x3000-aisi410s-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 4х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 4.0,
+    "length": 3000,
+    "steel_grade": "AISI 410S (08Х13)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 4.0,
+      "width_mm": 1500,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 410S",
+      "grade_gost": "08Х13",
+      "length_mm": 3000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 158350.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-4x1500x6000-aisi410s-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 4х1500х6000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 4.0,
+    "length": 6000,
+    "steel_grade": "AISI 410S (08Х13)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 4.0,
+      "width_mm": 1500,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 410S",
+      "grade_gost": "08Х13",
+      "length_mm": 6000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 153060.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-hk-4x1500x3000-aisi410s-2b-nd",
+    "name": "Лист нержавеющий х/к 4х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 4.0,
+    "length": 3000,
+    "steel_grade": "AISI 410S (08Х13)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 4.0,
+      "width_mm": 1500,
+      "process": "холоднокатаный",
+      "surface_finish": "2B",
+      "grade_aisi": "AISI 410S",
+      "grade_gost": "08Х13",
+      "length_mm": 3000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 160830.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-5x1000x2000-aisi430-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 5х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 5.0,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 5.0,
+      "width_mm": 1000,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 163400.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 13268.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-5x1250x2500-aisi410s-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 5х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 5.0,
+    "length": 2500,
+    "steel_grade": "AISI 410S (08Х13)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 5.0,
+      "width_mm": 1250,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 410S",
+      "grade_gost": "08Х13",
+      "length_mm": 2500
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 153310.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-5x1250x2500-aisi409l-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 5х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 5.0,
+    "length": 2500,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 5.0,
+      "width_mm": 1250,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null,
+      "length_mm": 2500
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 162390.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-5x1250x2500-aisi430-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 5х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 5.0,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 5.0,
+      "width_mm": 1250,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 170260.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 21602.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-5x1500x3000-aisi430-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 5х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 5.0,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 5.0,
+      "width_mm": 1500,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 181220.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-6x1000x2000-aisi430-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 6х1000х2000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 6.0,
+    "length": 2000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 6.0,
+      "width_mm": 1000,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 175340.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 17085.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-6x1250x2500-aisi430-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 6х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 6.0,
+    "length": 2500,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 6.0,
+      "width_mm": 1250,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 2500
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 170260.0
+      },
+      {
+        "unit": "шт",
+        "base_price": 25922.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-6x1250x2500-aisi409l-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 6х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 6.0,
+    "length": 2500,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 6.0,
+      "width_mm": 1250,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null,
+      "length_mm": 2500
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 170480.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-6x1500x3000-aisi430-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 6х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 6.0,
+    "length": 3000,
+    "steel_grade": "AISI 430 (08Х17)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 6.0,
+      "width_mm": 1500,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 430",
+      "grade_gost": "08Х17",
+      "length_mm": 3000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 181580.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-6x1500x6000-aisi410s-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 6х1500х6000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 6.0,
+    "length": 6000,
+    "steel_grade": "AISI 410S (08Х13)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 6.0,
+      "width_mm": 1500,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 410S",
+      "grade_gost": "08Х13",
+      "length_mm": 6000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 154180.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-8x1250x2500-aisi409l-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 8х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 8.0,
+    "length": 2500,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 8.0,
+      "width_mm": 1250,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null,
+      "length_mm": 2500
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 166440.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-8x1500x3000-aisi410s-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 8х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 8.0,
+    "length": 3000,
+    "steel_grade": "AISI 410S (08Х13)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 8.0,
+      "width_mm": 1500,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 410S",
+      "grade_gost": "08Х13",
+      "length_mm": 3000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 154180.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-10x1500x6000-aisi410s-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 10х1500х6000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 10.0,
+    "length": 6000,
+    "steel_grade": "AISI 410S",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 10.0,
+      "width_mm": 1500,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 410S",
+      "grade_gost": null,
+      "length_mm": 6000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 154180.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-12x1250x2500-aisi409l-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 12х1250х2500",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 12.0,
+    "length": 2500,
+    "steel_grade": "AISI 409L",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 12.0,
+      "width_mm": 1250,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 409L",
+      "grade_gost": null,
+      "length_mm": 2500
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 175420.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-gk-12x1500x3000-aisi410s-no1-nd",
+    "name": "горячекатаный нержавеющий лист б/н 12х1500х3000",
+    "category_slug": "list-nerzhaveyuschiy",
+    "category_id": "ba9d2b75-6554-4348-8dde-180be7aae267",
+    "thickness": 12.0,
+    "length": 3000,
+    "steel_grade": "AISI 410S",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 12.0,
+      "width_mm": 1500,
+      "process": "горячекатаный",
+      "surface_finish": "No1",
+      "grade_aisi": "AISI 410S",
+      "grade_gost": null,
+      "length_mm": 3000
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 154180.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-pvl-3-pvl306-aisi304-nd",
+    "name": "просечно-вытяжной Лист нержавеющий 3 ПВЛ-306",
+    "category_slug": "prosechno-vytyazhnoy-list-pvl",
+    "category_id": "9ee5beac-5b9d-4ad4-8fa3-484d221683fe",
+    "thickness": 3.0,
+    "length": null,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 3.0,
+      "pvl_code": "ПВЛ-306",
+      "kind": "просечно-вытяжной",
+      "grade_aisi": "AISI 304",
+      "grade_gost": "08Х18Н10"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 360840.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-pvl-4-pvl406-aisi304-nd",
+    "name": "просечно-вытяжной Лист нержавеющий 4 ПВЛ-406",
+    "category_slug": "prosechno-vytyazhnoy-list-pvl",
+    "category_id": "9ee5beac-5b9d-4ad4-8fa3-484d221683fe",
+    "thickness": 4.0,
+    "length": null,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 4.0,
+      "pvl_code": "ПВЛ-406",
+      "kind": "просечно-вытяжной",
+      "grade_aisi": "AISI 304",
+      "grade_gost": "08Х18Н10"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 360840.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-pvl-5-pvl506-aisi304-nd",
+    "name": "просечно-вытяжной Лист нержавеющий 5 ПВЛ-506",
+    "category_slug": "prosechno-vytyazhnoy-list-pvl",
+    "category_id": "9ee5beac-5b9d-4ad4-8fa3-484d221683fe",
+    "thickness": 5.0,
+    "length": null,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 5.0,
+      "pvl_code": "ПВЛ-506",
+      "kind": "просечно-вытяжной",
+      "grade_aisi": "AISI 304",
+      "grade_gost": "08Х18Н10"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 368890.0
+      }
+    ]
+  },
+  {
+    "slug": "list-nerz-pvl-5-pvl508-aisi304-nd",
+    "name": "просечно-вытяжной Лист нержавеющий 5 ПВЛ-508",
+    "category_slug": "prosechno-vytyazhnoy-list-pvl",
+    "category_id": "9ee5beac-5b9d-4ad4-8fa3-484d221683fe",
+    "thickness": 5.0,
+    "length": null,
+    "steel_grade": "AISI 304 (08Х18Н10)",
+    "primary_unit": "т",
+    "dimensions": {
+      "thickness_mm": 5.0,
+      "pvl_code": "ПВЛ-508",
+      "kind": "просечно-вытяжной",
+      "grade_aisi": "AISI 304",
+      "grade_gost": "08Х18Н10"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 368890.0
+      }
+    ]
+  }
+]
