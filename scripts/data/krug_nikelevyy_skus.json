@@ -1,0 +1,1535 @@
+[
+  {
+    "slug": "krug-20-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 20",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 20,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 20,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 109690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-25-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 25",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 25,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 25,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 109690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-30-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 30",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 30,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 30,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 109690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-30-40hn2ma-eshp-obt-din1013-nd",
+    "name": "сталь констр никел горячекатаный круг о/т обт 30",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 30,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА-Ш",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 30,
+      "process": "горячекатаный",
+      "processing_method": "eshp",
+      "grade_note": "ЭШП — электрошлаковый переплав, premium high-purity",
+      "surface_treatment": "обточенный",
+      "tolerance_standard": "DIN 1013",
+      "grade_gost": "40ХН2МА-Ш"
+    },
+    "prices": []
+  },
+  {
+    "slug": "krug-32-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 32",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 32,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 32,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 109690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-36-12hn3a-nd",
+    "name": "сталь констр горячекатаный никел круг 36",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 36,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12ХН3А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 36,
+      "process": "горячекатаный",
+      "grade_gost": "12ХН3А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 179690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-36-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 36",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 36,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 36,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 106690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-40-12hn3a-nd",
+    "name": "сталь констр горячекатаный никел круг 40",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 40,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12ХН3А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 40,
+      "process": "горячекатаный",
+      "grade_gost": "12ХН3А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 179690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-40-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 40",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 40,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 40,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 106690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-40-40hn2ma-eshp-obt-din1013-nd",
+    "name": "сталь констр никел горячекатаный круг о/т обт 40",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 40,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА-Ш",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 40,
+      "process": "горячекатаный",
+      "processing_method": "eshp",
+      "grade_note": "ЭШП — электрошлаковый переплав, premium high-purity",
+      "surface_treatment": "обточенный",
+      "tolerance_standard": "DIN 1013",
+      "grade_gost": "40ХН2МА-Ш"
+    },
+    "prices": []
+  },
+  {
+    "slug": "krug-42-12h2n4a-nd",
+    "name": "сталь констр горячекатаный никел круг 42",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 42,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12Х2Н4А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 42,
+      "process": "горячекатаный",
+      "grade_gost": "12Х2Н4А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 159690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-45-12h2n4a-nd",
+    "name": "сталь констр горячекатаный никел круг 45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 45,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12Х2Н4А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 45,
+      "process": "горячекатаный",
+      "grade_gost": "12Х2Н4А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 159690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-45-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 45",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 45,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 45,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 106690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-50-12hn3a-nd",
+    "name": "сталь констр горячекатаный никел круг 50",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 50,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12ХН3А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 50,
+      "process": "горячекатаный",
+      "grade_gost": "12ХН3А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 179690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-50-40hn2ma-eshp-obt-din1013-nd",
+    "name": "сталь констр никел горячекатаный круг о/т обт 50",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 50,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА-Ш",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 50,
+      "process": "горячекатаный",
+      "processing_method": "eshp",
+      "grade_note": "ЭШП — электрошлаковый переплав, premium high-purity",
+      "surface_treatment": "обточенный",
+      "tolerance_standard": "DIN 1013",
+      "grade_gost": "40ХН2МА-Ш"
+    },
+    "prices": []
+  },
+  {
+    "slug": "krug-60-12hn3a-nd",
+    "name": "сталь констр горячекатаный никел круг 60",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 60,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12ХН3А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 60,
+      "process": "горячекатаный",
+      "grade_gost": "12ХН3А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 169690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-60-40hn2ma-nd",
+    "name": "сталь констр горячекатаный никел круг 60",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 60,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 60,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН2МА"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 129690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-60-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 60",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 60,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 60,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 102690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-60-40hn2ma-eshp-obt-din1013-nd",
+    "name": "сталь констр никел горячекатаный круг о/т обт 60",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 60,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА-Ш",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 60,
+      "process": "горячекатаный",
+      "processing_method": "eshp",
+      "grade_note": "ЭШП — электрошлаковый переплав, premium high-purity",
+      "surface_treatment": "обточенный",
+      "tolerance_standard": "DIN 1013",
+      "grade_gost": "40ХН2МА-Ш"
+    },
+    "prices": []
+  },
+  {
+    "slug": "krug-65-12hn3a-nd",
+    "name": "сталь констр горячекатаный никел круг 65",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 65,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12ХН3А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 65,
+      "process": "горячекатаный",
+      "grade_gost": "12ХН3А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 169690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-65-12h2n4a-nd",
+    "name": "сталь констр горячекатаный никел круг 65",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 65,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12Х2Н4А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 65,
+      "process": "горячекатаный",
+      "grade_gost": "12Х2Н4А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 159690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-65-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 65",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 65,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 65,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 99690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-70-12hn3a-nd",
+    "name": "сталь констр горячекатаный никел круг 70",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 70,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12ХН3А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 70,
+      "process": "горячекатаный",
+      "grade_gost": "12ХН3А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 169690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-70-40hn2ma-nd",
+    "name": "сталь констр горячекатаный никел круг 70",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 70,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 70,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН2МА"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 129690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-70-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 70",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 70,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 70,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 96690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-70-40hn2ma-eshp-obt-din1013-nd",
+    "name": "сталь констр никел горячекатаный круг о/т обт 70",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 70,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА-Ш",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 70,
+      "process": "горячекатаный",
+      "processing_method": "eshp",
+      "grade_note": "ЭШП — электрошлаковый переплав, premium high-purity",
+      "surface_treatment": "обточенный",
+      "tolerance_standard": "DIN 1013",
+      "grade_gost": "40ХН2МА-Ш"
+    },
+    "prices": []
+  },
+  {
+    "slug": "krug-80-12hn3a-nd",
+    "name": "сталь констр горячекатаный никел круг 80",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 80,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12ХН3А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 80,
+      "process": "горячекатаный",
+      "grade_gost": "12ХН3А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 169690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-80-40hn2ma-nd",
+    "name": "сталь констр горячекатаный никел круг 80",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 80,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 80,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН2МА"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 129690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-80-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 80",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 80,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 80,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 96690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-90-12hn3a-nd",
+    "name": "сталь констр горячекатаный никел круг 90",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 90,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12ХН3А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 90,
+      "process": "горячекатаный",
+      "grade_gost": "12ХН3А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 169690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-90-40hn2ma-nd",
+    "name": "сталь констр горячекатаный никел круг 90",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 90,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 90,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН2МА"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 129690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-90-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 90",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 90,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 90,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 96690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-90-40hn2ma-eshp-obt-din1013-nd",
+    "name": "сталь констр никел горячекатаный круг о/т обт 90",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 90,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА-Ш",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 90,
+      "process": "горячекатаный",
+      "processing_method": "eshp",
+      "grade_note": "ЭШП — электрошлаковый переплав, premium high-purity",
+      "surface_treatment": "обточенный",
+      "tolerance_standard": "DIN 1013",
+      "grade_gost": "40ХН2МА-Ш"
+    },
+    "prices": []
+  },
+  {
+    "slug": "krug-100-12hn3a-nd",
+    "name": "сталь констр горячекатаный никел круг 100",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 100,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12ХН3А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 100,
+      "process": "горячекатаный",
+      "grade_gost": "12ХН3А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 169690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-100-40hn2ma-nd",
+    "name": "сталь констр горячекатаный никел круг 100",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 100,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 100,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН2МА"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 129690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-100-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 100",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 100,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 100,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 96690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-100-40hn2ma-eshp-obt-din1013-nd",
+    "name": "сталь констр никел горячекатаный круг о/т обт 100",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 100,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА-Ш",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 100,
+      "process": "горячекатаный",
+      "processing_method": "eshp",
+      "grade_note": "ЭШП — электрошлаковый переплав, premium high-purity",
+      "surface_treatment": "обточенный",
+      "tolerance_standard": "DIN 1013",
+      "grade_gost": "40ХН2МА-Ш"
+    },
+    "prices": []
+  },
+  {
+    "slug": "krug-110-12hn3a-nd",
+    "name": "сталь констр горячекатаный никел круг 110",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 110,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12ХН3А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 110,
+      "process": "горячекатаный",
+      "grade_gost": "12ХН3А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 169690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-120-12hn3a-nd",
+    "name": "сталь констр горячекатаный никел круг 120",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 120,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12ХН3А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 120,
+      "process": "горячекатаный",
+      "grade_gost": "12ХН3А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 169690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-120-40hn2ma-nd",
+    "name": "сталь констр горячекатаный никел круг 120",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 120,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 120,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН2МА"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 129690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-120-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 120",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 120,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 120,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 99690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-130-12hn3a-nd",
+    "name": "сталь констр горячекатаный никел круг 130",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 130,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12ХН3А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 130,
+      "process": "горячекатаный",
+      "grade_gost": "12ХН3А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 169690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-130-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 130",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 130,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 130,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 99690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-150-12hn3a-nd",
+    "name": "сталь констр горячекатаный никел круг 150",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 150,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12ХН3А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 150,
+      "process": "горячекатаный",
+      "grade_gost": "12ХН3А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 169690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-150-40hn2ma-nd",
+    "name": "сталь констр горячекатаный никел круг 150",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 150,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 150,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН2МА"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 129690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-150-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 150",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 150,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 150,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 99690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-160-40hn2ma-nd",
+    "name": "сталь констр горячекатаный никел круг 160",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 160,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 160,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН2МА"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 129690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-160-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 160",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 160,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 160,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 99690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-170-12hn3a-nd",
+    "name": "сталь констр горячекатаный никел круг 170",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 170,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12ХН3А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 170,
+      "process": "горячекатаный",
+      "grade_gost": "12ХН3А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 169690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-170-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 170",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 170,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 170,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 99690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-180-12hn3a-nd",
+    "name": "сталь констр горячекатаный никел круг 180",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 180,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12ХН3А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 180,
+      "process": "горячекатаный",
+      "grade_gost": "12ХН3А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 169690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-180-40hn2ma-nd",
+    "name": "сталь констр горячекатаный никел круг 180",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 180,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 180,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН2МА"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 129690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-180-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 180",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 180,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 180,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 99690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-190-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 190",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 190,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 190,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 116690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-200-12hn3a-nd",
+    "name": "сталь констр горячекатаный никел круг 200",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 200,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12ХН3А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 200,
+      "process": "горячекатаный",
+      "grade_gost": "12ХН3А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 179690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-200-40hn2ma-nd",
+    "name": "сталь констр горячекатаный никел круг 200",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 200,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 200,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН2МА"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 129690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-200-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 200",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 200,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 200,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 116690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-210-40hn2ma-nd",
+    "name": "сталь констр горячекатаный никел круг 210",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 210,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 210,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН2МА"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 132690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-210-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 210",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 210,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 210,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 119690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-220-12hn3a-nd",
+    "name": "сталь констр горячекатаный никел круг 220",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 220,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12ХН3А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 220,
+      "process": "горячекатаный",
+      "grade_gost": "12ХН3А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 189690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-220-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 220",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 220,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 220,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 119690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-230-12hn3a-nd",
+    "name": "сталь констр горячекатаный никел круг 230",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 230,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12ХН3А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 230,
+      "process": "горячекатаный",
+      "grade_gost": "12ХН3А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 199690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-230-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 230",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 230,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 230,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 125690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-240-12hn3a-nd",
+    "name": "сталь констр горячекатаный никел круг 240",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 240,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "12ХН3А",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 240,
+      "process": "горячекатаный",
+      "grade_gost": "12ХН3А"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 199690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-240-40hn2ma-nd",
+    "name": "сталь констр горячекатаный никел круг 240",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 240,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 240,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН2МА"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 149690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-250-40hn2ma-nd",
+    "name": "сталь констр горячекатаный никел круг 250",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 250,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 250,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН2МА"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 149690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-260-40hn2ma-nd",
+    "name": "сталь констр горячекатаный никел круг 260",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 260,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 260,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН2МА"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 159690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-260-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 260",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 260,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 260,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 139690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-280-40hn2ma-nd",
+    "name": "сталь констр горячекатаный никел круг 280",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 280,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН2МА",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 280,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН2МА"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 159690.0
+      }
+    ]
+  },
+  {
+    "slug": "krug-280-40hn-nd",
+    "name": "сталь констр горячекатаный никел круг 280",
+    "category_slug": "krug-konstruktsionnyy",
+    "category_id": "1e06974a-8c7c-41a2-9b64-56a276dcc930",
+    "diameter": 280,
+    "thickness": null,
+    "length": null,
+    "steel_grade": "40ХН",
+    "primary_unit": "т",
+    "dimensions": {
+      "diameter_mm": 280,
+      "process": "горячекатаный",
+      "grade_gost": "40ХН"
+    },
+    "prices": [
+      {
+        "unit": "т",
+        "base_price": 144690.0
+      }
+    ]
+  }
+]
