@@ -7,9 +7,11 @@ import ThemeProvider from "@/components/ThemeProvider";
 import AdminBar from "@/components/admin/AdminBar";
 import CookieBanner from "@/components/CookieBanner";
 import { CartProvider } from "@/contexts/CartContext";
+import { SITE_URL } from "@/lib/site";
+import YandexMetrika from "@/components/analytics/YandexMetrika";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://metallportal.vercel.app"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Харланметалл — Металлопрокат и конструкции",
     template: "%s | Харланметалл",
@@ -33,6 +35,10 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  verification: {
+    yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -47,6 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <AdminBar />
           </CartProvider>
         </ThemeProvider>
+        <YandexMetrika />
         <Script
           src="https://metallportal-crm2.vercel.app/track.js?tid=a1000000-0000-0000-0000-000000000001"
           strategy="afterInteractive"
