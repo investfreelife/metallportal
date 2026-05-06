@@ -136,12 +136,18 @@ async function voxApi(
 // 2. Do NOT call `e.call.answer()` — `VoxEngine.easyProcess` answers
 //    the inbound leg itself when outbound connects. Pre-answering puts
 //    the call в ANSWERED state and breaks the forward.
-function buildScenarioScript(forwardTo: string): string {
+// 3. CallerID для outbound leg должен быть СОБСТВЕННЫМ Voximplant
+//    номером, не `e.callerid` (т.е. external caller's CLI). Voximplant
+//    blocks CLI spoofing с code 403 Forbidden ("Sent event ... Call.Failed
+//    ; code = 403 ; reason = Forbidden"). Solution: pass own rented number
+//    как CallerID — мобильный увидит «Звонок с +7 (499) 325-39-69», что
+//    логично для forward'а с сайтового номера.
+function buildScenarioScript(forwardTo: string, ownCli: string): string {
   return `VoxEngine.addEventListener(AppEvents.CallAlerting, function(e) {
   Logger.write('Incoming call from ' + e.callerid + ' to ' + e.destination);
-  var newCall = VoxEngine.callPSTN('${forwardTo}', e.callerid);
+  var newCall = VoxEngine.callPSTN('${forwardTo}', '${ownCli}');
   VoxEngine.easyProcess(e.call, newCall, function() {
-    Logger.write('Call forwarded successfully');
+    Logger.write('Call forwarded successfully (origCLI=' + e.callerid + ')');
   });
 });`
 }
@@ -237,7 +243,10 @@ async function main() {
   }
 
   const creds = loadCreds()
-  const script = buildScenarioScript(forwardTo)
+  // Use Voximplant phone (no `+` prefix in body, как Voximplant хранит) as
+  // outbound CallerID — passing external `e.callerid` triggers code 403
+  // Forbidden (CLI spoofing).
+  const script = buildScenarioScript(forwardTo, PHONE_NUMBER)
 
   console.log('=== Voximplant inbound forwarding setup ===')
   console.log(`Phone:       +${PHONE_NUMBER}`)
