@@ -142,7 +142,17 @@ export function sumCounts(catId: string, _allCats: any[], counts: Record<string,
   return counts[catId] || 0;
 }
 
-export async function getFullCategoryTree(): Promise<any[]> {
+/**
+ * Полный tree категорий, опционально отфильтрованный по section.
+ *
+ * Sections (Иван #026): root-level categories помечены `display_section`
+ * (`metallоprokat` или `constructions`). Если `section` передан — root
+ * filter'ятся: остаются только roots с matching display_section, потом
+ * рекурсивно строится их subtree.
+ *
+ * `section=undefined` — backward-compat (full tree, как было до n006).
+ */
+export async function getFullCategoryTree(section?: string): Promise<any[]> {
   const [{ data: allCategories, error }, counts] = await Promise.all([
     supabase.from("categories").select("*").eq("is_active", true).order("sort_order"),
     getProductCounts(),
@@ -155,9 +165,26 @@ export async function getFullCategoryTree(): Promise<any[]> {
 
   const cats = allCategories ?? [];
 
+  // Set roots по section. Если section задан — только matching roots,
+  // их descendants всегда in (children inherit parent's section visually).
+  const allowedRootIds = section
+    ? new Set(
+        cats
+          .filter((c: any) => !c.parent_id && c.display_section === section)
+          .map((c: any) => c.id),
+      )
+    : null;
+
   const buildLevel = (parentId: string | null): any[] =>
     cats
-      .filter((c: any) => (parentId ? c.parent_id === parentId : !c.parent_id))
+      .filter((c: any) => {
+        if (parentId) return c.parent_id === parentId;
+        // Root level — apply section filter if requested
+        if (!c.parent_id) {
+          return allowedRootIds === null || allowedRootIds.has(c.id);
+        }
+        return false;
+      })
       .map((c: any) => {
         const children = buildLevel(c.id);
         const totalProducts = sumCounts(c.id, cats, counts);

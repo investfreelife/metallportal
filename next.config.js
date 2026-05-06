@@ -54,6 +54,20 @@ const nextConfig = {
     ];
   },
 
+  // n006: /constructions/{anything} рендерится через existing
+  // /catalog/gotovye-konstruktsii/{anything} routing — duplicate
+  // [category]/[subcategory] файлов не пишем. Browser address bar
+  // остаётся /constructions/* (clean URL, sergey UX), внутри
+  // Next просто redirects к catalog routes для actual rendering.
+  async rewrites() {
+    return [
+      {
+        source: "/constructions/:path+",
+        destination: "/catalog/gotovye-konstruktsii/:path+",
+      },
+    ];
+  },
+
   // Permanent (308) redirects for legacy catalog URLs that used to be linked
   // from Header/Footer. After fix/v1-followups the navigation no longer
   // points here, but external links / Google cache still hit these paths.
