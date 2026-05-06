@@ -6,7 +6,8 @@ export const runtime = 'nodejs'
 
 const SELECT_COLUMNS =
   'id, name, slug, gost, steel_grade, unit, description, image_url, category_id, ' +
-  'category:categories(name, slug), price_items(id, base_price, discount_price)'
+  // c028 fix: pin direct FK products.category_id, не junction product_categories
+  'category:categories!category_id(name, slug), price_items(id, base_price, discount_price)'
 
 /**
  * GET /api/admin/products?search=&category_id=&limit=&offset=

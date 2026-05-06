@@ -131,7 +131,8 @@ export async function GET(req: NextRequest) {
     .select(
       'id, slug, name, category_id, image_url, image_urls, unit, steel_grade, thickness, diameter, length, coating, weight_per_meter, weight_per_unit, ' +
         'price_items(unit, base_price, discount_price), ' +
-        'categories!inner(slug)',
+        // c028 fix: pin direct FK products.category_id, не junction product_categories
+        'categories!category_id!inner(slug)',
       { count: 'exact' },
     )
     .eq('is_active', true)
