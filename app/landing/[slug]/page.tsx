@@ -11,6 +11,7 @@ import LandingCases from "@/components/landings/LandingCases";
 import LandingCTABlock from "@/components/landings/LandingCTABlock";
 import LandingFAQ from "@/components/landings/LandingFAQ";
 import LandingSchemas from "@/components/landings/LandingSchemas";
+import RelatedCategoriesSection from "@/components/landings/RelatedCategoriesSection";
 
 interface Props {
   params: { slug: string };
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildLandingMetadata(landing);
 }
 
-export default function LandingPage({ params }: Props) {
+export default async function LandingPage({ params }: Props) {
   const landing = getLanding(params.slug);
   if (!landing) return notFound();
 
@@ -54,13 +55,17 @@ export default function LandingPage({ params }: Props) {
       )}
       <LandingProcess steps={landing.process} />
       <LandingCases items={landing.cases} />
+      <LandingFAQ items={landing.faq} />
+      {/* n005: «Из чего делаем» — bridge к каталогу для DIY-сегмента
+          (показываем материалы которые landing использует, ссылки в catalog).
+          Если linked categories нет в DB — section возвращает null. */}
+      <RelatedCategoriesSection landingSlug={landing.slug} />
       <LandingCTABlock
         slug={landing.slug}
         title={landing.cta.title}
         subtitle={landing.cta.subtitle}
         formFields={landing.cta.formFields}
       />
-      <LandingFAQ items={landing.faq} />
       <LandingSchemas landing={landing} />
     </main>
   );
