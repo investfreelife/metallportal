@@ -5,6 +5,7 @@ import Image from "next/image";
 import { CheckSquare, Square, ShoppingCart, Check } from "lucide-react";
 import PhotoEditable from "@/components/admin/PhotoEditable";
 import { useCart } from "@/contexts/CartContext";
+import { formatDimensionsCompact } from "@/lib/formatDimensions";
 
 interface ProductCardProps {
   product: any;
@@ -90,7 +91,7 @@ export default function CatalogProductCard({ product, productBasePath, isSelecte
       </h3>
 
       <p className="text-xs text-muted-foreground mb-3">
-        {product.dimensions || product.gost || ""}
+        {formatDimensionsCompact(product.dimensions) || product.gost || ""}
       </p>
 
       <div className="mt-auto">

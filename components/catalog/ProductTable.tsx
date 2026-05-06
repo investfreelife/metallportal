@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { ShoppingCart, Check } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
+import { formatDimensionsCompact } from "@/lib/formatDimensions";
 
 const MC_SUPPLIER_ID = "a2000000-0000-0000-0000-000000000001";
 
@@ -202,7 +203,9 @@ function TableRow({ product, productBasePath }: { product: any; productBasePath:
     setTimeout(() => setAdded(false), 1800);
   };
 
-  const diameter = product.diameter ? String(product.diameter).replace(".", ",") : (product.dimensions || extractSize(product.name) || "—");
+  const diameter = product.diameter
+    ? String(product.diameter).replace(".", ",")
+    : (formatDimensionsCompact(product.dimensions) || extractSize(product.name) || "—");
 
   return (
     <tr className="border-b border-border hover:bg-background/50 transition-colors">

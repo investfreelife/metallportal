@@ -5,12 +5,14 @@ import PriceBlock from "@/components/catalog/PriceBlock";
 import NavesProductDetail from "@/components/catalog/NavesProductDetail";
 import { CheckCircle } from "lucide-react";
 import CategoryCallbackCTA from "@/components/catalog/CategoryCallbackCTA";
+import { formatDimensions, formatDimensionsCompact } from "@/lib/formatDimensions";
 
 function buildSpecs(product: any): Record<string, string | null> {
+  const dims = formatDimensions(product.dimensions);
   return {
     "Марка стали": product.steel_grade || null,
     "ГОСТ": product.gost || null,
-    "Размер": product.dimensions || null,
+    "Размер": dims || null,
     "Длина": product.length ? `${product.length} м` : null,
     "Диаметр": product.diameter ? `${product.diameter} мм` : null,
     "Толщина": product.thickness ? `${product.thickness} мм` : null,
@@ -110,9 +112,9 @@ export default function ProductDetailView({ product, priceItems, related, basePa
                 {product.steel_grade}
               </span>
             )}
-            {product.dimensions && (
+            {formatDimensionsCompact(product.dimensions) && (
               <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
-                {product.dimensions}
+                {formatDimensionsCompact(product.dimensions)}
               </span>
             )}
           </div>
