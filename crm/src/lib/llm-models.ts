@@ -21,12 +21,19 @@ export const LLM_MODEL_GENERAL =
 export const EMBEDDING_MODEL =
   process.env.EMBEDDING_MODEL ?? 'text-embedding-3-small'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  ...(process.env.OPENAI_API_BASE
-    ? { baseURL: process.env.OPENAI_API_BASE }
-    : {}),
-})
+// Lazy-init — see lib/llm-models.ts comment.
+let _openai: OpenAI | null = null
+function getOpenAI(): OpenAI {
+  if (!_openai) {
+    _openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+      ...(process.env.OPENAI_API_BASE
+        ? { baseURL: process.env.OPENAI_API_BASE }
+        : {}),
+    })
+  }
+  return _openai
+}
 
 /**
  * Single-attempt LLM call. Fail-fast — caller MUST catch и serve graceful 503.
@@ -41,7 +48,7 @@ export async function callLLM(
     timeoutMs?: number
   },
 ): Promise<ChatCompletion> {
-  return openai.chat.completions.create(
+  return getOpenAI().chat.completions.create(
     {
       model: opts?.model ?? LLM_MODEL_GENERAL,
       messages,
