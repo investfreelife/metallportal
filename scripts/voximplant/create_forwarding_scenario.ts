@@ -124,36 +124,37 @@ async function voxApi(
 }
 
 // ── Scenario template ────────────────────────────────────────────────────
+// Reference: https://voximplant.com/docs/guides/calls/callforwarding
+// IMPORTANT: do NOT call e.call.answer() — VoxEngine.easyProcess answers
+// the inbound leg itself when the outbound leg connects. Pre-answering
+// puts the inbound call in ANSWERED state and breaks easyProcess.
 function buildScenarioScript(forwardTo: string): string {
-  return `
-require(Modules.PhoneNumber);
+  return `require(Modules.PhoneNumber);
 
-VoxEngine.addEventListener(AppEvents.CallAlerting, (e) => {
+VoxEngine.addEventListener(AppEvents.CallAlerting, function(e) {
   Logger.write('Incoming call from ' + e.callerid + ' to ' + e.destination);
-
-  // Answer inbound; PSTN side hears Voximplant ring-back.
-  e.call.answer();
-
-  // Outbound leg к Sergey's mobile, preserving original caller-ID.
-  const forwardCall = VoxEngine.callPSTN('${forwardTo}', e.callerid);
-
-  VoxEngine.easyProcess(e.call, forwardCall, () => {
+  var newCall = VoxEngine.callPSTN('${forwardTo}', e.callerid);
+  VoxEngine.easyProcess(e.call, newCall, function() {
     Logger.write('Call forwarded successfully');
   });
-});
-`.trim()
+});`
 }
 
 // ── Idempotent ensure-helpers ────────────────────────────────────────────
 
 async function ensureApplication(creds: Creds): Promise<number> {
-  const list = await voxApi(creds, 'GetApplications', {
-    application_name: APP_NAME,
-  })
+  // Voximplant stores app names как FQDN: `metallportal-inbound.<acc>.voximplant.com`.
+  // Listing with `application_name=<short>` filter returns nothing → match on
+  // prefix через full enumeration.
+  const list = await voxApi(creds, 'GetApplications', { count: 200 })
   const arr = (list.result as Array<{ application_name?: string; application_id?: number }>) ?? []
-  const found = arr.find((a) => a.application_name === APP_NAME)
+  const found = arr.find(
+    (a) =>
+      a.application_name === APP_NAME ||
+      (a.application_name ?? '').startsWith(APP_NAME + '.'),
+  )
   if (found && found.application_id) {
-    console.log(`✓ Application reuse (id=${found.application_id})`)
+    console.log(`✓ Application reuse (id=${found.application_id}, name=${found.application_name})`)
     return found.application_id
   }
   const added = await voxApi(creds, 'AddApplication', {
