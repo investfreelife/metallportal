@@ -13,15 +13,21 @@
 
 import type { LandingConfig } from "./types";
 import { zaboryVarnyye } from "./zabory-svarnye";
+import { garazhSendvich } from "./garazh-iz-sendvich-paneley";
+import { zdaniyaSendvich } from "./zdaniya-iz-sendvich-paneley";
+import { konstruktsiiIzMetalla } from "./konstruktsii-iz-metalla";
+import { protivopodkopnyyeSetki } from "./protivopodkopnye-setki";
+import { izdeliyaIzMetalla } from "./izdeliya-iz-metalla";
 
 export const LANDINGS: Record<string, LandingConfig> = {
+  // M003 sample (m003 #72)
   "zabory-svarnye": zaboryVarnyye,
-  // m004 batch добавит:
-  //   "garazh-iz-sendvich-paneley"
-  //   "zdaniya-iz-sendvich-paneley"
-  //   "konstruktsii-iz-metalla"
-  //   "protivopodkopnye-setki"
-  //   "izdeliya-iz-metalla"
+  // N003 batch (5 landings — battle mode 7-day launch)
+  "garazh-iz-sendvich-paneley": garazhSendvich,
+  "zdaniya-iz-sendvich-paneley": zdaniyaSendvich,
+  "konstruktsii-iz-metalla": konstruktsiiIzMetalla,
+  "protivopodkopnye-setki": protivopodkopnyyeSetki,
+  "izdeliya-iz-metalla": izdeliyaIzMetalla,
 };
 
 export function getLanding(slug: string): LandingConfig | null {
