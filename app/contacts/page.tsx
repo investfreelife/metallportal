@@ -25,8 +25,8 @@ export default function ContactsPage() {
             </div>
             <div>
               <div className="font-semibold text-foreground mb-1">Телефон</div>
-              <a href="tel:+74957001234" className="text-xl font-bold text-foreground hover:text-gold transition-colors">
-                +7 (495) 700-12-34
+              <a href="tel:+74993253969" className="text-xl font-bold text-foreground hover:text-gold transition-colors">
+                +7 (499) 325-39-69
               </a>
               <p className="text-sm text-muted-foreground mt-1">Пн–Пт 9:00–18:00 МСК</p>
             </div>

@@ -37,6 +37,16 @@ const organizationSchema = {
     addressLocality: "Москва",
     addressCountry: "RU",
   },
+  telephone: "+7-499-325-39-69",
+  contactPoint: [
+    {
+      "@type": "ContactPoint",
+      telephone: "+7-499-325-39-69",
+      contactType: "sales",
+      areaServed: "RU",
+      availableLanguage: ["Russian"],
+    },
+  ],
   areaServed: "RU",
   hasOfferCatalog: {
     "@type": "OfferCatalog",
