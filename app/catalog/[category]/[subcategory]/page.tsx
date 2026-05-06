@@ -15,7 +15,11 @@ import ProductDetailView from "@/components/catalog/ProductDetailView";
 import Breadcrumbs from "@/components/seo/Breadcrumbs";
 import RelatedLandingsSection from "@/components/landings/RelatedLandingsSection";
 
-export const revalidate = 3600;
+// c029b: lowered from 3600 → 60 после navesy image rollback (#c029).
+// 1-hour ISR кешировал stale construction-tower.jpg для 137 navesy products
+// несмотря на DB image_url=NULL. 60s TTL даёт быстрый recovery после
+// migration без полной потери ISR benefit. Revisit if perf issue.
+export const revalidate = 60;
 
 interface Props {
   params: { category: string; subcategory: string };

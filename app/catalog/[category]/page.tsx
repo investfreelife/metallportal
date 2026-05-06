@@ -10,7 +10,9 @@ import RelatedLandingsSection from "@/components/landings/RelatedLandingsSection
 import { CheckCircle } from "lucide-react";
 import CategoryCallbackCTA from "@/components/catalog/CategoryCallbackCTA";
 
-export const revalidate = 3600;
+// c029b: lowered 3600 → 60 после navesy ISR stuck-cache incident.
+// 60s baseline TTL for catalog category pages (matches [subcategory]).
+export const revalidate = 60;
 
 interface Props {
   params: { category: string };
