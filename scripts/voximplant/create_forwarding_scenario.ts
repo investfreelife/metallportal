@@ -125,13 +125,19 @@ async function voxApi(
 
 // ── Scenario template ────────────────────────────────────────────────────
 // Reference: https://voximplant.com/docs/guides/calls/callforwarding
-// IMPORTANT: do NOT call e.call.answer() — VoxEngine.easyProcess answers
-// the inbound leg itself when the outbound leg connects. Pre-answering
-// puts the inbound call in ANSWERED state and breaks easyProcess.
+//
+// IMPORTANT (lessons hard-earned 2026-05-06):
+// 1. NO `require(Modules.PhoneNumber)` — runtime errors with
+//    `JS error: empty module argument!` at scenario load time, breaks
+//    scenario before AppEvents.CallAlerting fires (Voximplant log:
+//    `inbound-forward-to-sergey:1:8`). We don't use any PhoneNumber
+//    utility — `VoxEngine.callPSTN` + `easyProcess` live в core
+//    VoxEngine, no require needed.
+// 2. Do NOT call `e.call.answer()` — `VoxEngine.easyProcess` answers
+//    the inbound leg itself when outbound connects. Pre-answering puts
+//    the call в ANSWERED state and breaks the forward.
 function buildScenarioScript(forwardTo: string): string {
-  return `require(Modules.PhoneNumber);
-
-VoxEngine.addEventListener(AppEvents.CallAlerting, function(e) {
+  return `VoxEngine.addEventListener(AppEvents.CallAlerting, function(e) {
   Logger.write('Incoming call from ' + e.callerid + ' to ' + e.destination);
   var newCall = VoxEngine.callPSTN('${forwardTo}', e.callerid);
   VoxEngine.easyProcess(e.call, newCall, function() {
