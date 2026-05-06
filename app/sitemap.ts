@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { supabase } from "@/lib/supabase";
 import { SITE_URL } from "@/lib/site";
+import { LANDINGS } from "@/lib/landings";
 
 const BASE_URL = SITE_URL;
 
@@ -113,5 +114,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
   });
 
-  return [...staticUrls, ...categoryUrls, ...productUrls];
+  // BATTLE MODE landings — выше priority чем categories (это main entry
+  // pages для своих keywords). Растёт как Антон выкатывает batch'ами в m004+.
+  const landingUrls: MetadataRoute.Sitemap = Object.keys(LANDINGS).map((slug) => ({
+    url: `${BASE_URL}/landing/${slug}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.85,
+  }));
+
+  return [...staticUrls, ...categoryUrls, ...productUrls, ...landingUrls];
 }
