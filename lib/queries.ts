@@ -59,7 +59,7 @@ export async function getCategoryWithChildren(slug: string) {
       `
       id, name, slug, image_url, unit, dimensions, gost, steel_grade,
       diameter, thickness, coating, material, length, length_options,
-      category:categories(id, name, slug),
+      category:categories!category_id(id, name, slug),
       price_items(base_price, discount_price, in_stock, unit,
         supplier:suppliers!left(id, company_name, region, city))
     `
@@ -85,7 +85,7 @@ export async function getProductBySlug(slug: string): Promise<any | null> {
     .select(
       `
       *,
-      category:categories(id, name, slug, parent_id,
+      category:categories!category_id(id, name, slug, parent_id,
         parent:categories(id, name, slug)
       ),
       supplier:suppliers!left(id, company_name, region, city, rating)

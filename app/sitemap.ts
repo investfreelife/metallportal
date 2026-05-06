@@ -89,7 +89,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .from("products")
       .select(`
         slug,
-        category:categories!inner(
+        category:categories!category_id!inner(
           slug,
           parent_id,
           parent:categories(slug)
