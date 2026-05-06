@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { LayoutDashboard, Home, Tag, Menu, Package, Settings, LogOut, Users, Image } from "lucide-react";
+import { LayoutDashboard, Home, Tag, Menu, Package, Settings, LogOut, Users, Image, Plug } from "lucide-react";
 import { createBrowserClient } from "@supabase/ssr";
 
 const supabase = createBrowserClient(
@@ -24,6 +24,7 @@ const NAV_ADMIN = [
   { href: "/admin/menu", icon: Menu, label: "Меню" },
   { href: "/admin/products", icon: Package, label: "Товары" },
   { href: "/admin/users", icon: Users, label: "Пользователи" },
+  { href: "/admin/integrations", icon: Plug, label: "Интеграции" },
   { href: "/admin/settings", icon: Settings, label: "Настройки" },
 ];
 
