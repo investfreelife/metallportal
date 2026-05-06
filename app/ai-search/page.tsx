@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SmartSearch } from "@/components/SmartSearch";
 import { Sparkles, Zap, Clock, CheckCircle2 } from "lucide-react";
+import Breadcrumbs from "@/components/seo/Breadcrumbs";
 
 export const metadata: Metadata = {
   title: "Поиск с ИИ — Харланметалл",
@@ -27,6 +28,9 @@ const EXAMPLES = [
 export default function AISearchPage() {
   return (
     <main className="min-h-screen bg-background">
+      <div className="container-main pt-4">
+        <Breadcrumbs items={[{ name: "Поиск с ИИ" }]} />
+      </div>
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 pt-14 pb-10">
         {/* Background glow */}

@@ -7,6 +7,7 @@ import {
   Scissors, ArrowRight, Phone, Truck, Shield, Zap,
   CheckCircle2, Scale, ChevronRight,
 } from "lucide-react";
+import Breadcrumbs from "@/components/seo/Breadcrumbs";
 
 const WeightCalc    = dynamic(() => import("@/components/tools/WeightCalc"),    { ssr: false });
 const FoundationCalc = dynamic(() => import("@/components/tools/FoundationCalc"), { ssr: false });
@@ -74,6 +75,9 @@ export default function ToolsPage() {
 
   return (
     <div className="min-h-screen">
+      <div className="container-main pt-4">
+        <Breadcrumbs items={[{ name: "Калькуляторы металлопроката" }]} />
+      </div>
       {/* Hero */}
       <section className="bg-gradient-to-br from-card via-background to-muted border-b border-border py-14 md:py-20">
         <div className="container-main text-center space-y-5">

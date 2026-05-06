@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getProductBySlug, getProductPriceItems, getRelatedProducts } from "@/lib/queries";
+import { getCategoryBySlug, getProductBySlug, getProductPriceItems, getRelatedProducts } from "@/lib/queries";
 import ProductDetailView from "@/components/catalog/ProductDetailView";
+import Breadcrumbs from "@/components/seo/Breadcrumbs";
 
 export const revalidate = 3600;
 
@@ -23,17 +24,31 @@ export default async function ProductAtDepth4Page({ params }: Props) {
   const product = await getProductBySlug(params.product);
   if (!product) return notFound();
 
-  const [priceItems, related] = await Promise.all([
+  const [priceItems, related, l1, l2, l3] = await Promise.all([
     getProductPriceItems(product.id),
     getRelatedProducts(product.category_id, product.id, 6),
+    getCategoryBySlug(params.category),
+    getCategoryBySlug(params.subcategory),
+    getCategoryBySlug(params.slug),
   ]);
 
   return (
-    <ProductDetailView
-      product={product}
-      priceItems={priceItems}
-      related={related}
-      basePath={`/catalog/${params.category}/${params.subcategory}/${params.slug}`}
-    />
+    <>
+      <Breadcrumbs
+        items={[
+          { name: "Каталог", href: "/catalog" },
+          { name: l1?.name || params.category, href: `/catalog/${params.category}` },
+          { name: l2?.name || params.subcategory, href: `/catalog/${params.category}/${params.subcategory}` },
+          { name: l3?.name || params.slug, href: `/catalog/${params.category}/${params.subcategory}/${params.slug}` },
+          { name: product.name },
+        ]}
+      />
+      <ProductDetailView
+        product={product}
+        priceItems={priceItems}
+        related={related}
+        basePath={`/catalog/${params.category}/${params.subcategory}/${params.slug}`}
+      />
+    </>
   );
 }

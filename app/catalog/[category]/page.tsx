@@ -5,6 +5,7 @@ import { getCategoryBySlug, getSubcategories, getCategoryWithChildren, getProduc
 import { supabase } from "@/lib/supabase";
 import CatalogView from "@/components/catalog/CatalogView";
 import CatalogCategoryCard from "@/components/catalog/CatalogCategoryCard";
+import Breadcrumbs from "@/components/seo/Breadcrumbs";
 import { CheckCircle } from "lucide-react";
 import CategoryCallbackCTA from "@/components/catalog/CategoryCallbackCTA";
 
@@ -69,13 +70,12 @@ export default async function CategoryPage({ params }: Props) {
 
     return (
       <div>
-        <nav className="text-sm text-muted-foreground mb-4">
-          <Link href="/" className="hover:text-gold transition-colors">Главная</Link>
-          <span className="mx-2">/</span>
-          <Link href="/catalog" className="hover:text-gold transition-colors">Каталог</Link>
-          <span className="mx-2">/</span>
-          <span className="text-foreground">{category.name}</span>
-        </nav>
+        <Breadcrumbs
+          items={[
+            { name: "Каталог", href: "/catalog" },
+            { name: category.name },
+          ]}
+        />
 
         <h1 className="text-3xl font-bold text-foreground mb-2">{category.name}</h1>
         {category.description && (
@@ -457,13 +457,21 @@ export default async function CategoryPage({ params }: Props) {
   ]);
 
   return (
-    <CatalogView
-      category={result.category}
-      subcategories={result.subcategories}
-      products={result.products}
-      categorySlug={params.category}
-      productBasePath={`/catalog/${params.category}`}
-      defaultView={CARDS_DEFAULT.has(params.category) ? "cards" : "table"}
-    />
+    <>
+      <Breadcrumbs
+        items={[
+          { name: "Каталог", href: "/catalog" },
+          { name: result.category.name },
+        ]}
+      />
+      <CatalogView
+        category={result.category}
+        subcategories={result.subcategories}
+        products={result.products}
+        categorySlug={params.category}
+        productBasePath={`/catalog/${params.category}`}
+        defaultView={CARDS_DEFAULT.has(params.category) ? "cards" : "table"}
+      />
+    </>
   );
 }

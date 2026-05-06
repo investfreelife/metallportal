@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { CheckCircle } from 'lucide-react'
 import CTASection from '@/components/home/CTASection'
+import Breadcrumbs from '@/components/seo/Breadcrumbs'
 
 export const metadata: Metadata = {
   title: 'О компании — Harlan Steel | Металлопрокат',
@@ -12,6 +13,7 @@ export default function AboutPage() {
   return (
     <>
       <div className="container-main py-10">
+        <Breadcrumbs items={[{ name: 'О компании' }]} />
         <h1 className="text-3xl font-bold text-foreground mb-2">О компании</h1>
         <p className="text-muted-foreground mb-10">Harlan Steel — маркетплейс металлопроката России</p>
 
