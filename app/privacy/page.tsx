@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const COMPANY = 'ООО «Харланметалл»'
 const EMAIL = 'info@harlansteel.ru'
-const PHONE = '+7 (495) 700-12-34'
+const PHONE = '+7 (499) 325-39-69'
 const SITE = 'harlansteel.ru'
 const DATE = '27 апреля 2026 г.'
 
@@ -182,7 +182,7 @@ export default function PrivacyPage() {
             Для реализации прав направьте запрос на email{' '}
             <a href={`mailto:${EMAIL}`} className="text-gold hover:underline">{EMAIL}</a>{' '}
             или по телефону{' '}
-            <a href="tel:+74957001234" className="text-gold hover:underline">{PHONE}</a>.
+            <a href="tel:+74993253969" className="text-gold hover:underline">{PHONE}</a>.
             Срок ответа — 30 дней.
           </p>
         </section>
@@ -214,7 +214,7 @@ export default function PrivacyPage() {
             </p>
             <p>
               <strong>Телефон:</strong>{' '}
-              <a href="tel:+74957001234" className="text-gold hover:underline">{PHONE}</a>
+              <a href="tel:+74993253969" className="text-gold hover:underline">{PHONE}</a>
             </p>
             <p className="text-muted-foreground text-xs mt-3">
               * Поля [ИНН] и [ОГРН] необходимо заполнить перед публикацией.

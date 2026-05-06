@@ -10,11 +10,11 @@
  * с поддержкой админки. Сейчас фиксированные строки достаточно.
  */
 
-/** Отображаемый формат: "+7 (495) 700-12-34" */
-export const CONTACT_PHONE_DISPLAY = "+7 (495) 700-12-34";
+/** Отображаемый формат: "+7 (499) 325-39-69" */
+export const CONTACT_PHONE_DISPLAY = "+7 (499) 325-39-69";
 
-/** tel:-формат без пробелов и скобок: "+74957001234" */
-export const CONTACT_PHONE_TEL = "+74957001234";
+/** tel:-формат без пробелов и скобок: "+74993253969" */
+export const CONTACT_PHONE_TEL = "+74993253969";
 
 /** Email клиентского отдела */
 export const CONTACT_EMAIL = "info@harlansteel.ru";

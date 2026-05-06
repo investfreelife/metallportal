@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const COMPANY = 'ООО «Харланметалл»'
 const EMAIL = 'info@harlansteel.ru'
-const PHONE = '+7 (495) 700-12-34'
+const PHONE = '+7 (499) 325-39-69'
 const SITE = 'harlansteel.ru'
 const DATE = '27 апреля 2026 г.'
 
@@ -184,7 +184,7 @@ export default function OfertaPage() {
             </p>
             <p>
               <strong>Телефон:</strong>{' '}
-              <a href="tel:+74957001234" className="text-gold hover:underline">{PHONE}</a>
+              <a href="tel:+74993253969" className="text-gold hover:underline">{PHONE}</a>
             </p>
             <p className="text-muted-foreground text-xs mt-3">
               * Поля в скобках [заполнить] необходимо указать перед публикацией.
