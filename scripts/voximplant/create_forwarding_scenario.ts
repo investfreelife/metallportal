@@ -83,7 +83,7 @@ function signAuthHeader(creds: Creds): string {
   const token = jwt.sign(
     { iss: creds.account_id, iat: now, exp: now + 60 },
     creds.private_key,
-    { algorithm: 'RS256', header: { kid: creds.key_id } },
+    { algorithm: 'RS256', header: { alg: 'RS256', kid: creds.key_id } },
   )
   return `Bearer ${token}`
 }
