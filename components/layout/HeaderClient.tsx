@@ -300,6 +300,40 @@ export default function HeaderClient({ navItems }: HeaderClientProps) {
             🧮 Калькуляторы
           </Link>
 
+          {/* Готовые решения — landings dropdown (n005) */}
+          <div className="relative group">
+            <button
+              type="button"
+              className="flex items-center gap-1.5 text-xs font-bold text-foreground bg-gradient-to-r from-amber-500/15 to-gold/20 border border-gold/40 hover:border-gold px-3 py-1.5 rounded-full transition-all"
+            >
+              🏗 Готовые решения
+              <ChevronDown size={12} className="opacity-70 group-hover:rotate-180 transition-transform" />
+            </button>
+            <div className="absolute top-full left-0 mt-2 w-72 bg-background border border-border rounded-2xl shadow-2xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <div className="absolute -top-2 left-6 w-4 h-4 bg-background border-l border-t border-border rotate-45" />
+              <ul className="relative py-2">
+                {[
+                  { slug: "zabory-svarnye", icon: "🔨", label: "Заборы сварные" },
+                  { slug: "garazh-iz-sendvich-paneley", icon: "🚗", label: "Гаражи под ключ" },
+                  { slug: "zdaniya-iz-sendvich-paneley", icon: "🏢", label: "Здания под ключ" },
+                  { slug: "konstruktsii-iz-metalla", icon: "🏗", label: "Металлоконструкции" },
+                  { slug: "protivopodkopnye-setki", icon: "🛡", label: "Противоподкопные сетки" },
+                  { slug: "izdeliya-iz-metalla", icon: "⚙", label: "Изделия из металла" },
+                ].map((item) => (
+                  <li key={item.slug}>
+                    <Link
+                      href={`/landing/${item.slug}`}
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-foreground hover:bg-gold/10 hover:text-gold transition-colors"
+                    >
+                      <span className="text-base w-5 text-center">{item.icon}</span>
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
           {/* AI Search button with tooltip */}
           <div className="relative group">
             <Link
@@ -362,6 +396,34 @@ export default function HeaderClient({ navItems }: HeaderClientProps) {
             >
               🧮 Калькуляторы металлопроката
             </Link>
+
+            {/* Готовые решения — landings group (n005) */}
+            <div className="pb-2 mt-2">
+              <p className="text-xs font-bold text-foreground/60 uppercase tracking-wider px-1 mb-2">
+                🏗 Готовые решения
+              </p>
+              <div className="grid grid-cols-2 gap-1">
+                {[
+                  { slug: "zabory-svarnye", icon: "🔨", label: "Заборы сварные" },
+                  { slug: "garazh-iz-sendvich-paneley", icon: "🚗", label: "Гаражи под ключ" },
+                  { slug: "zdaniya-iz-sendvich-paneley", icon: "🏢", label: "Здания под ключ" },
+                  { slug: "konstruktsii-iz-metalla", icon: "🏗", label: "Металлоконструкции" },
+                  { slug: "protivopodkopnye-setki", icon: "🛡", label: "Сетки противоподкопные" },
+                  { slug: "izdeliya-iz-metalla", icon: "⚙", label: "Изделия из металла" },
+                ].map((item) => (
+                  <Link
+                    key={item.slug}
+                    href={`/landing/${item.slug}`}
+                    onClick={() => setMobileOpen(false)}
+                    className="text-xs text-foreground/80 hover:text-gold py-1.5 transition-colors flex items-center gap-1.5"
+                  >
+                    <span>{item.icon}</span>
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
             {navItems.map((item) => (
               <div key={item.href} className="pb-2">
                 <Link

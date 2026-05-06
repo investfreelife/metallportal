@@ -13,6 +13,7 @@ import CatalogView from "@/components/catalog/CatalogView";
 import CatalogCategoryCard from "@/components/catalog/CatalogCategoryCard";
 import ProductDetailView from "@/components/catalog/ProductDetailView";
 import Breadcrumbs from "@/components/seo/Breadcrumbs";
+import RelatedLandingsSection from "@/components/landings/RelatedLandingsSection";
 
 export const revalidate = 3600;
 
@@ -144,6 +145,8 @@ export default async function SubcategoryPage({ params }: Props) {
             productBasePath={`/catalog/${params.category}/${params.subcategory}`}
             defaultView={isNavesy || isHozblok || isAvto || isParkovka || isBesedka || isDacha ? "cards" : "table"}
           />
+          {/* n005: cross-promo к landings (если subcategory linked в junction) */}
+          <RelatedLandingsSection categoryId={result.category.id} />
 
           {isHozblok && (
             <>

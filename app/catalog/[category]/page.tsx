@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import CatalogView from "@/components/catalog/CatalogView";
 import CatalogCategoryCard from "@/components/catalog/CatalogCategoryCard";
 import Breadcrumbs from "@/components/seo/Breadcrumbs";
+import RelatedLandingsSection from "@/components/landings/RelatedLandingsSection";
 import { CheckCircle } from "lucide-react";
 import CategoryCallbackCTA from "@/components/catalog/CategoryCallbackCTA";
 
@@ -444,6 +445,9 @@ export default async function CategoryPage({ params }: Props) {
         )}
 
         <CategoryCallbackCTA />
+
+        {/* n005: cross-promo к landings (если category linked в junction) */}
+        <RelatedLandingsSection categoryId={category.id} />
       </div>
     );
   }
@@ -472,6 +476,8 @@ export default async function CategoryPage({ params }: Props) {
         productBasePath={`/catalog/${params.category}`}
         defaultView={CARDS_DEFAULT.has(params.category) ? "cards" : "table"}
       />
+      {/* n005: cross-promo к landings (если leaf category linked в junction) */}
+      <RelatedLandingsSection categoryId={result.category.id} />
     </>
   );
 }
