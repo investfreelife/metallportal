@@ -21,6 +21,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { readFileSync, writeFileSync } from "fs";
 import { join } from "path";
+import { LLM_MODEL_GENERAL } from "../lib/llm-models";
 
 // ---------------------------------------------------------------------------
 // Load .env.local
@@ -252,7 +253,7 @@ async function callOpenRouter(
       "X-Title": "MetallPortal Card Generator",
     },
     body: JSON.stringify({
-      model: "openai/gpt-4o-mini",
+      model: LLM_MODEL_GENERAL,
       messages: [
         {
           role: "system",

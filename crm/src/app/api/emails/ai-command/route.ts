@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireSession } from '@/lib/apiAuth'
 import { createClient } from '@supabase/supabase-js'
 import { getSetting } from '@/lib/settings'
+import { LLM_MODEL_GENERAL } from '@/lib/llm-models'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 const REFERER = 'https://metallportal-crm2.vercel.app'
@@ -48,7 +49,7 @@ export async function POST(req: NextRequest) {
       'X-Title': 'MetallPortal CRM AI',
     },
     body: JSON.stringify({
-      model: 'openai/gpt-4o',
+      model: LLM_MODEL_GENERAL,
       messages: [
         {
           role: 'system',
