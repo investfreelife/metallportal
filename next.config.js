@@ -54,19 +54,24 @@ const nextConfig = {
     ];
   },
 
-  // n006: /constructions/{anything} рендерится через existing
-  // /catalog/gotovye-konstruktsii/{anything} routing — duplicate
-  // [category]/[subcategory] файлов не пишем. Browser address bar
-  // остаётся /constructions/* (clean URL, sergey UX), внутри
-  // Next просто redirects к catalog routes для actual rendering.
-  async rewrites() {
-    return [
-      {
-        source: "/constructions/:path+",
-        destination: "/catalog/gotovye-konstruktsii/:path+",
-      },
-    ];
-  },
+  // n007: removed rewrite /constructions/:path+ → /catalog/gotovye-konstruktsii/:path+
+  //
+  // Background (n006): rewrite позволял избежать duplicate routing файлов, но
+  // на production рендерил generic catalog UI (product table view) для
+  // /constructions/garazhi — без focused conversion элементов.
+  //
+  // Replacement (n007): real page files в `app/constructions/[category]/page.tsx`
+  // и `[category]/[subcategory]/page.tsx`. Каждая constructions страница имеет:
+  //   - primary linked landing CTA prominent (from junction)
+  //   - L3 children grid
+  //   - products list если есть direct
+  //   - empty state с "контакты" если ничего нет
+  //
+  // /catalog/gotovye-konstruktsii/* routing **остаётся** (catalog tree всё ещё
+  // показывает gotovye-konstruktsii в DB, header dropdown links и т.д. — но
+  // НЕ через filter в new sidebar). Канонический URL для пользователя теперь
+  // /constructions/* — рекомендую redirect /catalog/gotovye-konstruktsii/* на
+  // /constructions/* в отдельном TZ для cleanup.
 
   // Permanent (308) redirects for legacy catalog URLs that used to be linked
   // from Header/Footer. After fix/v1-followups the navigation no longer
