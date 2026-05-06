@@ -164,16 +164,92 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Insert failed' }, { status: 500 })
   }
 
+  const newCallId = (data as { id: string }).id
+
+  // c024 Sub-task 5: emit Realtime broadcast for inbound — CRM toast popup
+  if (direction === 'inbound') {
+    void emitIncomingCallBroadcast(sb, {
+      call_id: newCallId,
+      from_number: payload.from_number ?? '',
+      to_number: payload.to_number ?? '',
+      duration,
+      recording_url: recordingUrl,
+    }).catch((e: unknown) => {
+      // eslint-disable-next-line no-console
+      console.error('[voximplant/webhook] realtime broadcast error:', e)
+    })
+  }
+
   return NextResponse.json({
     ok: true,
-    call_id: (data as { id: string }).id,
+    call_id: newCallId,
     status: (data as { status: string }).status,
     action: 'inserted',
   })
 }
 
+/**
+ * Emits a `crm-incoming-calls` Realtime broadcast event so the CRM
+ * dashboard pops a toast в реальном времени. Looks up known contact by
+ * phone (best-effort — falls back к anonymous).
+ *
+ * LAW-contact-privacy: phone number stays plaintext (existing schema);
+ * contact details limited к public-safe fields (full_name, company_name).
+ */
+async function emitIncomingCallBroadcast(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  sb: any,
+  params: {
+    call_id: string
+    from_number: string
+    to_number: string
+    duration: number
+    recording_url: string | null
+  },
+) {
+  if (!params.from_number) return
+
+  // Match phone digits-only to handle storage variants
+  // (`79038095053` / `+79038095053` / `7-903-...`)
+  const digits = params.from_number.replace(/\D/g, '')
+  type Contact = { id: string; full_name: string | null; company_name: string | null }
+  let contact: Contact | null = null
+  if (digits) {
+    const variants = [params.from_number, `+${digits}`, digits]
+    const { data } = await sb
+      .from('contacts')
+      .select('id, full_name, company_name, phone')
+      .in('phone', variants)
+      .limit(1)
+      .maybeSingle()
+    if (data) contact = data as unknown as Contact
+  }
+
+  const contactSummary = contact
+    ? {
+        id: contact.id,
+        full_name: contact.full_name,
+        company_name: contact.company_name,
+      }
+    : null
+
+  await sb.channel('crm-incoming-calls').send({
+    type: 'broadcast',
+    event: 'incoming_call',
+    payload: {
+      call_id: params.call_id,
+      from_number: params.from_number,
+      to_number: params.to_number,
+      duration: params.duration,
+      recording_url: params.recording_url,
+      contact: contactSummary,
+      at: new Date().toISOString(),
+    },
+  })
+}
+
 // Reject other methods explicitly (helps debugging — Voximplant scenario
-// crashes silently если пометил wrong URL).
+// crashes silently если попасть на wrong URL).
 export async function GET() {
   return NextResponse.json({ error: 'Method not allowed' }, { status: 405 })
 }
