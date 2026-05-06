@@ -47,10 +47,13 @@ export async function fetchCategoriesTree(): Promise<CategoryNode[]> {
     { auth: { persistSession: false } },
   );
 
+  // c025: Header navigation displays metallоprokat section only — Готовые
+  // конструкции живут в /constructions (отдельный раздел сайта).
   const { data, error } = await supabase
     .from("categories")
     .select("id, slug, name, parent_id, is_active, sort_order, icon")
     .eq("is_active", true)
+    .eq("display_section", "metallоprokat")
     .order("sort_order", { ascending: true });
 
   if (error || !data) {

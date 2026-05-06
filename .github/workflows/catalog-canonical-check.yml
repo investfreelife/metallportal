@@ -1,0 +1,46 @@
+name: catalog-canonical-check
+
+# c025 — Daily verify that the production `categories` table matches
+# `knowledge-base/catalog/canonical_structure.json`. Per LAW-catalog-structure-lock
+# any drift means the canonical lock was bypassed. Fail-fast → Sergey notified.
+#
+# Triggers:
+#   - daily 06:00 UTC (catches manual Studio edits)
+#   - on PR touching migrations / canonical / queries (catch drift в review)
+#   - manual workflow_dispatch
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  pull_request:
+    paths:
+      - 'metallportal/supabase/migrations/**'
+      - 'knowledge-base/catalog/canonical_structure.json'
+      - 'metallportal/lib/queries.ts'
+      - 'metallportal/lib/categories.ts'
+      - 'metallportal/scripts/catalog/**'
+      - '.github/workflows/catalog-canonical-check.yml'
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: metallportal/package-lock.json
+
+      - name: Install minimal deps
+        working-directory: metallportal
+        run: npm ci --no-audit --no-fund --prefer-offline
+
+      - name: Run verify_canonical.ts
+        working-directory: metallportal
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: npx ts-node scripts/catalog/verify_canonical.ts

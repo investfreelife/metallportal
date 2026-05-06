@@ -142,9 +142,27 @@ export function sumCounts(catId: string, _allCats: any[], counts: Record<string,
   return counts[catId] || 0;
 }
 
-export async function getFullCategoryTree(): Promise<any[]> {
+/**
+ * c025: catalog split — `metallоprokat` (sortовой/листовой/трубы/etc — /catalog)
+ * vs `constructions` (Навесы/Гаражи/Здания — /constructions). Default стоит
+ * `metallоprokat` чтобы существующие call sites без аргумента работали как
+ * раньше.
+ *
+ * NB: Cyrillic `о` в `metallоprokat` — canonical per LAW (mixed Cyrillic/Latin
+ * intentional, не fix к Latin без Sergey approval).
+ */
+export type CatalogSection = "metallоprokat" | "constructions";
+
+export async function getFullCategoryTree(
+  section: CatalogSection = "metallоprokat",
+): Promise<any[]> {
   const [{ data: allCategories, error }, counts] = await Promise.all([
-    supabase.from("categories").select("*").eq("is_active", true).order("sort_order"),
+    supabase
+      .from("categories")
+      .select("*")
+      .eq("is_active", true)
+      .eq("display_section", section)
+      .order("sort_order"),
     getProductCounts(),
   ]);
 
@@ -172,11 +190,13 @@ export async function getFullCategoryTree(): Promise<any[]> {
   return buildLevel(null);
 }
 
-export async function getCatalogPageData(): Promise<{
+export async function getCatalogPageData(
+  section: CatalogSection = "metallоprokat",
+): Promise<{
   categories: any[];
   productCounts: Record<string, number>;
 }> {
-  const categories = await getFullCategoryTree();
+  const categories = await getFullCategoryTree(section);
   const counts = await getProductCounts();
   return { categories, productCounts: counts };
 }
