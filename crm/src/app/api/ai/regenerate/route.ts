@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { getSetting } from '@/lib/settings'
 import { requireRole } from '@/lib/apiAuth'
+import { LLM_MODEL_GENERAL } from '@/lib/llm-models'
 
 function getSupabase() {
   return createClient(
@@ -50,7 +51,7 @@ ${ai_reasoning || ''}
       'HTTP-Referer': 'https://metallportal-crm2.vercel.app',
     },
     body: JSON.stringify({
-      model: 'openai/gpt-4o-mini',
+      model: LLM_MODEL_GENERAL,
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.3,
       max_tokens: 800,

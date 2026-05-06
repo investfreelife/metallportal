@@ -8,6 +8,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { requireCronSecret, requireRole } from '@/lib/apiAuth'
+import { LLM_MODEL_GENERAL } from '@/lib/llm-models'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN!
@@ -85,7 +86,7 @@ export async function POST(req: NextRequest) {
         'X-Title': 'MetallPortal CRM Monitor',
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-sonnet-4-6',
+        model: LLM_MODEL_GENERAL,
         max_tokens: 600,
         messages: [{
           role: 'user',

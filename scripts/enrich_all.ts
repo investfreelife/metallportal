@@ -14,11 +14,7 @@ import OpenAI from "openai";
 import { createClient } from "@supabase/supabase-js";
 import { readFileSync } from "fs";
 import { join } from "path";
-import {
-  LLM_MODEL_STRUCTURED,
-  LLM_MODEL_FALLBACK,
-  shouldFallbackOnError,
-} from "../lib/llm-models";
+import { LLM_MODEL_GENERAL } from "../lib/llm-models";
 
 // ---------------------------------------------------------------------------
 // Load .env.local
@@ -142,32 +138,17 @@ async function enrichBatch(products: RawProduct[]): Promise<Enriched[]> {
     .map((p, i) => `${i + 1}. ${p.name}`)
     .join("\n");
 
-  const baseParams = {
+  // Single free-model attempt — no paid fallback (LAW-AI-decoupled-from-core).
+  // На failure caller (main loop) catches и retry в следующем batch.
+  const response = await openai.chat.completions.create({
+    model: LLM_MODEL_GENERAL,
     messages: [
-      { role: "system" as const, content: SYSTEM_PROMPT },
-      { role: "user" as const, content: `Обогати следующие ${products.length} товаров по металлопрокату:\n\n${list}` },
+      { role: "system", content: SYSTEM_PROMPT },
+      { role: "user", content: `Обогати следующие ${products.length} товаров по металлопрокату:\n\n${list}` },
     ],
-    response_format: { type: "json_object" as const },
+    response_format: { type: "json_object" },
     temperature: 0.3,
-  };
-
-  // Free-tier first; on rate-limit / outage fall back to paid gpt-4o-mini.
-  let response;
-  try {
-    response = await openai.chat.completions.create({
-      model: LLM_MODEL_STRUCTURED,
-      ...baseParams,
-    });
-  } catch (e: any) {
-    if (e?.status && shouldFallbackOnError(e.status)) {
-      response = await openai.chat.completions.create({
-        model: LLM_MODEL_FALLBACK,
-        ...baseParams,
-      });
-    } else {
-      throw e;
-    }
-  }
+  });
 
   const text = response.choices[0].message.content ?? "";
 

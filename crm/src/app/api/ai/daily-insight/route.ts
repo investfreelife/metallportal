@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { getSetting, setSetting } from '@/lib/settings'
 import { requireSession } from '@/lib/apiAuth'
+import { LLM_MODEL_GENERAL } from '@/lib/llm-models'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 const REFERER = 'https://metallportal-crm2.vercel.app'
@@ -54,7 +55,7 @@ export async function GET(req: NextRequest) {
       'X-Title': 'MetallPortal CRM AI',
     },
     body: JSON.stringify({
-      model: 'openai/gpt-4o-mini',
+      model: LLM_MODEL_GENERAL,
       messages: [
         { role: 'system', content: 'Ты аналитик продаж B2B металлоторговой компании МеталлПортал. Дай один конкретный инсайт в 1-2 предложения на основе данных CRM. Говори конкретно, что нужно сделать прямо сейчас.' },
         { role: 'user', content: `Данные CRM на ${today}: горячих лидов: ${hotLeads}, задач ИИ ожидают: ${pendingQueue}, pipeline: ${pipeline.toLocaleString('ru')} ₽, непрочитанных писем: ${unreadEmails}` },

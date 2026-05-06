@@ -1,10 +1,15 @@
 /**
- * Expands short Russian metal product names into full professional descriptions
- * using Claude API. Processes 20 products per batch and saves back to Supabase.
+ * @deprecated since 2026-05-05 — use `scripts/enrich_all.ts` (free model)
  *
- * Usage: npx tsx scripts/expand_products.ts
- * Optional: npx tsx scripts/expand_products.ts --limit=100  (process only first N products)
- * Optional: npx tsx scripts/expand_products.ts --offset=200 (skip first N products)
+ * Pre-c012b one-shot script that expanded short product names через Claude
+ * Opus paid model. Replaced by `enrich_all.ts` running on free OpenRouter
+ * (LAW-AI-decoupled-from-core: $0 chat cost). Kept в repo as historical
+ * reference; does not run in production cron / CI.
+ *
+ * Don't run this script — оно использует paid Claude key, не free OpenRouter.
+ * If you need product enrichment: `npx tsx scripts/enrich_all.ts`.
+ *
+ * Usage (kept for historical run-recovery only): see git blame.
  */
 
 import Anthropic from "@anthropic-ai/sdk";

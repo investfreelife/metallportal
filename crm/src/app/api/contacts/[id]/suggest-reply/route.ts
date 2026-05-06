@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireSession } from '@/lib/apiAuth'
 import { createClient } from '@supabase/supabase-js'
-import {
-  LLM_MODEL_GENERAL,
-  LLM_MODEL_FALLBACK,
-  shouldFallbackOnError,
-} from '@/lib/llm-models'
+import { LLM_MODEL_GENERAL } from '@/lib/llm-models'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getSupabase(): any {
@@ -39,12 +35,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const systemPrompt = `Ты менеджер по продажам металлопроката. Отвечай кратко, по-русски, профессионально и дружелюбно. Клиент: ${contact?.full_name ?? 'клиент'}, сегмент: ${contact?.ai_segment ?? 'неизвестно'}.`
   const userMsg = `Клиент написал: "${last_message}". Напиши ответ менеджера (2-3 предложения).`
 
-  // Try OpenRouter — primary free model; fall back to paid gpt-4o-mini on
-  // rate-limit / outage. After this we still cascade to Anthropic / OpenAI direct.
+  // Single free-model attempt via OpenRouter. На rate-limit / outage сразу
+  // fallback к smart template — paid Anthropic / OpenAI direct убраны
+  // (LAW-AI-decoupled-from-core: $0 chat cost, AI is mini-app).
   const openrouterKey = process.env.OPENROUTER_API_KEY
   if (openrouterKey && last_message) {
-    const callOpenRouter = (model: string) =>
-      fetch('https://openrouter.ai/api/v1/chat/completions', {
+    try {
+      const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,7 +50,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
           'X-Title': 'МеталлПортал CRM',
         },
         body: JSON.stringify({
-          model,
+          model: LLM_MODEL_GENERAL,
           max_tokens: 200,
           messages: [
             { role: 'system', content: systemPrompt },
@@ -61,57 +58,16 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
           ],
         }),
       })
-    try {
-      let resp = await callOpenRouter(LLM_MODEL_GENERAL)
-      if (!resp.ok && shouldFallbackOnError(resp.status)) {
-        resp = await callOpenRouter(LLM_MODEL_FALLBACK)
+      if (resp.ok) {
+        const ai = await resp.json()
+        const text = ai.choices?.[0]?.message?.content?.trim()
+        if (text) return NextResponse.json({ text, channel: recommendedChannel, source: 'openrouter' })
+      } else {
+        console.warn(`[suggest-reply] LLM ${LLM_MODEL_GENERAL} returned ${resp.status}; using template`)
       }
-      const ai = await resp.json()
-      const text = ai.choices?.[0]?.message?.content?.trim()
-      if (text) return NextResponse.json({ text, channel: recommendedChannel, source: 'openrouter' })
-    } catch { /* fallback */ }
-  }
-
-  // Try Anthropic (Claude Haiku — fast & cheap) — key already in project
-  const anthropicKey = process.env.ANTHROPIC_API_KEY
-  if (anthropicKey && last_message) {
-    try {
-      const resp = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': anthropicKey,
-          'anthropic-version': '2023-06-01',
-        },
-        body: JSON.stringify({
-          model: 'claude-haiku-20240307',
-          max_tokens: 200,
-          system: systemPrompt,
-          messages: [{ role: 'user', content: userMsg }],
-        }),
-      })
-      const ai = await resp.json()
-      const text = ai.content?.[0]?.text?.trim()
-      if (text) return NextResponse.json({ text, channel: recommendedChannel, source: 'anthropic' })
-    } catch { /* fallback */ }
-  }
-
-  // Try OpenAI directly if key set
-  const openaiKey = process.env.OPENAI_API_KEY
-  if (openaiKey && last_message) {
-    try {
-      const resp = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${openaiKey}` },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini', max_tokens: 200,
-          messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userMsg }],
-        }),
-      })
-      const ai = await resp.json()
-      const text = ai.choices?.[0]?.message?.content?.trim()
-      if (text) return NextResponse.json({ text, channel: recommendedChannel, source: 'openai' })
-    } catch { /* fallback to template */ }
+    } catch (e) {
+      console.warn('[suggest-reply] LLM call failed:', (e as Error).message)
+    }
   }
 
   // Smart template reply based on last message or segment

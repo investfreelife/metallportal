@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { requireRole } from '@/lib/apiAuth'
+import { LLM_MODEL_GENERAL } from '@/lib/llm-models'
 
 const TENANT_ID = process.env.TENANT_ID || 'a1000000-0000-0000-0000-000000000001'
 
@@ -35,7 +36,7 @@ export async function POST(req: NextRequest) {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'openai/gpt-4o-mini',
+      model: LLM_MODEL_GENERAL,
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: type.prompt },

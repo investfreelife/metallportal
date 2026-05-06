@@ -1,4 +1,9 @@
-const OPUS_MODEL = 'anthropic/claude-opus-4-6'
+// Pre-c012b this used Opus для CEO-style strategic reasoning. Per
+// LAW-AI-decoupled-from-core: single free model. Bezos still works — just с
+// чуть менее sophisticated reasoning. Если выбор critical → can override
+// per-call с `model:` arg.
+import { LLM_MODEL_GENERAL } from '@/lib/llm-models'
+const OPUS_MODEL = LLM_MODEL_GENERAL
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions'
 const REFERER = 'https://metallportal-crm2.vercel.app'
 

@@ -1,19 +1,28 @@
 /**
- * AI Model Router — centralized model selection by task complexity
+ * AI Model Router — centralized model selection.
  *
- * critical  → anthropic/claude-opus-4-6   (CEO decisions, strategic reasoning)
- * complex   → anthropic/claude-sonnet-4-6 (analysis, evaluation, reports)
- * standard  → openai/gpt-4o               (emails, proposals, replies)
- * routine   → openai/gpt-4o-mini          (classification, scoring, quick tasks)
+ * Pre-c012b this router tiered tasks by complexity (critical/complex/standard/routine)
+ * across paid models (Claude Opus, Sonnet, gpt-4o, gpt-4o-mini). Per
+ * `knowledge-base/decisions/2026-05-05_LAW-AI-decoupled-from-core.md`:
+ *   - **single free model**, no paid fallback;
+ *   - AI is a mini-app — caller must catch graceful fail-fast.
+ *
+ * `Complexity` enum kept for call-site compatibility. All complexities resolve
+ * к the one free model `LLM_MODEL_GENERAL`. Если когда-нибудь снова понадобится
+ * tiering (e.g. dev wants Opus reasoning for one task) — set per-call via env
+ * override or pass explicit model arg.
  */
+
+import { LLM_MODEL_GENERAL } from '@/lib/llm-models'
 
 export type Complexity = 'critical' | 'complex' | 'standard' | 'routine'
 
+// All tiers collapse к the single free general model.
 export const MODEL_MAP: Record<Complexity, string> = {
-  critical: 'anthropic/claude-opus-4-6',
-  complex:  'anthropic/claude-sonnet-4-6',
-  standard: 'openai/gpt-4o',
-  routine:  'openai/gpt-4o-mini',
+  critical: LLM_MODEL_GENERAL,
+  complex:  LLM_MODEL_GENERAL,
+  standard: LLM_MODEL_GENERAL,
+  routine:  LLM_MODEL_GENERAL,
 }
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions'
