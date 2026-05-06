@@ -8,9 +8,18 @@ import { useCatalogFiltersContent } from "@/contexts/CatalogFiltersContext";
 
 interface CatalogSidebarProps {
   categories: any[];
+  /** Header label + href для top-of-sidebar link.
+      По умолчанию «Каталог» → /catalog (для metallоprokat-секции).
+      Для constructions: передавать «Готовые изделия» + /constructions. */
+  headerLabel?: string;
+  headerHref?: string;
 }
 
-export default function CatalogSidebar({ categories }: CatalogSidebarProps) {
+export default function CatalogSidebar({
+  categories,
+  headerLabel = "Каталог",
+  headerHref = "/catalog",
+}: CatalogSidebarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const filtersContent = useCatalogFiltersContent();
@@ -18,8 +27,8 @@ export default function CatalogSidebar({ categories }: CatalogSidebarProps) {
   const NavBlock = ({ onNavigate }: { onNavigate?: () => void }) => (
     <div className="bg-card border border-border rounded-lg overflow-hidden">
       <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-        <Link href="/catalog" className="text-sm font-bold uppercase tracking-wider hover:text-gold transition-colors" onClick={onNavigate}>
-          Каталог
+        <Link href={headerHref} className="text-sm font-bold uppercase tracking-wider hover:text-gold transition-colors" onClick={onNavigate}>
+          {headerLabel}
         </Link>
         {onNavigate && (
           <button onClick={onNavigate} className="lg:hidden text-muted-foreground hover:text-foreground p-1">
