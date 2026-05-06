@@ -125,11 +125,21 @@ export async function getProductCounts(): Promise<Record<string, number>> {
   return counts;
 }
 
-export function sumCounts(catId: string, allCats: any[], counts: Record<string, number>): number {
-  const direct = counts[catId] || 0;
-  const children = allCats.filter((c: any) => c.parent_id === catId);
-  const childSum = children.reduce((acc: number, c: any) => acc + sumCounts(c.id, allCats, counts), 0);
-  return direct + childSum;
+/**
+ * Возвращает количество товаров для категории (включая всех потомков).
+ *
+ * **ВАЖНО:** RPC `get_product_counts()` уже считает рекурсивно через CTE
+ * (см. supabase/migrations/20260526120000_get_product_counts_rpc.sql).
+ * Поэтому здесь НЕ нужно сумировать children — это даст double/triple-count.
+ *
+ * Параметр `_allCats` оставлен для backward-compat с call sites, но не используется.
+ *
+ * Bug fix: до 2026-05-06 эта функция делала `direct + sum(children)` поверх
+ * recursive RPC counts → counts на /catalog отображались в 2-3× больше реальных
+ * (Sergey screenshot: Сортовой 6201 vs реально 2067; Денис #a009 audit подтвердил).
+ */
+export function sumCounts(catId: string, _allCats: any[], counts: Record<string, number>): number {
+  return counts[catId] || 0;
 }
 
 export async function getFullCategoryTree(): Promise<any[]> {
