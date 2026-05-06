@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireSession } from '@/lib/apiAuth'
+import { LLM_MODEL_GENERAL } from '@/lib/llm-models'
 
 export async function POST(req: NextRequest) {
   const auth = requireSession(req)
@@ -24,7 +25,7 @@ export async function POST(req: NextRequest) {
           'X-Title': 'МеталлПортал CRM',
         },
         body: JSON.stringify({
-          model: 'openai/gpt-4o-mini', max_tokens: 200,
+          model: LLM_MODEL_GENERAL, max_tokens: 200,
           messages: [{ role: 'system', content: system }, { role: 'user', content: userContent }],
         }),
       })

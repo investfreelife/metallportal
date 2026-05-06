@@ -5,6 +5,7 @@
  */
 
 import { getSetting, setSetting } from './settings'
+import { LLM_MODEL_GENERAL } from './llm-models'
 
 const REFERER = 'https://metallportal-crm2.vercel.app'
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
@@ -93,7 +94,7 @@ async function openrouterChat(key: string, messages: { role: string; content: st
       'X-Title': 'MetallPortal CRM AI',
     },
     body: JSON.stringify({
-      model: 'openai/gpt-4o-mini',
+      model: LLM_MODEL_GENERAL,
       messages,
       ...(opts.json ? { response_format: { type: 'json_object' } } : {}),
       temperature: 0.4,
@@ -230,7 +231,7 @@ export async function analyzeEmail(ctx: {
         'X-Title': 'MetallPortal CRM AI',
       },
       body: JSON.stringify({
-        model: 'openai/gpt-4o',
+        model: LLM_MODEL_GENERAL,
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userMsg },
@@ -305,7 +306,7 @@ ${ctx.actual_result ? `- Результат: ${ctx.actual_result}` : ''}
         'X-Title': 'MetallPortal CRM AI',
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-sonnet-4-6',
+        model: LLM_MODEL_GENERAL,
         max_tokens: 500,
         response_format: { type: 'json_object' },
         messages: [{ role: 'user', content: prompt }],

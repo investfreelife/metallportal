@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireSession } from '@/lib/apiAuth'
 import { createClient } from '@/lib/supabase/server'
-import {
-  LLM_MODEL_STRUCTURED,
-  LLM_MODEL_FALLBACK,
-  shouldFallbackOnError,
-} from '@/lib/llm-models'
+import { LLM_MODEL_GENERAL } from '@/lib/llm-models'
 
 export async function POST(req: NextRequest) {
   const auth = requireSession(req)
@@ -42,40 +38,38 @@ export async function POST(req: NextRequest) {
   }
 
   if (transcript && openrouterKey) {
-    // Build call once — body identical for primary (free) и fallback (paid) attempts.
-    const buildBody = (model: string) =>
-      JSON.stringify({
-        model,
-        messages: [{
-          role: 'system',
-          content: 'Ты анализируешь звонки менеджеров по продажам металлопроката. Отвечай строго в JSON.'
-        }, {
-          role: 'user',
-          content: `Проанализируй транскрипт звонка:\n\n${transcript}\n\nВерни JSON:\n{\n  "summary": "краткое резюме 2-3 предложения",\n  "sentiment": "positive|neutral|negative",\n  "quality_score": 1-10,\n  "promises": ["что обещал менеджер"],\n  "objections": ["возражения клиента"],\n  "next_step": "следующий шаг",\n  "action_required": true|false\n}`
-        }],
-        max_tokens: 600,
-      })
-
-    // Free-tier first; on rate-limit / outage fall back to paid gpt-4o-mini.
-    let analysisRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${openrouterKey}`, 'Content-Type': 'application/json' },
-      body: buildBody(LLM_MODEL_STRUCTURED),
-    })
-    if (!analysisRes.ok && shouldFallbackOnError(analysisRes.status)) {
-      analysisRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${openrouterKey}`, 'Content-Type': 'application/json' },
-        body: buildBody(LLM_MODEL_FALLBACK),
-      })
-    }
-
-    const analysisData = await analysisRes.json()
+    // Single free-model attempt. На failure → graceful: транскрипт сохраняется,
+    // analysis возвращается пустым, пользователь видит звонок без ИИ-сводки.
+    // (LAW-AI-decoupled-from-core: no paid fallback.)
     let analysis: any = {}
     try {
-      const text = analysisData.choices?.[0]?.message?.content || '{}'
-      analysis = JSON.parse(text.replace(/```json|```/g, '').trim())
-    } catch {}
+      const analysisRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${openrouterKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: LLM_MODEL_GENERAL,
+          messages: [{
+            role: 'system',
+            content: 'Ты анализируешь звонки менеджеров по продажам металлопроката. Отвечай строго в JSON.'
+          }, {
+            role: 'user',
+            content: `Проанализируй транскрипт звонка:\n\n${transcript}\n\nВерни JSON:\n{\n  "summary": "краткое резюме 2-3 предложения",\n  "sentiment": "positive|neutral|negative",\n  "quality_score": 1-10,\n  "promises": ["что обещал менеджер"],\n  "objections": ["возражения клиента"],\n  "next_step": "следующий шаг",\n  "action_required": true|false\n}`
+          }],
+          max_tokens: 600,
+        }),
+      })
+      if (analysisRes.ok) {
+        const analysisData = await analysisRes.json()
+        const text = analysisData.choices?.[0]?.message?.content || '{}'
+        try {
+          analysis = JSON.parse(text.replace(/```json|```/g, '').trim())
+        } catch { /* malformed JSON — leave analysis empty */ }
+      } else {
+        console.warn(`[calls/analyze] LLM ${LLM_MODEL_GENERAL} returned ${analysisRes.status}; skipping AI analysis`)
+      }
+    } catch (e) {
+      console.warn('[calls/analyze] LLM call failed, returning transcript-only:', (e as Error).message)
+    }
 
     await supabase.from('calls').update({
       transcript,
