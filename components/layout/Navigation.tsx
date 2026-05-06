@@ -2,6 +2,7 @@ import Link from "next/link";
 
 const navItems = [
   { label: "Каталог", href: "/catalog" },
+  { label: "Готовые конструкции", href: "/constructions" },
   { label: "Поставщикам", href: "/supplier" },
 ];
 

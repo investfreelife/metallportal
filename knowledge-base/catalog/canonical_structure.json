@@ -1,0 +1,645 @@
+{
+  "version": "1.0",
+  "last_modified": "2026-05-06",
+  "modified_by_sergey_command": true,
+  "sections": {
+    "metallоprokat": [
+      {
+        "slug": "sortovoy-prokat",
+        "name": "Сортовой прокат",
+        "children": [
+          {
+            "slug": "armatura-katanka",
+            "name": "Арматура, катанка",
+            "children": [
+              {
+                "slug": "armatura-riflenaya-a500s-a3",
+                "name": "Арматура рифленая А500С А3"
+              },
+              {
+                "slug": "armatura-gladkaya-a240-a1",
+                "name": "Арматура гладкая А240 А1"
+              },
+              {
+                "slug": "armatura-a500sneu-a1000",
+                "name": "Арматура А500СНЕУ А1000"
+              },
+              {
+                "slug": "armatura-a800",
+                "name": "Арматура А800"
+              },
+              {
+                "slug": "katanka",
+                "name": "Катанка"
+              }
+            ]
+          },
+          {
+            "slug": "balka-shveller",
+            "name": "Балка, швеллер",
+            "children": [
+              {
+                "slug": "balki-dvutavr",
+                "name": "Балки (Двутавр)"
+              },
+              {
+                "slug": "balki-dvutavr-nizkolegirovannye",
+                "name": "Балки (Двутавр) низколегированные"
+              },
+              {
+                "slug": "shveller-goryachekatanyy",
+                "name": "Швеллер горячекатаный"
+              },
+              {
+                "slug": "shveller-gnutyy",
+                "name": "Швеллер гнутый"
+              },
+              {
+                "slug": "shveller-nizkolegirovannyy",
+                "name": "Швеллер низколегированный"
+              }
+            ]
+          },
+          {
+            "slug": "ugolok",
+            "name": "Уголок",
+            "children": [
+              {
+                "slug": "ugolok-ravnopolochnyy",
+                "name": "Уголок равнополочный"
+              },
+              {
+                "slug": "ugolok-ravnopolochnyy-nizkolegirovannyy",
+                "name": "Уголок равнополочный низколегированный"
+              },
+              {
+                "slug": "ugolok-neravnopolochnyy",
+                "name": "Уголок неравнополочный"
+              },
+              {
+                "slug": "ugolok-nerzhaveyuschiy-nikelsoderzhaschiy",
+                "name": "Уголок нержавеющий никельсодержащий"
+              }
+            ]
+          },
+          {
+            "slug": "krug",
+            "name": "Круг",
+            "children": [
+              {
+                "slug": "krug-konstruktsionnyy",
+                "name": "Круг конструкционный г/к"
+              },
+              {
+                "slug": "krug-nerzhaveyuschiy-nikel",
+                "name": "Круг нержавеющий никельсодержащий г/к"
+              },
+              {
+                "slug": "krug-zharoprochnyy",
+                "name": "Круг жаропрочный нержавеющий г/к"
+              },
+              {
+                "slug": "krug-instrumentalnyy",
+                "name": "Круг инструментальный г/к"
+              },
+              {
+                "slug": "krug-otsinkovannyy-gk",
+                "name": "Круг оцинкованный г/к"
+              }
+            ]
+          },
+          {
+            "slug": "polosa-kvadrat",
+            "name": "Полоса, квадрат",
+            "children": [
+              {
+                "slug": "polosa-g-k",
+                "name": "Полоса г/к"
+              },
+              {
+                "slug": "polosa-g-k-otsinkovannaya",
+                "name": "Полоса г/к оцинкованная"
+              },
+              {
+                "slug": "polosa-nerzhaveyuschaya-nikelsoderzhaschaya",
+                "name": "Полоса нержавеющая никельсодержащая"
+              },
+              {
+                "slug": "kvadrat-goryachekatanyy",
+                "name": "Квадрат горячекатаный"
+              }
+            ]
+          },
+          {
+            "slug": "otsinkovannyy-prokat",
+            "name": "Оцинкованный прокат",
+            "children": [
+              {
+                "slug": "polosa-otsinkovannaya",
+                "name": "Полоса оцинкованная"
+              },
+              {
+                "slug": "krug-otsinkovannyy",
+                "name": "Круг оцинкованный"
+              },
+              {
+                "slug": "truba-otsinkovannaya",
+                "name": "Труба оцинкованная"
+              },
+              {
+                "slug": "list-otsinkovannyy",
+                "name": "Лист оцинкованный"
+              }
+            ]
+          },
+          {
+            "slug": "shestigrannik",
+            "name": "Шестигранник",
+            "children": [
+              {
+                "slug": "shestigrannik-konstruktsionnyy",
+                "name": "Шестигранник конструкционный г/к"
+              },
+              {
+                "slug": "shestigrannik-zharoprochnyy",
+                "name": "Шестигранник жаропрочный нержавеющий г/к"
+              },
+              {
+                "slug": "shestigrannik-nerzhaveyuschiy-nikel",
+                "name": "Шестигранник нержавеющий никельсодержащий г/к"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "metizy",
+        "name": "Метизы",
+        "children": [
+          {
+            "slug": "kalibrovka-serebryanka",
+            "name": "Калибровка, серебрянка"
+          },
+          {
+            "slug": "provoloka-kanaty",
+            "name": "Проволока, канаты",
+            "children": [
+              {
+                "slug": "provoloka-nerzhaveyuschaya",
+                "name": "Проволока нержавеющая"
+              },
+              {
+                "slug": "provoloka-pruzhinnaya",
+                "name": "Проволока качественная пружинная"
+              },
+              {
+                "slug": "provoloka-vr-1",
+                "name": "Проволока Вр-1"
+              },
+              {
+                "slug": "provoloka-nikhromovaya",
+                "name": "Проволока нихромовая"
+              },
+              {
+                "slug": "provoloka-alyuminievaya",
+                "name": "Проволока алюминиевая"
+              },
+              {
+                "slug": "provoloka-vysokoe-soprotivlenie",
+                "name": "Проволока из сплавов с высоким сопротивлением"
+              }
+            ]
+          },
+          {
+            "slug": "krepezh-gvozdi-bolty-tsepi",
+            "name": "Крепеж, гвозди, болты, цепи",
+            "children": [
+              {
+                "slug": "ankernaya-tehnika",
+                "name": "Анкерная техника"
+              }
+            ]
+          },
+          {
+            "slug": "setka-lenta",
+            "name": "Сетка, лента"
+          },
+          {
+            "slug": "elektrody",
+            "name": "Электроды"
+          }
+        ]
+      },
+      {
+        "slug": "kachestvennye-stali",
+        "name": "Качественные стали",
+        "children": [
+          {
+            "slug": "konstruktsionnaya-stal",
+            "name": "Конструкционная сталь"
+          },
+          {
+            "slug": "instrumentalnaya-stal",
+            "name": "Инструментальная сталь"
+          },
+          {
+            "slug": "pokovka",
+            "name": "Поковка"
+          },
+          {
+            "slug": "list-g-k-normalnoy-prochnosti",
+            "name": "Лист г/к нормальной прочности"
+          },
+          {
+            "slug": "list-g-k-povyshennoy-prochnosti",
+            "name": "Лист г/к повышенной прочности"
+          }
+        ]
+      },
+      {
+        "slug": "sudovaya-stal",
+        "name": "Судовая сталь"
+      },
+      {
+        "slug": "mostovaya-stal",
+        "name": "Мостовая сталь",
+        "children": [
+          {
+            "slug": "list-mostostroitelnyy",
+            "name": "Лист г/к мостостроительный"
+          }
+        ]
+      },
+      {
+        "slug": "dupleksnaya-stal",
+        "name": "Дуплексная сталь",
+        "children": [
+          {
+            "slug": "list-dupleksnyy",
+            "name": "Лист дуплексный"
+          }
+        ]
+      },
+      {
+        "slug": "listovoy-prokat",
+        "name": "Листовой прокат",
+        "children": [
+          {
+            "slug": "list-g-k",
+            "name": "Лист г/к"
+          },
+          {
+            "slug": "list-kh-k",
+            "name": "Лист х/к"
+          },
+          {
+            "slug": "list-riflenyy",
+            "name": "Лист рифленый"
+          },
+          {
+            "slug": "profnastil-proflist",
+            "name": "Профнастил (профлист)",
+            "children": [
+              {
+                "slug": "profnastil-okrashennyy",
+                "name": "Профнастил окрашенный"
+              },
+              {
+                "slug": "profnastil-otsinkovannyy",
+                "name": "Профнастил оцинкованный"
+              },
+              {
+                "slug": "profnastil-nerzhaveyuschiy",
+                "name": "Профнастил нержавеющий"
+              }
+            ]
+          },
+          {
+            "slug": "prosechno-vytyazhnoy-list-pvl",
+            "name": "Просечно-вытяжной лист (ПВЛ)"
+          },
+          {
+            "slug": "rulonnaya-stal",
+            "name": "Рулонная сталь"
+          }
+        ]
+      },
+      {
+        "slug": "tsvetnye-metally",
+        "name": "Цветные металлы",
+        "children": [
+          {
+            "slug": "alyuminiy-dyural",
+            "name": "Алюминий, дюраль",
+            "children": [
+              {
+                "slug": "alyuminiy-krug",
+                "name": "Круг алюминиевый"
+              },
+              {
+                "slug": "alyuminiy-kvadrat",
+                "name": "Квадрат алюминиевый"
+              },
+              {
+                "slug": "alyuminiy-list",
+                "name": "Лист алюминиевый"
+              },
+              {
+                "slug": "alyuminiy-list-riflenyy",
+                "name": "Лист алюминиевый рифленый"
+              },
+              {
+                "slug": "alyuminiy-list-pvl",
+                "name": "Просечно-вытяжной лист алюминиевый"
+              },
+              {
+                "slug": "alyuminiy-lenta",
+                "name": "Лента алюминиевая"
+              },
+              {
+                "slug": "alyuminiy-truba",
+                "name": "Труба алюминиевая"
+              },
+              {
+                "slug": "alyuminiy-plita",
+                "name": "Плита алюминиевая"
+              },
+              {
+                "slug": "alyuminiy-profil-stroy",
+                "name": "Общестроительный профиль алюминиевый"
+              },
+              {
+                "slug": "alyuminiy-profil-vent",
+                "name": "Вентиляционный профиль алюминиевый"
+              },
+              {
+                "slug": "alyuminiy-ugolok",
+                "name": "Уголок алюминиевый"
+              },
+              {
+                "slug": "alyuminiy-shveller",
+                "name": "Швеллер алюминиевый"
+              },
+              {
+                "slug": "alyuminiy-shestigrannik",
+                "name": "Шестигранник алюминиевый"
+              },
+              {
+                "slug": "alyuminiy-shina",
+                "name": "Шина алюминиевая"
+              },
+              {
+                "slug": "alyuminiy-tavr",
+                "name": "Тавр алюминиевый"
+              },
+              {
+                "slug": "alyuminiy-provoloka",
+                "name": "Проволока алюминиевая"
+              },
+              {
+                "slug": "alyuminiy-folga",
+                "name": "Фольга алюминиевая"
+              },
+              {
+                "slug": "alyuminiy-chushka",
+                "name": "Чушка алюминиевая"
+              }
+            ]
+          },
+          {
+            "slug": "med-bronza-latun",
+            "name": "Медь, бронза, латунь",
+            "children": [
+              {
+                "slug": "med-krug",
+                "name": "Круг медный"
+              },
+              {
+                "slug": "med-list",
+                "name": "Лист медный"
+              },
+              {
+                "slug": "med-lenta",
+                "name": "Лента медная"
+              },
+              {
+                "slug": "med-truba",
+                "name": "Труба медная"
+              },
+              {
+                "slug": "med-shina",
+                "name": "Шина медная"
+              },
+              {
+                "slug": "latun-krug",
+                "name": "Круг латунный"
+              },
+              {
+                "slug": "latun-kvadrat",
+                "name": "Квадрат латунный"
+              },
+              {
+                "slug": "latun-list",
+                "name": "Лист латунный"
+              },
+              {
+                "slug": "latun-lenta",
+                "name": "Лента латунная"
+              },
+              {
+                "slug": "latun-truba",
+                "name": "Труба латунная"
+              },
+              {
+                "slug": "latun-shestigrannik",
+                "name": "Шестигранник латунный"
+              },
+              {
+                "slug": "bronza-krug",
+                "name": "Круг бронзовый"
+              }
+            ]
+          },
+          {
+            "slug": "olovo-svinets-tsink-nikhrom",
+            "name": "Олово, свинец, цинк, нихром"
+          }
+        ]
+      },
+      {
+        "slug": "nerzhaveyuschaya-stal",
+        "name": "Нержавеющая сталь",
+        "children": [
+          {
+            "slug": "krug-kvadrat-shestigrannik",
+            "name": "Круг, квадрат, шестигранник"
+          },
+          {
+            "slug": "polosa-ugolok-shveller",
+            "name": "Полоса, уголок, швеллер"
+          },
+          {
+            "slug": "truby-nerzhaveyka",
+            "name": "Трубы нержавейка"
+          },
+          {
+            "slug": "list-nerzhaveyuschiy",
+            "name": "Лист нержавеющий"
+          },
+          {
+            "slug": "nerzhaveyuschie-metizy",
+            "name": "Нержавеющие метизы"
+          },
+          {
+            "slug": "detali-truboprovoda-zadvizhki",
+            "name": "Детали трубопровода, задвижки"
+          },
+          {
+            "slug": "komplektuyuschie-dlya-lestnichnykh-ograzhdeniy",
+            "name": "Комплектующие для лестничных ограждений"
+          }
+        ]
+      },
+      {
+        "slug": "iznosostoykaya-vysokoprochnaya-stal-gadfilda",
+        "name": "Износостойкая, Высокопрочная, сталь Гадфильда",
+        "children": [
+          {
+            "slug": "list-iznosostoykiy",
+            "name": "Лист износостойкий"
+          }
+        ]
+      },
+      {
+        "slug": "truby",
+        "name": "Трубы",
+        "children": [
+          {
+            "slug": "truby-g-d",
+            "name": "Трубы г/д"
+          },
+          {
+            "slug": "truby-kh-d",
+            "name": "Трубы х/д"
+          },
+          {
+            "slug": "vgp-elektrosvarnye-truby",
+            "name": "ВГП, электросварные трубы"
+          },
+          {
+            "slug": "truby-elektrosvarnye-nizkolegirovannye",
+            "name": "Трубы электросварные низколегированные"
+          },
+          {
+            "slug": "truby-otsinkovannye",
+            "name": "Трубы оцинкованные"
+          },
+          {
+            "slug": "truby-nerzhaveyuschie",
+            "name": "Трубы нержавеющие"
+          },
+          {
+            "slug": "truby-chugunnye",
+            "name": "Трубы чугунные"
+          },
+          {
+            "slug": "truby-profilnye",
+            "name": "Трубы профильные"
+          }
+        ]
+      },
+      {
+        "slug": "podshipniki",
+        "name": "Подшипники"
+      },
+      {
+        "slug": "krovelnye-materialy",
+        "name": "Кровельные материалы"
+      },
+      {
+        "slug": "inzhenernye-sistemy",
+        "name": "Инженерные системы",
+        "children": [
+          {
+            "slug": "truby-i-fitingi",
+            "name": "Трубы и фитинги"
+          },
+          {
+            "slug": "zapornaya-armatura-i-elektroprivody",
+            "name": "Запорная арматура и электроприводы"
+          },
+          {
+            "slug": "detali-truboprovodov-khomuty-i-krepezh",
+            "name": "Детали трубопроводов, хомуты и крепеж"
+          },
+          {
+            "slug": "radiatory-polotentsesushiteli-vodonagrevateli",
+            "name": "Радиаторы, полотенцесушители, водонагреватели"
+          },
+          {
+            "slug": "filtry-gryazeviki-elevatory",
+            "name": "Фильтры, грязевики, элеваторы"
+          },
+          {
+            "slug": "truby-kanalizatsionnye-i-soedinitelnye-detali",
+            "name": "Трубы канализационные и соединительные детали"
+          },
+          {
+            "slug": "teploizolyatsiya-uplotneniya-zaschitnye-pokrytiya",
+            "name": "Теплоизоляция, уплотнения, защитные покрытия"
+          },
+          {
+            "slug": "reguliruyuschaya-armatura-i-avtomatika",
+            "name": "Регулирующая арматура и автоматика"
+          },
+          {
+            "slug": "kollektory-i-kollektornye-gruppy",
+            "name": "Коллекторы и коллекторные группы"
+          },
+          {
+            "slug": "nasosy-i-nasosnoe-oborudovanie",
+            "name": "Насосы и насосное оборудование"
+          },
+          {
+            "slug": "pribory-ucheta-i-kipia",
+            "name": "Приборы учета и КИПиА"
+          }
+        ]
+      }
+    ],
+    "constructions": [
+      {
+        "slug": "gotovye-konstruktsii",
+        "name": "Готовые конструкции",
+        "children": [
+          {
+            "slug": "navesy",
+            "name": "Навесы",
+            "children": [
+              {
+                "slug": "navesy-s-hozblokom",
+                "name": "С хозблоком"
+              },
+              {
+                "slug": "navesy-dlya-avtomobilya",
+                "name": "Для автомобиля"
+              },
+              {
+                "slug": "navesy-dlya-parkovok",
+                "name": "Для парковок"
+              },
+              {
+                "slug": "navesy-besedka",
+                "name": "Навесы беседки"
+              },
+              {
+                "slug": "navesy-dlya-dachi",
+                "name": "Для дачи"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
