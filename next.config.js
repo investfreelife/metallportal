@@ -91,6 +91,26 @@ const nextConfig = {
       { source: "/catalog/metalloprokat",   destination: "/catalog",                 permanent: true },
       { source: "/catalog/armatura",        destination: "/catalog/sortovoy-prokat", permanent: true },
       { source: "/catalog/balki-shvellery", destination: "/catalog/sortovoy-prokat", permanent: true },
+
+      // n011: canonical consolidation. /catalog/gotovye-konstruktsii был старым
+      // routing для готовых изделий. После n006 split (display_section column +
+      // /constructions namespace) — единый canonical URL это /constructions.
+      // Sergey reported увидел старую страницу /catalog/gotovye-konstruktsii/
+      // с 6 placeholder cards (catalog UI), которая дублирует /constructions
+      // (там 6 cards с правильным n010 contents). Redirect 308 fixes:
+      //  - SEO duplicate-content penalty
+      //  - User UX (canonical /constructions с правильным sidebar)
+      //  - External links (Yandex/Google cache) preserve traffic.
+      {
+        source: "/catalog/gotovye-konstruktsii/:path*",
+        destination: "/constructions/:path*",
+        permanent: true,
+      },
+      {
+        source: "/catalog/gotovye-konstruktsii",
+        destination: "/constructions",
+        permanent: true,
+      },
     ];
   },
 };
