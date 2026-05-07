@@ -1,19 +1,25 @@
 import { getFullCategoryTree } from "@/lib/queries";
 import CatalogSidebar from "@/components/catalog/CatalogSidebar";
 import { CatalogFiltersProvider } from "@/contexts/CatalogFiltersContext";
-import { SECTION_METALLPROKAT, SECTION_META } from "@/lib/sections";
+import { SECTION_METALLPROKAT, SECTION_CONSTRUCTIONS, SECTION_META } from "@/lib/sections";
 
 /**
- * /catalog/* shared layout. Sidebar показывает ТОЛЬКО metallоprokat-section
- * categories (per Иван #026 display_section column). «Готовые изделия» —
- * separate /constructions/* route с своим layout (mirror).
+ * /catalog/* shared layout. Sidebar показывает metallоprokat L1 + appends
+ * «Готовые изделия» (constructions section) тоже — per Sergey directive
+ * 2026-05-07 «в левое меню добавь готовые изделия».
+ * Constructions L1 cards routes ведут к /landing/{slug} через junction primary
+ * (см. CatalogCategoryCard.landingSlug + landing_category_links.link_type).
  */
 export default async function CatalogLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const categories = await getFullCategoryTree(SECTION_METALLPROKAT);
+  const [metallTree, constructionsTree] = await Promise.all([
+    getFullCategoryTree(SECTION_METALLPROKAT),
+    getFullCategoryTree(SECTION_CONSTRUCTIONS),
+  ]);
+  const categories = [...metallTree, ...constructionsTree];
   const meta = SECTION_META[SECTION_METALLPROKAT];
 
   return (
