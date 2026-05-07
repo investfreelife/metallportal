@@ -12,6 +12,7 @@ interface CategoryCardProps {
   totalProducts: number;
   subcategories: any[];
   basePath: string; // e.g. "/catalog/metalloprokat" or "/catalog"
+  landingSlug?: string; // если задан — card ведёт на /landing/{landingSlug}
 }
 
 export default function CatalogCategoryCard({
@@ -22,8 +23,10 @@ export default function CatalogCategoryCard({
   totalProducts,
   subcategories,
   basePath,
+  landingSlug,
 }: CategoryCardProps) {
-  const cardHref = `${basePath}/${slug}`;
+  const cardHref = landingSlug ? `/landing/${landingSlug}` : `${basePath}/${slug}`;
+  const childBasePath = `${basePath}/${slug}`; // L3 sub-links keep catalog route
   const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
@@ -75,7 +78,7 @@ export default function CatalogCategoryCard({
             {subcategories.filter((sub: any) => sub.totalProducts > 0).map((sub: any) => (
               <Link
                 key={sub.id}
-                href={`${cardHref}/${sub.slug}`}
+                href={`${childBasePath}/${sub.slug}`}
                 className="flex items-baseline gap-1 text-sm text-muted-foreground hover:text-gold hover:underline transition-colors truncate"
               >
                 <span className="truncate">{sub.name}</span>

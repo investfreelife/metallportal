@@ -49,11 +49,20 @@ export default async function CategoryPage({ params }: Props) {
 
   // If category has subcategories → show cards
   if (subcategories.length > 0) {
-    const [counts, { data: allCats }] = await Promise.all([
+    const subIds = subcategories.map((s: any) => s.id);
+    const [counts, { data: allCats }, { data: primaryLinks }] = await Promise.all([
       getProductCounts(),
       supabase.from("categories").select("id, parent_id").eq("is_active", true),
+      supabase
+        .from("landing_category_links")
+        .select("category_id, landing_slug")
+        .eq("link_type", "primary")
+        .in("category_id", subIds),
     ]);
     const catList = allCats ?? [];
+    const landingByCategoryId = new Map<string, string>(
+      (primaryLinks ?? []).map((l: any) => [l.category_id, l.landing_slug])
+    );
 
     // For each subcategory, get its children (Level 3) with recursive counts
     const enriched = await Promise.all(
@@ -62,6 +71,7 @@ export default async function CategoryPage({ params }: Props) {
         return {
           ...sub,
           totalProducts: sumCounts(sub.id, catList, counts),
+          landingSlug: landingByCategoryId.get(sub.id),
           subcategories: children.map((c: any) => ({
             ...c,
             totalProducts: sumCounts(c.id, catList, counts),
@@ -96,6 +106,7 @@ export default async function CategoryPage({ params }: Props) {
               totalProducts={sub.totalProducts}
               subcategories={sub.subcategories}
               basePath={`/catalog/${params.category}`}
+              landingSlug={sub.landingSlug}
             />
           ))}
         </div>
