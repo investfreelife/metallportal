@@ -20,6 +20,26 @@ export type CatalogSection =
   | typeof SECTION_CONSTRUCTIONS;
 
 /**
+ * Constructions L2 → landing slug mapping (n010).
+ *
+ * Junction `landing_category_links` (Pavel #c027) сейчас связывает landings
+ * с metallоprokat materials (труба профильная, профнастил, балка), а не с
+ * constructions L2 cats. Для empty constructions categories (zabory/garazhi/
+ * etc — 0 products) рендерим landing-style content (m003 components) inside
+ * /constructions/{slug}. Этот map — explicit lookup какой landing config
+ * use для каждой category.
+ *
+ * `navesy` исключена: 137 products → product list view, не landing template.
+ */
+export const CONSTRUCTION_CATEGORY_TO_LANDING: Record<string, string> = {
+  garazhi: "garazh-iz-sendvich-paneley",
+  zabory: "zabory-svarnye",
+  "zdaniya-iz-sendvich-paneley": "zdaniya-iz-sendvich-paneley",
+  "konstruktsii-iz-metalla": "konstruktsii-iz-metalla",
+  "izdeliya-iz-metalla": "izdeliya-iz-metalla",
+};
+
+/**
  * UI metadata per section — используется в sidebar header + page heading +
  * meta-data. Chnage here → applies в catalog + constructions pages.
  */
