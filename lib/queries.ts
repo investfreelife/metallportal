@@ -57,8 +57,9 @@ export async function getCategoryWithChildren(slug: string) {
     .from("products")
     .select(
       `
-      id, name, slug, image_url, unit, dimensions, gost, steel_grade,
+      id, name, slug, image_url, image_urls, unit, dimensions, gost, steel_grade,
       diameter, thickness, coating, material, length, length_options,
+      price_per_m2, roof_shape, roof_material, min_area_m2, reinforcement_type,
       category:categories!category_id(id, name, slug),
       price_items(base_price, discount_price, in_stock, unit,
         supplier:suppliers!left(id, company_name, region, city))

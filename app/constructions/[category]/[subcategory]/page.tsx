@@ -10,6 +10,16 @@ import {
   CONTACT_PHONE_TEL,
 } from "@/lib/contact";
 import Breadcrumbs from "@/components/seo/Breadcrumbs";
+import NavesView from "@/components/navesy/NavesView";
+
+/** ТЗ #031 / LAW navesy-ui-separate-from-metalloprokat. */
+const NAVESY_SLUGS = new Set([
+  "navesy-s-hozblokom",
+  "navesy-dlya-avtomobilya",
+  "navesy-dlya-parkovok",
+  "navesy-besedka",
+  "navesy-dlya-dachi",
+]);
 
 interface Props {
   params: { category: string; subcategory: string };
@@ -85,18 +95,37 @@ export default async function ConstructionSubcategoryPage({ params }: Props) {
     getRelatedLandings(subcategory.id),
     (supabase as any)
       .from("products")
-      .select("id, name, slug, image_url")
+      .select("id, name, slug, image_url, image_urls, price_per_m2, roof_shape, roof_material, min_area_m2, reinforcement_type")
       .eq("category_id", subcategory.id)
       .eq("is_active", true)
       .order("sort_order", { ascending: true })
-      .limit(50) as Promise<{
-        data: Array<{ id: string; name: string; slug: string; image_url: string | null }> | null;
-      }>,
+      .limit(200),
   ]);
 
   const primaryLanding =
     linkedLandings.find((l) => l.linkType === "primary") ?? linkedLandings[0];
   const sectionMeta = SECTION_META[SECTION_CONSTRUCTIONS];
+
+  // ТЗ #031 — navesy получают NavesView вместо custom phone-only grid.
+  if (NAVESY_SLUGS.has(params.subcategory)) {
+    return (
+      <div>
+        <Breadcrumbs
+          items={[
+            { name: sectionMeta.label, href: sectionMeta.href },
+            { name: parent?.name ?? params.category, href: `/constructions/${params.category}` },
+            { name: subcategory.name },
+          ]}
+        />
+        <NavesView
+          category={subcategory}
+          products={(products ?? []) as any}
+          basePath={`/constructions/${params.category}`}
+          categorySlug={params.subcategory}
+        />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -160,7 +189,7 @@ export default async function ConstructionSubcategoryPage({ params }: Props) {
             Доступные модели
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {products.map((p) => (
+            {products.map((p: any) => (
               <article
                 key={p.id}
                 className="bg-card border border-border rounded-xl overflow-hidden hover:border-gold/40 hover:shadow-md transition-all"
