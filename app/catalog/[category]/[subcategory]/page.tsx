@@ -10,6 +10,16 @@ import {
 import { supabase } from "@/lib/supabase";
 import { SITE_URL } from "@/lib/site";
 import CatalogView from "@/components/catalog/CatalogView";
+import NavesView from "@/components/navesy/NavesView";
+
+/** ТЗ #031 / LAW navesy-ui-separate-from-metalloprokat — 5 immutable navesy L3 slugs. */
+const NAVESY_SLUGS = new Set([
+  "navesy-s-hozblokom",
+  "navesy-dlya-avtomobilya",
+  "navesy-dlya-parkovok",
+  "navesy-besedka",
+  "navesy-dlya-dachi",
+]);
 import CatalogCategoryCard from "@/components/catalog/CatalogCategoryCard";
 import ProductDetailView from "@/components/catalog/ProductDetailView";
 import Breadcrumbs from "@/components/seo/Breadcrumbs";
@@ -132,6 +142,29 @@ export default async function SubcategoryPage({ params }: Props) {
       const isBesedka = params.subcategory === "navesy-besedka";
       const isDacha = params.subcategory === "navesy-dlya-dachi";
       const isNavesy = params.category === "navesy";
+
+      // ТЗ #031 — navesy получают отдельный UI (NavesView вместо CatalogView).
+      // Per LAW navesy-ui-separate-from-metalloprokat.
+      if (NAVESY_SLUGS.has(params.subcategory)) {
+        return (
+          <div>
+            <Breadcrumbs
+              items={[
+                { name: "Каталог", href: "/catalog" },
+                { name: parentCategory?.name || params.category, href: `/catalog/${params.category}` },
+                { name: result.category.name },
+              ]}
+            />
+            <NavesView
+              category={result.category}
+              products={result.products as any}
+              basePath={`/catalog/${params.category}`}
+              categorySlug={params.subcategory}
+            />
+          </div>
+        );
+      }
+
       return (
         <div>
           <Breadcrumbs

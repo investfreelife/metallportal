@@ -6,6 +6,17 @@ import {
 } from "@/lib/queries";
 import CatalogView from "@/components/catalog/CatalogView";
 import ProductDetailView from "@/components/catalog/ProductDetailView";
+import NavesView from "@/components/navesy/NavesView";
+import NavesProductDetail from "@/components/navesy/NavesProductDetail";
+
+/** ТЗ #031 / LAW navesy-ui-separate-from-metalloprokat — 5 immutable navesy L3 slugs. */
+const NAVESY_SLUGS = new Set([
+  "navesy-s-hozblokom",
+  "navesy-dlya-avtomobilya",
+  "navesy-dlya-parkovok",
+  "navesy-besedka",
+  "navesy-dlya-dachi",
+]);
 import Breadcrumbs from "@/components/seo/Breadcrumbs";
 
 // W2-3: было `revalidate = 3600` (ISR-кеш на час). Категории info-fields
@@ -65,9 +76,23 @@ export default async function SlugPage({ params }: Props) {
   const category = await getCategoryBySlug(params.slug);
 
   if (category) {
-    // Leaf category — show product list via CatalogView
+    // Leaf category — show product list via CatalogView (or NavesView для navesy L3).
     const result = await getCategoryWithChildren(params.slug);
     if (result) {
+      // ТЗ #031 navesy-ui-separate
+      if (NAVESY_SLUGS.has(params.slug)) {
+        return (
+          <>
+            <Breadcrumbs items={[...baseChain, { name: result.category.name }]} />
+            <NavesView
+              category={result.category}
+              products={result.products as any}
+              basePath={`/catalog/${params.category}/${params.subcategory}`}
+              categorySlug={params.slug}
+            />
+          </>
+        );
+      }
       return (
         <>
           <Breadcrumbs items={[...baseChain, { name: result.category.name }]} />
@@ -86,6 +111,20 @@ export default async function SlugPage({ params }: Props) {
   // 2. Check if slug is a product
   const product = await getProductBySlug(params.slug);
   if (product) {
+    // ТЗ #031 — navesy product detail uses NavesProductDetail (subcategory contains navesy L3 slug).
+    if (NAVESY_SLUGS.has(params.subcategory)) {
+      return (
+        <>
+          <Breadcrumbs items={[...baseChain, { name: product.name }]} />
+          <NavesProductDetail
+            product={product as any}
+            categoryHref={`/catalog/${params.category}/${params.subcategory}`}
+            categoryName={parent?.name ?? params.subcategory}
+          />
+        </>
+      );
+    }
+
     const [priceItems, related] = await Promise.all([
       getProductPriceItems(product.id),
       getRelatedProducts(product.category_id, product.id, 6),
