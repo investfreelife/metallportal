@@ -403,15 +403,7 @@ export default function CatalogView({ category, subcategories, products, categor
 
   return (
     <div>
-        {/* Breadcrumb */}
-        <nav className="text-sm text-muted-foreground mb-4">
-          <Link href="/" className="hover:text-gold transition-colors">Главная</Link>
-          <span className="mx-2">/</span>
-          <Link href="/catalog" className="hover:text-gold transition-colors">Каталог</Link>
-          <span className="mx-2">/</span>
-          <span className="text-foreground">{category.name}</span>
-        </nav>
-
+        {/* Breadcrumb рендерится page-level (см. Breadcrumbs в page.tsx) — НЕ дублируем здесь. */}
         <h1 className="text-3xl font-bold text-foreground mb-5">{category.name}</h1>
 
         {/* W2-3: info-block (description / seo_text markdown / GOST link / CTA).

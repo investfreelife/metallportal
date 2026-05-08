@@ -19,7 +19,8 @@ export default async function CatalogLayout({
     getFullCategoryTree(SECTION_METALLPROKAT),
     getFullCategoryTree(SECTION_CONSTRUCTIONS),
   ]);
-  const categories = [...metallTree, ...constructionsTree];
+  // «Готовые изделия» наверху sidebar — consistency с top nav order (Sergey 2026-05-08).
+  const categories = [...constructionsTree, ...metallTree];
   const meta = SECTION_META[SECTION_METALLPROKAT];
 
   return (
