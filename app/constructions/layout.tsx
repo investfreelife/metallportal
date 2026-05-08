@@ -1,23 +1,25 @@
 import { getFullCategoryTree } from "@/lib/queries";
 import CatalogSidebar from "@/components/catalog/CatalogSidebar";
 import { CatalogFiltersProvider } from "@/contexts/CatalogFiltersContext";
-import { SECTION_CONSTRUCTIONS, SECTION_META } from "@/lib/sections";
+import { SECTION_CONSTRUCTIONS, SECTION_METALLPROKAT, SECTION_META } from "@/lib/sections";
 
 /**
- * /constructions/* shared layout — mirror /catalog/layout.tsx, но sidebar
- * показывает ТОЛЬКО constructions-section categories (Иван #026
- * display_section). Header link «Готовые изделия» → /constructions.
+ * /constructions/* shared layout — mirror /catalog/layout.tsx. Per Sergey
+ * 2026-05-08 «должен быть единый каталог! и на сайте и в меню!» sidebar
+ * показывает constructions L1 + metalloprokat L1 (same tree как /catalog).
  *
- * Сами sub-routes `/constructions/garazhi`, `/constructions/zabory/*` и т.д.
- * проброшены через next.config.js rewrites на existing `/catalog/gotovye-
- * konstruktsii/*` routing — без duplicate `[category]/[subcategory]` файлов.
+ * Header link «Готовые изделия» → /constructions.
  */
 export default async function ConstructionsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const categories = await getFullCategoryTree(SECTION_CONSTRUCTIONS);
+  const [constructionsTree, metallTree] = await Promise.all([
+    getFullCategoryTree(SECTION_CONSTRUCTIONS),
+    getFullCategoryTree(SECTION_METALLPROKAT),
+  ]);
+  const categories = [...constructionsTree, ...metallTree];
   const meta = SECTION_META[SECTION_CONSTRUCTIONS];
 
   return (
