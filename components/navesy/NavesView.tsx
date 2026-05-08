@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { roofShapeLabel, roofMaterialLabel } from "./labels";
+import PhotoEditable from "@/components/admin/PhotoEditable";
 
 /**
  * NavesView — list page для navesy L3 categories (5 immutable slugs).
@@ -60,7 +61,11 @@ export default function NavesView({ category, products, basePath, categorySlug }
               href={`${basePath}/${categorySlug}/${p.slug}`}
               className="group bg-card border border-border rounded-lg overflow-hidden hover:border-gold/40 hover:shadow-lg transition-all"
             >
-              <div className="relative w-full h-52 bg-muted overflow-hidden">
+              <PhotoEditable
+                photoId={`product:${p.slug}`}
+                dimensions="640×208"
+                className="w-full h-52 bg-muted overflow-hidden"
+              >
                 {p.image_url ? (
                   <Image
                     src={p.image_url}
@@ -75,7 +80,7 @@ export default function NavesView({ category, products, basePath, categorySlug }
                     🏗️
                   </div>
                 )}
-              </div>
+              </PhotoEditable>
               <div className="p-4 space-y-3">
                 <h3 className="text-base font-bold text-foreground leading-snug group-hover:text-gold transition-colors">
                   {p.name}

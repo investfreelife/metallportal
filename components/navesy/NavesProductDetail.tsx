@@ -6,6 +6,7 @@ import { Hammer, ShieldCheck, Heart, FileText } from "lucide-react";
 import { roofShapeLabel, roofMaterialLabel, reinforcementLabel } from "./labels";
 import NavesCalculator from "./NavesCalculator";
 import NavesOrderForm from "./NavesOrderForm";
+import PhotoEditable from "@/components/admin/PhotoEditable";
 
 /**
  * NavesProductDetail — product detail page для navesy.
@@ -62,7 +63,11 @@ export default function NavesProductDetail({ product, categoryHref, categoryName
       {/* 1. Hero + meta */}
       <section className="grid lg:grid-cols-2 gap-8 items-start">
         <div className="space-y-3">
-          <div className="relative w-full h-80 md:h-96 bg-muted rounded-xl overflow-hidden border border-border">
+          <PhotoEditable
+            photoId={`product:${product.slug}`}
+            dimensions="800×384"
+            className="w-full h-80 md:h-96 bg-muted rounded-xl overflow-hidden border border-border"
+          >
             {heroImage ? (
               <Image
                 src={heroImage}
@@ -78,7 +83,7 @@ export default function NavesProductDetail({ product, categoryHref, categoryName
                 🏗️
               </div>
             )}
-          </div>
+          </PhotoEditable>
           {images.length > 1 && (
             <div className="flex gap-2 overflow-x-auto">
               {images.map((src, i) => (
