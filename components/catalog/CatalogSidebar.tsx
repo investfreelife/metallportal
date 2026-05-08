@@ -98,7 +98,8 @@ export default function CatalogSidebar({
 function SidebarLevel1({ cat, pathname, onNavigate }: { cat: any; pathname: string; onNavigate?: () => void }) {
   const href = `/catalog/${cat.slug}`;
   const isActive = pathname === href || pathname.startsWith(href + "/");
-  const [expanded, setExpanded] = useState(true);
+  // По умолчанию свёрнуто — раскрывается только active path (Sergey 2026-05-08).
+  const [expanded, setExpanded] = useState(isActive);
   const hasSubs = cat.subcategories?.length > 0;
 
   return (
