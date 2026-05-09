@@ -50,14 +50,21 @@ export default async function CategoryPage({ params }: Props) {
   // If category has subcategories → show cards
   if (subcategories.length > 0) {
     const subIds = subcategories.map((s: any) => s.id);
+    // Landing redirect только для gotovye-konstruktsii subtree (Sergey 2026-05-08:
+    // на metalloprokat L1 страницах cards должны вести в подразделы каталога,
+    // не на лендинг — primary junction там используется только для cross-promo
+    // блока внизу страницы через RelatedLandingsSection).
+    const allowLandingRedirect = params.category === "gotovye-konstruktsii";
     const [counts, { data: allCats }, { data: primaryLinks }] = await Promise.all([
       getProductCounts(),
       supabase.from("categories").select("id, parent_id").eq("is_active", true),
-      supabase
-        .from("landing_category_links")
-        .select("category_id, landing_slug")
-        .eq("link_type", "primary")
-        .in("category_id", subIds),
+      allowLandingRedirect
+        ? supabase
+            .from("landing_category_links")
+            .select("category_id, landing_slug")
+            .eq("link_type", "primary")
+            .in("category_id", subIds)
+        : Promise.resolve({ data: [] as any[] }),
     ]);
     const catList = allCats ?? [];
     const landingByCategoryId = new Map<string, string>(
