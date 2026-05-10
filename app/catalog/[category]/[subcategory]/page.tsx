@@ -4,7 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { CheckCircle } from "lucide-react";
 import CategoryCallbackCTA from "@/components/catalog/CategoryCallbackCTA";
 import {
-  getCategoryBySlug, getSubcategories, getCategoryWithChildren,
+  getCategoryBySlug, getSubcategories, getCategoryWithChildren, getAggregatedCategoryCards,
   getProductBySlug, getProductPriceItems, getRelatedProducts, getProductCounts, sumCounts,
 } from "@/lib/queries";
 import { supabase } from "@/lib/supabase";
@@ -85,6 +85,54 @@ export default async function SubcategoryPage({ params }: Props) {
   const category = await getCategoryBySlug(params.subcategory);
 
   if (category) {
+    // Sergey 2026-05-09: aggregator pages — карточки на existing categories из других веток.
+    if (category.aggregated_category_slugs && category.aggregated_category_slugs.length > 0) {
+      const aggCards = await getAggregatedCategoryCards(category.aggregated_category_slugs);
+      return (
+        <div>
+          <Breadcrumbs
+            items={[
+              { name: "Каталог", href: "/catalog" },
+              { name: parentCategory?.name || params.category, href: `/catalog/${params.category}` },
+              { name: category.name },
+            ]}
+          />
+          <h1 className="text-3xl font-bold text-foreground mb-2">{category.name}</h1>
+          {category.description && (
+            <p className="text-muted-foreground mb-8 max-w-3xl">{category.description}</p>
+          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {aggCards.map((c: any) => (
+              <Link
+                key={c.id}
+                href={c.fullHref}
+                className="group bg-card border border-border rounded-lg overflow-hidden hover:border-gold/40 hover:shadow-lg transition-all"
+              >
+                <div className="relative w-full h-44 bg-muted overflow-hidden flex items-center justify-center">
+                  {c.image_url ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img src={c.image_url} alt={c.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                  ) : (
+                    <span className="text-5xl opacity-30">{c.icon || "📦"}</span>
+                  )}
+                </div>
+                <div className="p-4">
+                  <h3 className="text-base font-bold text-foreground leading-snug group-hover:text-gold transition-colors mb-2">
+                    {c.name}
+                  </h3>
+                  {c.totalProducts > 0 && (
+                    <span className="text-xs text-muted-foreground">
+                      {c.totalProducts} {c.totalProducts === 1 ? "позиция" : c.totalProducts < 5 ? "позиции" : "позиций"}
+                    </span>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
     const subcategories = await getSubcategories(category.id);
 
     // Has children → show cards
