@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import {
   getCategoryBySlug, getCategoryWithChildren,
-  getProductBySlug, getProductPriceItems, getProductSellerOffers, getRelatedProducts,
+  getProductBySlug, getProductPriceItemsCutoverAware, getProductSellerOffers, getRelatedProducts,
 } from "@/lib/queries";
 import CatalogView from "@/components/catalog/CatalogView";
 import ProductDetailView from "@/components/catalog/ProductDetailView";
@@ -136,7 +136,7 @@ export default async function SlugPage({ params }: Props) {
     }
 
     const [priceItems, sellerOffers, related] = await Promise.all([
-      getProductPriceItems(product.id),
+      getProductPriceItemsCutoverAware(product.id),
       getProductSellerOffers(product.id),
       getRelatedProducts(product.category_id, product.id, 6),
     ]);

@@ -1,4 +1,8 @@
 import { supabase } from "./supabase";
+import {
+  MARKETPLACE_CUTOVER_ENABLED,
+  sellerOfferToPriceItem,
+} from "./marketplaceCutover";
 
 export async function getMainCategories(): Promise<any[]> {
   const { data, error } = await supabase
@@ -306,4 +310,49 @@ export async function getProductPriceItems(productId: string): Promise<any[]> {
     return [];
   }
   return data ?? [];
+}
+
+/**
+ * ТЗ #041 — Cutover-aware price fetcher для product detail page.
+ *
+ * Когда `NEXT_PUBLIC_MARKETPLACE_CUTOVER=1` — читаем `seller_offers` (Layer 2)
+ * и адаптируем в price_items shape для drop-in замены в PriceBlock / ProductTabs.
+ * Иначе fallback к legacy `getProductPriceItems` (price_items напрямую).
+ *
+ * SellerOffersSection (#040) продолжает читать seller_offers напрямую через
+ * getProductSellerOffers — так visual-вид списка офферов не зависит от flag.
+ *
+ * Returns price_items-shaped array (sorted by base_price ASC), готовый для:
+ *   - PriceBlock (best-price computation + calculator)
+ *   - ProductTabs (price tab)
+ *   - JSON-LD schema offers
+ *   - SupplierPriceTable
+ */
+export async function getProductPriceItemsCutoverAware(
+  productId: string,
+): Promise<any[]> {
+  if (!MARKETPLACE_CUTOVER_ENABLED) {
+    return getProductPriceItems(productId);
+  }
+
+  // Cutover ON: читаем seller_offers, адаптируем в price_items shape
+  const { data, error } = await (supabase as any)
+    .from("seller_offers")
+    .select(`
+      id, product_id, seller_id, base_price, final_price, currency, unit,
+      in_stock, stock_quantity, min_quantity, lead_time_days, is_active,
+      is_buy_box,
+      seller:suppliers!seller_id(id, company_name, region, city, rating, is_verified)
+    `)
+    .eq("product_id", productId)
+    .eq("is_active", true)
+    .order("base_price", { ascending: true });
+
+  if (error) {
+    console.error("getProductPriceItemsCutoverAware (seller_offers) error:", error);
+    // Graceful degradation — если seller_offers недоступен, fallback к price_items
+    return getProductPriceItems(productId);
+  }
+
+  return (data ?? []).map(sellerOfferToPriceItem);
 }

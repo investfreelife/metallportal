@@ -5,7 +5,7 @@ import { CheckCircle } from "lucide-react";
 import CategoryCallbackCTA from "@/components/catalog/CategoryCallbackCTA";
 import {
   getCategoryBySlug, getSubcategories, getCategoryWithChildren, getAggregatedCategoryCards,
-  getProductBySlug, getProductPriceItems, getProductSellerOffers, getRelatedProducts, getProductCounts, sumCounts,
+  getProductBySlug, getProductPriceItemsCutoverAware, getProductSellerOffers, getRelatedProducts, getProductCounts, sumCounts,
 } from "@/lib/queries";
 import { supabase } from "@/lib/supabase";
 import { SITE_URL } from "@/lib/site";
@@ -891,7 +891,7 @@ export default async function SubcategoryPage({ params }: Props) {
   const product = await getProductBySlug(params.subcategory);
   if (product) {
     const [priceItems, sellerOffers, related] = await Promise.all([
-      getProductPriceItems(product.id),
+      getProductPriceItemsCutoverAware(product.id),
       getProductSellerOffers(product.id),
       getRelatedProducts(product.category_id, product.id, 6),
     ]);
