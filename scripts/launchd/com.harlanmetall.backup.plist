@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ТЗ #043 Block D — macOS launchd job для daily backup.
+
+  Install:
+    cp scripts/launchd/com.harlanmetall.backup.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/com.harlanmetall.backup.plist
+
+  Verify:
+    launchctl list | grep harlanmetall
+
+  Uninstall:
+    launchctl unload ~/Library/LaunchAgents/com.harlanmetall.backup.plist
+    rm ~/Library/LaunchAgents/com.harlanmetall.backup.plist
+
+  Schedule: daily 03:00 МСК = 00:00 UTC.
+
+  Logs:
+    /Users/Shared/металл/_BACKUP/daily/log.txt (script-internal log)
+    /tmp/harlanmetall-backup.{out,err}.log (launchd stdout/stderr)
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.harlanmetall.backup</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/Shared/металл/metallportal/scripts/daily_backup.sh</string>
+    </array>
+
+    <!-- 03:00 МСК (UTC+3) = 00:00 UTC. launchd uses local time, set по МСК. -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>3</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/tmp/harlanmetall-backup.out.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/tmp/harlanmetall-backup.err.log</string>
+
+    <!-- Если Mac был выключен в 03:00 — run при wake-up -->
+    <key>RunAtLoad</key>
+    <false/>
+
+    <!-- Don't keep alive — это разовый job per scheduled time -->
+    <key>KeepAlive</key>
+    <false/>
+</dict>
+</plist>
