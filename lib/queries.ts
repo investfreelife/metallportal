@@ -137,18 +137,30 @@ export async function getCategoryWithChildren(slug: string) {
   // Get products for this category and all its subcategories
   const categoryIds = [category.id, ...subcategories.map((s) => s.id)];
 
-  const { data: products, error } = await supabase
-    .from("products")
-    .select(
-      `
+  // ТЗ #042: cutover-aware select.
+  // flag OFF (default) → JOIN price_items напрямую (legacy behavior, sub-select)
+  // flag ON → select products БЕЗ price_items, потом hydrateProductsWithSellerOffers
+  const productSelect = MARKETPLACE_CUTOVER_ENABLED
+    ? `
       id, name, slug, image_url, image_urls, unit, dimensions, gost, steel_grade,
       diameter, thickness, coating, material, length, length_options,
       price_per_m2, roof_shape, roof_material, min_area_m2, reinforcement_type,
+      category_id,
+      category:categories!category_id(id, name, slug)
+    `
+    : `
+      id, name, slug, image_url, image_urls, unit, dimensions, gost, steel_grade,
+      diameter, thickness, coating, material, length, length_options,
+      price_per_m2, roof_shape, roof_material, min_area_m2, reinforcement_type,
+      category_id,
       category:categories!category_id(id, name, slug),
       price_items(base_price, discount_price, in_stock, unit,
         supplier:suppliers!left(id, company_name, region, city))
-    `
-    )
+    `;
+
+  const { data: products, error } = await supabase
+    .from("products")
+    .select(productSelect)
     .in("category_id", categoryIds)
     .eq("is_active", true)
     .limit(5000);
@@ -157,10 +169,13 @@ export async function getCategoryWithChildren(slug: string) {
     console.error("getCategoryWithChildren products error:", error);
   }
 
+  // Hydrate с seller_offers если cutover ON (no-op otherwise)
+  const hydrated = await hydrateProductsWithSellerOffers((products ?? []) as any[]);
+
   return {
     category,
     subcategories,
-    products: products ?? [],
+    products: hydrated,
   };
 }
 
@@ -187,15 +202,21 @@ export async function getProductBySlug(slug: string): Promise<any | null> {
 }
 
 export async function getRelatedProducts(categoryId: string, excludeId: string, limit = 6): Promise<any[]> {
+  // ТЗ #042: cutover-aware — flag ON skips price_items JOIN, потом hydrate batch
+  const select = MARKETPLACE_CUTOVER_ENABLED
+    ? "id, name, slug, unit, gost, steel_grade"
+    : "id, name, slug, unit, gost, steel_grade, price_items(*)";
+
   const { data, error } = await supabase
     .from("products")
-    .select("id, name, slug, unit, gost, steel_grade, price_items(*)")
+    .select(select)
     .eq("category_id", categoryId)
     .neq("id", excludeId)
     .eq("is_active", true)
     .limit(limit);
   if (error) { console.error("getRelatedProducts error:", error); return []; }
-  return data ?? [];
+
+  return await hydrateProductsWithSellerOffers((data ?? []) as any[]);
 }
 
 export async function getProductCounts(): Promise<Record<string, number>> {
@@ -355,4 +376,63 @@ export async function getProductPriceItemsCutoverAware(
   }
 
   return (data ?? []).map(sellerOfferToPriceItem);
+}
+
+/**
+ * ТЗ #042 — Batch hydration: attach seller_offers (adapted в price_items shape)
+ * к array продуктов в одном round-trip.
+ *
+ * Используется catalog list views (CatalogView, ProductCard, ProductTable),
+ * которые читают `product.price_items` from JOIN. После hydration components
+ * остаются untouched — same shape, just data из seller_offers вместо price_items.
+ *
+ * Flag-gated: когда `MARKETPLACE_CUTOVER_ENABLED=false` — no-op (preserves
+ * existing price_items field из getCategoryWithChildren legacy JOIN).
+ *
+ * Performance: single `IN(productIds)` query вместо N+1.
+ *
+ * Mutates products in place AND returns the array (для chain-friendly usage).
+ */
+export async function hydrateProductsWithSellerOffers<T extends { id: string }>(
+  products: T[],
+): Promise<T[]> {
+  if (!MARKETPLACE_CUTOVER_ENABLED || products.length === 0) {
+    return products;
+  }
+
+  const productIds = products.map((p) => p.id);
+  const { data, error } = await (supabase as any)
+    .from("seller_offers")
+    .select(`
+      id, product_id, seller_id, base_price, final_price, currency, unit,
+      in_stock, stock_quantity, min_quantity, lead_time_days, is_active,
+      is_buy_box,
+      seller:suppliers!seller_id(id, company_name, region, city, rating, is_verified)
+    `)
+    .in("product_id", productIds)
+    .eq("is_active", true);
+
+  if (error) {
+    console.error("hydrateProductsWithSellerOffers (seller_offers) error:", error);
+    // Graceful degradation — оставляем existing price_items (если был JOIN'нут)
+    return products;
+  }
+
+  // Group offers by product_id
+  const offersByProduct = new Map<string, any[]>();
+  for (const offer of data ?? []) {
+    const list = offersByProduct.get(offer.product_id) ?? [];
+    list.push(sellerOfferToPriceItem(offer));
+    offersByProduct.set(offer.product_id, list);
+  }
+
+  // Attach к each product as `price_items` (legacy field name preserved)
+  for (const product of products) {
+    const offers = offersByProduct.get(product.id) ?? [];
+    // Sort by base_price ASC (matches getProductPriceItems ORDER BY)
+    offers.sort((a, b) => Number(a.base_price ?? Infinity) - Number(b.base_price ?? Infinity));
+    (product as any).price_items = offers;
+  }
+
+  return products;
 }
