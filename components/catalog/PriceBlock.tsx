@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ShoppingCart, PhoneCall, FileUp, Calculator, Check } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
+import RequestPriceModal from "@/components/catalog/RequestPriceModal";
 
 interface PriceBlockProps {
   priceItems: Array<{
@@ -23,6 +24,7 @@ export default function PriceBlock({ priceItems, unit, weightPerMeter, productNa
   const [calcMode, setCalcMode] = useState<"meters" | "tons">("meters");
   const [qty, setQty] = useState<string>("100");
   const [added, setAdded] = useState(false);
+  const [priceModalOpen, setPriceModalOpen] = useState(false);
   const { addItem } = useCart();
 
   // Best price
@@ -196,7 +198,10 @@ export default function PriceBlock({ priceItems, unit, weightPerMeter, productNa
                 ? `В корзину (${tons.toFixed(3)} т)`
                 : "В корзину"}
         </button>
-        <button className="w-full flex items-center justify-center gap-2 border-2 border-gold text-foreground hover:bg-gold/10 font-semibold py-2.5 rounded-lg transition-all">
+        <button
+          onClick={() => setPriceModalOpen(true)}
+          className="w-full flex items-center justify-center gap-2 border-2 border-gold text-foreground hover:bg-gold/10 font-semibold py-2.5 rounded-lg transition-all"
+        >
           <PhoneCall size={16} />
           Получить цену
         </button>
@@ -205,6 +210,14 @@ export default function PriceBlock({ priceItems, unit, weightPerMeter, productNa
           Загрузить смету
         </button>
       </div>
+
+      <RequestPriceModal
+        open={priceModalOpen}
+        onClose={() => setPriceModalOpen(false)}
+        productName={productName}
+        productSlug={productSlug}
+        productId={productId}
+      />
     </div>
   );
 }
