@@ -65,6 +65,36 @@ export async function getAggregatedCategoryCards(slugs: string[]): Promise<any[]
   return result;
 }
 
+/**
+ * Fetch seller_offers для product с привязкой к suppliers (seller info).
+ * Layer 3 frontend aggregation per LAW-marketplace-architecture.
+ *
+ * Returns active+in_stock offers sorted: buy_box first, then by final_price ASC.
+ * Includes seller info (company_name, rating, verified) для отображения.
+ */
+export async function getProductSellerOffers(productId: string): Promise<any[]> {
+  if (!productId) return [];
+  const { data, error } = await (supabase as any)
+    .from("seller_offers")
+    .select(`
+      id, product_id, seller_id, base_price, final_price, currency, unit,
+      in_stock, stock_quantity, min_quantity, min_order_qty,
+      lead_time_days, regions_served, is_active, is_buy_box, valid_until,
+      seller:suppliers!seller_id(id, company_name, is_verified, rating, region, city)
+    `)
+    .eq("product_id", productId)
+    .eq("is_active", true)
+    .order("is_buy_box", { ascending: false })
+    .order("final_price", { ascending: true })
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error("getProductSellerOffers error:", error);
+    return [];
+  }
+  return data ?? [];
+}
+
 export async function getCategoryBySlug(slug: string): Promise<any | null> {
   const { data, error } = await supabase
     .from("categories")

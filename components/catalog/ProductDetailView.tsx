@@ -2,6 +2,7 @@ import Link from "next/link";
 import PhotoEditable from "@/components/admin/PhotoEditable";
 import ProductTabs from "@/components/catalog/ProductTabs";
 import PriceBlock from "@/components/catalog/PriceBlock";
+import SellerOffersSection from "@/components/catalog/SellerOffersSection";
 import NavesProductDetail from "@/components/catalog/NavesProductDetail";
 import { CheckCircle } from "lucide-react";
 import CategoryCallbackCTA from "@/components/catalog/CategoryCallbackCTA";
@@ -44,9 +45,10 @@ interface ProductDetailViewProps {
   priceItems: any[];
   related: any[];
   basePath: string; // e.g. "/catalog/metalloprokat/truby-i-profil"
+  sellerOffers?: any[]; // ТЗ #040: aggregated seller_offers (Layer 3 marketplace)
 }
 
-export default function ProductDetailView({ product, priceItems, related, basePath }: ProductDetailViewProps) {
+export default function ProductDetailView({ product, priceItems, related, basePath, sellerOffers = [] }: ProductDetailViewProps) {
   if (product.unit === "м²") {
     return <NavesProductDetail product={{ ...product, price_items: priceItems }} related={related} basePath={basePath} />;
   }
@@ -155,6 +157,12 @@ export default function ProductDetailView({ product, priceItems, related, basePa
           />
         </div>
       </div>
+
+      {sellerOffers.length > 0 && (
+        <div className="mt-8">
+          <SellerOffersSection offers={sellerOffers} unit={product.unit} />
+        </div>
+      )}
 
       {related.length > 0 && (
         <section className="mt-12">
