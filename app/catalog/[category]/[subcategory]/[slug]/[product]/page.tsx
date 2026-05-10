@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getCategoryBySlug, getProductBySlug, getProductPriceItems, getProductSellerOffers, getRelatedProducts } from "@/lib/queries";
+import { getCategoryBySlug, getProductBySlug, getProductPriceItemsCutoverAware, getProductSellerOffers, getRelatedProducts } from "@/lib/queries";
 import ProductDetailView from "@/components/catalog/ProductDetailView";
 import Breadcrumbs from "@/components/seo/Breadcrumbs";
 
@@ -25,7 +25,7 @@ export default async function ProductAtDepth4Page({ params }: Props) {
   if (!product) return notFound();
 
   const [priceItems, sellerOffers, related, l1, l2, l3] = await Promise.all([
-    getProductPriceItems(product.id),
+    getProductPriceItemsCutoverAware(product.id),
     getProductSellerOffers(product.id),
     getRelatedProducts(product.category_id, product.id, 6),
     getCategoryBySlug(params.category),
