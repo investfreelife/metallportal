@@ -5,6 +5,7 @@ import { getCategoryBySlug, getSubcategories, getCategoryWithChildren, getProduc
 import { supabase } from "@/lib/supabase";
 import CatalogView from "@/components/catalog/CatalogView";
 import CatalogCategoryCard from "@/components/catalog/CatalogCategoryCard";
+import EmptyCategoryLanding from "@/components/catalog/EmptyCategoryLanding";
 import Breadcrumbs from "@/components/seo/Breadcrumbs";
 import RelatedLandingsSection from "@/components/landings/RelatedLandingsSection";
 import { CheckCircle } from "lucide-react";
@@ -472,9 +473,20 @@ export default async function CategoryPage({ params }: Props) {
     );
   }
 
-  // Leaf category — show product list
+  // Leaf category — show product list (or SEO landing если 0 products).
   const result = await getCategoryWithChildren(params.category);
   if (!result) return notFound();
+
+  // Sergey 2026-05-09: пустые категории → SEO landing-заглушка с CTA.
+  // Когда products появятся — autoматически переключится на CatalogView.
+  if (result.products.length === 0) {
+    return (
+      <>
+        <Breadcrumbs items={[{ name: "Каталог", href: "/catalog" }, { name: result.category.name }]} />
+        <EmptyCategoryLanding category={result.category as any} />
+      </>
+    );
+  }
 
   const CARDS_DEFAULT = new Set([
     "angary", "navesy", "sklady-i-tseha", "kozyrki", "karkasy-zdaniy",

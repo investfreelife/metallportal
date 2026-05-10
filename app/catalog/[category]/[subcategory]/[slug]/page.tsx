@@ -6,6 +6,7 @@ import {
 } from "@/lib/queries";
 import CatalogView from "@/components/catalog/CatalogView";
 import ProductDetailView from "@/components/catalog/ProductDetailView";
+import EmptyCategoryLanding from "@/components/catalog/EmptyCategoryLanding";
 import NavesView from "@/components/navesy/NavesView";
 import NavesProductDetail from "@/components/navesy/NavesProductDetail";
 
@@ -90,6 +91,15 @@ export default async function SlugPage({ params }: Props) {
               basePath={`/catalog/${params.category}/${params.subcategory}`}
               categorySlug={params.slug}
             />
+          </>
+        );
+      }
+      // Sergey 2026-05-09: empty category → SEO landing fallback.
+      if (result.products.length === 0 && result.subcategories.length === 0) {
+        return (
+          <>
+            <Breadcrumbs items={[...baseChain, { name: result.category.name }]} />
+            <EmptyCategoryLanding category={result.category as any} />
           </>
         );
       }
