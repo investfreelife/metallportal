@@ -15,6 +15,56 @@ export async function getMainCategories(): Promise<any[]> {
   return data ?? [];
 }
 
+/**
+ * Resolve aggregated category slugs к карточкам с полным href + recursive product count.
+ * Используется для virtual aggregator pages (категории с aggregated_category_slugs).
+ *
+ * Per Sergey 2026-05-09: «потяни в них сразу разделы которые уже существуют у нас в базе
+ * не создавай новые». Source-of-truth категории остаются в их parents — этот хелпер
+ * только resolved их paths для отображения карточками.
+ */
+export async function getAggregatedCategoryCards(slugs: string[]): Promise<any[]> {
+  if (!slugs || slugs.length === 0) return [];
+  const { data: targets } = await supabase
+    .from("categories")
+    .select("id, slug, name, image_url, icon, description, parent_id, is_active")
+    .in("slug", slugs)
+    .eq("is_active", true);
+  if (!targets || targets.length === 0) return [];
+
+  // Walk parents для каждой category — build full path
+  const { data: allCats } = await supabase
+    .from("categories")
+    .select("id, slug, parent_id");
+  const byId = new Map((allCats ?? []).map((c: any) => [c.id, c]));
+
+  const counts = await getProductCounts();
+  const catList = (allCats ?? []).map((c: any) => ({ id: c.id, parent_id: c.parent_id }));
+
+  const result = targets.map((cat: any) => {
+    // Walk parents
+    const path: string[] = [cat.slug];
+    let cur = cat;
+    while (cur.parent_id) {
+      const p: any = byId.get(cur.parent_id);
+      if (!p) break;
+      path.unshift(p.slug);
+      cur = p;
+    }
+    const fullHref = `/catalog/${path.join("/")}`;
+    return {
+      ...cat,
+      fullHref,
+      totalProducts: sumCounts(cat.id, catList, counts),
+    };
+  });
+
+  // Sort по order слугов в input array
+  const order = new Map(slugs.map((s, i) => [s, i]));
+  result.sort((a, b) => (order.get(a.slug) ?? 999) - (order.get(b.slug) ?? 999));
+  return result;
+}
+
 export async function getCategoryBySlug(slug: string): Promise<any | null> {
   const { data, error } = await supabase
     .from("categories")
