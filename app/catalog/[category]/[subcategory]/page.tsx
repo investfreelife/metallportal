@@ -10,6 +10,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import { SITE_URL } from "@/lib/site";
 import CatalogView from "@/components/catalog/CatalogView";
+import EmptyCategoryLanding from "@/components/catalog/EmptyCategoryLanding";
 import NavesView from "@/components/navesy/NavesView";
 
 /** ТЗ #031 / LAW navesy-ui-separate-from-metalloprokat — 5 immutable navesy L3 slugs. */
@@ -161,6 +162,22 @@ export default async function SubcategoryPage({ params }: Props) {
               basePath={`/catalog/${params.category}`}
               categorySlug={params.subcategory}
             />
+          </div>
+        );
+      }
+
+      // Sergey 2026-05-09: empty category → SEO landing fallback.
+      if (result.products.length === 0 && result.subcategories.length === 0) {
+        return (
+          <div>
+            <Breadcrumbs
+              items={[
+                { name: "Каталог", href: "/catalog" },
+                { name: parentCategory?.name || params.category, href: `/catalog/${params.category}` },
+                { name: result.category.name },
+              ]}
+            />
+            <EmptyCategoryLanding category={result.category as any} />
           </div>
         );
       }
