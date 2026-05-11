@@ -134,8 +134,37 @@ export async function getCategoryWithChildren(slug: string) {
 
   const subcategories = await getSubcategories(category.id);
 
-  // Get products for this category and all its subcategories
-  const categoryIds = [category.id, ...subcategories.map((s) => s.id)];
+  // Direct category IDs (own + immediate children)
+  const directIds = [category.id, ...subcategories.map((s) => s.id)];
+
+  // ТЗ #048: Dynamic aggregator pattern.
+  // Если у категории есть aggregated_category_slugs — собрать также products
+  // из тех categories для unified view (Металлсервис style).
+  // Pattern: товары физически живут в их home category, но "virtually" видны
+  // в aggregator при чтении. Никакого дублирования records.
+  let aggregatedIds: string[] = [];
+  const aggSlugs = (category as any).aggregated_category_slugs as string[] | null | undefined;
+  if (aggSlugs && Array.isArray(aggSlugs) && aggSlugs.length > 0) {
+    const { data: aggCats } = await supabase
+      .from("categories")
+      .select("id, slug")
+      .in("slug", aggSlugs)
+      .eq("is_active", true);
+    aggregatedIds = (aggCats ?? []).map((c: any) => c.id);
+    // Также подтянуть children of aggregated categories (если у source category
+    // есть subcategories, например shveller-goryachekatanyy → его собственные L4)
+    if (aggregatedIds.length > 0) {
+      const { data: aggChildren } = await supabase
+        .from("categories")
+        .select("id")
+        .in("parent_id", aggregatedIds)
+        .eq("is_active", true);
+      aggregatedIds = aggregatedIds.concat((aggChildren ?? []).map((c: any) => c.id));
+    }
+  }
+
+  // Merge ids — direct first, aggregated after. Dedupe (just in case).
+  const categoryIds = Array.from(new Set([...directIds, ...aggregatedIds]));
 
   // ТЗ #042: cutover-aware select.
   // flag OFF (default) → JOIN price_items напрямую (legacy behavior, sub-select)
@@ -169,8 +198,16 @@ export async function getCategoryWithChildren(slug: string) {
     console.error("getCategoryWithChildren products error:", error);
   }
 
+  // Dedupe by product.id (если бы товар случайно был в 2 categoryIds — paranoia)
+  const seen = new Set<string>();
+  const uniqueProducts = ((products ?? []) as any[]).filter((p: any) => {
+    if (seen.has(p.id)) return false;
+    seen.add(p.id);
+    return true;
+  });
+
   // Hydrate с seller_offers если cutover ON (no-op otherwise)
-  const hydrated = await hydrateProductsWithSellerOffers((products ?? []) as any[]);
+  const hydrated = await hydrateProductsWithSellerOffers(uniqueProducts);
 
   return {
     category,
