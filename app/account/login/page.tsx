@@ -1,13 +1,16 @@
 "use client";
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Building2, Phone, MessageCircle } from "lucide-react";
 import Link from "next/link";
 
-const supabase = createClient(
+// CRITICAL: использовать createBrowserClient из @supabase/ssr (не vanilla
+// createClient), чтобы session syncs в cookies — иначе server-side `/account`
+// route не видит auth и redirects обратно на login (ТЗ #047 bug).
+const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
 );
 
 export default function AccountLoginPage() {
@@ -136,8 +139,10 @@ function AccountLoginInner() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Ошибка");
       if (data.access_token) {
-        const sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-        await sb.auth.setSession({ access_token: data.access_token, refresh_token: data.refresh_token });
+        // ТЗ #047: use the same createBrowserClient (cookie-syncing) instance,
+        // не vanilla createClient — иначе session кладётся только в localStorage
+        // и server-side /account её не видит.
+        await supabase.auth.setSession({ access_token: data.access_token, refresh_token: data.refresh_token });
       }
       window.location.href = "/account";
     } catch (e: any) {
