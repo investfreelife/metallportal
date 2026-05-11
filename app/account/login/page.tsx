@@ -1,5 +1,6 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Building2, Phone, MessageCircle } from "lucide-react";
 import Link from "next/link";
@@ -10,8 +11,20 @@ const supabase = createClient(
 );
 
 export default function AccountLoginPage() {
-  const [mode, setMode] = useState<"phone" | "email">("phone");
-  const [tab, setTab] = useState<"login" | "register">("login");
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background" />}>
+      <AccountLoginInner />
+    </Suspense>
+  );
+}
+
+function AccountLoginInner() {
+  const searchParams = useSearchParams();
+  const initialTab: "login" | "register" = searchParams.get("tab") === "register" ? "register" : "login";
+  const initialMode: "phone" | "email" = searchParams.get("tab") === "register" || searchParams.get("mode") === "email" ? "email" : "phone";
+
+  const [mode, setMode] = useState<"phone" | "email">(initialMode);
+  const [tab, setTab] = useState<"login" | "register">(initialTab);
 
   // Email/password state
   const [email, setEmail] = useState("");
@@ -67,11 +80,44 @@ export default function AccountLoginPage() {
 
     if (tab === "login") {
       const { error: err } = await supabase.auth.signInWithPassword({ email, password });
-      if (err) { setError("Неверный email или пароль"); setLoading(false); return; }
-      window.location.href = "/account";
+      if (err) {
+        // ТЗ #046 — Specific error mapping instead of generic «Неверный email или пароль»
+        const msg = (err.message || "").toLowerCase();
+        if (msg.includes("email not confirmed")) {
+          setError("Email не подтверждён. Проверьте почту или запросите новое подтверждение через «Забыли пароль?» ниже.");
+        } else if (msg.includes("invalid login credentials") || msg.includes("invalid email")) {
+          setError("Неверный email или пароль. Если забыли пароль — восстановите через ссылку ниже.");
+        } else if (msg.includes("rate limit") || msg.includes("too many")) {
+          setError("Слишком много попыток входа. Попробуйте через 5 минут.");
+        } else if (msg.includes("user not found")) {
+          setError("Пользователь не найден. Зарегистрируйтесь через вкладку «Регистрация».");
+        } else if (msg.includes("banned") || msg.includes("locked")) {
+          setError("Аккаунт заблокирован. Свяжитесь с поддержкой: info@harlansteel.ru");
+        } else {
+          // Show real error message instead of generic — helps user understand what's wrong
+          setError(`Ошибка входа: ${err.message}`);
+        }
+        setLoading(false);
+        return;
+      }
+      const redirect = searchParams.get("redirect") || "/account";
+      window.location.href = redirect;
     } else {
       const { error: err } = await supabase.auth.signUp({ email, password });
-      if (err) { setError(err.message); setLoading(false); return; }
+      if (err) {
+        const msg = (err.message || "").toLowerCase();
+        if (msg.includes("already registered") || msg.includes("already exists")) {
+          setError("Этот email уже зарегистрирован. Войдите через вкладку «Войти» или восстановите пароль.");
+        } else if (msg.includes("weak password") || msg.includes("password")) {
+          setError("Слабый пароль. Используйте минимум 8 символов с цифрами и буквами.");
+        } else if (msg.includes("invalid email")) {
+          setError("Некорректный email. Проверьте написание.");
+        } else {
+          setError(`Ошибка регистрации: ${err.message}`);
+        }
+        setLoading(false);
+        return;
+      }
       setSuccess("Аккаунт создан! Проверьте почту для подтверждения.");
       setLoading(false);
     }
@@ -263,12 +309,19 @@ export default function AccountLoginPage() {
           </form>
 
           {tab === "login" && (
-            <p className="text-center text-xs text-muted-foreground mt-4">
-              Нет аккаунта?{" "}
-              <button onClick={() => setTab("register")} className="text-gold hover:underline">
-                Зарегистрируйтесь
-              </button>
-            </p>
+            <>
+              <p className="text-center text-xs text-muted-foreground mt-4">
+                <Link href="/auth/forgot-password" className="text-gold hover:underline">
+                  Забыли пароль?
+                </Link>
+              </p>
+              <p className="text-center text-xs text-muted-foreground mt-2">
+                Нет аккаунта?{" "}
+                <button onClick={() => setTab("register")} className="text-gold hover:underline">
+                  Зарегистрируйтесь
+                </button>
+              </p>
+            </>
           )}
           </>)}
 
