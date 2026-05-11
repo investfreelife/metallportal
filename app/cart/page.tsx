@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, Package, Check, ExternalLink } from "lucide-react";
+import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, Package, Check, ExternalLink, User, Pencil } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 
 export default function CartPage() {
@@ -17,14 +17,60 @@ export default function CartPage() {
   const [err, setErr] = useState("");
   const [tgLink, setTgLink] = useState("");
 
-  // Auto-fill from localStorage
+  // ТЗ #050: detect logged-in user — приоритет сессия > localStorage
+  const [loggedInName, setLoggedInName] = useState<string | null>(null);
+  const [editMode, setEditMode] = useState(false);
+
+  // Auto-fill: prefer session data over localStorage
   useEffect(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem('mp_contact') ?? '{}')
-      if (saved.name) setName(saved.name)
-      if (saved.phone) setPhone(saved.phone)
-      if (saved.email) setEmail(saved.email)
-    } catch {}
+    let cancelled = false;
+
+    async function load() {
+      // 1. Try contact session (/api/account/me — phone OTP / Telegram)
+      let prefilled = false;
+      try {
+        const r = await fetch('/api/account/me');
+        const d = await r.json();
+        if (!cancelled && d?.user) {
+          if (d.user.full_name) setName(d.user.full_name);
+          if (d.user.phone) setPhone(d.user.phone);
+          if (d.user.email) setEmail(d.user.email);
+          setLoggedInName(d.user.full_name || d.user.phone || d.user.email || 'Аккаунт');
+          prefilled = true;
+        }
+      } catch {}
+
+      // 2. Try site_users session (/api/auth/me — email/password)
+      if (!prefilled) {
+        try {
+          const r = await fetch('/api/auth/me');
+          const d = await r.json();
+          if (!cancelled && d?.user) {
+            if (d.user.full_name) setName(d.user.full_name);
+            if (d.user.phone) setPhone(d.user.phone);
+            if (d.user.email) setEmail(d.user.email);
+            setLoggedInName(d.user.full_name || d.user.email || 'Аккаунт');
+            prefilled = true;
+          }
+        } catch {}
+      }
+
+      // 3. localStorage fallback (anonymous, previously-filled)
+      if (!prefilled && !cancelled) {
+        try {
+          const saved = JSON.parse(localStorage.getItem('mp_contact') ?? '{}')
+          if (saved.name) setName(saved.name)
+          if (saved.phone) setPhone(saved.phone)
+          if (saved.email) setEmail(saved.email)
+        } catch {}
+      }
+
+      // ТЗ #050: для logged-in pre-check consent (уже согласился при регистрации)
+      if (prefilled && !cancelled) setConsent(true);
+    }
+
+    load();
+    return () => { cancelled = true; };
   }, []);
 
   const itemTotal = (i: typeof items[0]) =>
@@ -35,8 +81,14 @@ export default function CartPage() {
   const handleOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr("");
-    if (!name.trim()) { setErr("Введите имя"); return; }
-    if (!phone.trim()) { setErr("Введите телефон"); return; }
+    // ТЗ #050: если logged-in — нужен только phone OR email (любой контакт)
+    if (loggedInName && !phone.trim() && !email.trim()) {
+      setErr("Нужен телефон или email для связи — нажмите «Изменить»");
+      setEditMode(true);
+      return;
+    }
+    if (!loggedInName && !name.trim()) { setErr("Введите имя"); return; }
+    if (!loggedInName && !phone.trim()) { setErr("Введите телефон"); return; }
     if (!consent) { setErr("Подтвердите согласие на обработку данных"); return; }
     setSubmitting(true);
 
@@ -189,27 +241,68 @@ export default function CartPage() {
             <h2 className="text-lg font-bold text-foreground mb-5">Оформить заказ</h2>
 
             <form onSubmit={handleOrder} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1.5">
-                  Имя <span className="text-red-400">*</span>
-                </label>
-                <input value={name} onChange={e => setName(e.target.value)} placeholder="Иван Петров"
-                  className="w-full bg-input border border-border rounded-lg px-3 py-2.5 text-sm text-foreground outline-none focus:border-gold transition-colors" />
-              </div>
+              {/* ТЗ #050: Logged-in user summary card — НЕ просим повторно ввод */}
+              {loggedInName && !editMode ? (
+                <div className="bg-gold/5 border border-gold/30 rounded-lg p-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <User size={14} className="text-gold" />
+                    <p className="text-sm font-bold text-foreground flex-1">
+                      Заказ оформляется на ваш кабинет
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setEditMode(true)}
+                      className="text-xs text-gold hover:underline inline-flex items-center gap-1"
+                    >
+                      <Pencil size={11} /> Изменить
+                    </button>
+                  </div>
+                  <div className="space-y-1 text-xs text-muted-foreground">
+                    {name && <p><span className="text-foreground font-medium">Имя:</span> {name}</p>}
+                    {phone && <p><span className="text-foreground font-medium">Телефон:</span> {phone}</p>}
+                    {email && <p><span className="text-foreground font-medium">Email:</span> {email}</p>}
+                    {!phone && (
+                      <p className="text-amber-500">
+                        ⚠️ Телефон не указан в профиле — нажмите «Изменить» чтобы добавить
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-1.5">
+                      Имя <span className="text-red-400">*</span>
+                    </label>
+                    <input value={name} onChange={e => setName(e.target.value)} placeholder="Иван Петров"
+                      className="w-full bg-input border border-border rounded-lg px-3 py-2.5 text-sm text-foreground outline-none focus:border-gold transition-colors" />
+                  </div>
 
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1.5">
-                  Телефон <span className="text-red-400">*</span>
-                </label>
-                <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="+7 (999) 000-00-00" type="tel"
-                  className="w-full bg-input border border-border rounded-lg px-3 py-2.5 text-sm text-foreground outline-none focus:border-gold transition-colors" />
-              </div>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-1.5">
+                      Телефон <span className="text-red-400">*</span>
+                    </label>
+                    <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="+7 (999) 000-00-00" type="tel"
+                      className="w-full bg-input border border-border rounded-lg px-3 py-2.5 text-sm text-foreground outline-none focus:border-gold transition-colors" />
+                  </div>
 
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
-                <input value={email} onChange={e => setEmail(e.target.value)} placeholder="email@example.com" type="email"
-                  className="w-full bg-input border border-border rounded-lg px-3 py-2.5 text-sm text-foreground outline-none focus:border-gold transition-colors" />
-              </div>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
+                    <input value={email} onChange={e => setEmail(e.target.value)} placeholder="email@example.com" type="email"
+                      className="w-full bg-input border border-border rounded-lg px-3 py-2.5 text-sm text-foreground outline-none focus:border-gold transition-colors" />
+                  </div>
+
+                  {loggedInName && editMode && (
+                    <button
+                      type="button"
+                      onClick={() => setEditMode(false)}
+                      className="text-xs text-gold hover:underline"
+                    >
+                      ← Вернуться к данным аккаунта
+                    </button>
+                  )}
+                </>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-foreground mb-1.5">Комментарий</label>
