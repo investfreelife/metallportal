@@ -35,16 +35,28 @@ export function middleware(req: NextRequest) {
     }
   }
 
-  if (incomingUtm.length > 0) {
+  // 3. ТЗ #049: Referral code capture. ?ref=CODE → set mp_ref cookie (30 дней).
+  // First-touch attribution: НЕ overwrite если cookie уже есть.
+  const incomingRef = searchParams.get("ref");
+  let setRef: string | null = null;
+  if (incomingRef && /^[A-Za-z0-9_-]{4,32}$/.test(incomingRef) && !req.cookies.has("mp_ref")) {
+    setRef = incomingRef.toUpperCase();
+  }
+
+  if (incomingUtm.length > 0 || setRef) {
     const res = NextResponse.next();
     for (const [k, v] of incomingUtm) {
       res.cookies.set(k, v, {
         maxAge: UTM_TTL_SECONDS,
         path: "/",
         sameSite: "lax",
-        // НЕ httpOnly — landing CTA fetch'ит /api/landings/submit-lead
-        // через server cookies (next/headers), client тоже может прочесть
-        // если понадобится для GTM dataLayer push.
+      });
+    }
+    if (setRef) {
+      res.cookies.set("mp_ref", setRef, {
+        maxAge: UTM_TTL_SECONDS,
+        path: "/",
+        sameSite: "lax",
       });
     }
     return res;
