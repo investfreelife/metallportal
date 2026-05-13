@@ -192,7 +192,7 @@ export async function getCategoryWithChildren(slug: string) {
     .select(productSelect)
     .in("category_id", categoryIds)
     .eq("is_active", true)
-    .limit(1500); // ТЗ #051: 5000→1500 для perf (большие aggregators типа /krug)
+    .limit(500); // ТЗ #051a: 5000→500 для perf (большие aggregators типа /krug с 1300+ prods). Pagination в follow-up.
 
   if (error) {
     console.error("getCategoryWithChildren products error:", error);
