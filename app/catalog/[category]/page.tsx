@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getCategoryBySlug, getSubcategories, getCategoryWithChildren, getProductCounts, sumCounts } from "@/lib/queries";
+import { getCategoryBySlug, getSubcategories, getCategoryWithChildren, getProductCounts, sumCounts, getAggregatedCategoryCards } from "@/lib/queries";
 import { supabase } from "@/lib/supabase";
 import CatalogView from "@/components/catalog/CatalogView";
 import CatalogCategoryCard from "@/components/catalog/CatalogCategoryCard";
@@ -89,6 +89,18 @@ export default async function CategoryPage({ params }: Props) {
       })
     );
 
+    // ТЗ 2026-05-13: aggregated_category_slugs на L1 — cross-link cards
+    // на categories из других веток. Filter out already-shown direct children.
+    const existingSlugs = new Set(enriched.map((s: any) => s.slug));
+    const aggSlugs = (category as any).aggregated_category_slugs as string[] | null;
+    let aggCards: any[] = [];
+    if (aggSlugs && aggSlugs.length > 0) {
+      const filtered = aggSlugs.filter((s: string) => !existingSlugs.has(s));
+      if (filtered.length > 0) {
+        aggCards = await getAggregatedCategoryCards(filtered);
+      }
+    }
+
     return (
       <div>
         <Breadcrumbs
@@ -116,6 +128,33 @@ export default async function CategoryPage({ params }: Props) {
               basePath={`/catalog/${params.category}`}
               landingSlug={sub.landingSlug}
             />
+          ))}
+          {/* Cross-link cards from aggregated_category_slugs (другие ветки) */}
+          {aggCards.map((c: any) => (
+            <a
+              key={c.id}
+              href={c.fullHref}
+              className="group bg-card border border-border rounded-lg overflow-hidden hover:border-gold/40 hover:shadow-lg transition-all"
+            >
+              <div className="relative w-full h-48 bg-muted overflow-hidden flex items-center justify-center">
+                {c.image_url ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img src={c.image_url} alt={c.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                ) : (
+                  <span className="text-5xl opacity-30">{c.icon || "📦"}</span>
+                )}
+              </div>
+              <div className="p-4">
+                <h3 className="text-base font-bold text-foreground leading-snug group-hover:text-gold transition-colors mb-1">
+                  {c.name}
+                </h3>
+                {c.totalProducts > 0 && (
+                  <span className="text-xs text-muted-foreground">
+                    {c.totalProducts} {c.totalProducts === 1 ? "позиция" : c.totalProducts < 5 ? "позиции" : "позиций"}
+                  </span>
+                )}
+              </div>
+            </a>
           ))}
         </div>
 
