@@ -1,16 +1,46 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Camera, X } from "lucide-react";
+import { createBrowserClient } from "@supabase/ssr";
+
+const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+);
 
 export default function AdminBar() {
-  const [session, setSession] = useState<{ name: string; role: string } | null>(null);
+  const [role, setRole] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
 
+  // Detect admin/designer session — same pattern as AdminGuard.tsx
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem("admin_session");
-      if (raw) setSession(JSON.parse(raw));
-    } catch {}
+    let cancelled = false;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (cancelled) return;
+      if (!user) { setRole(null); return; }
+      try {
+        const res = await fetch("/api/admin/check-role", { cache: "no-store" });
+        if (!res.ok) { setRole(null); return; }
+        const { role: r } = await res.json();
+        if (!cancelled) setRole(r || null);
+      } catch { if (!cancelled) setRole(null); }
+    })();
+    // Re-check on auth state change (login/logout in another tab)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      if (!cancelled) {
+        supabase.auth.getUser().then(async ({ data }) => {
+          if (cancelled) return;
+          if (!data.user) { setRole(null); return; }
+          const res = await fetch("/api/admin/check-role", { cache: "no-store" });
+          if (res.ok) {
+            const { role: r } = await res.json();
+            if (!cancelled) setRole(r || null);
+          }
+        });
+      }
+    });
+    return () => { cancelled = true; subscription.unsubscribe(); };
   }, []);
 
   const toggle = () => {
@@ -24,7 +54,8 @@ export default function AdminBar() {
     window.dispatchEvent(new CustomEvent("photoEditMode", { detail: next }));
   };
 
-  if (!session) return null;
+  // Only show button для admin / designer
+  if (role !== "admin" && role !== "designer") return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end gap-2">
