@@ -192,7 +192,7 @@ export async function getCategoryWithChildren(slug: string) {
     .select(productSelect)
     .in("category_id", categoryIds)
     .eq("is_active", true)
-    .limit(5000);
+    .limit(1500); // ТЗ #051: 5000→1500 для perf (большие aggregators типа /krug)
 
   if (error) {
     console.error("getCategoryWithChildren products error:", error);
@@ -438,29 +438,49 @@ export async function hydrateProductsWithSellerOffers<T extends { id: string }>(
   }
 
   const productIds = products.map((p) => p.id);
-  const { data, error } = await (supabase as any)
-    .from("seller_offers")
-    .select(`
-      id, product_id, seller_id, base_price, final_price, currency, unit,
-      in_stock, stock_quantity, min_quantity, lead_time_days, is_active,
-      is_buy_box,
-      seller:suppliers!seller_id(id, company_name, region, city, rating, is_verified)
-    `)
-    .in("product_id", productIds)
-    .eq("is_active", true);
 
-  if (error) {
-    console.error("hydrateProductsWithSellerOffers (seller_offers) error:", error);
-    // Graceful degradation — оставляем existing price_items (если был JOIN'нут)
-    return products;
+  // ТЗ #051 perf fix: для больших aggregator pages (1000+ products) IN clause
+  // становится медленным. Chunkим по 250 и Promise.all для parallel fetch.
+  const CHUNK = 250;
+  const chunks: string[][] = [];
+  for (let i = 0; i < productIds.length; i += CHUNK) {
+    chunks.push(productIds.slice(i, i + CHUNK));
   }
 
-  // Group offers by product_id
+  const results = await Promise.all(
+    chunks.map((idChunk) =>
+      (supabase as any)
+        .from("seller_offers")
+        .select(`
+          id, product_id, seller_id, base_price, final_price, currency, unit,
+          in_stock, stock_quantity, min_quantity, lead_time_days, is_active,
+          is_buy_box,
+          seller:suppliers!seller_id(id, company_name, region, city, rating, is_verified)
+        `)
+        .in("product_id", idChunk)
+        .eq("is_active", true),
+    ),
+  );
+
+  // Aggregate offers across chunks
   const offersByProduct = new Map<string, any[]>();
-  for (const offer of data ?? []) {
-    const list = offersByProduct.get(offer.product_id) ?? [];
-    list.push(sellerOfferToPriceItem(offer));
-    offersByProduct.set(offer.product_id, list);
+  let hadError = false;
+  for (const { data, error } of results) {
+    if (error) {
+      console.error("hydrateProductsWithSellerOffers chunk error:", error);
+      hadError = true;
+      continue;
+    }
+    for (const offer of data ?? []) {
+      const list = offersByProduct.get(offer.product_id) ?? [];
+      list.push(sellerOfferToPriceItem(offer));
+      offersByProduct.set(offer.product_id, list);
+    }
+  }
+
+  if (hadError && offersByProduct.size === 0) {
+    // Graceful degradation: ни одного успешного chunk → оставляем как было
+    return products;
   }
 
   // Attach к each product as `price_items` (legacy field name preserved)
