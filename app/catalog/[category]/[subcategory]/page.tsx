@@ -85,16 +85,8 @@ export default async function SubcategoryPage({ params }: Props) {
   const category = await getCategoryBySlug(params.subcategory);
 
   if (category) {
-    // ТЗ #051b: aggregator с direct subcategories → UNIFIED product list (через getCategoryWithChildren).
-    // Иначе (no own subcategories) — card-grid на cross-link categories.
-    // Это разные UX: unified для случаев типа /krug (11 sibling subcat'ов + аggregator pulls all products);
-    // cards для cross-link aggregator (например virtual /list-listy-stalnye-goryachekatanye landing).
-    const hasOwnSubcategories = await getSubcategories(category.id).then(s => s.length > 0);
-    if (
-      category.aggregated_category_slugs &&
-      category.aggregated_category_slugs.length > 0 &&
-      !hasOwnSubcategories
-    ) {
+    // Sergey 2026-05-09: aggregator pages — карточки на existing categories из других веток.
+    if (category.aggregated_category_slugs && category.aggregated_category_slugs.length > 0) {
       const aggCards = await getAggregatedCategoryCards(category.aggregated_category_slugs);
       return (
         <div>
@@ -143,13 +135,8 @@ export default async function SubcategoryPage({ params }: Props) {
 
     const subcategories = await getSubcategories(category.id);
 
-    // ТЗ #051b: если категория-aggregator (есть aggregated_category_slugs) с собственными
-    // children — пропускаем cards-only path и идём в leaf-route (unified product list).
-    const isUnifiedAggregator =
-      category.aggregated_category_slugs && category.aggregated_category_slugs.length > 0;
-
-    // Has children → show cards (НЕ применяется если aggregator: unified path лучше)
-    if (subcategories.length > 0 && !isUnifiedAggregator) {
+    // Has children → show cards
+    if (subcategories.length > 0) {
       const [counts, { data: allCats }] = await Promise.all([
         getProductCounts(),
         supabase.from("categories").select("id, parent_id").eq("is_active", true),
