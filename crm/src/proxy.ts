@@ -8,6 +8,9 @@ const PUBLIC_EXACT = new Set([
   '/api/webhook',
   '/api/orders',
   '/api/track',
+  // DISPATCH 2026-05-16 OPERATOR_TO_CRM: agent orchestration webhook
+  // protected by own X-Agent-Token (AGENT_WEBHOOK_TOKEN env), no session cookie.
+  '/api/agent-events',
 ])
 const PUBLIC_PREFIX = ['/_next/', '/favicon', '/api/auth/', '/track.js', '/partner', '/api/ref/']
 
