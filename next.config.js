@@ -34,6 +34,10 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
+  // ТЗ #047 Yandex Cloud migration: standalone build для docker Container Solution.
+  // .next/standalone/server.js — entry point с минимальным runtime. Совместимо
+  // с Vercel (игнорируется на их build), нужно для YC Serverless Container.
+  output: "standalone",
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 31536000,
@@ -42,6 +46,10 @@ const nextConfig = {
       { protocol: "https", hostname: "tmzqirzyvmnkzfmotlcj.supabase.co" },
       { protocol: "https", hostname: "*.supabase.co" },
       { protocol: "https", hostname: "*.supabase.in" },
+      // ТЗ #047: Yandex Object Storage + CDN для product photos (Day 3+)
+      { protocol: "https", hostname: "*.storage.yandexcloud.net" },
+      { protocol: "https", hostname: "*.edgecdn.ru" },
+      { protocol: "https", hostname: "images-cdn.harlansteel.ru" },
     ],
   },
 
@@ -91,6 +99,14 @@ const nextConfig = {
       { source: "/catalog/metalloprokat",   destination: "/catalog",                 permanent: true },
       { source: "/catalog/armatura",        destination: "/catalog/sortovoy-prokat", permanent: true },
       { source: "/catalog/balki-shvellery", destination: "/catalog/sortovoy-prokat", permanent: true },
+
+      // ТЗ #048 (Sergey 2026-05-15): izdeliya-iz-metalla split на 5 focused landings
+      // (lestnicy / kozyrki / antresoli / konteynernye-ploschadki / maf-blagoustroystva).
+      // Старый landing 301 → /constructions root, где видны все 5 новых cards.
+      // Yandex/Google cache + external links уважают редирект — SEO juice старого URL
+      // передаётся. dynamicParams=false в app/landing/[slug] заставил бы 404 без redirect.
+      { source: "/landing/izdeliya-iz-metalla", destination: "/constructions", permanent: true },
+      { source: "/constructions/izdeliya-iz-metalla", destination: "/constructions", permanent: true },
     ];
   },
 };
