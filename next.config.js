@@ -107,6 +107,13 @@ const nextConfig = {
       // передаётся. dynamicParams=false в app/landing/[slug] заставил бы 404 без redirect.
       { source: "/landing/izdeliya-iz-metalla", destination: "/constructions", permanent: true },
       { source: "/constructions/izdeliya-iz-metalla", destination: "/constructions", permanent: true },
+
+      // DISPATCH OPERATOR_TO_CRM (Sergey 2026-05-16): «это должно быть в срм!».
+      // Marketing dashboard перенесён из /admin/operator → CRM /dashboard.
+      // 308 permanent — bookmarks + старые ссылки перенаправляются. AdminSidebar
+      // больше не показывает «Маркетинг» (заменён external link «CRM · Маркетинг»).
+      { source: "/admin/operator",          destination: "https://metallportal-crm2.vercel.app/dashboard", permanent: true },
+      { source: "/admin/operator/:path*",   destination: "https://metallportal-crm2.vercel.app/dashboard", permanent: true },
     ];
   },
 };

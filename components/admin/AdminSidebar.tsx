@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { LayoutDashboard, Home, Tag, Menu, Package, Settings, LogOut, Users, Image, Plug, LineChart } from "lucide-react";
+import { LayoutDashboard, Home, Tag, Menu, Package, Settings, LogOut, Users, Image, Plug, ExternalLink } from "lucide-react";
 import { createBrowserClient } from "@supabase/ssr";
 
 const supabase = createBrowserClient(
@@ -16,9 +16,11 @@ interface CurrentSession {
   role: string | null;
 }
 
+// NB: «Маркетинг» удалён 2026-05-16 — DISPATCH OPERATOR_TO_CRM. Marketing widgets
+// перенесены в CRM dashboard (metallportal-crm2.vercel.app/dashboard). External link
+// добавлен ниже для backward-compat user flow (one click из admin в CRM).
 const NAV_ADMIN = [
   { href: "/admin", icon: LayoutDashboard, label: "Дашборд" },
-  { href: "/admin/operator", icon: LineChart, label: "Маркетинг" },
   { href: "/admin/homepage", icon: Home, label: "Главная" },
   { href: "/admin/categories", icon: Tag, label: "Категории" },
   { href: "/admin/photos", icon: Image, label: "Фото разделов" },
@@ -27,6 +29,12 @@ const NAV_ADMIN = [
   { href: "/admin/users", icon: Users, label: "Пользователи" },
   { href: "/admin/integrations", icon: Plug, label: "Интеграции" },
   { href: "/admin/settings", icon: Settings, label: "Настройки" },
+  {
+    href: "https://metallportal-crm2.vercel.app/dashboard",
+    icon: ExternalLink,
+    label: "CRM · Маркетинг",
+    external: true,
+  },
 ];
 
 const NAV_DESIGNER = [
@@ -85,13 +93,23 @@ export default function AdminSidebar() {
         )}
       </div>
       <nav className="flex-1 p-3 space-y-1">
-        {nav.map(({ href, icon: Icon, label }) => {
-          const active = path === href || (href !== "/admin" && path.startsWith(href));
+        {nav.map((item) => {
+          const { href, icon: Icon, label } = item;
+          const external = (item as { external?: boolean }).external === true;
+          const active = !external && (path === href || (href !== "/admin" && path.startsWith(href)));
+          const cls = `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+            active ? "bg-[#E8B86D]/20 text-[#E8B86D]" : "text-white/60 hover:text-white hover:bg-white/5"
+          }`;
+          if (external) {
+            return (
+              <a key={href} href={href} target="_blank" rel="noopener noreferrer" className={cls}>
+                <Icon size={16} />
+                {label}
+              </a>
+            );
+          }
           return (
-            <Link key={href} href={href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                active ? "bg-[#E8B86D]/20 text-[#E8B86D]" : "text-white/60 hover:text-white hover:bg-white/5"
-              }`}>
+            <Link key={href} href={href} className={cls}>
               <Icon size={16} />
               {label}
             </Link>
