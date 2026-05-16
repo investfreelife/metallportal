@@ -5,6 +5,8 @@ import DashboardQueue from './DashboardQueue'
 import { FunnelWithDrawers } from '@/components/dashboard/FunnelWithDrawers'
 import { TrafficChannels } from '@/components/dashboard/TrafficChannels'
 import { DashboardRealtime } from '@/components/dashboard/DashboardRealtime'
+import MarketingWidgets from '@/components/dashboard/MarketingWidgets'
+import { TeamActivityFeed } from '@/components/dashboard/TeamActivityFeed'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
@@ -28,6 +30,15 @@ export default async function DashboardPage() {
   const supabase = await createClient()
 
   const todayStr = new Date().toISOString().split('T')[0]
+
+  // Orchestration team activity feed — feeds TeamActivityFeed initial render
+  // (realtime channel takes over on client). Limit 50, no tenant scoping —
+  // agent_events is global orchestration table, see migration 20260516230000.
+  const { data: initialAgentEvents } = await supabase
+    .from('agent_events')
+    .select('id, agent_name, event_type, message, task_id, commit_sha, severity, metadata, created_at')
+    .order('created_at', { ascending: false })
+    .limit(50)
 
   const [
     { count: hotLeads },
@@ -360,6 +371,11 @@ export default async function DashboardPage() {
             </div>
           </div>
         </div>
+        {/* Маркетинг — перенесён 2026-05-16 из /admin/operator (DISPATCH OPERATOR_TO_CRM). */}
+        <MarketingWidgets />
+
+        {/* Команда — orchestration activity feed, realtime via agent_events channel. */}
+        <TeamActivityFeed initialEvents={initialAgentEvents ?? []} />
       </div>
       <DashboardRealtime tenantId={TENANT_ID} />
     </div>
