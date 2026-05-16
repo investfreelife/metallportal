@@ -22,7 +22,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        source: [yandex_metrika, yandex_direct, yandex_webmaster, voximplant_calls]
+        # NB: yandex_direct excluded до Sergey подаст заявку на Direct API в Direct UI
+        # (error_code=58 «Незавершённая регистрация»). Каждый matrix run failing job
+        # триггерит GH email spam — пока не approve, скриптуем без direct.
+        # Re-add: вернуть `, yandex_direct` в list после approve.
+        source: [yandex_metrika, yandex_webmaster, voximplant_calls]
     steps:
       - uses: actions/checkout@v4
 
