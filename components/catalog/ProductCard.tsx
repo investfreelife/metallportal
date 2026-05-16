@@ -70,7 +70,7 @@ export default function CatalogProductCard({ product, productBasePath, isSelecte
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
               className="object-cover"
-              quality={80}
+              quality={90}
               priority={priority}
               loading={priority ? undefined : "lazy"}
             />

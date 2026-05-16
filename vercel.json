@@ -1,6 +1,3 @@
 {
-  "crons": [
-    { "path": "/api/cron/trigger-agents",    "schedule": "0 6 * * *" },
-    { "path": "/api/cron/audit-data-health", "schedule": "0 6 * * *" }
-  ]
+  "_comment": "ТЗ #047 Day 5: Vercel crons migrated to .github/workflows/cron-yc.yml (GH Actions schedule). Cron-aware so works против Vercel и YC Container interchangeably via CRON_TARGET_URL secret. Empty config keeps file для future Vercel options но без cron declaration (would double-fire endpoints)."
 }

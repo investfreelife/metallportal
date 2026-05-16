@@ -49,6 +49,10 @@ export interface LandingConfig {
     ctaPrimary: string;
     /** Path в public/ или absolute URL. Stub if нет реального. */
     heroImageSrc: string;
+    /** Optional secondary CTA — обычно "Смотреть кейсы" (anchor #cases). */
+    ctaSecondary?: string;
+    /** Optional trust-strip под кнопками — bullet list (галочки). */
+    trustStrip?: string[];
   };
 
   /** Преимущества — 3-5 cards. */
@@ -114,4 +118,51 @@ export interface LandingConfig {
 
   /** Все landings уважают ref_code cookie (m001 ref-tracker). */
   referralCookieAware: true;
+
+  // ========== #028 Power Upgrade — optional sections ==========
+
+  /** Pain → Solution narrative block. Рендер LandingPainSolution. */
+  painSolution?: {
+    painTitle: string;
+    painPoints: string[];
+    solutionTitle: string;
+    solutionPoints: string[];
+  };
+
+  /** Customer testimonials (5 рекомендуется). Рендер LandingTestimonials. */
+  testimonials?: Array<{
+    author: string;
+    company?: string;
+    rating: 1 | 2 | 3 | 4 | 5;
+    quote: string;
+    source?: "yandex_maps" | "2gis" | "avito" | "direct";
+    date?: string;
+  }>;
+
+  /** Trust badges — legal/guarantee/standards/objects. Рендер LandingTrust. */
+  trustBadges?: {
+    legal?: { inn?: string; ogrn?: string; sroLicense?: string };
+    guarantee?: { years: number; description: string };
+    standards?: string[];
+    objectsCompleted?: number;
+    /** Aggregate rating передаётся в LandingTestimonials через page wiring. */
+    aggregateRating?: { score: number; reviewsCount: number };
+  };
+
+  /** Lead magnet (PDF / гайд). Рендер LandingLeadMagnet. */
+  leadMagnet?: {
+    title: string;
+    description: string;
+    fileSrc: string;
+    formCta: string;
+  };
+
+  /** Mid-page CTAs — placement определяет порядок render в page. */
+  additionalCTAs?: Array<{
+    placement: "after_benefits" | "after_calculator" | "after_cases" | "after_faq";
+    title: string;
+    subtitle?: string;
+    ctaText: string;
+    variant?: "compact" | "wide";
+  }>;
 }

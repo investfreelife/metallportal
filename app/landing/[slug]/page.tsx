@@ -12,6 +12,11 @@ import LandingCTABlock from "@/components/landings/LandingCTABlock";
 import LandingFAQ from "@/components/landings/LandingFAQ";
 import LandingSchemas from "@/components/landings/LandingSchemas";
 import RelatedCategoriesSection from "@/components/landings/RelatedCategoriesSection";
+import LandingPainSolution from "@/components/landings/LandingPainSolution";
+import LandingTestimonials from "@/components/landings/LandingTestimonials";
+import LandingTrust from "@/components/landings/LandingTrust";
+import LandingLeadMagnet from "@/components/landings/LandingLeadMagnet";
+import LandingMidCTA from "@/components/landings/LandingMidCTA";
 
 interface Props {
   params: { slug: string };
@@ -47,15 +52,53 @@ export default async function LandingPage({ params }: Props) {
         h1={landing.hero.h1}
         subtitle={landing.hero.subtitle}
         ctaPrimary={landing.hero.ctaPrimary}
+        ctaSecondary={landing.hero.ctaSecondary}
+        trustStrip={landing.hero.trustStrip}
         heroImageSrc={landing.hero.heroImageSrc}
       />
+      {landing.painSolution && <LandingPainSolution {...landing.painSolution} />}
       <LandingBenefits items={landing.benefits} />
+      {landing.additionalCTAs?.find((c) => c.placement === "after_benefits") && (
+        <LandingMidCTA
+          {...landing.additionalCTAs.find((c) => c.placement === "after_benefits")!}
+        />
+      )}
       {landing.calculator.enabled && (
         <LandingCalculator config={landing.calculator} slug={landing.slug} />
       )}
+      {landing.additionalCTAs?.find((c) => c.placement === "after_calculator") && (
+        <LandingMidCTA
+          {...landing.additionalCTAs.find((c) => c.placement === "after_calculator")!}
+        />
+      )}
       <LandingProcess steps={landing.process} />
       <LandingCases items={landing.cases} />
+      {landing.additionalCTAs?.find((c) => c.placement === "after_cases") && (
+        <LandingMidCTA
+          {...landing.additionalCTAs.find((c) => c.placement === "after_cases")!}
+        />
+      )}
+      {landing.testimonials && landing.testimonials.length > 0 && (
+        <LandingTestimonials
+          testimonials={landing.testimonials}
+          aggregateRating={landing.trustBadges?.aggregateRating}
+        />
+      )}
+      {landing.trustBadges && (
+        <LandingTrust
+          legal={landing.trustBadges.legal}
+          guarantee={landing.trustBadges.guarantee}
+          standards={landing.trustBadges.standards}
+          objectsCompleted={landing.trustBadges.objectsCompleted}
+        />
+      )}
       <LandingFAQ items={landing.faq} />
+      {landing.additionalCTAs?.find((c) => c.placement === "after_faq") && (
+        <LandingMidCTA
+          {...landing.additionalCTAs.find((c) => c.placement === "after_faq")!}
+        />
+      )}
+      {landing.leadMagnet && <LandingLeadMagnet {...landing.leadMagnet} />}
       {/* n005: «Из чего делаем» — bridge к каталогу для DIY-сегмента
           (показываем материалы которые landing использует, ссылки в catalog).
           Если linked categories нет в DB — section возвращает null. */}

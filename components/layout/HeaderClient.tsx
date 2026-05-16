@@ -131,7 +131,6 @@ function NavDropdown({
 }
 
 export default function HeaderClient({ navItems }: HeaderClientProps) {
-  const [mode, setMode] = useState<"b2c" | "b2b">("b2c");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openNav, setOpenNav] = useState<string | null>(null);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
@@ -143,29 +142,11 @@ export default function HeaderClient({ navItems }: HeaderClientProps) {
         className="text-sm"
         style={{ backgroundColor: "var(--topbar-bg)", color: "var(--topbar-text)" }}
       >
-        <div className="container-main h-9 flex items-center justify-between">
-          <div className="hidden md:flex items-center gap-4">
-            <div className="flex items-center gap-1 bg-white/10 rounded p-0.5">
-              {(["b2c", "b2b"] as const).map((m) => (
-                <button
-                  key={m}
-                  onClick={() => setMode(m)}
-                  className={`px-3 py-1 rounded transition-all text-xs ${
-                    mode === m
-                      ? "bg-gold text-black font-medium"
-                      : "text-white/80 hover:text-white"
-                  }`}
-                >
-                  {m === "b2c" ? "Для себя" : "Для бизнеса"}
-                </button>
-              ))}
-            </div>
-            <span className="text-white/40">|</span>
-            <span className="text-xs">1500+ позиций</span>
-            <span className="text-white/40">|</span>
-            <span className="text-xs">50+ поставщиков</span>
-            <span className="text-white/40">|</span>
-            <span className="text-xs">Доставка по России</span>
+        <div className="container-main py-2 flex items-center gap-4">
+          {/* Search bar moved up to top bar — fills available width на месте
+              удалённых кнопок (Sergey 2026-05-16). */}
+          <div className="flex-1 hidden md:block">
+            <SearchBar />
           </div>
           <div className="flex items-center gap-4">
             <Link
@@ -224,9 +205,9 @@ export default function HeaderClient({ navItems }: HeaderClientProps) {
             </div>
           </Link>
 
-          <SearchBar />
+          {/* SearchBar moved up to top bar (Sergey 2026-05-16). */}
 
-          <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
+          <div className="hidden lg:flex items-center gap-3 flex-shrink-0 ml-auto">
             <a
               href={`tel:${CONTACT_PHONE_TEL}`}
               onClick={() => trackMetrikaGoal("phone_click_header")}

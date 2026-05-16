@@ -17,6 +17,9 @@
 
 set -euo pipefail
 
+# launchd does not inherit shell PATH — add Homebrew + system bins explicitly
+export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${PATH:-}"
+
 # Config
 BACKUP_ROOT="/Users/Shared/металл/_BACKUP/daily"
 TIMESTAMP=$(date -u +%Y-%m-%dT%H-%M-%S)
@@ -85,11 +88,12 @@ log "  Tarball: ${TAR_SIZE}"
 
 # Step 4: Cold cloud upload
 log "Step 4: Cold cloud upload"
-if command -v yc >/dev/null 2>&1 && [ -n "${YC_BUCKET:-}" ]; then
-  log "  Uploading to Yandex Cloud bucket ${YC_BUCKET}..."
-  yc storage object upload "$TARBALL" \
-    --bucket "$YC_BUCKET" \
-    --key "daily/${TIMESTAMP}.tar.gz" 2>&1 | tee -a "$LOG_FILE"
+# Prefer rclone к Yandex Cloud (S3-compatible) — конфигурация в ~/.config/rclone/rclone.conf
+# profile [yc-backup]. Fallback к GitHub Release if rclone not configured.
+if command -v rclone >/dev/null 2>&1 && rclone listremotes 2>/dev/null | grep -q "^yc-backup:" && [ -n "${YC_BUCKET:-}" ]; then
+  log "  Uploading to Yandex Cloud bucket ${YC_BUCKET} via rclone..."
+  rclone copy "$TARBALL" "yc-backup:${YC_BUCKET}/daily/" \
+    --s3-no-check-bucket --transfers 8 2>&1 | tail -5 | tee -a "$LOG_FILE"
 elif command -v gh >/dev/null 2>&1; then
   log "  Uploading to GitHub Release as fallback..."
   gh release create "backup-${TIMESTAMP}" "$TARBALL" \
@@ -98,7 +102,7 @@ elif command -v gh >/dev/null 2>&1; then
     --notes "Daily snapshot" \
     --prerelease 2>&1 | tee -a "$LOG_FILE"
 else
-  log "  WARN: No cold cloud configured (yc or gh). Tarball stays local only."
+  log "  WARN: No cold cloud configured (rclone yc-backup OR gh). Tarball stays local only."
 fi
 
 # Step 5: Retention cleanup

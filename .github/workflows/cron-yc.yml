@@ -1,0 +1,88 @@
+# ТЗ #047 Day 5: GitHub Actions cron workflow replaces Vercel crons.
+#
+# Triggers existing /api/cron/* endpoints daily at 06:00 UTC. Works against
+# either Vercel (`www.harlansteel.ru`) или YC Container (post-cutover):
+# `CRON_TARGET_URL` secret determines target.
+#
+# Migration ordering (Day 6 cutover):
+# 1. Add this workflow + GH secrets CRON_SECRET + CRON_TARGET_URL — done
+# 2. Remove crons из vercel.json (per ТЗ Day 5) — done в same PR
+# 3. After 24h stable runs against Vercel — proceed Day 6 NS swap
+# 4. After NS swap propagates — update CRON_TARGET_URL secret к YC URL
+#
+# Manual trigger via workflow_dispatch для smoke tests.
+
+name: Daily Cron — trigger AI agents + data audit
+
+on:
+  schedule:
+    # 06:00 UTC = 09:00 MSK
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: "Override CRON_TARGET_URL (e.g. для smoke test YC endpoint)"
+        required: false
+        type: string
+
+jobs:
+  trigger-agents:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine target URL
+        id: target
+        run: |
+          URL="${{ github.event.inputs.target_url || secrets.CRON_TARGET_URL || 'https://www.harlansteel.ru' }}"
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+          echo "Using target: $URL"
+
+      - name: POST /api/cron/trigger-agents
+        env:
+          TARGET: ${{ steps.target.outputs.url }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -e
+          echo "Triggering: ${TARGET}/api/cron/trigger-agents"
+          response=$(curl -sS -w "\n%{http_code}" -X GET \
+            "${TARGET}/api/cron/trigger-agents" \
+            -H "X-Cron-Secret: ${CRON_SECRET}" \
+            -m 120)
+          http=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | head -n -1)
+          echo "HTTP: $http"
+          echo "Body: $body"
+          if [ "$http" != "200" ]; then
+            echo "::error::trigger-agents failed with HTTP $http"
+            exit 1
+          fi
+
+  audit-data-health:
+    runs-on: ubuntu-latest
+    needs: trigger-agents
+    if: always()  # запустить даже если первый job упал
+    steps:
+      - name: Determine target URL
+        id: target
+        run: |
+          URL="${{ github.event.inputs.target_url || secrets.CRON_TARGET_URL || 'https://www.harlansteel.ru' }}"
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+
+      - name: POST /api/cron/audit-data-health
+        env:
+          TARGET: ${{ steps.target.outputs.url }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -e
+          echo "Triggering: ${TARGET}/api/cron/audit-data-health"
+          response=$(curl -sS -w "\n%{http_code}" -X GET \
+            "${TARGET}/api/cron/audit-data-health" \
+            -H "X-Cron-Secret: ${CRON_SECRET}" \
+            -m 300)
+          http=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | head -n -1)
+          echo "HTTP: $http"
+          echo "Body: $body" | head -c 2000
+          if [ "$http" != "200" ]; then
+            echo "::error::audit-data-health failed with HTTP $http"
+            exit 1
+          fi

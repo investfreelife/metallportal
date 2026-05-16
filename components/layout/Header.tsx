@@ -18,6 +18,14 @@ import HeaderClient, { type ClientNavItem } from "./HeaderClient";
 // помещалось рядом с кнопками "Калькуляторы" и "Поиск с ИИ" без overflow.
 const HEADER_NAV_LIMIT = 5;
 
+// Slugs root-категорий которые НЕ показываем в верхнем nav (по запросу Sergey).
+// Юзеры всё ещё могут добраться к ним через "Весь каталог →" и /catalog page.
+const HEADER_NAV_HIDE_SLUGS = new Set([
+  "metizy",
+  "kachestvennye-stali",
+  "sudovaya-stal",
+]);
+
 // Fallback-эмодзи для root-категорий у которых поле icon в БД пустое.
 // Сохраняет визуальный ритм Header'а (раньше каждый item имел эмодзи).
 const ICON_FALLBACK = "🔩";
@@ -37,11 +45,18 @@ function toClientNav(node: CategoryNode, parents: CategoryNode[] = []): ClientNa
 export default async function Header() {
   const tree = await fetchCategoriesTree();
 
-  const navItems: ClientNavItem[] = tree.slice(0, HEADER_NAV_LIMIT).map((root) => {
-    const item = toClientNav(root);
-    if (!item.icon) item.icon = ICON_FALLBACK;
-    return item;
-  });
+  // Сначала берём top-N из tree (по sort_order), потом фильтруем скрытые.
+  // Так слот скрытой категории остаётся пустым — не подтягиваем следующие
+  // из остатка списка (явный Sergey directive: «удали и на их место ничего
+  // не ставь»).
+  const navItems: ClientNavItem[] = tree
+    .slice(0, HEADER_NAV_LIMIT)
+    .filter((root) => !HEADER_NAV_HIDE_SLUGS.has(root.slug))
+    .map((root) => {
+      const item = toClientNav(root);
+      if (!item.icon) item.icon = ICON_FALLBACK;
+      return item;
+    });
 
   return <HeaderClient navItems={navItems} />;
 }

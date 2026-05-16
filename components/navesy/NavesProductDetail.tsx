@@ -75,7 +75,7 @@ export default function NavesProductDetail({ product, categoryHref, categoryName
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
-                quality={85}
+                quality={90}
                 priority
               />
             ) : (

@@ -1,4 +1,4 @@
-import { Phone } from "lucide-react";
+import { Phone, Check } from "lucide-react";
 import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_TEL } from "@/lib/contact";
 
 interface LandingHeroProps {
@@ -7,6 +7,8 @@ interface LandingHeroProps {
   subtitle: string;
   ctaPrimary: string;
   heroImageSrc: string;
+  ctaSecondary?: string;
+  trustStrip?: string[];
 }
 
 /**
@@ -23,6 +25,8 @@ export default function LandingHero({
   h1,
   subtitle,
   ctaPrimary,
+  ctaSecondary,
+  trustStrip,
   heroImageSrc,
 }: LandingHeroProps) {
   return (
@@ -42,6 +46,14 @@ export default function LandingHero({
             >
               {ctaPrimary}
             </a>
+            {ctaSecondary && (
+              <a
+                href="#cases"
+                className="inline-flex items-center gap-2 border-2 border-foreground/20 hover:border-gold/50 text-foreground font-semibold px-6 py-3.5 rounded-lg transition-all text-base"
+              >
+                {ctaSecondary}
+              </a>
+            )}
             <a
               href={`tel:${CONTACT_PHONE_TEL}`}
               data-metrika-goal={`phone_click_landing_${slug}`}
@@ -51,6 +63,16 @@ export default function LandingHero({
               {CONTACT_PHONE_DISPLAY}
             </a>
           </div>
+          {trustStrip && trustStrip.length > 0 && (
+            <ul className="flex flex-wrap gap-x-5 gap-y-2 pt-3 text-sm text-muted-foreground">
+              {trustStrip.map((item, i) => (
+                <li key={i} className="flex items-center gap-1.5">
+                  <Check size={14} className="text-gold flex-shrink-0" />
+                  <span>{item.replace(/^✓\s*/, "")}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         {/* Hero-image. Placeholder PNG/JPG; Артём положит real visuals в m004+.
             При missing файле Next отдаст 404 → browser покажет broken-icon.

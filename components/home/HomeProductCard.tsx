@@ -46,7 +46,7 @@ export default function HomeProductCard({
       {/* Product image */}
       {image ? (
         <div className="mb-3 -mx-4 -mt-4 relative h-40">
-          <Image src={image} alt={name} fill className="object-cover rounded-t" sizes="(max-width:768px) 50vw, 25vw" />
+          <Image src={image} alt={name} fill className="object-cover rounded-t" sizes="(max-width:768px) 50vw, 25vw" quality={90} />
         </div>
       ) : (
         <div className="mb-3 -mx-4 -mt-4 h-40 bg-muted flex items-center justify-center text-4xl opacity-20 rounded-t">📦</div>
@@ -59,53 +59,56 @@ export default function HomeProductCard({
         </span>
       </div>
 
-      {/* Product name */}
-      <h3 className="text-sm font-semibold text-foreground mb-2 line-clamp-2 flex-1">
+      {/* Product name — fixed 2-line height для grid alignment */}
+      <h3 className="text-sm font-semibold text-foreground mb-2 line-clamp-2 min-h-[2.5rem]">
         {name}
       </h3>
 
-      {/* Stock status */}
-      <div className="mb-2">
-        <span className="inline-block text-xs font-medium px-2 py-0.5 rounded bg-success/10 text-success">
-          В наличии
-        </span>
-      </div>
+      {/* Bottom section — pinned к низу через mt-auto, фиксированные heights */}
+      <div className="mt-auto">
+        {/* Stock status */}
+        <div className="mb-2">
+          <span className="inline-block text-xs font-medium px-2 py-0.5 rounded bg-success/10 text-success">
+            В наличии
+          </span>
+        </div>
 
-      {/* Pricing */}
-      <div className="mb-3">
-        {yourPrice ? (
-          <>
-            {basePrice && basePrice !== yourPrice && (
-              <div className="text-xs text-muted-foreground line-through">
-                {basePrice.toLocaleString("ru-RU")} ₽/{unit}
+        {/* Pricing — fixed min-height чтобы 1-line "По запросу" и 2-line "old + new" одинаково высоки */}
+        <div className="mb-3 min-h-[3.25rem] flex flex-col justify-end">
+          {yourPrice ? (
+            <>
+              {basePrice && basePrice !== yourPrice && (
+                <div className="text-xs text-muted-foreground line-through">
+                  {basePrice.toLocaleString("ru-RU")} ₽/{unit}
+                </div>
+              )}
+              <div className="text-xl font-bold text-gold">
+                {yourPrice.toLocaleString("ru-RU")} ₽/{unit}
               </div>
-            )}
-            <div className="text-xl font-bold text-gold">
-              {yourPrice.toLocaleString("ru-RU")} ₽/{unit}
-            </div>
-          </>
+            </>
+          ) : (
+            <div className="text-sm text-muted-foreground">По запросу</div>
+          )}
+        </div>
+
+        {/* CTA Button */}
+        {isConstruction ? (
+          <div className="w-full border-2 border-gold text-foreground hover:bg-gold/10 font-medium py-2 rounded transition-all text-center text-sm flex items-center justify-center gap-1.5">
+            <PhoneCall size={14} />
+            Получить цену
+          </div>
         ) : (
-          <div className="text-sm text-muted-foreground">По запросу</div>
+          <button
+            onClick={handleAddToCart}
+            className={`w-full flex items-center justify-center gap-1.5 font-semibold py-2 rounded transition-all text-sm ${
+              added ? "bg-emerald-500/20 text-emerald-500" : "bg-gold/10 hover:bg-gold text-gold hover:text-black"
+            }`}
+          >
+            {added ? <Check size={14} /> : <ShoppingCart size={14} />}
+            {added ? "Добавлено" : "В корзину"}
+          </button>
         )}
       </div>
-
-      {/* CTA Button */}
-      {isConstruction ? (
-        <div className="w-full border-2 border-gold text-foreground hover:bg-gold/10 font-medium py-2 rounded transition-all text-center text-sm flex items-center justify-center gap-1.5">
-          <PhoneCall size={14} />
-          Получить цену
-        </div>
-      ) : (
-        <button
-          onClick={handleAddToCart}
-          className={`w-full flex items-center justify-center gap-1.5 font-semibold py-2 rounded transition-all text-sm ${
-            added ? "bg-emerald-500/20 text-emerald-500" : "bg-gold/10 hover:bg-gold text-gold hover:text-black"
-          }`}
-        >
-          {added ? <Check size={14} /> : <ShoppingCart size={14} />}
-          {added ? "Добавлено" : "В корзину"}
-        </button>
-      )}
     </Wrapper>
   );
 }

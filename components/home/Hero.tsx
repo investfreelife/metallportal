@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { getSiteSettings } from "@/lib/settings";
 import { supabase } from "@/lib/supabase";
@@ -50,10 +51,17 @@ export default async function Hero() {
                 dimensions="1400×320"
                 className="absolute inset-0"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={card.image} alt={card.title} className="w-full h-full object-cover" />
+                <Image
+                  src={card.image}
+                  alt={card.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover"
+                  quality={90}
+                  priority={index < 2}
+                />
               </PhotoEditable>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent pointer-events-none" />
               <div className="relative h-full p-8 flex flex-col justify-end text-white">
                 <h2 className="text-3xl font-bold mb-2">{card.title}</h2>
                 <p className="text-white/90 mb-4 text-base leading-relaxed">{card.sub}</p>

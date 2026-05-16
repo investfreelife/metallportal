@@ -3,6 +3,39 @@ import {
   MARKETPLACE_CUTOVER_ENABLED,
   sellerOfferToPriceItem,
 } from "./marketplaceCutover";
+import { rewriteImageUrl, rewriteImageUrls } from "./imageCdn";
+
+/**
+ * ТЗ #047 Day 4: rewrite image URLs at data fetch layer.
+ * Default flag OFF → no-op (returns same URL). Set NEXT_PUBLIC_USE_YANDEX_CDN=1
+ * post-Day-6 cutover.
+ *
+ * Wraps image_url + image_urls on category/product objects.
+ * Defensive: null/undefined-safe, never throws (returns input unchanged on error).
+ */
+function applyImageCdn<T extends { image_url?: any; image_urls?: any } | null | undefined>(
+  obj: T,
+): T {
+  if (!obj) return obj;
+  try {
+    if (typeof obj.image_url === "string" && obj.image_url) {
+      (obj as any).image_url = rewriteImageUrl(obj.image_url);
+    }
+    if (Array.isArray(obj.image_urls)) {
+      (obj as any).image_urls = rewriteImageUrls(obj.image_urls);
+    }
+  } catch (e) {
+    console.error("[applyImageCdn] swallow error:", e);
+  }
+  return obj;
+}
+
+function applyImageCdnToList<T extends { image_url?: any; image_urls?: any }>(
+  list: T[] | null | undefined,
+): T[] {
+  if (!list || !Array.isArray(list)) return [];
+  return list.map((item) => applyImageCdn(item));
+}
 
 export async function getMainCategories(): Promise<any[]> {
   const { data, error } = await supabase
@@ -209,10 +242,13 @@ export async function getCategoryWithChildren(slug: string) {
   // Hydrate с seller_offers если cutover ON (no-op otherwise)
   const hydrated = await hydrateProductsWithSellerOffers(uniqueProducts);
 
+  // ТЗ #047 Day 4: rewrite Supabase Storage URLs → YC CDN если флаг включён
+  // (default OFF — поведение неизменно до Day 6 cutover). Defensive wraps
+  // никогда не throw'ят — если возникнет проблема, оригинальные URL возвращаются.
   return {
-    category,
-    subcategories,
-    products: hydrated,
+    category: category ? applyImageCdn(category as any) : category,
+    subcategories: applyImageCdnToList(subcategories as any[]),
+    products: applyImageCdnToList(hydrated as any[]),
   };
 }
 
@@ -235,7 +271,7 @@ export async function getProductBySlug(slug: string): Promise<any | null> {
     console.error("getProductBySlug error:", error);
     return null;
   }
-  return data;
+  return data ? applyImageCdn(data as any) : null;
 }
 
 export async function getRelatedProducts(categoryId: string, excludeId: string, limit = 6): Promise<any[]> {
