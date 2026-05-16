@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { LayoutDashboard, Home, Tag, Menu, Package, Settings, LogOut, Users, Image, Plug } from "lucide-react";
+import { LayoutDashboard, Home, Tag, Menu, Package, Settings, LogOut, Users, Image, Plug, LineChart } from "lucide-react";
 import { createBrowserClient } from "@supabase/ssr";
 
 const supabase = createBrowserClient(
@@ -18,6 +18,7 @@ interface CurrentSession {
 
 const NAV_ADMIN = [
   { href: "/admin", icon: LayoutDashboard, label: "Дашборд" },
+  { href: "/admin/operator", icon: LineChart, label: "Маркетинг" },
   { href: "/admin/homepage", icon: Home, label: "Главная" },
   { href: "/admin/categories", icon: Tag, label: "Категории" },
   { href: "/admin/photos", icon: Image, label: "Фото разделов" },

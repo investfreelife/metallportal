@@ -1,0 +1,53 @@
+name: Marketing ETL (ТЗ #050)
+
+# Runs ETL pulling Yandex Metrika / Direct / Webmaster + Voximplant calls into
+# Supabase marketing_metrics table. Powers /admin/operator dashboard.
+#
+# Cadence: каждые 30 мин (28 runs/day × 4 ETL = 112 runs/day, well under GHA free 2000 min/month).
+# Sources идут параллельно matrix — независимый fail для каждого источника.
+
+on:
+  schedule:
+    - cron: '0,30 * * * *'
+  workflow_dispatch:
+    inputs:
+      source:
+        description: 'Single source override (yandex_metrika | yandex_direct | yandex_webmaster | voximplant_calls)'
+        required: false
+        default: ''
+
+jobs:
+  etl:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        source: [yandex_metrika, yandex_direct, yandex_webmaster, voximplant_calls]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: 'scripts/etl/requirements.txt'
+
+      - run: pip install -r scripts/etl/requirements.txt
+
+      - name: Run ETL ${{ matrix.source }}
+        if: github.event_name != 'workflow_dispatch' || inputs.source == '' || inputs.source == matrix.source
+        run: python scripts/etl/${{ matrix.source }}.py
+        env:
+          # Yandex unified token (Metrika + Direct + Webmaster)
+          YANDEX_OAUTH_TOKEN: ${{ secrets.YANDEX_OAUTH_TOKEN }}
+          YANDEX_METRIKA_COUNTER_ID: ${{ secrets.YANDEX_METRIKA_COUNTER_ID }}
+          YANDEX_METRIKA_GOAL_PHONE_CLICK: ${{ secrets.YANDEX_METRIKA_GOAL_PHONE_CLICK }}
+          YANDEX_METRIKA_GOAL_LEAD_GET_PRICE: ${{ secrets.YANDEX_METRIKA_GOAL_LEAD_GET_PRICE }}
+          YANDEX_METRIKA_GOAL_LEAD_NAVESY_ORDER: ${{ secrets.YANDEX_METRIKA_GOAL_LEAD_NAVESY_ORDER }}
+          YANDEX_METRIKA_GOAL_SUPPLIER_REGISTER: ${{ secrets.YANDEX_METRIKA_GOAL_SUPPLIER_REGISTER }}
+          YANDEX_METRIKA_GOAL_CART_CHECKOUT: ${{ secrets.YANDEX_METRIKA_GOAL_CART_CHECKOUT }}
+          # Voximplant Service Account для JWT RS256 signing
+          VOXIMPLANT_SERVICE_ACCOUNT_BASE64: ${{ secrets.VOXIMPLANT_SERVICE_ACCOUNT_BASE64 }}
+          # Supabase service-role для RLS bypass на upsert
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
