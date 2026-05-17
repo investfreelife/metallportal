@@ -44,7 +44,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/supplier`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE_URL}/oferta`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     { url: `${BASE_URL}/privacy`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${BASE_URL}/blog`, lastModified: now, changeFrequency: "weekly", priority: 0.85 },
   ];
+
+  // Blog articles — 16 Юлин SEO-content articles читаются filesystem (content/blog/*.md).
+  const blogArticles = getAllArticles();
+  const blogUrls: MetadataRoute.Sitemap = blogArticles.map((a) => ({
+    url: `${BASE_URL}/blog/${a.slug}`,
+    lastModified: a.frontmatter.updatedAt
+      ? new Date(a.frontmatter.updatedAt)
+      : new Date(a.frontmatter.publishedAt),
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
 
   const cats = await fetchAll<{ id: string; slug: string; parent_id: string | null }>(
     (from, to) =>
