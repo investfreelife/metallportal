@@ -23,6 +23,8 @@ import AdsCampaigns from '@/components/dashboard/AdsCampaigns'
 import { DashboardAudit } from '@/components/dashboard/DashboardAudit'
 // Roadmap — Sergey directive «сделай в CRM план с результатами и будем сверять»
 import { RoadmapSection } from '@/components/dashboard/RoadmapSection'
+// Omnichannel Inbox — Sergey directive «нет внутреннего чата где все каналы»
+import { OmnichannelInbox } from '@/components/dashboard/OmnichannelInbox'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
@@ -234,6 +236,9 @@ export default async function DashboardPage() {
 
         {/* URGENT 2026-05-17 ROADMAP_SECTION — «План и результаты» (26 milestones, 5 horizons). */}
         <RoadmapSection />
+
+        {/* URGENT 2026-05-17 OMNICHANNEL_INBOX — все каналы общения с клиентами в одном окне. */}
+        <OmnichannelInbox />
 
         {/* Section 3 — карта посетителей (full-width) */}
         <div id="visitors-map">

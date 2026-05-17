@@ -22,6 +22,9 @@ const PUBLIC_EXACT = new Set([
 const PUBLIC_PREFIX = [
   '/_next/', '/favicon', '/api/auth/', '/track.js', '/partner', '/api/ref/',
   '/api/sergey-actions/',  // /[id]/status, /[id]/check
+  // URGENT 2026-05-17 OMNICHANNEL: /api/inbox/send + /api/inbox/ai-suggest
+  // handlers сами проверяют session cookie ИЛИ x-agent-token.
+  '/api/inbox/',
 ]
 
 // ── Edge-compatible HMAC-SHA256 ────────────────────────────────────
