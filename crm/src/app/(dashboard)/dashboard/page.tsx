@@ -11,6 +11,16 @@ import { TeamActivityFeed } from '@/components/dashboard/TeamActivityFeed'
 import TodayHero from '@/components/dashboard/TodayHero'
 import { LiveActivityFeed } from '@/components/dashboard/LiveActivityFeed'
 import { SergeyActions } from '@/components/dashboard/SergeyActions'
+// Phase B — visitor analytics
+import VisitorsMap from '@/components/dashboard/VisitorsMap'
+import VisitorJourneys from '@/components/dashboard/VisitorJourneys'
+// Phase C — content visibility
+import ArticlesList from '@/components/dashboard/ArticlesList'
+// Phase D — channels + ads
+import MarketingChannels from '@/components/dashboard/MarketingChannels'
+import AdsCampaigns from '@/components/dashboard/AdsCampaigns'
+// Data audit — Sergey directive «у меня нету правильных данных, проверь сам»
+import { DashboardAudit } from '@/components/dashboard/DashboardAudit'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
@@ -202,20 +212,39 @@ export default async function DashboardPage() {
       <div className="p-4 space-y-6">
         {/* ─── URGENT 2026-05-17 Phase A: human-language sections at top ─── */}
 
+        {/* Audit panel — Sergey directive «нету правильных данных, продумай как проверять».
+            Sticky banner поверх — Sergey первое что видит. Если 🔴 — есть data integrity issue. */}
+        <DashboardAudit />
+
         {/* Section 1 — «Сегодня» (4 big cards) */}
         <TodayHero />
 
         {/* Section 2 + Section 8 (side-by-side: feed left, actions right) */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 space-y-3">
             <LiveActivityFeed initialEvents={initialAgentEvents ?? []} />
+            <VisitorJourneys />
           </div>
           <div>
             <SergeyActions />
           </div>
         </div>
 
-        {/* ─── Existing CRM widgets (Funnel/Channels/Pipeline/Hot Leads/Activity) ─── */}
+        {/* Section 3 — карта посетителей (full-width) */}
+        <div id="visitors-map">
+          <VisitorsMap />
+        </div>
+
+        {/* Section 4 — статьи (full-width) */}
+        <ArticlesList />
+
+        {/* Section 5 + Section 6 (side-by-side) — площадки + реклама */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <MarketingChannels />
+          <AdsCampaigns />
+        </div>
+
+        {/* ─── Existing CRM widgets (Section 7 Funnel/Channels/Pipeline/Hot Leads/Activity) ─── */}
 
         <div className="border-t border-gray-200 pt-4 -mx-1 px-1">
           <h2 className="text-[13px] font-semibold text-gray-500 uppercase tracking-wide mb-3">

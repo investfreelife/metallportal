@@ -11,8 +11,18 @@ const PUBLIC_EXACT = new Set([
   // DISPATCH 2026-05-16 OPERATOR_TO_CRM: agent orchestration webhook
   // protected by own X-Agent-Token (AGENT_WEBHOOK_TOKEN env), no session cookie.
   '/api/agent-events',
+  // URGENT 2026-05-17 Sergey: read-only data audit (aggregated counts only, no PII).
+  // Used by dashboard panel + CLI scripts/audit_dashboard.sh + hourly cron.
+  '/api/dashboard-audit',
+  // URGENT 2026-05-17 sergey_actions: list endpoint. POST endpoints (status/check)
+  // под /api/sergey-actions/[id]/ имеют свою auth (session cookie OR x-agent-token).
+  '/api/sergey-actions',
 ])
-const PUBLIC_PREFIX = ['/_next/', '/favicon', '/api/auth/', '/track.js', '/partner', '/api/ref/']
+// PUBLIC_PREFIX — все sub-paths bypass session check (handlers сами авторизуют).
+const PUBLIC_PREFIX = [
+  '/_next/', '/favicon', '/api/auth/', '/track.js', '/partner', '/api/ref/',
+  '/api/sergey-actions/',  // /[id]/status, /[id]/check
+]
 
 // ── Edge-compatible HMAC-SHA256 ────────────────────────────────────
 const enc = new TextEncoder()

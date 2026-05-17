@@ -119,6 +119,50 @@ def conversions_per_goal(date1: str, date2: str) -> List[Dict]:
     return rows
 
 
+def top_cities(date1: str, date2: str) -> List[Dict]:
+    """URGENT 2026-05-17 DASHBOARD_HUMAN_LANGUAGE Phase B Section 3.
+
+    Sergey wanted to see «откуда заходят люди». Pull top 30 cities + visits +
+    goal_reaches per city → store в marketing_metrics с metric_name='city_visits'.
+    Dashboard server component читает + рендерит таблицу + потенциальный heatmap.
+    """
+    log(f"  fetching top cities {date1}..{date2}")
+    params = {
+        "ids": COUNTER,
+        "metrics": "ym:s:visits,ym:s:users,ym:s:bounceRate,ym:s:avgVisitDurationSeconds",
+        "dimensions": "ym:s:regionCityName,ym:s:regionCountry",
+        "date1": date1, "date2": date2,
+        "accuracy": "full",
+        "limit": 30,
+        "sort": "-ym:s:visits",
+    }
+    data = yandex_get_json(API, params)
+    rows: List[Dict] = []
+    for d in data.get("data", [])[:30]:
+        city = d["dimensions"][0]["name"] or "Неизвестно"
+        country = d["dimensions"][1]["name"] or "Неизвестно"
+        visits = d["metrics"][0]
+        users = d["metrics"][1]
+        bounce_rate = d["metrics"][2]
+        avg_duration = d["metrics"][3]
+        rows.append({
+            "date": date2,  # snapshot date
+            "source": "metrika",
+            "channel": None,
+            "metric_name": "city_visits",
+            "metric_value": visits,
+            "metric_meta": {
+                "city": city[:120],
+                "country": country[:80],
+                "users": users,
+                "bounce_rate": round(float(bounce_rate or 0), 1),
+                "avg_duration_sec": round(float(avg_duration or 0), 0),
+                "period_days": 7,
+            },
+        })
+    return rows
+
+
 def top_pages(date1: str, date2: str) -> List[Dict]:
     log(f"  fetching top pages {date1}..{date2}")
     # Aggregate by URL для всего periodа — не per-day (слишком много данных)
@@ -165,6 +209,10 @@ def main():
         all_rows.extend(top_pages(date1, date2))
     except Exception as e:
         log(f"top_pages failed: {e}")
+    try:
+        all_rows.extend(top_cities(date1, date2))
+    except Exception as e:
+        log(f"top_cities failed: {e}")
 
     log(f"upserting {len(all_rows)} rows...")
     cnt = upsert_metrics(all_rows)
