@@ -26,6 +26,7 @@ const HARDCODED_PATHS = [
   "/tools",
   "/ai-search",
   "/catalog",
+  "/blog",
   // Footer (Legal)
   "/privacy",
   "/oferta",
