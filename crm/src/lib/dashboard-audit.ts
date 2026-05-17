@@ -415,6 +415,46 @@ export async function auditAgentEventsFreshness(): Promise<MetricAudit> {
   }
 }
 
+/* ───────── Sergey actions ownership / freshness ───────── */
+export async function auditSergeyActions(): Promise<MetricAudit> {
+  const supabase = admin()
+  const warnings: string[] = []
+
+  const [{ count: total }, { count: active }, { count: orphaned }, { data: stale }] = await Promise.all([
+    supabase.from('sergey_actions').select('id', { count: 'exact', head: true }),
+    supabase.from('sergey_actions').select('id', { count: 'exact', head: true }).neq('status', 'done').neq('status', 'wont_do'),
+    supabase.from('sergey_actions').select('id', { count: 'exact', head: true }).is('owner_agent', null),
+    supabase.from('sergey_actions').select('id, slug, last_checked_at, check_method')
+      .neq('check_method', 'none')
+      .or('last_checked_at.is.null,last_checked_at.lt.' + new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString())
+      .limit(20),
+  ])
+
+  const staleCount = stale?.length ?? 0
+
+  const sources: SourceCheck[] = [
+    { source: 'sergey_actions total', query: 'COUNT(*)', value: total ?? 0 },
+    { source: 'активных задач', query: 'COUNT(*) WHERE status NOT IN (done, wont_do)', value: active ?? 0 },
+    { source: 'без owner', query: 'COUNT(*) WHERE owner_agent IS NULL', value: orphaned ?? 0, note: 'каждая задача должна иметь ответственного' },
+    { source: 'auto-checks stale', query: 'не проверялись >48ч', value: staleCount, note: 'cron scripts/check_sergey_actions.sh не работает или ещё не настроен' },
+  ]
+
+  if ((total ?? 0) === 0) warnings.push('sergey_actions пустая. Migration 20260517180000 не применилась?')
+  if ((orphaned ?? 0) > 0) warnings.push((orphaned ?? 0) + ' задач без owner — каждая должна иметь ответственного')
+  if (staleCount > 3) warnings.push(staleCount + ' auto-checks не запускались >48ч. Cron scripts/check_sergey_actions.sh не работает?')
+
+  const status: AuditStatus = warnings.length === 0 ? 'verified' : (staleCount > 5 || (orphaned ?? 0) > 0) ? 'mismatch' : 'partial'
+  return {
+    metric: 'system.sergey_actions',
+    displayedValue: active ?? 0,
+    status,
+    confidence: status === 'verified' ? 100 : status === 'partial' ? 70 : 30,
+    sources,
+    discrepancyPct: null,
+    warnings,
+  }
+}
+
 /* ───────── Marketing channels / campaigns coverage ───────── */
 export async function auditMarketingTables(): Promise<MetricAudit> {
   const supabase = admin()
@@ -477,6 +517,7 @@ export async function runFullAudit(displayed: {
     auditCrossSection(),
     auditAgentEventsFreshness(),
     auditMarketingTables(),
+    auditSergeyActions(),
   ])
 
   // Overall: worst-of-all

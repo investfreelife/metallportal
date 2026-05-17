@@ -57,6 +57,7 @@ const METRIC_LABELS: Record<string, string> = {
   'cross.sanity': 'Перекрёстная проверка (лиды ≤ посетители)',
   'system.agent_events_freshness': 'Свежесть событий в команде',
   'system.marketing_tables': 'Площадки и реклама — таблицы',
+  'system.sergey_actions': 'Задачи Sergey (ownership + auto-check)',
 }
 
 export function DashboardAudit() {
