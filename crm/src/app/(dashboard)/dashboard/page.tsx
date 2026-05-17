@@ -21,6 +21,8 @@ import MarketingChannels from '@/components/dashboard/MarketingChannels'
 import AdsCampaigns from '@/components/dashboard/AdsCampaigns'
 // Data audit — Sergey directive «у меня нету правильных данных, проверь сам»
 import { DashboardAudit } from '@/components/dashboard/DashboardAudit'
+// Roadmap — Sergey directive «сделай в CRM план с результатами и будем сверять»
+import { RoadmapSection } from '@/components/dashboard/RoadmapSection'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
@@ -229,6 +231,9 @@ export default async function DashboardPage() {
             <SergeyActions />
           </div>
         </div>
+
+        {/* URGENT 2026-05-17 ROADMAP_SECTION — «План и результаты» (26 milestones, 5 horizons). */}
+        <RoadmapSection />
 
         {/* Section 3 — карта посетителей (full-width) */}
         <div id="visitors-map">
