@@ -2,6 +2,7 @@ import { MetadataRoute } from "next";
 import { supabase } from "@/lib/supabase";
 import { SITE_URL } from "@/lib/site";
 import { LANDINGS } from "@/lib/landings";
+import { getAllArticles } from "@/lib/blog";
 
 const BASE_URL = SITE_URL;
 
