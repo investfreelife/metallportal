@@ -14,6 +14,11 @@ import { SergeyActions } from '@/components/dashboard/SergeyActions'
 // Phase B — visitor analytics
 import VisitorsMap from '@/components/dashboard/VisitorsMap'
 import VisitorJourneys from '@/components/dashboard/VisitorJourneys'
+// Phase C — content visibility
+import ArticlesList from '@/components/dashboard/ArticlesList'
+// Phase D — channels + ads
+import MarketingChannels from '@/components/dashboard/MarketingChannels'
+import AdsCampaigns from '@/components/dashboard/AdsCampaigns'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
@@ -224,7 +229,16 @@ export default async function DashboardPage() {
           <VisitorsMap />
         </div>
 
-        {/* ─── Existing CRM widgets (Funnel/Channels/Pipeline/Hot Leads/Activity) ─── */}
+        {/* Section 4 — статьи (full-width) */}
+        <ArticlesList />
+
+        {/* Section 5 + Section 6 (side-by-side) — площадки + реклама */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <MarketingChannels />
+          <AdsCampaigns />
+        </div>
+
+        {/* ─── Existing CRM widgets (Section 7 Funnel/Channels/Pipeline/Hot Leads/Activity) ─── */}
 
         <div className="border-t border-gray-200 pt-4 -mx-1 px-1">
           <h2 className="text-[13px] font-semibold text-gray-500 uppercase tracking-wide mb-3">
