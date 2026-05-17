@@ -50,8 +50,15 @@ export async function ycPutObject(
     throw new Error("YC_S3_KEY_ID / YC_S3_SECRET not configured");
   }
 
-  const host = `${bucket}.${ENDPOINT}`;
-  const path = `/${key}`;
+  // Path-style URL: storage.yandexcloud.net/<bucket>/<key>.
+  // Virtual-host style (<bucket>.storage.yandexcloud.net) DNS resolves к
+  // wrong IP внутри YC Serverless Container (наблюдалось 8.47.69.0:443 timeout
+  // 2026-05-17). Path-style uses well-known apex host — reliable DNS.
+  // Public URL returned (для frontend consumption) — virtual-host style работает
+  // в browser (DNS resolution в external networks). Только server-side fetch
+  // нуждается в path-style.
+  const host = ENDPOINT;
+  const path = `/${bucket}/${key}`;
   const now = new Date();
   const amzDate = now.toISOString().replace(/[:-]|\.\d{3}/g, "");
   const dateStamp = amzDate.slice(0, 8);
@@ -112,5 +119,8 @@ export async function ycPutObject(
     throw new Error(`YC PUT ${res.status}: ${text.slice(0, 500)}`);
   }
 
-  return `https://${host}/${key}`;
+  // Return virtual-host-style public URL для frontend (browser DNS resolves
+  // it correctly + cdnoptimized routing). Path-style was only для server-side
+  // fetch reliability — readers consume стандартный URL.
+  return `https://${bucket}.${ENDPOINT}/${key}`;
 }
