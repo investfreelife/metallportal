@@ -119,5 +119,8 @@ export async function ycPutObject(
     throw new Error(`YC PUT ${res.status}: ${text.slice(0, 500)}`);
   }
 
-  return `https://${host}/${key}`;
+  // Return virtual-host-style public URL для frontend (browser DNS resolves
+  // it correctly + cdnoptimized routing). Path-style was only для server-side
+  // fetch reliability — readers consume стандартный URL.
+  return `https://${bucket}.${ENDPOINT}/${key}`;
 }
