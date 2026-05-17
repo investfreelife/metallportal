@@ -91,15 +91,6 @@ jobs:
 
       - name: Build with Vercel (production)
         if: ${{ github.event_name == 'push' || github.event.inputs.target == 'production' || github.event.inputs.target == '' }}
-        env:
-          # NEXT_PUBLIC_* must be available к Turbopack workers (subprocess
-          # spawned by `vercel build`). Pull from .env.production.local которая
-          # уже скопирована к root (Next.js auto-loads), плюс exports в
-          # GITHUB_ENV выше из previous step. Inline здесь — defence-in-depth.
-          NEXT_PUBLIC_SUPABASE_URL: ${{ env.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ env.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ env.SUPABASE_SERVICE_ROLE_KEY }}
-          SESSION_SECRET: ${{ env.SESSION_SECRET }}
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build with Vercel (preview)
