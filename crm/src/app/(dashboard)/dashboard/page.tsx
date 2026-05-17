@@ -7,6 +7,10 @@ import { TrafficChannels } from '@/components/dashboard/TrafficChannels'
 import { DashboardRealtime } from '@/components/dashboard/DashboardRealtime'
 import MarketingWidgets from '@/components/dashboard/MarketingWidgets'
 import { TeamActivityFeed } from '@/components/dashboard/TeamActivityFeed'
+// URGENT 2026-05-17 DASHBOARD_HUMAN_LANGUAGE Phase A
+import TodayHero from '@/components/dashboard/TodayHero'
+import { LiveActivityFeed } from '@/components/dashboard/LiveActivityFeed'
+import { SergeyActions } from '@/components/dashboard/SergeyActions'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
@@ -195,7 +199,30 @@ export default async function DashboardPage() {
         )}
       </div>
 
-      <div className="p-4 space-y-4">
+      <div className="p-4 space-y-6">
+        {/* ─── URGENT 2026-05-17 Phase A: human-language sections at top ─── */}
+
+        {/* Section 1 — «Сегодня» (4 big cards) */}
+        <TodayHero />
+
+        {/* Section 2 + Section 8 (side-by-side: feed left, actions right) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2">
+            <LiveActivityFeed initialEvents={initialAgentEvents ?? []} />
+          </div>
+          <div>
+            <SergeyActions />
+          </div>
+        </div>
+
+        {/* ─── Existing CRM widgets (Funnel/Channels/Pipeline/Hot Leads/Activity) ─── */}
+
+        <div className="border-t border-gray-200 pt-4 -mx-1 px-1">
+          <h2 className="text-[13px] font-semibold text-gray-500 uppercase tracking-wide mb-3">
+            Заявки и сделки
+          </h2>
+        </div>
+
         {/* 4 метрики */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
@@ -374,8 +401,8 @@ export default async function DashboardPage() {
         {/* Маркетинг — перенесён 2026-05-16 из /admin/operator (DISPATCH OPERATOR_TO_CRM). */}
         <MarketingWidgets />
 
-        {/* Команда — orchestration activity feed, realtime via agent_events channel. */}
-        <TeamActivityFeed initialEvents={initialAgentEvents ?? []} />
+        {/* URGENT 2026-05-17 Phase A: TeamActivityFeed заменён на LiveActivityFeed (human-language)
+            в шапке dashboard выше — здесь убираем чтобы не дублировать feed. */}
       </div>
       <DashboardRealtime tenantId={TENANT_ID} />
     </div>
