@@ -4,7 +4,7 @@ name: Deploy CRM to Vercel
 # GH Actions Vercel API uses separate quota pool (token-based, not CLI-based).
 #
 # Triggers:
-#   1. push to main with changes в metallportal/crm/** OR этот workflow file
+#   1. push to main with changes в crm/** OR этот workflow file
 #   2. workflow_dispatch (manual)
 #
 # Secrets required:
@@ -16,7 +16,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'metallportal/crm/**'
+      - 'crm/**'
       - '.github/workflows/deploy-crm.yml'
   workflow_dispatch:
     inputs:
@@ -39,7 +39,7 @@ jobs:
     timeout-minutes: 15
     defaults:
       run:
-        working-directory: metallportal/crm
+        working-directory: crm
     steps:
       - uses: actions/checkout@v4
 
@@ -47,7 +47,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: metallportal/crm/package-lock.json
+          cache-dependency-path: crm/package-lock.json
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
