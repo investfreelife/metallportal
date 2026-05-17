@@ -235,12 +235,15 @@ export default async function DashboardPage() {
           </div>
         </div>
 
+<<<<<<< HEAD
         {/* URGENT 2026-05-17 ROADMAP_SECTION — «План и результаты» (26 milestones, 5 horizons). */}
         <RoadmapSection />
 
         {/* OmnichannelInbox перемещён на standalone /inbox per Sergey directive
             «вкладка сообщения не должна быть на дашборде». См. AdminSidebar. */}
 
+=======
+>>>>>>> origin/main
         {/* Section 3 — карта посетителей (full-width) */}
         <div id="visitors-map">
           <VisitorsMap />
