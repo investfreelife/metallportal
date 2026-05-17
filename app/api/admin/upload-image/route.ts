@@ -43,6 +43,12 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ url });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    // Verbose log для debug (container logs visible через `yc logging read`).
+    // Sergey 2026-05-17: «ошибка загрузки undefined» — нужен real error message.
+    console.error("[upload-image] failed:", e?.message, e?.stack);
+    return NextResponse.json(
+      { error: e?.message || "Unknown upload error" },
+      { status: 500 },
+    );
   }
 }
