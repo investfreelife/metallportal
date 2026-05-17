@@ -1,0 +1,99 @@
+name: Deploy CRM to Vercel
+
+# URGENT 2026-05-17 — bypass Vercel CLI rate limit (100 deploys/day Hobby).
+# GH Actions Vercel API uses separate quota pool (token-based, not CLI-based).
+#
+# Triggers:
+#   1. push to main with changes в metallportal/crm/** OR этот workflow file
+#   2. workflow_dispatch (manual)
+#
+# Secrets required:
+#   VERCEL_TOKEN              — Personal Access Token (vca_*)
+#   VERCEL_ORG_ID             — team_oW52VBIM3qFkkJrR4xivENnY
+#   VERCEL_PROJECT_ID_CRM     — prj_1Er7zh1iaMwLuY0G0HdAXGjppjDI (metallportal-crm2)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'metallportal/crm/**'
+      - '.github/workflows/deploy-crm.yml'
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Deploy target'
+        required: false
+        type: choice
+        default: production
+        options:
+          - production
+          - preview
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_CRM }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: metallportal/crm
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: metallportal/crm/package-lock.json
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel project settings (production)
+        if: ${{ github.event_name == 'push' || github.event.inputs.target == 'production' || github.event.inputs.target == '' }}
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Pull Vercel project settings (preview)
+        if: ${{ github.event.inputs.target == 'preview' }}
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build with Vercel (production)
+        if: ${{ github.event_name == 'push' || github.event.inputs.target == 'production' || github.event.inputs.target == '' }}
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build with Vercel (preview)
+        if: ${{ github.event.inputs.target == 'preview' }}
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy to Vercel (production)
+        if: ${{ github.event_name == 'push' || github.event.inputs.target == 'production' || github.event.inputs.target == '' }}
+        id: deploy-prod
+        run: |
+          URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+          echo "✅ Deployed to: $URL"
+
+      - name: Deploy to Vercel (preview)
+        if: ${{ github.event.inputs.target == 'preview' }}
+        id: deploy-preview
+        run: |
+          URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+          echo "✅ Preview deployed: $URL"
+
+      - name: Smoke test — key routes
+        if: ${{ github.event_name == 'push' || github.event.inputs.target == 'production' || github.event.inputs.target == '' }}
+        run: |
+          sleep 8
+          BASE_URL="https://metallportal-crm2.vercel.app"
+          echo "=== /inbox (Sergey UX critical) ==="
+          curl -sI -L "$BASE_URL/inbox" | head -3
+          echo ""
+          echo "=== /dashboard ==="
+          curl -sI -L "$BASE_URL/dashboard" | head -3
+          echo ""
+          echo "=== /api/dashboard-audit ==="
+          curl -s "$BASE_URL/api/dashboard-audit" | head -c 200
