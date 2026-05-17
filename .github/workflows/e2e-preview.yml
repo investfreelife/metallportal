@@ -13,7 +13,7 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           # Чекаут именно того commit'а, для которого был создан preview —
           # tests должны соответствовать коду, который реально задеплоен.
