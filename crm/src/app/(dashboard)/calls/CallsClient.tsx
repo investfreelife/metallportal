@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const SENTIMENT_COLORS: Record<string, string> = {
   positive: 'text-green-600',
@@ -11,6 +11,31 @@ const STATUS_COLORS: Record<string, string> = {
   missed: 'bg-red-50 text-red-700',
   initiated: 'bg-blue-50 text-blue-700',
   failed: 'bg-gray-100 text-gray-600',
+  pending_transcription: 'bg-amber-50 text-amber-700',
+  transcribed: 'bg-purple-50 text-purple-700',
+  analyzed: 'bg-indigo-50 text-indigo-700',
+}
+const STATUS_LABELS: Record<string, string> = {
+  completed: 'Завершён',
+  missed: 'Пропущен',
+  initiated: 'Инициирован',
+  failed: 'Ошибка',
+  pending_transcription: '⏳ Ждёт расшифровку',
+  transcribed: '📝 Расшифрован',
+  analyzed: '🤖 Анализ готов',
+}
+
+// LAW-contact-privacy: log every recording listen / transcript view event.
+async function logAccess(callId: string, accessType: string) {
+  try {
+    await fetch('/api/calls/access-log', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ call_id: callId, access_type: accessType }),
+    })
+  } catch {
+    /* fire-and-forget — don't block UI on audit failure */
+  }
 }
 
 function formatDuration(sec: number) {
@@ -30,6 +55,11 @@ function timeAgo(date: string) {
 export function CallsClient({ calls, stats }: { calls: any[]; stats: any }) {
   const [selected, setSelected] = useState<any>(null)
   const [analyzing, setAnalyzing] = useState<string | null>(null)
+
+  // Audit log when user opens detail panel
+  useEffect(() => {
+    if (selected?.id) logAccess(selected.id, 'detail_view')
+  }, [selected?.id])
 
   const analyze = async (call: any) => {
     setAnalyzing(call.id)
@@ -98,7 +128,7 @@ export function CallsClient({ calls, stats }: { calls: any[]; stats: any }) {
                           {call.contacts?.full_name || call.to_number || call.from_number || 'Неизвестный'}
                         </span>
                         <span className={`text-[9px] px-1.5 py-0.5 rounded ${STATUS_COLORS[call.status] || 'bg-gray-100 text-gray-600'}`}>
-                          {call.status === 'completed' ? 'Завершён' : call.status === 'missed' ? 'Пропущен' : call.status}
+                          {STATUS_LABELS[call.status] || call.status}
                         </span>
                         {call.is_ai_call && <span className="text-[9px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">ИИ</span>}
                       </div>
@@ -164,6 +194,22 @@ export function CallsClient({ calls, stats }: { calls: any[]; stats: any }) {
               {selected.ai_sentiment && (
                 <div className={`text-[11px] font-medium ${SENTIMENT_COLORS[selected.ai_sentiment] || 'text-gray-500'}`}>
                   Тональность: {selected.ai_sentiment === 'positive' ? 'Позитивная' : selected.ai_sentiment === 'negative' ? 'Негативная' : 'Нейтральная'}
+                </div>
+              )}
+
+              {selected.recording_url && (
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="text-[10px] font-medium text-gray-600 mb-1.5 flex items-center justify-between">
+                    <span>🎙 Запись разговора</span>
+                    <span className="text-[9px] text-gray-400">прослушивание логируется</span>
+                  </div>
+                  <audio
+                    controls
+                    preload="none"
+                    src={selected.recording_url}
+                    onPlay={() => logAccess(selected.id, 'recording_listened')}
+                    className="w-full h-9"
+                  />
                 </div>
               )}
 

@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import CallButton from '@/components/contacts/CallButton'
 
 const STAGE_META: Record<string, { label: string; color: string }> = {
   new:         { label: 'Новая',        color: '#378ADD' },
@@ -141,6 +142,9 @@ export function ContactDetail({ contact, deals, activities, siteEvents }: {
             className="text-[10px] bg-green-50 text-green-700 border border-green-200 px-3 py-1.5 rounded-lg hover:bg-green-100">
             📞 Позвонить
           </a>
+        )}
+        {contact.phone && (
+          <CallButton clientPhone={contact.phone} contactId={contact.id} />
         )}
         {contact.telegram && (
           <a href={`https://t.me/${contact.telegram.replace('@', '')}`} target="_blank"

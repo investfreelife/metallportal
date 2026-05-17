@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { getSession } from '@/lib/session'
 import { createClient } from '@/lib/supabase/server'
 import Sidebar from '@/components/layout/Sidebar'
+import IncomingCallToast from '@/components/calls/IncomingCallToast'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
@@ -31,6 +32,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <main className="flex-1 overflow-auto bg-gray-50">
         {children}
       </main>
+      <IncomingCallToast />
     </div>
   )
 }
