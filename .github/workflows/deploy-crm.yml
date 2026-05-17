@@ -60,6 +60,19 @@ jobs:
           if [ -f .vercel/.env.production.local ]; then
             cp .vercel/.env.production.local .env.production.local
             echo "✓ Env file surfaced ($(wc -l < .env.production.local) lines)"
+            echo "Keys present:"
+            grep -oE '^[A-Z_]+=' .env.production.local | sort
+          fi
+          # Также экспортим в GITHUB_ENV чтобы workers видели env через process.env
+          if [ -f .vercel/.env.production.local ]; then
+            while IFS='=' read -r key val; do
+              [[ "$key" =~ ^[A-Z_][A-Z0-9_]*$ ]] || continue
+              # Remove surrounding quotes if any
+              val="${val%\"}"
+              val="${val#\"}"
+              echo "::add-mask::$val"
+              echo "$key=$val" >> "$GITHUB_ENV"
+            done < .vercel/.env.production.local
           fi
 
       - name: Pull Vercel project settings + env (preview)
