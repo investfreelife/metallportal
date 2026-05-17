@@ -19,6 +19,8 @@ import ArticlesList from '@/components/dashboard/ArticlesList'
 // Phase D — channels + ads
 import MarketingChannels from '@/components/dashboard/MarketingChannels'
 import AdsCampaigns from '@/components/dashboard/AdsCampaigns'
+// Data audit — Sergey directive «у меня нету правильных данных, проверь сам»
+import { DashboardAudit } from '@/components/dashboard/DashboardAudit'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
@@ -209,6 +211,10 @@ export default async function DashboardPage() {
 
       <div className="p-4 space-y-6">
         {/* ─── URGENT 2026-05-17 Phase A: human-language sections at top ─── */}
+
+        {/* Audit panel — Sergey directive «нету правильных данных, продумай как проверять».
+            Sticky banner поверх — Sergey первое что видит. Если 🔴 — есть data integrity issue. */}
+        <DashboardAudit />
 
         {/* Section 1 — «Сегодня» (4 big cards) */}
         <TodayHero />
