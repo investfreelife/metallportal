@@ -58,6 +58,12 @@ export function rewriteImageUrl(url: string | null | undefined): string {
   // Step 20: site-images bucket (legacy navesy/category covers).
   if (SUPABASE_SITE_IMAGES_PREFIX && url.startsWith(SUPABASE_SITE_IMAGES_PREFIX)) {
     const path = url.slice(SUPABASE_SITE_IMAGES_PREFIX.length);
+    // 2026-05-17 designer-upload fix: NEW designer uploads под `user-uploads/`
+    // folder остаются на Supabase Storage — НЕ rewrite. YC bucket mirror у нас
+    // только для legacy navesy/category covers (94 files mirrored на Day 3 #047).
+    // Designer ставит фото через UI — Supabase upload работает (proven). Rewrite
+    // на YC bucket dropped → photos accessible через Supabase, не 404.
+    if (path.startsWith("user-uploads/")) return url;
     return `${base}/site-images/${path}`;
   }
 
