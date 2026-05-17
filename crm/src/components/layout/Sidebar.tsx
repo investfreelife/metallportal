@@ -17,13 +17,14 @@ import {
   FileText,
   Layers,
   Network,
+  Inbox,
 } from 'lucide-react'
 
 type NavItem = {
   href: string
   label: string
   icon: React.ElementType
-  badgeKey?: 'pending' | 'emails' | 'calls'
+  badgeKey?: 'pending' | 'emails' | 'calls' | 'inbox_unread'
 }
 
 type NavSection = {
@@ -37,6 +38,9 @@ const navSections: NavSection[] = [
     items: [
       { href: '/bezos', label: '🧠 AI Центр', icon: Sparkles },
       { href: '/dashboard', label: 'Дашборд', icon: LayoutDashboard },
+      // URGENT 2026-05-17 omnichannel: standalone /inbox page вместо dashboard section.
+      // Sergey directive «вкладка сообщения отдельная полноценная, мирового уровня».
+      { href: '/inbox', label: 'Все сообщения', icon: Inbox, badgeKey: 'inbox_unread' },
       { href: '/queue', label: 'Очередь ИИ', icon: Sparkles, badgeKey: 'pending' },
     ],
   },
@@ -74,6 +78,7 @@ interface SidebarProps {
   pendingCount?: number
   unreadEmails?: number
   missedCalls?: number
+  inboxUnread?: number
 }
 
 export default function Sidebar({
@@ -82,6 +87,7 @@ export default function Sidebar({
   pendingCount = 0,
   unreadEmails = 0,
   missedCalls = 0,
+  inboxUnread = 0,
 }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
@@ -90,6 +96,7 @@ export default function Sidebar({
     pending: pendingCount,
     emails: unreadEmails,
     calls: missedCalls,
+    inbox_unread: inboxUnread,
   }
 
   async function handleLogout() {
