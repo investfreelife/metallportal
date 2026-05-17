@@ -66,8 +66,10 @@ jobs:
           if [ -f .vercel/.env.production.local ]; then
             cp .vercel/.env.production.local .env.production.local
             echo "✓ Env file surfaced ($(wc -l < .env.production.local) lines)"
-            echo "Keys present:"
-            grep -oE '^[A-Z_]+=' .env.production.local | sort
+            echo "=== Checking NEXT_PUBLIC_SUPABASE_URL presence + length ==="
+            VAL=$(grep -E '^NEXT_PUBLIC_SUPABASE_URL=' .env.production.local | sed 's/^[^=]*=//' | sed 's/^"\|"$//g')
+            echo "NEXT_PUBLIC_SUPABASE_URL length: ${#VAL}"
+            echo "First chars: ${VAL:0:30}..."
           fi
           # Также экспортим в GITHUB_ENV чтобы workers видели env через process.env
           if [ -f .vercel/.env.production.local ]; then
@@ -91,15 +93,6 @@ jobs:
 
       - name: Build with Vercel (production)
         if: ${{ github.event_name == 'push' || github.event.inputs.target == 'production' || github.event.inputs.target == '' }}
-        env:
-          # NEXT_PUBLIC_* must be available к Turbopack workers (subprocess
-          # spawned by `vercel build`). Pull from .env.production.local которая
-          # уже скопирована к root (Next.js auto-loads), плюс exports в
-          # GITHUB_ENV выше из previous step. Inline здесь — defence-in-depth.
-          NEXT_PUBLIC_SUPABASE_URL: ${{ env.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ env.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ env.SUPABASE_SERVICE_ROLE_KEY }}
-          SESSION_SECRET: ${{ env.SESSION_SECRET }}
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build with Vercel (preview)
