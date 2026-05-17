@@ -58,30 +58,16 @@ jobs:
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
-      - name: Pull Vercel project settings + env (production)
+      - name: Pull Vercel project settings (production)
         if: ${{ github.event_name == 'push' || github.event.inputs.target == 'production' || github.event.inputs.target == '' }}
         run: |
           vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-          # Surface env to Next.js build (Next reads .env.production.local at repo root)
-          if [ -f .vercel/.env.production.local ]; then
-            cp .vercel/.env.production.local .env.production.local
-            echo "✓ Env file surfaced ($(wc -l < .env.production.local) lines)"
-            echo "=== Checking NEXT_PUBLIC_SUPABASE_URL presence + length ==="
-            VAL=$(grep -E '^NEXT_PUBLIC_SUPABASE_URL=' .env.production.local | sed 's/^[^=]*=//' | sed 's/^"\|"$//g')
-            echo "NEXT_PUBLIC_SUPABASE_URL length: ${#VAL}"
-            echo "First chars: ${VAL:0:30}..."
-          fi
-          # Также экспортим в GITHUB_ENV чтобы workers видели env через process.env
-          if [ -f .vercel/.env.production.local ]; then
-            while IFS='=' read -r key val; do
-              [[ "$key" =~ ^[A-Z_][A-Z0-9_]*$ ]] || continue
-              # Remove surrounding quotes if any
-              val="${val%\"}"
-              val="${val#\"}"
-              echo "::add-mask::$val"
-              echo "$key=$val" >> "$GITHUB_ENV"
-            done < .vercel/.env.production.local
-          fi
+          # NB: vercel pull записывает env-file с ENCRYPTED env values как пустые
+          # строки (token не имеет permission decrypt в CI). НЕ копируем .vercel/
+          # env file к root — это бы override-нуло реальные env vars из GH Secrets
+          # (job-level env: блок выше). Next.js использует shell env, не .env file.
+          rm -f .env.production.local .env.local 2>/dev/null || true
+          echo "✓ Vercel project pulled. Build will use job-level env from GH Secrets."
 
       - name: Pull Vercel project settings + env (preview)
         if: ${{ github.event.inputs.target == 'preview' }}
