@@ -280,6 +280,12 @@ export default function HeaderClient({ navItems }: HeaderClientProps) {
           >
             🧮 Калькуляторы
           </Link>
+          <Link
+            href="/blog"
+            className="flex items-center gap-1.5 text-xs font-medium text-foreground/80 hover:text-gold transition-colors"
+          >
+            📰 Блог
+          </Link>
 
           {/* Готовые решения — landings dropdown (n005) */}
           <div className="relative group">
