@@ -96,8 +96,8 @@ export function getRelatedArticles(slug: string, limit = 3): Article[] {
   const currentTags = new Set(current.frontmatter.tags ?? []);
 
   const scored = all.map((a) => {
-    const tags = new Set(a.frontmatter.tags ?? []);
-    const tagOverlap = [...tags].filter((t) => currentTags.has(t)).length;
+    const tags = a.frontmatter.tags ?? [];
+    const tagOverlap = tags.filter((t) => currentTags.has(t)).length;
     const categoryMatch =
       current.frontmatter.category &&
       a.frontmatter.category === current.frontmatter.category
