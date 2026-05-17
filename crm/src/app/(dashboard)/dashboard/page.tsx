@@ -11,6 +11,9 @@ import { TeamActivityFeed } from '@/components/dashboard/TeamActivityFeed'
 import TodayHero from '@/components/dashboard/TodayHero'
 import { LiveActivityFeed } from '@/components/dashboard/LiveActivityFeed'
 import { SergeyActions } from '@/components/dashboard/SergeyActions'
+// Phase B — visitor analytics
+import VisitorsMap from '@/components/dashboard/VisitorsMap'
+import VisitorJourneys from '@/components/dashboard/VisitorJourneys'
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
@@ -207,12 +210,18 @@ export default async function DashboardPage() {
 
         {/* Section 2 + Section 8 (side-by-side: feed left, actions right) */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 space-y-3">
             <LiveActivityFeed initialEvents={initialAgentEvents ?? []} />
+            <VisitorJourneys />
           </div>
           <div>
             <SergeyActions />
           </div>
+        </div>
+
+        {/* Section 3 — карта посетителей (full-width) */}
+        <div id="visitors-map">
+          <VisitorsMap />
         </div>
 
         {/* ─── Existing CRM widgets (Funnel/Channels/Pipeline/Hot Leads/Activity) ─── */}
