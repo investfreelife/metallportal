@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { getReferralStats, getReferralTree } from "@/lib/referrals";
+import { readSession } from "@/lib/session";
+
+export const runtime = "nodejs";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -8,7 +11,9 @@ const supabase = createClient(
 );
 
 export async function GET(req: NextRequest) {
-  const userId = req.cookies.get("user_session")?.value;
+  // SECURITY 2026-05-17 audit: HMAC-verified session (was plain UUID — trivial forgery).
+  // readSession() supports legacy plain-UUID cookies для graceful migration.
+  const userId = readSession(req.cookies.get("user_session")?.value);
   if (!userId) return NextResponse.json({ user: null });
 
   const { data: user } = await supabase
