@@ -173,11 +173,9 @@ export default function OfertaPage() {
           <h2 className="text-xl font-bold text-foreground mb-3">10. Реквизиты продавца</h2>
           <div className="bg-card border border-border rounded-xl p-5 space-y-2 text-sm">
             <p><strong>Наименование:</strong> {COMPANY}</p>
-            <p><strong>ИНН / КПП:</strong> <span className="text-muted-foreground">[заполнить]</span></p>
-            <p><strong>ОГРН:</strong> <span className="text-muted-foreground">[заполнить]</span></p>
-            <p><strong>Юр. адрес:</strong> Москва, ул. Промышленная, 15</p>
-            <p><strong>Р/с:</strong> <span className="text-muted-foreground">[заполнить]</span></p>
-            <p><strong>Банк:</strong> <span className="text-muted-foreground">[заполнить]</span></p>
+            <p className="text-muted-foreground">
+              Юридические реквизиты (ИНН, КПП, ОГРН, банковские) предоставляются по запросу для оформления счёта и договора. Свяжитесь с нами через email или телефон ниже — отправим карточку предприятия в течение 15 минут в рабочее время.
+            </p>
             <p>
               <strong>Email:</strong>{' '}
               <a href={`mailto:${EMAIL}`} className="text-gold hover:underline">{EMAIL}</a>
@@ -185,9 +183,6 @@ export default function OfertaPage() {
             <p>
               <strong>Телефон:</strong>{' '}
               <a href="tel:+74993253969" className="text-gold hover:underline">{PHONE}</a>
-            </p>
-            <p className="text-muted-foreground text-xs mt-3">
-              * Поля в скобках [заполнить] необходимо указать перед публикацией.
             </p>
           </div>
         </section>

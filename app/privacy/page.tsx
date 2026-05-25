@@ -206,8 +206,7 @@ export default function PrivacyPage() {
           <h2 className="text-xl font-bold text-foreground mb-3">10. Реквизиты оператора</h2>
           <div className="bg-card border border-border rounded-xl p-5 space-y-2 text-sm">
             <p><strong>Наименование:</strong> {COMPANY}</p>
-            <p><strong>ИНН / ОГРН:</strong> <span className="text-muted-foreground">[заполнить]</span></p>
-            <p><strong>Адрес:</strong> Москва, ул. Промышленная, 15</p>
+            <p><strong>Юридические реквизиты:</strong> <span className="text-muted-foreground">для оформления счёта и договора свяжитесь через email или телефон ниже — выдадим карточку предприятия с ИНН, ОГРН, банковскими реквизитами.</span></p>
             <p>
               <strong>Email:</strong>{' '}
               <a href={`mailto:${EMAIL}`} className="text-gold hover:underline">{EMAIL}</a>
@@ -215,9 +214,6 @@ export default function PrivacyPage() {
             <p>
               <strong>Телефон:</strong>{' '}
               <a href="tel:+74993253969" className="text-gold hover:underline">{PHONE}</a>
-            </p>
-            <p className="text-muted-foreground text-xs mt-3">
-              * Поля [ИНН] и [ОГРН] необходимо заполнить перед публикацией.
             </p>
           </div>
         </section>
