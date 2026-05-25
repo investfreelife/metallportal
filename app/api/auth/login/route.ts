@@ -11,7 +11,7 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { loginRatelimit, getClientIp } from "@/lib/rateLimit";
+import { loginRatelimit, getClientIp } from "@/lib/ratelimit";
 import { hashPasswordScrypt, verifyPasswordScrypt, verifyPasswordLegacy } from "@/lib/auth/scrypt";
 import { signSession, SESSION_COOKIE_OPTS } from "@/lib/session";
 import { verifyTurnstile } from "@/lib/turnstile";
