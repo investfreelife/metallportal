@@ -9,7 +9,7 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { registerRatelimit, getClientIp } from "@/lib/rateLimit";
+import { registerRatelimit, getClientIp } from "@/lib/ratelimit";
 import { hashPasswordScrypt } from "@/lib/auth/scrypt";
 import { signSession, SESSION_COOKIE_OPTS } from "@/lib/session";
 
