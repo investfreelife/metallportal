@@ -70,7 +70,7 @@ export default async function Footer() {
               </li>
               <li className="flex items-start gap-2 text-foreground/80">
                 <MapPin size={16} className="text-gold mt-0.5 flex-shrink-0" />
-                <span>Москва, ул. Промышленная, 15</span>
+                <span>Москва — самовывоз по согласованию, доставка по РФ</span>
               </li>
               <li className="flex items-start gap-2 text-foreground/80">
                 <Clock size={16} className="text-gold mt-0.5 flex-shrink-0" />

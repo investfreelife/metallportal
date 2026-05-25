@@ -66,9 +66,9 @@ export default function ContactsPage() {
               <MapPin className="text-gold" size={22} />
             </div>
             <div>
-              <div className="font-semibold text-foreground mb-1">Склад и офис</div>
-              <p className="text-foreground font-medium">Москва, ул. Промышленная, 15</p>
-              <p className="text-sm text-muted-foreground mt-1">Самовывоз по предварительному согласованию</p>
+              <div className="font-semibold text-foreground mb-1">Доставка и самовывоз</div>
+              <p className="text-foreground font-medium">Москва и регионы РФ</p>
+              <p className="text-sm text-muted-foreground mt-1">Самовывоз — по предварительному согласованию. Доставка по РФ — расчёт после уточнения объёма и адреса.</p>
             </div>
           </div>
         </div>

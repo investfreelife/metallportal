@@ -38,14 +38,13 @@ const localBusinessSchema = {
   url: SITE_URL,
   telephone: CONTACT_PHONE_TEL,
   email: CONTACT_EMAIL,
-  // Адрес — placeholder из ТЗ (Москва, ул. Промышленная, 15). Сергей уточнит
-  // реальный → обновляется constants в `lib/contact.ts` или прямо тут.
+  // Только город — конкретный адрес склада/офиса предоставляется по запросу
+  // через email/телефон (см. lib/contact.ts). Обновить после регистрации
+  // юр.лица и получения реального адреса.
   address: {
     "@type": "PostalAddress",
-    streetAddress: "ул. Промышленная, 15",
     addressLocality: "Москва",
     addressRegion: "Москва",
-    postalCode: "115054",
     addressCountry: "RU",
   },
   // Рабочие часы — те же что в Footer NAP (Пн–Пт 9:00–18:00).
