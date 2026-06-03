@@ -1,10 +1,34 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { MessageSquare, Search, Clock, RefreshCw, User as UserIcon, Inbox as InboxIcon } from 'lucide-react';
+import { MessageSquare, Search, Clock, RefreshCw, User as UserIcon, Inbox as InboxIcon, UserCheck, Bot } from 'lucide-react';
 import type { DialogSummary, DialogMessage } from '@/lib/recruit/types';
 import { STAGE_LABELS, STAGE_COLORS } from '@/lib/recruit/types';
 import { fmtMsk } from '@/lib/tz';
+
+interface HandoffState {
+  active: boolean;
+  taken_by: string | null;
+  since: string | null;
+}
+
+/**
+ * Безопасный JSON-fetch: проверяем content-type перед res.json(), иначе
+ * HTML-ошибки прода (500/redirect) ломали парсер с «Unexpected token '<'».
+ */
+async function safeFetchJson<T = unknown>(input: string, init?: RequestInit): Promise<T> {
+  const r = await fetch(input, { cache: 'no-store', ...init });
+  const ct = r.headers.get('content-type') || '';
+  if (!ct.includes('application/json')) {
+    const text = await r.text().catch(() => '');
+    throw new Error(`Сервер ответил не-JSON (HTTP ${r.status}): ${text.slice(0, 120)}`);
+  }
+  const j = await r.json();
+  if (!r.ok || (j as { error?: string })?.error) {
+    throw new Error((j as { error?: string })?.error || `HTTP ${r.status}`);
+  }
+  return j as T;
+}
 
 interface Props {
   initialChatId: string | null;
@@ -17,6 +41,8 @@ export default function DialogsClient({ initialChatId, tenantName }: Props) {
   const [dialogs, setDialogs] = useState<DialogSummary[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(initialChatId);
   const [messages, setMessages] = useState<DialogMessage[]>([]);
+  const [handoff, setHandoff] = useState<HandoffState>({ active: false, taken_by: null, since: null });
+  const [handoffBusy, setHandoffBusy] = useState(false);
   const [search, setSearch] = useState('');
   const [loadingList, setLoadingList] = useState(true);
   const [loadingMsgs, setLoadingMsgs] = useState(false);
@@ -27,11 +53,9 @@ export default function DialogsClient({ initialChatId, tenantName }: Props) {
   // ─── Load dialogs (with polling) ────────────────────────────────────
   async function loadDialogs() {
     try {
-      const r = await fetch('/api/recruit/dialogs', { cache: 'no-store' });
-      const j = await r.json();
-      if (!r.ok || j.error) throw new Error(j.error || 'load failed');
+      const j = await safeFetchJson<{ dialogs: DialogSummary[] }>('/api/recruit/dialogs');
       setDialogs(j.dialogs ?? []);
-      // auto-select первого диалога, если ничего не выбрано
+      setError(null);
       if (!selectedChatId && (j.dialogs ?? []).length > 0) {
         setSelectedChatId(j.dialogs[0].chat_id);
       }
@@ -45,14 +69,33 @@ export default function DialogsClient({ initialChatId, tenantName }: Props) {
   async function loadMessages(chatId: string) {
     setLoadingMsgs(true);
     try {
-      const r = await fetch(`/api/recruit/dialogs/${encodeURIComponent(chatId)}`, { cache: 'no-store' });
-      const j = await r.json();
-      if (!r.ok || j.error) throw new Error(j.error || 'load failed');
+      const j = await safeFetchJson<{ messages: DialogMessage[]; handoff?: HandoffState }>(
+        `/api/recruit/dialogs/${encodeURIComponent(chatId)}`
+      );
       setMessages(j.messages ?? []);
+      setHandoff(j.handoff ?? { active: false, taken_by: null, since: null });
+      setError(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setLoadingMsgs(false);
+    }
+  }
+
+  async function toggleHandoff(active: boolean) {
+    if (!selectedChatId) return;
+    setHandoffBusy(true);
+    try {
+      const j = await safeFetchJson<HandoffState>('/api/recruit/handoff', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: selectedChatId, active }),
+      });
+      setHandoff(j);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setHandoffBusy(false);
     }
   }
 
@@ -179,23 +222,46 @@ export default function DialogsClient({ initialChatId, tenantName }: Props) {
         )}
         {selectedChatId && selectedDialog && (
           <>
-            <header className="px-5 py-3 border-b border-gray-200 bg-white flex items-center justify-between">
-              <div className="flex items-center gap-3">
+            <header className="px-5 py-3 border-b border-gray-200 bg-white flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
                 <Avatar text={selectedDialog.who || selectedDialog.username || selectedDialog.chat_id} />
-                <div>
-                  <div className="text-sm font-semibold text-gray-900">
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold text-gray-900 truncate">
                     {selectedDialog.who || selectedDialog.username || `чат ${selectedDialog.chat_id}`}
                   </div>
-                  <div className="text-[11px] text-gray-500 flex items-center gap-2">
+                  <div className="text-[11px] text-gray-500 flex items-center gap-2 flex-wrap">
                     {selectedDialog.username && <span>@{selectedDialog.username.replace(/^@/, '')}</span>}
                     <span>· chat_id {selectedDialog.chat_id}</span>
                     <span>· {selectedDialog.msg_count} {plural(selectedDialog.msg_count, 'сообщ.', 'сообщ.', 'сообщ.')}</span>
                   </div>
                 </div>
               </div>
-              {selectedDialog.stage && (
-                <StageBadge stage={selectedDialog.stage} />
-              )}
+              <div className="flex items-center gap-2 flex-shrink-0">
+                {handoff.active && (
+                  <span className="hidden sm:inline-flex items-center gap-1 text-[11px] px-2 py-0.5 bg-amber-50 text-amber-800 border border-amber-200 rounded">
+                    <UserCheck size={11} />
+                    Общается человек{handoff.taken_by ? ` · ${handoff.taken_by}` : ''}
+                  </span>
+                )}
+                {selectedDialog.stage && <StageBadge stage={selectedDialog.stage} />}
+                <button
+                  onClick={() => toggleHandoff(!handoff.active)}
+                  disabled={handoffBusy}
+                  title={
+                    handoff.active
+                      ? `Вернуть управление AI (${handoff.taken_by ?? 'человек'} с ${handoff.since ? fmtMsk(handoff.since, true) : '—'})`
+                      : 'Перехватить диалог: AI замолчит, ты пишешь сам'
+                  }
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium border transition-colors disabled:opacity-50 ${
+                    handoff.active
+                      ? 'bg-emerald-600 border-emerald-600 text-white hover:bg-emerald-700'
+                      : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  {handoff.active ? <Bot size={12} /> : <UserCheck size={12} />}
+                  {handoff.active ? 'Вернуть мозгу' : 'Общаюсь сам'}
+                </button>
+              </div>
             </header>
             <div className="flex-1 overflow-y-auto bg-gray-50 px-5 py-4">
               {loadingMsgs && messages.length === 0 && (

@@ -2,75 +2,75 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { KanbanSquare, RefreshCw, Users } from 'lucide-react';
+import { KanbanSquare, RefreshCw, Users, MessageCircle } from 'lucide-react';
 import { FUNNEL_COLUMNS } from '@/lib/recruit/types';
 import { fmtMsk } from '@/lib/tz';
 
-interface ContactRow {
-  id: string;
-  full_name: string | null;
-  type: string | null;
-  status: string | null;
-  source: string | null;
-  telegram: string | null;
-  telegram_chat_id: string | null;
-  last_contact_at: string | null;
-  ai_segment: string | null;
-  ai_score: number | null;
-  tags: string[] | null;
-  created_at: string | null;
-  updated_at: string | null;
+interface FunnelItem {
+  chat_id: string;
+  who: string | null;
+  username: string | null;
+  stage: string;
+  source: string;
+  last_text: string | null;
+  last_at: string;
+  msg_count: number;
 }
 
 interface Props {
-  initialContacts: ContactRow[];
   tenantName: string | null;
 }
 
-export default function FunnelClient({ initialContacts, tenantName }: Props) {
-  const router = useRouter();
-  const [contacts, setContacts] = useState<ContactRow[]>(initialContacts);
-  const [refreshing, setRefreshing] = useState(false);
+const POLL_MS = 30_000;
 
-  async function reload() {
-    setRefreshing(true);
+export default function FunnelClient({ tenantName }: Props) {
+  const router = useRouter();
+  const [items, setItems] = useState<FunnelItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function reload(silent = false) {
+    if (!silent) setRefreshing(true);
     try {
       const r = await fetch('/api/recruit/funnel', { cache: 'no-store' });
+      const ct = r.headers.get('content-type') || '';
+      if (!ct.includes('application/json')) {
+        throw new Error(`Сервер ответил не-JSON (HTTP ${r.status})`);
+      }
       const j = await r.json();
-      if (j.contacts) setContacts(j.contacts);
+      if (!r.ok || j.error) throw new Error(j.error || `HTTP ${r.status}`);
+      setItems(j.items ?? []);
+      setError(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
     } finally {
+      setLoading(false);
       setRefreshing(false);
     }
   }
 
-  // мягкое автообновление раз в 30с — Sergey должен видеть актуальную картинку
   useEffect(() => {
-    const id = setInterval(reload, 30_000);
+    reload();
+    const id = setInterval(() => reload(true), POLL_MS);
     return () => clearInterval(id);
   }, []);
 
-  const byStatus = useMemo(() => {
-    const map = new Map<string, ContactRow[]>();
-    for (const c of contacts) {
-      const key = (c.status ?? 'new').toLowerCase();
+  const byStage = useMemo(() => {
+    const map = new Map<string, FunnelItem[]>();
+    for (const it of items) {
+      const key = (it.stage || 'new').toLowerCase();
       const arr = map.get(key) ?? [];
-      arr.push(c);
+      arr.push(it);
       map.set(key, arr);
     }
     return map;
-  }, [contacts]);
+  }, [items]);
 
-  const totalKnown = useMemo(
-    () => FUNNEL_COLUMNS.reduce((a, col) => a + (byStatus.get(col.key)?.length ?? 0), 0),
-    [byStatus]
-  );
+  const total = items.length;
 
-  const openDialog = (c: ContactRow) => {
-    if (c.telegram_chat_id) {
-      router.push(`/dialogs?chat=${encodeURIComponent(c.telegram_chat_id)}`);
-    } else {
-      router.push('/dialogs');
-    }
+  const openDialog = (it: FunnelItem) => {
+    router.push(`/dialogs?chat=${encodeURIComponent(it.chat_id)}`);
   };
 
   return (
@@ -82,16 +82,16 @@ export default function FunnelClient({ initialContacts, tenantName }: Props) {
             Воронка{tenantName ? ` · ${tenantName}` : ''}
           </h1>
           <p className="text-xs text-gray-500 mt-0.5">
-            Канбан кандидатов по этапам · клик по карточке → открыть диалог · время МСК
+            Канбан кандидатов по этапам · клик по карточке → диалог · время МСК
           </p>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-xs text-gray-500 flex items-center gap-1.5">
             <Users size={12} />
-            Всего по этапам: <strong className="text-gray-900">{totalKnown}</strong>
+            Кандидатов: <strong className="text-gray-900">{total}</strong>
           </span>
           <button
-            onClick={reload}
+            onClick={() => reload()}
             disabled={refreshing}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 text-gray-700 text-xs font-medium rounded-md hover:bg-gray-50 disabled:opacity-50"
           >
@@ -101,27 +101,35 @@ export default function FunnelClient({ initialContacts, tenantName }: Props) {
         </div>
       </header>
 
+      {error && (
+        <div className="mx-6 mt-3 text-xs text-red-700 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+          Ошибка: {error}
+        </div>
+      )}
+
       <div className="flex-1 overflow-x-auto overflow-y-hidden p-6">
-        {totalKnown === 0 ? (
+        {loading ? (
+          <p className="text-xs text-gray-400 text-center py-12">Загрузка…</p>
+        ) : total === 0 ? (
           <EmptyFunnel />
         ) : (
           <div className="flex gap-3 min-w-fit h-full">
             {FUNNEL_COLUMNS.map((col) => {
-              const items = byStatus.get(col.key) ?? [];
+              const colItems = byStage.get(col.key) ?? [];
               return (
-                <div key={col.key} className="w-[260px] flex-shrink-0 flex flex-col bg-white rounded-lg border border-gray-200 max-h-full">
+                <div key={col.key} className="w-[280px] flex-shrink-0 flex flex-col bg-white rounded-lg border border-gray-200 max-h-full">
                   <header className="px-3 py-2 border-b border-gray-200 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className={`inline-block w-2 h-2 rounded-full ${dotColor(col.key)}`} />
                       <h2 className="text-xs font-semibold text-gray-700">{col.label}</h2>
                     </div>
-                    <span className="text-[11px] text-gray-500 font-medium">{items.length}</span>
+                    <span className="text-[11px] text-gray-500 font-medium">{colItems.length}</span>
                   </header>
                   <div className="flex-1 overflow-y-auto p-2 space-y-2">
-                    {items.length === 0 ? (
+                    {colItems.length === 0 ? (
                       <p className="text-[11px] text-gray-400 text-center py-6">Пусто</p>
-                    ) : items.map((c) => (
-                      <Card key={c.id} contact={c} onClick={() => openDialog(c)} />
+                    ) : colItems.map((it) => (
+                      <Card key={it.chat_id} item={it} onClick={() => openDialog(it)} />
                     ))}
                   </div>
                 </div>
@@ -134,38 +142,49 @@ export default function FunnelClient({ initialContacts, tenantName }: Props) {
   );
 }
 
-function Card({ contact, onClick }: { contact: ContactRow; onClick: () => void }) {
+function Card({ item, onClick }: { item: FunnelItem; onClick: () => void }) {
+  const displayName = item.who || (item.username ? `@${item.username.replace(/^@/, '')}` : `чат ${item.chat_id}`);
   return (
     <button
       onClick={onClick}
       className="block w-full text-left bg-white border border-gray-200 rounded-md p-2 hover:border-blue-300 hover:shadow-sm transition-all"
     >
-      <div className="text-sm font-medium text-gray-900 truncate">
-        {contact.full_name || (contact.telegram ? `@${contact.telegram.replace(/^@/, '')}` : 'Кандидат')}
+      <div className="flex items-start justify-between gap-2">
+        <div className="text-sm font-medium text-gray-900 truncate">{displayName}</div>
+        <SourceBadge source={item.source} />
       </div>
-      {contact.source && (
-        <div className="text-[10px] text-gray-500 mt-0.5">Источник: {contact.source}</div>
-      )}
-      {contact.ai_segment && (
-        <div className="text-[10px] text-violet-600 mt-0.5">{contact.ai_segment}</div>
-      )}
-      <div className="text-[10px] text-gray-500 mt-1">
-        {contact.last_contact_at
-          ? `Активность: ${fmtMsk(contact.last_contact_at, true)} МСК`
-          : contact.created_at
-          ? `Создан: ${fmtMsk(contact.created_at, false)} МСК`
-          : ''}
-      </div>
-      {contact.tags && contact.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1 mt-1.5">
-          {contact.tags.slice(0, 3).map((t) => (
-            <span key={t} className="text-[9px] bg-gray-100 text-gray-700 border border-gray-200 px-1 py-0 rounded">
-              {t}
-            </span>
-          ))}
+      {item.last_text && (
+        <div className="text-[11px] text-gray-600 truncate mt-1 leading-snug">
+          {item.last_text}
         </div>
       )}
+      <div className="flex items-center justify-between gap-2 mt-1.5 text-[10px] text-gray-500">
+        <span className="flex items-center gap-1">
+          <MessageCircle size={9} />
+          {item.msg_count}
+        </span>
+        <span>{fmtMsk(item.last_at, true)} МСК</span>
+      </div>
     </button>
+  );
+}
+
+function SourceBadge({ source }: { source: string }) {
+  const styles: Record<string, string> = {
+    telegram: 'bg-sky-100 text-sky-700 border-sky-200',
+    vk: 'bg-blue-100 text-blue-800 border-blue-300',
+    other: 'bg-gray-100 text-gray-600 border-gray-200',
+  };
+  const labels: Record<string, string> = {
+    telegram: 'TG',
+    vk: 'VK',
+    other: '·',
+  };
+  const cls = styles[source] ?? styles.other;
+  return (
+    <span className={`inline-block text-[9px] px-1 py-0 rounded border font-semibold flex-shrink-0 ${cls}`}>
+      {labels[source] ?? '·'}
+    </span>
   );
 }
 
@@ -176,8 +195,8 @@ function EmptyFunnel() {
         <KanbanSquare size={48} className="text-gray-300 mx-auto mb-3" />
         <h2 className="text-base font-medium text-gray-700">Кандидатов пока нет</h2>
         <p className="text-xs text-gray-500 mt-2">
-          Когда лид-кандидат попадёт в CRM (через бот, форму или импорт), он появится здесь.
-          Статусы: <strong>Новый → Общается → Хочет работать → Документы → На линии</strong> (или <strong>Отказ</strong>).
+          Когда бот наберёт хотя бы одно сообщение с кандидатом, он появится здесь.
+          Этапы: <strong>Новый → Общается → Хочет работать → Документы → На линии</strong> (или <strong>Отказ</strong>).
         </p>
         <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5">
           {FUNNEL_COLUMNS.map((col) => (
