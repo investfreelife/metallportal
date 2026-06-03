@@ -98,6 +98,48 @@ export default async function AnalyticsPage({
   const aiTotal = aiQueueItems?.length || 0
   const aiEfficiency = aiTotal > 0 ? Math.round((aiApproved / aiTotal) * 100) : 0
 
+  // ── РЕКРУТИНГ: источники + стадии из dialog_messages ───────────────
+  // Лимит 10000 — у Столицы пока десятки, у крупного таксопарка будут
+  // тысячи. Для масштаба позже — материализованное представление.
+  const { data: dialogMessages } = await supabase
+    .from('dialog_messages')
+    .select('chat_id, stage, created_at, who, username')
+    .eq('tenant_id', TENANT_ID)
+    .order('created_at', { ascending: false })
+    .limit(10000)
+
+  // Группируем: на chat_id берём первую (DESC) запись → её stage = последняя
+  // стадия диалога; источник определяем по префиксу chat_id (vk:* / число).
+  type DialogAgg = { stage: string; source: string; last_at: string }
+  const chatAgg = new Map<string, DialogAgg>()
+  for (const m of (dialogMessages ?? []) as Array<{ chat_id: string | null; stage: string | null; created_at: string }>) {
+    if (!m.chat_id) continue
+    const existing = chatAgg.get(m.chat_id)
+    if (!existing) {
+      const lower = m.chat_id.toLowerCase()
+      const source = lower.startsWith('vk:') ? 'vk'
+        : (/^-?\d+$/.test(m.chat_id) || lower.startsWith('tg:') || lower.startsWith('telegram:')) ? 'telegram'
+        : 'other'
+      chatAgg.set(m.chat_id, { stage: m.stage || 'new', source, last_at: m.created_at })
+    } else if (existing.stage === 'new' && m.stage) {
+      existing.stage = m.stage
+    }
+  }
+
+  const recruitStageMap: Record<string, number> = { new: 0, engaged: 0, wants: 0, docs: 0, on_line: 0, rejected: 0 }
+  const recruitSourceMap: Record<string, number> = {}
+  for (const a of chatAgg.values()) {
+    recruitStageMap[a.stage] = (recruitStageMap[a.stage] ?? 0) + 1
+    recruitSourceMap[a.source] = (recruitSourceMap[a.source] ?? 0) + 1
+  }
+
+  const recruit = {
+    totalChats: chatAgg.size,
+    totalMessages: dialogMessages?.length ?? 0,
+    stageMap: recruitStageMap,
+    sourceMap: recruitSourceMap,
+  }
+
   return (
     <AnalyticsClient
       period={period}
@@ -110,6 +152,7 @@ export default async function AnalyticsPage({
       stageMap={stageMap}
       deviceMap={deviceMap}
       recentDeals={(deals || []).slice(0, 10)}
+      recruit={recruit}
     />
   )
 }

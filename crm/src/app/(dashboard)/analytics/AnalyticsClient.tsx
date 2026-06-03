@@ -183,6 +183,99 @@ const STAGE_LABELS: Record<string, string> = { new:'Новые', qualified:'Кв
 const STAGE_COLORS: Record<string, string> = { new:'#378ADD', qualified:'#27A882', proposal:'#EF9F27', negotiation:'#E87444', won:'#639922', lost:'#E24B4A' }
 const PERIODS = [{ value:'7', label:'7 дней' }, { value:'30', label:'30 дней' }, { value:'90', label:'90 дней' }, { value:'365', label:'Год' }]
 
+interface RecruitStats {
+  totalChats: number
+  totalMessages: number
+  stageMap: Record<string, number>
+  sourceMap: Record<string, number>
+}
+
+const RECRUIT_STAGE_LABELS: Record<string, { label: string; color: string }> = {
+  new:       { label: 'Новый',          color: 'bg-gray-400' },
+  engaged:   { label: 'Общается',       color: 'bg-blue-500' },
+  wants:     { label: 'Хочет работать', color: 'bg-violet-500' },
+  docs:      { label: 'Документы',      color: 'bg-amber-500' },
+  on_line:   { label: 'На линии',       color: 'bg-emerald-500' },
+  rejected:  { label: 'Отказ',          color: 'bg-red-400' },
+}
+
+const SOURCE_LABELS: Record<string, { label: string; color: string }> = {
+  telegram: { label: 'Telegram', color: 'bg-sky-500' },
+  vk:       { label: 'VK',       color: 'bg-blue-700' },
+  other:    { label: 'Другое',   color: 'bg-gray-400' },
+}
+
+function RecruitSection({ recruit }: { recruit: RecruitStats }) {
+  const stageMax = Math.max(1, ...Object.values(recruit.stageMap))
+  const sourceMax = Math.max(1, ...Object.values(recruit.sourceMap))
+  const orderedStages = ['new', 'engaged', 'wants', 'docs', 'on_line', 'rejected'] as const
+  const orderedSources = Object.keys(recruit.sourceMap).sort(
+    (a, b) => (recruit.sourceMap[b] ?? 0) - (recruit.sourceMap[a] ?? 0)
+  )
+
+  return (
+    <div className="mb-4">
+      <div className="grid grid-cols-3 gap-3 mb-3">
+        <MetricCard label="Кандидатов в чатах" value={recruit.totalChats} delta="по dialog_messages" deltaType="neutral" />
+        <MetricCard label="Сообщений всего" value={recruit.totalMessages} delta="за всё время" deltaType="neutral" />
+        <MetricCard
+          label="Готовы выйти"
+          value={(recruit.stageMap.docs ?? 0) + (recruit.stageMap.on_line ?? 0)}
+          delta={`docs + on_line`}
+          deltaType="up"
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="px-4 py-2.5 border-b border-gray-100 text-[12px] font-medium text-gray-900">
+            Воронка кандидатов (по стадии)
+          </div>
+          <div className="p-3 space-y-2">
+            {orderedStages.map((s) => {
+              const meta = RECRUIT_STAGE_LABELS[s]
+              const count = recruit.stageMap[s] ?? 0
+              const pct = (count / stageMax) * 100
+              return (
+                <div key={s} className="flex items-center gap-2 text-[11px]">
+                  <div className="w-28 text-gray-600">{meta.label}</div>
+                  <div className="flex-1 h-2 bg-gray-100 rounded overflow-hidden">
+                    <div className={`h-full ${meta.color}`} style={{ width: `${pct}%` }} />
+                  </div>
+                  <div className="w-8 text-right font-semibold text-gray-900">{count}</div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="px-4 py-2.5 border-b border-gray-100 text-[12px] font-medium text-gray-900">
+            Источники кандидатов
+          </div>
+          <div className="p-3 space-y-2">
+            {orderedSources.length === 0 && (
+              <p className="text-[11px] text-gray-400 text-center py-4">Нет данных</p>
+            )}
+            {orderedSources.map((src) => {
+              const meta = SOURCE_LABELS[src] ?? { label: src, color: 'bg-gray-400' }
+              const count = recruit.sourceMap[src] ?? 0
+              const pct = (count / sourceMax) * 100
+              return (
+                <div key={src} className="flex items-center gap-2 text-[11px]">
+                  <div className="w-28 text-gray-600">{meta.label}</div>
+                  <div className="flex-1 h-2 bg-gray-100 rounded overflow-hidden">
+                    <div className={`h-full ${meta.color}`} style={{ width: `${pct}%` }} />
+                  </div>
+                  <div className="w-8 text-right font-semibold text-gray-900">{count}</div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 interface Props {
   period: string
   metrics: { totalRevenue: number; totalLeads: number; totalVisitors: number; conversionRate: string; avgDeal: number; wonDeals: number; aiEfficiency: number }
@@ -194,9 +287,10 @@ interface Props {
   stageMap: Record<string, { count: number; amount: number }>
   deviceMap: Record<string, number>
   recentDeals: any[]
+  recruit?: RecruitStats
 }
 
-export function AnalyticsClient({ period, metrics, revenueByDay, leadsByDay, channels, hourlyActivity, lostReasons, stageMap, deviceMap, recentDeals }: Props) {
+export function AnalyticsClient({ period, metrics, revenueByDay, leadsByDay, channels, hourlyActivity, lostReasons, stageMap, deviceMap, recentDeals, recruit }: Props) {
   const router = useRouter()
 
   // Генерируем массив дат за период
@@ -231,6 +325,9 @@ export function AnalyticsClient({ period, metrics, revenueByDay, leadsByDay, cha
           ))}
         </div>
       </div>
+
+      {/* ── РЕКРУТИНГ: источники + стадии ──────────────────────────── */}
+      {recruit && recruit.totalChats > 0 && <RecruitSection recruit={recruit} />}
 
       {/* Метрики */}
       <div className="grid grid-cols-5 gap-3 mb-4">
