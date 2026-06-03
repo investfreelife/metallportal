@@ -24,5 +24,7 @@ export async function GET() {
     login: session.login,
     name: session.name,
     role: session.role,
+    industry: session.industry ?? 'metal',
+    tenant_name: session.tenant_name ?? 'МеталлПортал',
   })
 }

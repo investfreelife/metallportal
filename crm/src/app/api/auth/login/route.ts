@@ -72,13 +72,22 @@ export async function POST(request: NextRequest) {
 
   // Fetch user by login only — НЕ фильтруем по tenant_id, т.к. login
   // глобально уникален и multitenant rollout означает: один deploy, разные
-  // фирмы. tenant_id берём ИЗ admin_users record и кладём в session.
+  // фирмы. tenant_id + industry + tenant_name берём ИЗ JOIN'a tenants.
   const { data } = await supabase
     .from('admin_users')
-    .select('id, tenant_id, name, login, role, is_active, password')
+    .select('id, tenant_id, name, login, role, is_active, password, tenants(name, industry)')
     .eq('login', login.trim().toLowerCase())
     .eq('is_active', true)
-    .single()
+    .single<{
+      id: string
+      tenant_id: string
+      name: string
+      login: string
+      role: string
+      is_active: boolean
+      password: string
+      tenants?: { name: string; industry: string } | null
+    }>()
 
   const FAKE_HASH = 'scrypt:0000000000000000:' + '00'.repeat(64) // dummy for timing
   const stored = data?.password || FAKE_HASH
@@ -102,6 +111,8 @@ export async function POST(request: NextRequest) {
     name: data.name,
     role: data.role,
     tenant: data.tenant_id,
+    industry: data.tenants?.industry ?? 'metal',
+    tenant_name: data.tenants?.name ?? 'МеталлПортал',
     exp: Date.now() + 30 * 24 * 60 * 60 * 1000,
   }
 

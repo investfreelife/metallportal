@@ -32,6 +32,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
         pendingCount={pendingCount ?? 0}
         unreadEmails={unreadEmails ?? 0}
         inboxUnread={(unreadEmails ?? 0) + (inboxUnread ?? 0)}
+        industry={session.industry}
+        tenantName={session.tenant_name}
       />
       <main className="flex-1 overflow-auto bg-gray-50">
         {children}

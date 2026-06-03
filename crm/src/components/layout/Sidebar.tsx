@@ -18,6 +18,10 @@ import {
   Layers,
   Network,
   Inbox,
+  Car,
+  MapPin,
+  Wallet,
+  Wrench,
 } from 'lucide-react'
 
 type NavItem = {
@@ -32,14 +36,16 @@ type NavSection = {
   items: NavItem[]
 }
 
-const navSections: NavSection[] = [
+/**
+ * Sergey directive 2026-06-03 — Столица tenant ≠ Металлпортал.
+ * Industry-aware nav: разные vertical'и видят свои разделы.
+ */
+const NAV_METAL: NavSection[] = [
   {
     section: 'Главное',
     items: [
       { href: '/bezos', label: '🧠 AI Центр', icon: Sparkles },
       { href: '/dashboard', label: 'Дашборд', icon: LayoutDashboard },
-      // URGENT 2026-05-17 omnichannel: standalone /inbox page вместо dashboard section.
-      // Sergey directive «вкладка сообщения отдельная полноценная, мирового уровня».
       { href: '/inbox', label: 'Все сообщения', icon: Inbox, badgeKey: 'inbox_unread' },
       { href: '/queue', label: 'Очередь ИИ', icon: Sparkles, badgeKey: 'pending' },
     ],
@@ -72,6 +78,43 @@ const navSections: NavSection[] = [
   },
 ]
 
+const NAV_TAXI: NavSection[] = [
+  {
+    section: 'Главное',
+    items: [
+      { href: '/dashboard', label: 'Дашборд', icon: LayoutDashboard },
+      { href: '/inbox', label: 'Сообщения', icon: Inbox, badgeKey: 'inbox_unread' },
+    ],
+  },
+  {
+    section: 'Парк',
+    items: [
+      { href: '/drivers', label: 'Водители', icon: Users },
+      { href: '/cars', label: 'Машины', icon: Car },
+      { href: '/maintenance', label: 'Обслуживание', icon: Wrench },
+    ],
+  },
+  {
+    section: 'Операции',
+    items: [
+      { href: '/trips', label: 'Поездки', icon: MapPin },
+      { href: '/payouts', label: 'Выплаты', icon: Wallet },
+      { href: '/channels', label: 'Telegram каналы', icon: Send },
+    ],
+  },
+  {
+    section: 'Аналитика',
+    items: [
+      { href: '/analytics', label: 'Аналитика', icon: BarChart2 },
+      { href: '/reports', label: 'Отчёты', icon: FileText },
+    ],
+  },
+]
+
+function navByIndustry(industry: string | undefined): NavSection[] {
+  return industry === 'taxi' ? NAV_TAXI : NAV_METAL
+}
+
 interface SidebarProps {
   userName?: string
   userLogin?: string
@@ -79,6 +122,8 @@ interface SidebarProps {
   unreadEmails?: number
   missedCalls?: number
   inboxUnread?: number
+  industry?: string
+  tenantName?: string
 }
 
 export default function Sidebar({
@@ -88,9 +133,13 @@ export default function Sidebar({
   unreadEmails = 0,
   missedCalls = 0,
   inboxUnread = 0,
+  industry = 'metal',
+  tenantName,
 }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
+  const navSections = navByIndustry(industry)
+  const displayName = tenantName ?? (industry === 'taxi' ? 'Таксопарк' : 'МеталлПортал')
 
   const badges: Record<string, number> = {
     pending: pendingCount,
@@ -112,15 +161,29 @@ export default function Sidebar({
     >
       <div className="flex items-center gap-2.5 px-4 py-3.5 border-b border-white/10">
         <div className="flex flex-shrink-0">
-          <div className="w-6 h-6 flex items-center justify-center bg-amber-400 rounded-sm">
-            <span className="text-black font-black text-sm leading-none" style={{ fontFamily: 'serif', letterSpacing: '-0.05em' }}>М</span>
-          </div>
-          <div className="w-6 h-6 flex items-center justify-center bg-gray-800 rounded-sm -ml-px border border-white/10">
-            <span className="text-white font-black text-sm leading-none" style={{ fontFamily: 'serif', letterSpacing: '-0.05em' }}>П</span>
-          </div>
+          {industry === 'taxi' ? (
+            <>
+              <div className="w-6 h-6 flex items-center justify-center bg-yellow-400 rounded-sm">
+                <span className="text-black font-black text-sm leading-none" style={{ fontFamily: 'serif', letterSpacing: '-0.05em' }}>Т</span>
+              </div>
+              <div className="w-6 h-6 flex items-center justify-center bg-gray-800 rounded-sm -ml-px border border-white/10">
+                <span className="text-white font-black text-sm leading-none" style={{ fontFamily: 'serif', letterSpacing: '-0.05em' }}>П</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="w-6 h-6 flex items-center justify-center bg-amber-400 rounded-sm">
+                <span className="text-black font-black text-sm leading-none" style={{ fontFamily: 'serif', letterSpacing: '-0.05em' }}>М</span>
+              </div>
+              <div className="w-6 h-6 flex items-center justify-center bg-gray-800 rounded-sm -ml-px border border-white/10">
+                <span className="text-white font-black text-sm leading-none" style={{ fontFamily: 'serif', letterSpacing: '-0.05em' }}>П</span>
+              </div>
+            </>
+          )}
         </div>
         <div className="leading-tight">
           <p className="text-white font-bold text-xs tracking-wide">AI CRM</p>
+          <p className="text-gray-400 text-[10px] truncate max-w-[140px]">{displayName}</p>
         </div>
       </div>
 
