@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { requireRole } from '@/lib/apiAuth'
+import { getTenantIdFromRequest } from '@/lib/session'
 import { LLM_MODEL_GENERAL } from '@/lib/llm-models'
-
-const TENANT_ID = process.env.TENANT_ID || 'a1000000-0000-0000-0000-000000000001'
 
 const POST_TYPES = [
   { type: 'price_update', prompt: 'Напиши пост об обновлении цен на металлопрокат. Упомяни что цены актуальны и можно запросить КП.' },
@@ -14,6 +13,7 @@ const POST_TYPES = [
 ]
 
 export async function POST(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const auth = requireRole(req, ['owner', 'manager', 'admin'])
   if (!auth.ok) return auth.error
 

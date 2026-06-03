@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireSession } from '@/lib/apiAuth'
+import { getTenantIdFromRequest } from '@/lib/session'
 import { createClient } from '@supabase/supabase-js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -11,6 +12,7 @@ function getSupabase(): any {
 }
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const auth = requireSession(req)
   if (!auth.ok) return auth.error
 
@@ -46,7 +48,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   // Log to activities
   await supabase.from('activities').insert({
-    tenant_id: 'a1000000-0000-0000-0000-000000000001',
+    tenant_id: TENANT_ID,
     contact_id: id,
     type: 'message',
     direction: 'outbound',

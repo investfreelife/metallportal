@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { getTenantId } from './session'
 
 /**
  * Dashboard data audit system.
@@ -15,8 +16,6 @@ import { createClient } from '@supabase/supabase-js'
  *
  * Pure functions, no UI. Server-side only (service_role bypass RLS).
  */
-
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
 function admin() {
   return createClient(
@@ -83,7 +82,8 @@ function classifyDiscrepancy(values: number[]): { status: AuditStatus; pct: numb
  *   2. `deals` created today (each deal must have contact)
  *   3. site_events of event_type=form_submit today
  */
-export async function auditTodayLeads(displayedValue: number): Promise<MetricAudit> {
+export async function auditTodayLeads(displayedValue: number, tenantId?: string): Promise<MetricAudit> {
+  const TENANT_ID = tenantId ?? await getTenantId()
   const supabase = admin()
   const start = todayStartISO()
   const warnings: string[] = []
@@ -146,7 +146,8 @@ export async function auditTodayLeads(displayedValue: number): Promise<MetricAud
  *   2. COUNT page_view events (rough — bigger than visitors)
  *   3. marketing_metrics where metric_name=visits today (ETL aggregate)
  */
-export async function auditTodayVisitors(displayedValue: number): Promise<MetricAudit> {
+export async function auditTodayVisitors(displayedValue: number, tenantId?: string): Promise<MetricAudit> {
+  const TENANT_ID = tenantId ?? await getTenantId()
   const supabase = admin()
   const start = todayStartISO()
   const ymd = todayYMD()
@@ -221,7 +222,8 @@ export async function auditTodayVisitors(displayedValue: number): Promise<Metric
  *   1. `activities` of type=call today (some integrations use activities, not calls)
  *   2. agent_events of event_type=call (when calls webhook posts)
  */
-export async function auditTodayCalls(displayedValue: number, missedDisplayed: number): Promise<MetricAudit> {
+export async function auditTodayCalls(displayedValue: number, missedDisplayed: number, tenantId?: string): Promise<MetricAudit> {
+  const TENANT_ID = tenantId ?? await getTenantId()
   const supabase = admin()
   const start = todayStartISO()
   const warnings: string[] = []
@@ -275,7 +277,8 @@ export async function auditTodayCalls(displayedValue: number, missedDisplayed: n
  *   1. deal_history transitions today (если есть таблица)
  *   2. activities of type=deal_won today
  */
-export async function auditTodayDeals(displayedCount: number, displayedSum: number): Promise<MetricAudit> {
+export async function auditTodayDeals(displayedCount: number, displayedSum: number, tenantId?: string): Promise<MetricAudit> {
+  const TENANT_ID = tenantId ?? await getTenantId()
   const supabase = admin()
   const start = todayStartISO()
   const warnings: string[] = []
@@ -323,7 +326,8 @@ export async function auditTodayDeals(displayedCount: number, displayedSum: numb
 }
 
 /* ───────── Cross-section: leads >= 0, visitors >= leads ───────── */
-export async function auditCrossSection(): Promise<MetricAudit> {
+export async function auditCrossSection(tenantId?: string): Promise<MetricAudit> {
+  const TENANT_ID = tenantId ?? await getTenantId()
   const supabase = admin()
   const start = todayStartISO()
   const warnings: string[] = []
@@ -377,7 +381,8 @@ export async function auditCrossSection(): Promise<MetricAudit> {
  * LiveActivityFeed может выглядеть «мёртвым», webhook от auto_checkpoint /
  * agent_init / agent_report не доходит.
  */
-export async function auditAgentEventsFreshness(): Promise<MetricAudit> {
+export async function auditAgentEventsFreshness(tenantId?: string): Promise<MetricAudit> {
+  const TENANT_ID = tenantId ?? await getTenantId()
   const supabase = admin()
   const warnings: string[] = []
 
@@ -416,7 +421,8 @@ export async function auditAgentEventsFreshness(): Promise<MetricAudit> {
 }
 
 /* ───────── Sergey actions ownership / freshness ───────── */
-export async function auditSergeyActions(): Promise<MetricAudit> {
+export async function auditSergeyActions(tenantId?: string): Promise<MetricAudit> {
+  const TENANT_ID = tenantId ?? await getTenantId()
   const supabase = admin()
   const warnings: string[] = []
 
@@ -456,7 +462,8 @@ export async function auditSergeyActions(): Promise<MetricAudit> {
 }
 
 /* ───────── Marketing channels / campaigns coverage ───────── */
-export async function auditMarketingTables(): Promise<MetricAudit> {
+export async function auditMarketingTables(tenantId?: string): Promise<MetricAudit> {
+  const TENANT_ID = tenantId ?? await getTenantId()
   const supabase = admin()
   const warnings: string[] = []
 
@@ -508,16 +515,16 @@ export async function runFullAudit(displayed: {
   callsMissed: number
   dealsCount: number
   dealsSum: number
-}): Promise<FullAudit> {
+}, tenantId?: string): Promise<FullAudit> {
   const results = await Promise.all([
-    auditTodayLeads(displayed.leads),
-    auditTodayVisitors(displayed.visitors),
-    auditTodayCalls(displayed.callsTotal, displayed.callsMissed),
-    auditTodayDeals(displayed.dealsCount, displayed.dealsSum),
-    auditCrossSection(),
-    auditAgentEventsFreshness(),
-    auditMarketingTables(),
-    auditSergeyActions(),
+    auditTodayLeads(displayed.leads, tenantId),
+    auditTodayVisitors(displayed.visitors, tenantId),
+    auditTodayCalls(displayed.callsTotal, displayed.callsMissed, tenantId),
+    auditTodayDeals(displayed.dealsCount, displayed.dealsSum, tenantId),
+    auditCrossSection(tenantId),
+    auditAgentEventsFreshness(tenantId),
+    auditMarketingTables(tenantId),
+    auditSergeyActions(tenantId),
   ])
 
   // Overall: worst-of-all

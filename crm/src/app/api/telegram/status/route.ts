@@ -5,12 +5,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSetting } from '@/lib/settings'
 import { requireSession } from '@/lib/apiAuth'
+import { getTenantIdFromRequest } from '@/lib/session'
 
 export async function GET(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const auth = requireSession(req)
   if (!auth.ok) return auth.error
 
-  const token = await getSetting('TELEGRAM_BOT_TOKEN')
+  const token = await getSetting('TELEGRAM_BOT_TOKEN', TENANT_ID)
   if (!token) return NextResponse.json({ connected: false, reason: 'no_token' })
 
   try {
@@ -41,7 +43,7 @@ export async function GET(req: NextRequest) {
         pending_updates: pendingCount,
         last_error: lastError,
       },
-      manager_id: await getSetting('CRM_MANAGER_TG_ID'),
+      manager_id: await getSetting('CRM_MANAGER_TG_ID', TENANT_ID),
     })
   } catch {
     return NextResponse.json({ connected: false, reason: 'error' })

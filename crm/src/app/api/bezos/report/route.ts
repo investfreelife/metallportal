@@ -3,8 +3,7 @@ import crypto from 'crypto'
 import { createClient } from '@/lib/supabase/server'
 import { bezosWeeklyReport, BezosContext } from '@/lib/ai/bezos'
 import { requireSession } from '@/lib/apiAuth'
-
-const TENANT_ID = process.env.TENANT_ID || 'a1000000-0000-0000-0000-000000000001'
+import { getTenantIdFromRequest } from '@/lib/session'
 
 function checkInternalSecret(request: NextRequest): boolean {
   const expected = process.env.INTERNAL_API_SECRET
@@ -21,6 +20,7 @@ function checkInternalSecret(request: NextRequest): boolean {
 }
 
 export async function POST(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   // Accept session (manager triggers from UI) OR internal secret (cron loopback).
   const auth = requireSession(req)
   if (!auth.ok && !checkInternalSecret(req)) return auth.error

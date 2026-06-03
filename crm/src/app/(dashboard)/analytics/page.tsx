@@ -1,13 +1,13 @@
 import { createClient } from '@/lib/supabase/server'
+import { getTenantId } from '@/lib/session'
 import { AnalyticsClient } from './AnalyticsClient'
-
-const TENANT_ID = process.env.TENANT_ID || 'a1000000-0000-0000-0000-000000000001'
 
 export default async function AnalyticsPage({
   searchParams,
 }: {
   searchParams: Promise<{ period?: string }>
 }) {
+  const TENANT_ID = await getTenantId()
   const { period: periodParam } = await searchParams
   const period = periodParam || '30'
   const daysAgo = new Date(Date.now() - parseInt(period) * 24 * 60 * 60 * 1000).toISOString()

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getTenantIdFromRequest } from '@/lib/session'
 import { runFullAudit } from '@/lib/dashboard-audit'
 import { createClient } from '@/lib/supabase/server'
 
@@ -19,8 +20,6 @@ import { createClient } from '@/lib/supabase/server'
 
 export const dynamic = 'force-dynamic'
 
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
-
 function todayStartISO(): string {
   const d = new Date()
   d.setHours(0, 0, 0, 0)
@@ -28,6 +27,7 @@ function todayStartISO(): string {
 }
 
 export async function GET(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const url = new URL(req.url)
 
   let displayed = {
@@ -74,7 +74,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const audit = await runFullAudit(displayed)
+    const audit = await runFullAudit(displayed, TENANT_ID)
     return NextResponse.json(audit, {
       headers: { 'cache-control': 'no-store, max-age=0' },
     })

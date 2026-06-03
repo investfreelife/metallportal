@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getTenantIdFromRequest } from '@/lib/session'
 import { createClient } from '@supabase/supabase-js'
 
 /**
@@ -13,8 +14,6 @@ import { createClient } from '@supabase/supabase-js'
 
 export const dynamic = 'force-dynamic'
 
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
-
 function admin() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -27,6 +26,7 @@ export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const { id } = await params
   const decodedId = decodeURIComponent(id)
   const supabase = admin()

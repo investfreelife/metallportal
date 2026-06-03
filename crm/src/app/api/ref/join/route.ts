@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getTenantIdFromRequest } from '@/lib/session'
 import { createClient } from '@supabase/supabase-js'
 import { checkRateLimit } from '@/lib/rateLimit'
 
@@ -6,8 +7,6 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
-
-const TENANT_ID = process.env.TENANT_ID || 'a1000000-0000-0000-0000-000000000001'
 
 function generateCode(name: string): string {
   const base = name.toUpperCase().replace(/[^A-ZА-ЯЁ]/gi, '').substring(0, 6)
@@ -17,6 +16,7 @@ function generateCode(name: string): string {
 }
 
 export async function POST(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   // PUBLIC BY DESIGN: partner-program signup — rate-limited.
   if (!(await checkRateLimit(req, 'ref-join', 10, 60_000))) {
     return NextResponse.json({ error: 'Rate limited' }, { status: 429 })

@@ -8,22 +8,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { requireCronSecret, requireRole } from '@/lib/apiAuth'
+import { getTenantIdFromRequest } from '@/lib/session'
 import { LLM_MODEL_GENERAL } from '@/lib/llm-models'
 
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN!
 
-async function getManagerId(): Promise<string | null> {
+async function getManagerId(tenantId: string): Promise<string | null> {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
   const { data } = await supabase.from('tenant_settings')
-    .select('value').eq('tenant_id', TENANT_ID).eq('key', 'CRM_MANAGER_TG_ID').single()
+    .select('value').eq('tenant_id', tenantId).eq('key', 'CRM_MANAGER_TG_ID').single()
   return data?.value ?? null
 }
 
 export async function POST(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   // Dual auth: Vercel cron (CRON_SECRET) OR a CRM session with sufficient role.
   const cron = requireCronSecret(req)
   if (!cron.ok) {
@@ -58,7 +59,7 @@ export async function POST(req: NextRequest) {
     .eq('tenant_id', TENANT_ID).eq('status', 'pending')
 
   if (!logs?.length) {
-    const managerId = await getManagerId()
+    const managerId = await getManagerId(TENANT_ID)
     if (managerId) {
       await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -108,7 +109,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Отправить отчёт менеджеру
-  const managerId = await getManagerId()
+  const managerId = await getManagerId(TENANT_ID)
   if (managerId && BOT_TOKEN) {
     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
       method: 'POST',
@@ -131,5 +132,6 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   return POST(req)
 }

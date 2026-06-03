@@ -3,8 +3,8 @@ import { createClient } from '@supabase/supabase-js'
 import { ImapFlow } from 'imapflow'
 import { simpleParser } from 'mailparser'
 import { requireSession } from '@/lib/apiAuth'
+import { getTenantIdFromRequest, getTenantId } from '@/lib/session'
 
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 const CRM_URL = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : 'https://metallportal-crm2.vercel.app'
@@ -17,6 +17,7 @@ function getSupabase() {
 }
 
 export async function POST(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   // Auth: Bearer ${CRON_SECRET} (Vercel cron) OR CRM session (UI manual sync)
   const cronSecret = process.env.CRON_SECRET
   if (!cronSecret) {
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest) {
 
   for (const acc of accounts) {
     try {
-      const synced = await syncAccount(acc, supabase)
+      const synced = await syncAccount(acc, supabase, TENANT_ID)
       totalSynced += synced
       await supabase.from('email_accounts').update({
         last_synced_at: new Date().toISOString(),
@@ -63,7 +64,7 @@ export async function POST(req: NextRequest) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function syncAccount(acc: Record<string, unknown>, supabase: any): Promise<number> {
+async function syncAccount(acc: Record<string, unknown>, supabase: any, TENANT_ID: string): Promise<number> {
   const { data: lastEmail } = await supabase.from('emails')
     .select('imap_uid').eq('account_id', acc.id as string).eq('imap_folder', 'INBOX')
     .order('imap_uid', { ascending: false }).limit(1).maybeSingle()
@@ -180,8 +181,11 @@ async function syncAccount(acc: Record<string, unknown>, supabase: any): Promise
   return synced
 }
 
-// GET — sync all accounts (for Vercel cron)
+// GET — sync all accounts (for Vercel cron). Multitenant: iterate all tenants
+// (cron не имеет session). Phase 1 — резолвим через DEFAULT_TENANT_ID; Phase 2
+// после rollout — пробежать по всем tenants из admin_users distinct.
 export async function GET() {
+  const TENANT_ID = await getTenantId()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = getSupabase() as any
   const { data: accounts } = await supabase.from('email_accounts')
@@ -191,7 +195,7 @@ export async function GET() {
 
   let total = 0
   for (const acc of accounts) {
-    try { total += await syncAccount(acc, supabase) } catch {}
+    try { total += await syncAccount(acc, supabase, TENANT_ID) } catch {}
   }
   return NextResponse.json({ ok: true, synced: total })
 }

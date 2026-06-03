@@ -5,8 +5,25 @@ export interface CrmSession {
   login: string
   name: string
   role: string
+  /**
+   * Multi-tenant identifier — UUID из admin_users.tenant_id. Опциональное:
+   * старые подписанные cookies без этого поля валидны, есть фоллбэк ниже.
+   *
+   * Foundation per Sergey directive 2026-06-03 — мультитенантный CRM:
+   * один деплой, разные фирмы видят свои данные. Металлпортал tenant =
+   * a1000000-...-001 (legacy), такспарк «Столица» = 66fe829e-...-65.
+   */
+  tenant?: string
   exp: number
 }
+
+/**
+ * Дефолтный tenant для backward-compat — Металлпортал. Используется когда
+ * сессия не содержит `tenant`, env `TENANT_ID` пустой, или для
+ * unauthenticated-request fallback. Меняем только при удалении старых
+ * сессий И когда уверены что все клиенты получили tenant в JWT.
+ */
+export const DEFAULT_TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
 function getSecret(): string {
   const s = process.env.SESSION_SECRET
@@ -61,3 +78,25 @@ export function getSessionFromRequest(cookieHeader: string | null): CrmSession |
 
 /** @deprecated alias for old name */
 export const getSessionFromCookieString = getSessionFromRequest
+
+/**
+ * Server-side хелпер для получения tenant_id из текущего request context
+ * (Server Components, Route Handlers без явного request). Резолюшн:
+ *   1. session.tenant   — если cookie подписана с tenant полем
+ *   2. process.env.TENANT_ID — override через env для local dev / preview
+ *   3. DEFAULT_TENANT_ID — Металлпортал (backward-compat)
+ */
+export async function getTenantId(): Promise<string> {
+  const session = await getSession()
+  return session?.tenant || process.env.TENANT_ID || DEFAULT_TENANT_ID
+}
+
+/**
+ * Sync helper для Route Handlers/Middleware где явный `request` (NextRequest
+ * или Request) — без асинхронного cookies() API. Использовать когда хендлер
+ * получает request параметром.
+ */
+export function getTenantIdFromRequest(request: { headers: { get(name: string): string | null } }): string {
+  const session = getSessionFromRequest(request.headers.get('cookie'))
+  return session?.tenant || process.env.TENANT_ID || DEFAULT_TENANT_ID
+}

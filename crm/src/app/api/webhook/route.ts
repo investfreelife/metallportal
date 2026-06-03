@@ -4,6 +4,7 @@ import { analyzeNewLead } from '@/lib/ai'
 import { notifyManager } from '@/lib/telegram'
 import { logEvent } from '@/lib/logger'
 import { requireSharedSecret } from '@/lib/apiAuth'
+import { getTenantIdFromRequest } from '@/lib/session'
 
 /**
  * Generic webhook endpoint for forms on metallportal.ru
@@ -24,6 +25,7 @@ import { requireSharedSecret } from '@/lib/apiAuth'
  *   utm_source?, utm_campaign?
  */
 export async function POST(request: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(request)
   // PUBLIC BY DESIGN: external form-submission webhook from metallportal.ru.
   // Protected by shared secret in `x-webhook-secret` header (timing-safe compare).
   const auth = requireSharedSecret(request, 'WEBHOOK_SECRET', 'x-webhook-secret')
@@ -214,7 +216,7 @@ export async function POST(request: NextRequest) {
           total: total ? Number(total) : null,
           utm_source: utm_source ? String(utm_source) : null,
           utm_campaign: utm_campaign ? String(utm_campaign) : null,
-        })
+        }, TENANT_ID)
 
         if (ai) {
           const mappedPriority = ai.priority === 'medium' ? 'normal' : ai.priority

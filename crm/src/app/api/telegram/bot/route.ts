@@ -8,11 +8,11 @@
  *  4. /status — show queue stats to manager
  */
 import { createClient } from '@supabase/supabase-js'
+import { getTenantIdFromRequest } from '@/lib/session'
 import { NextRequest, NextResponse } from 'next/server'
 import { getSetting } from '@/lib/settings'
 import { checkRateLimit } from '@/lib/rateLimit'
 
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 const CRM_URL = 'https://metallportal-crm2.vercel.app'
 
 /**
@@ -111,6 +111,7 @@ async function handleCrmCallback(token: string, cb: {
 // ─── Main handler ──────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   // Optional Telegram secret_token check (when env is set)
   const expectedSecret = process.env.TELEGRAM_WEBHOOK_SECRET
   if (expectedSecret) {
@@ -125,10 +126,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
   }
 
-  const token = await getSetting('TELEGRAM_BOT_TOKEN')
+  const token = await getSetting('TELEGRAM_BOT_TOKEN', TENANT_ID)
   if (!token) return NextResponse.json({ ok: true })
 
-  const managerTgId = await getSetting('CRM_MANAGER_TG_ID')
+  const managerTgId = await getSetting('CRM_MANAGER_TG_ID', TENANT_ID)
   const supabase = getSupabase()
 
   let body: Record<string, unknown>

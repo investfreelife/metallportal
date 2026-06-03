@@ -3,8 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import { ImapFlow } from 'imapflow'
 import nodemailer from 'nodemailer'
 import { requireRole } from '@/lib/apiAuth'
-
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
+import { getTenantIdFromRequest } from '@/lib/session'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getSupabase(): any {
@@ -15,6 +14,7 @@ function getSupabase(): any {
 }
 
 export async function POST(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const auth = requireRole(req, ['owner', 'manager', 'admin'])
   if (!auth.ok) return auth.error
 

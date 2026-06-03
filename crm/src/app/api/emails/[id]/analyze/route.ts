@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireSession } from '@/lib/apiAuth'
+import { getTenantIdFromRequest } from '@/lib/session'
 import { createClient } from '@supabase/supabase-js'
 import { analyzeEmail } from '@/lib/ai'
-
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getSupabase(): any {
@@ -17,6 +16,7 @@ export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const TENANT_ID = getTenantIdFromRequest(_req)
   const auth = requireSession(_req)
   if (!auth.ok) return auth.error
 
@@ -53,7 +53,7 @@ export async function POST(
     from_name: email.from_name,
     subject: email.subject ?? '(без темы)',
     body_text: email.body_text,
-  })
+  }, TENANT_ID)
 
   if (!ai) return NextResponse.json({ error: 'ИИ недоступен — проверьте API ключ OpenRouter в Настройках' }, { status: 503 })
 

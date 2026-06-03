@@ -1,13 +1,12 @@
 import { redirect } from 'next/navigation'
-import { getSession } from '@/lib/session'
+import { getSession, getTenantId } from '@/lib/session'
 import { createClient } from '@/lib/supabase/server'
 import Sidebar from '@/components/layout/Sidebar'
-
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession()
   if (!session) redirect('/login')
+  const TENANT_ID = session.tenant || (await getTenantId())
 
   const supabase = await createClient()
   const [

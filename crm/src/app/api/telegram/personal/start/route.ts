@@ -3,8 +3,7 @@ import { TelegramClient } from 'telegram'
 import { StringSession } from 'telegram/sessions'
 import { createClient } from '@supabase/supabase-js'
 import { requireRole } from '@/lib/apiAuth'
-
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
+import { getTenantIdFromRequest } from '@/lib/session'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getSupabase(): any {
@@ -14,9 +13,9 @@ function getSupabase(): any {
   )
 }
 
-async function getApiCreds(supabase: ReturnType<typeof getSupabase>) {
+async function getApiCreds(supabase: ReturnType<typeof getSupabase>, tenantId: string) {
   const { data } = await supabase.from('tenant_settings')
-    .select('key, value').eq('tenant_id', TENANT_ID)
+    .select('key, value').eq('tenant_id', tenantId)
     .in('key', ['TELEGRAM_API_ID', 'TELEGRAM_API_HASH'])
   const s: Record<string, string> = {}
   for (const r of data ?? []) s[r.key] = r.value
@@ -27,6 +26,7 @@ async function getApiCreds(supabase: ReturnType<typeof getSupabase>) {
 }
 
 export async function POST(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const auth = requireRole(req, ['owner', 'admin'])
   if (!auth.ok) return auth.error
 
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   if (!phone) return NextResponse.json({ error: 'Нужен номер телефона' }, { status: 400 })
 
   const supabase = getSupabase()
-  const { apiId, apiHash } = await getApiCreds(supabase)
+  const { apiId, apiHash } = await getApiCreds(supabase, TENANT_ID)
 
   if (!apiId || !apiHash) {
     return NextResponse.json({ error: 'Настройте API_ID и API_HASH в настройках (my.telegram.org)' }, { status: 400 })

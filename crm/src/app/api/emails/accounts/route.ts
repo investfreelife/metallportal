@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { requireRole } from '@/lib/apiAuth'
-
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
+import { getTenantIdFromRequest } from '@/lib/session'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getSupabase(): any {
@@ -20,6 +19,7 @@ const PROVIDER_PRESETS: Record<string, { smtp_host: string; smtp_port: number; i
 }
 
 export async function GET(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const auth = requireRole(req, ['owner', 'manager', 'admin'])
   if (!auth.ok) return auth.error
 
@@ -33,6 +33,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const auth = requireRole(req, ['owner', 'manager', 'admin'])
   if (!auth.ok) return auth.error
 
@@ -67,6 +68,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const auth = requireRole(req, ['owner', 'manager', 'admin'])
   if (!auth.ok) return auth.error
 

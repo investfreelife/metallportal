@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { requireRole } from '@/lib/apiAuth'
+import { getTenantIdFromRequest } from '@/lib/session'
 import { getSetting } from '@/lib/settings'
 
 const CRM_URL = 'https://metallportal-crm2.vercel.app'
@@ -27,6 +28,7 @@ async function sendTelegramMessage(chatId: string, text: string, token: string) 
 }
 
 export async function POST(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const auth = requireRole(req, ['owner', 'admin'])
   if (!auth.ok) return auth.error
 
@@ -71,7 +73,7 @@ export async function POST(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   let tgSent = false
-  const tgToken = await getSetting('TELEGRAM_BOT_TOKEN')
+  const tgToken = await getSetting('TELEGRAM_BOT_TOKEN', TENANT_ID)
 
   // Try sending via Telegram if we have chat_id
   if (send_telegram && tgToken && telegram_chat_id) {

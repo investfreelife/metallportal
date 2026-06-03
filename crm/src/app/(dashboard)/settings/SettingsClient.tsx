@@ -23,9 +23,10 @@ const ROLE_LABELS: Record<string, { label: string; color: string; icon: string }
   operator: { label: 'Оператор',      color: 'text-gray-400 bg-gray-500/10',  icon: '🎧' },
 }
 
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 const CRM_URL = 'https://metallportal-crm2.vercel.app'
-const TRACK_URL = `${CRM_URL}/track.js?tid=${TENANT_ID}`
+// Tenant читается из /api/me — больше не hardcode. Резолвится при mount
+// SiteTab компонента (см. ниже). Webhook URL общий, tenant определяется
+// payload'ом или session — поэтому статичен.
 const WEBHOOK_URL = `${CRM_URL}/api/webhook`
 
 // ───────────────────── Shared components ─────────────────────
@@ -1053,10 +1054,16 @@ function TeamTab() {
 // ───────────────────── Site tab ─────────────────────
 
 function SiteTab() {
-  const trackScript = `<script src="${TRACK_URL}" defer></script>`
+  const [tenant, setTenant] = useState<string>('')
+  useEffect(() => {
+    fetch('/api/me').then(r => r.ok ? r.json() : null).then(d => setTenant(d?.tenant ?? ''))
+  }, [])
+  const trackScript = tenant
+    ? `<script src="${CRM_URL}/track.js?tid=${tenant}" defer></script>`
+    : '<!-- загрузка... -->'
   const webhookExample = `{
   "type": "order",
-  "tenant_id": "${TENANT_ID}",
+  "tenant_id": "${tenant || '<загрузка...>'}",
   "name": "Иван Петров",
   "phone": "+79001234567",
   "email": "ivan@example.com",
