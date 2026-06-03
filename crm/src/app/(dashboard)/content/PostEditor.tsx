@@ -14,6 +14,7 @@ import {
 import type { ContentPost, PostStatus } from '@/lib/content/types';
 import { isPublishable } from '@/lib/content/types';
 import { STATUS_LABELS, STATUS_COLORS } from './ContentClient';
+import { toMskInputValue, mskInputToUTC, fmtMsk } from '@/lib/tz';
 
 interface Props {
   post: ContentPost;
@@ -34,7 +35,10 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
-  const [scheduleAt, setScheduleAt] = useState<string>(post.scheduled_at?.slice(0, 16) ?? '');
+  // datetime-local value — в МОСКОВСКОМ настенном времени, не локальном TZ.
+  const [scheduleAt, setScheduleAt] = useState<string>(
+    post.scheduled_at ? toMskInputValue(post.scheduled_at) : ''
+  );
 
   const status = (draft.status as PostStatus) ?? 'draft';
   const canPublish = isPublishable(draft);
@@ -95,7 +99,8 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
 
   async function schedule() {
     if (!scheduleAt) return setError('Выбери дату');
-    const iso = new Date(scheduleAt).toISOString();
+    // scheduleAt — это МСК настенное время; конвертим в UTC ISO для БД.
+    const iso = mskInputToUTC(scheduleAt);
     await patch({ scheduled_at: iso, status: 'scheduled' as PostStatus });
   }
 
@@ -263,8 +268,11 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
 
           {/* ── Schedule + Publish ────────────────────────────────── */}
           <section className="px-4 py-3 border-t border-gray-100">
-            <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Расписание</label>
-            <div className="flex items-center gap-2 mt-1">
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Расписание</label>
+              <span className="text-[10px] text-blue-700 font-medium">МСК (UTC+3)</span>
+            </div>
+            <div className="flex items-center gap-2">
               <input
                 type="datetime-local"
                 value={scheduleAt}
@@ -281,6 +289,11 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
                 Запланировать
               </button>
             </div>
+            {scheduleAt && (
+              <p className="text-[10px] text-gray-600 mt-1">
+                Будет опубликовано: <strong>{fmtMsk(mskInputToUTC(scheduleAt))}</strong> МСК
+              </p>
+            )}
             <p className="text-[10px] text-gray-400 mt-1">
               {canPublish ? 'Готов к публикации.' : 'Нужно фото И финальное согласование.'}
             </p>

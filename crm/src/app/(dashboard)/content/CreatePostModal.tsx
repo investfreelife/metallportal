@@ -2,9 +2,16 @@
 
 import { useState } from 'react';
 import { X, Calendar as CalIcon, AlertCircle } from 'lucide-react';
+import {
+  toMskInputValue,
+  mskInputToUTC,
+  mskParts,
+  mskStartOfDay,
+  fmtMsk,
+} from '@/lib/tz';
 
 interface Props {
-  /** Дата, которая будет подставлена в форму (клик по ячейке календаря). */
+  /** Дата (МСК), которая будет подставлена в форму (клик по ячейке). */
   initialDate: Date;
   activeConnections: { id: string; platform: string; label: string; enabled: boolean }[];
   onClose: () => void;
@@ -13,38 +20,36 @@ interface Props {
 
 /**
  * Form-modal «Добавить пост» — открывается кликом по ячейке дня.
- * Подставляет clicked date в scheduled_at (default 10:00), пользователь правит
- * текст/ТЗ/канал и жмёт «Создать». Post сохраняется как draft (status=draft) —
- * scheduled_at заполнен но без approved_final публикация не пройдёт.
+ * Подставляет дату клика в scheduled_at (по умолчанию 10:00 МСК того дня).
+ * Если выбран сегодняшний день и в Москве уже позже 10:00 — сдвиг на +1 час.
+ * Все даты — в МОСКОВСКОЙ зоне через crm/src/lib/tz.ts.
  *
- * Это поведение, как в Postiz: клик по дню → форма с предзаполненной датой.
+ * Pattern Postiz: клик по дню → форма с предзаполненной датой.
  */
 export default function CreatePostModal({ initialDate, activeConnections, onClose, onCreated }: Props) {
-  // Default scheduled time = 10:00 на выбранный день. Если выбран сегодняшний
-  // день и время уже больше 10:00 — сдвигаем на «сейчас + 1 час».
-  const defaultDate = (() => {
-    const d = new Date(initialDate);
-    d.setHours(10, 0, 0, 0);
-    const now = new Date();
-    if (d < now) {
-      const t = new Date(now);
-      t.setHours(now.getHours() + 1, 0, 0, 0);
-      return t;
-    }
-    return d;
+  // Дефолт: 10:00 МСК выбранного дня; если уже позже — сдвиг на +1 час.
+  const defaultValue = (() => {
+    const dayStart = mskStartOfDay(initialDate);
+    // 10:00 в МСК того дня
+    const ten = new Date(dayStart.getTime() + 10 * 3600 * 1000);
+    const nowMskString = toMskInputValue(new Date());
+    const tenMskString = toMskInputValue(ten);
+    if (tenMskString > nowMskString) return tenMskString;
+    // сегодня и уже позже 10:00 — берём «сейчас + 1 час», обрезаем минуты до 00
+    const nowParts = mskParts(new Date());
+    const yyyy = nowParts.year;
+    const mm = String(nowParts.month).padStart(2, '0');
+    const dd = String(nowParts.day).padStart(2, '0');
+    const hh = String((nowParts.hour + 1) % 24).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}T${hh}:00`;
   })();
-
-  // datetime-local требует формата YYYY-MM-DDTHH:MM (локальное время, без TZ).
-  const fmtLocal = (d: Date) => {
-    const pad = (n: number) => String(n).padStart(2, '0');
-    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  };
 
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [photoTz, setPhotoTz] = useState('');
   const [channel, setChannel] = useState(activeConnections[0]?.label ?? '');
-  const [scheduledAt, setScheduledAt] = useState<string>(fmtLocal(defaultDate));
+  // scheduledAt — это МСК настенное время в формате datetime-local.
+  const [scheduledAt, setScheduledAt] = useState<string>(defaultValue);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -52,7 +57,8 @@ export default function CreatePostModal({ initialDate, activeConnections, onClos
     setSaving(true);
     setError(null);
     try {
-      const iso = new Date(scheduledAt).toISOString();
+      // scheduledAt = МСК wall-time; конвертим в UTC ISO для БД.
+      const iso = mskInputToUTC(scheduledAt);
       const r = await fetch('/api/content/posts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -76,9 +82,8 @@ export default function CreatePostModal({ initialDate, activeConnections, onClos
     }
   }
 
-  const humanDate = new Date(scheduledAt).toLocaleDateString('ru-RU', {
-    weekday: 'long', day: '2-digit', month: 'long', year: 'numeric',
-  });
+  // Превью даты в МСК через fmtMsk (не зависит от TZ браузера).
+  const humanDate = fmtMsk(mskInputToUTC(scheduledAt), true);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -103,11 +108,14 @@ export default function CreatePostModal({ initialDate, activeConnections, onClos
           )}
 
           <div className="bg-blue-50 border border-blue-200 rounded-md px-3 py-2 text-xs text-blue-900">
-            <span className="font-semibold">Дата публикации:</span> {humanDate}
+            <span className="font-semibold">Публикация:</span> {humanDate} <span className="text-blue-700">МСК</span>
           </div>
 
           <div>
-            <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Дата и время</label>
+            <div className="flex items-center justify-between">
+              <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Дата и время</label>
+              <span className="text-[10px] text-blue-700 font-medium">МСК (UTC+3)</span>
+            </div>
             <input
               type="datetime-local"
               value={scheduledAt}

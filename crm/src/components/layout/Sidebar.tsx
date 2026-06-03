@@ -23,6 +23,7 @@ import {
   Wallet,
   Wrench,
   CalendarDays,
+  ListChecks,
 } from 'lucide-react'
 
 type NavItem = {
@@ -71,6 +72,7 @@ const NAV_METAL: NavSection[] = [
   {
     section: 'Контент',
     items: [
+      { href: '/content-plan', label: 'Контент-план', icon: ListChecks },
       { href: '/content', label: 'Планировщик', icon: CalendarDays },
       { href: '/connections', label: 'Связи', icon: Network },
     ],
@@ -113,6 +115,7 @@ const NAV_TAXI: NavSection[] = [
   {
     section: 'Контент',
     items: [
+      { href: '/content-plan', label: 'Контент-план', icon: ListChecks },
       { href: '/content', label: 'Планировщик', icon: CalendarDays },
       { href: '/connections', label: 'Связи', icon: Network },
     ],
