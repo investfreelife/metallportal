@@ -36,6 +36,22 @@ export const contactRatelimit = new Ratelimit({
   prefix: 'rl:contact',
 })
 
+// SECURITY 2026-05-17 audit: brute-force prevention для site auth.
+// 5 attempts / 15 min per-IP — пять попыток вход / register на один IP в 15 минут.
+export const loginRatelimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(5, '15 m'),
+  analytics: true,
+  prefix: 'rl:login',
+})
+
+export const registerRatelimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(3, '1 h'),
+  analytics: true,
+  prefix: 'rl:register',
+})
+
 /**
  * Best-effort client IP from common Vercel/Cloudflare proxy headers.
  *
