@@ -113,7 +113,7 @@ export default function FunnelClient({ tenantName }: Props) {
         ) : total === 0 ? (
           <EmptyFunnel />
         ) : (
-          <div className="flex gap-3 min-w-fit h-full">
+          <div className="flex gap-3 w-max h-full pr-2">
             {FUNNEL_COLUMNS.map((col) => {
               const colItems = byStage.get(col.key) ?? [];
               return (
