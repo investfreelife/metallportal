@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { MessageSquare, Search, Clock, RefreshCw, User as UserIcon, Inbox as InboxIcon, UserCheck, Bot } from 'lucide-react';
+import { MessageSquare, Search, Clock, RefreshCw, User as UserIcon, Inbox as InboxIcon, UserCheck, Bot, Send, Sparkles, AlertCircle } from 'lucide-react';
 import type { DialogSummary, DialogMessage } from '@/lib/recruit/types';
 import { STAGE_LABELS, STAGE_COLORS } from '@/lib/recruit/types';
 import { fmtMsk } from '@/lib/tz';
@@ -277,9 +277,107 @@ export default function DialogsClient({ initialChatId, tenantName }: Props) {
                 <div ref={messagesEndRef} />
               </div>
             </div>
+            <Composer
+              chatId={selectedChatId}
+              onSent={async () => {
+                // Подтянем ленту + handoff после отправки.
+                await loadMessages(selectedChatId);
+                await loadDialogs();
+              }}
+            />
           </>
         )}
       </main>
+    </div>
+  );
+}
+
+// ─── Composer (поле ввода менеджера + AI-переписать/raw) ──────────────
+function Composer({ chatId, onSent }: { chatId: string; onSent: () => void | Promise<void> }) {
+  const [text, setText] = useState('');
+  const [sending, setSending] = useState<'ai' | 'raw' | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [lastAiText, setLastAiText] = useState<string | null>(null);
+
+  async function send(mode: 'ai' | 'raw') {
+    if (!text.trim()) return;
+    setSending(mode);
+    setError(null);
+    setLastAiText(null);
+    try {
+      const r = await fetch('/api/recruit/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: chatId, text: text.trim(), mode }),
+      });
+      const ct = r.headers.get('content-type') || '';
+      const j = ct.includes('application/json') ? await r.json() : null;
+      if (!r.ok || j?.error) {
+        throw new Error(j?.error || `HTTP ${r.status}`);
+      }
+      if (mode === 'ai' && j?.final_text && j.final_text !== text.trim()) {
+        setLastAiText(j.final_text as string);
+      }
+      setText('');
+      await onSent();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setSending(null);
+    }
+  }
+
+  return (
+    <div className="border-t border-gray-200 bg-white px-5 py-3">
+      {error && (
+        <div className="mb-2 text-xs text-red-700 bg-red-50 border border-red-200 rounded-md px-2.5 py-1.5 flex items-start gap-2">
+          <AlertCircle size={12} className="flex-shrink-0 mt-0.5" />
+          <span className="break-words">{error}</span>
+        </div>
+      )}
+      {lastAiText && (
+        <div className="mb-2 text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-md px-2.5 py-1.5">
+          <strong>ИИ переписал и отправил:</strong> «{lastAiText.slice(0, 200)}{lastAiText.length > 200 ? '…' : ''}»
+        </div>
+      )}
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+            e.preventDefault();
+            void send('ai');
+          }
+        }}
+        rows={2}
+        placeholder="Коротко суть, что сказать кандидату (например: «аренда 2000 в день, можно сегодня выйти»). ИИ перепишет тепло и человечески. Cmd/Ctrl+Enter — отправить через ИИ."
+        className="w-full px-2.5 py-2 text-sm border border-gray-200 rounded-md focus:border-blue-500 focus:outline-none resize-y"
+      />
+      <div className="flex items-center justify-between gap-2 mt-2">
+        <span className="text-[10px] text-gray-400">
+          После отправки бот перестанет писать — переключатель «Общаюсь сам» включится автоматически.
+        </span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => send('raw')}
+            disabled={!text.trim() || !!sending}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-xs font-medium rounded-md hover:bg-gray-50 disabled:opacity-40"
+            title="Отправить дословно — то, что ты ввёл, попадёт прямо кандидату"
+          >
+            <Send size={12} />
+            {sending === 'raw' ? 'Отправка…' : 'Отправить как есть'}
+          </button>
+          <button
+            onClick={() => send('ai')}
+            disabled={!text.trim() || !!sending}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-violet-600 text-white text-xs font-medium rounded-md hover:bg-violet-700 disabled:opacity-40"
+            title="ИИ перепишет твою суть в человеческое сообщение и отправит"
+          >
+            <Sparkles size={12} />
+            {sending === 'ai' ? 'ИИ пишет…' : 'Написать с ИИ и отправить'}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
