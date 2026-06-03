@@ -22,6 +22,7 @@ import {
   MapPin,
   Wallet,
   Wrench,
+  CalendarDays,
 } from 'lucide-react'
 
 type NavItem = {
@@ -68,6 +69,13 @@ const NAV_METAL: NavSection[] = [
     ],
   },
   {
+    section: 'Контент',
+    items: [
+      { href: '/content', label: 'Планировщик', icon: CalendarDays },
+      { href: '/connections', label: 'Связи', icon: Network },
+    ],
+  },
+  {
     section: 'Аналитика',
     items: [
       { href: '/analytics', label: 'Аналитика', icon: BarChart2 },
@@ -100,6 +108,13 @@ const NAV_TAXI: NavSection[] = [
       { href: '/trips', label: 'Поездки', icon: MapPin },
       { href: '/payouts', label: 'Выплаты', icon: Wallet },
       { href: '/channels', label: 'Telegram каналы', icon: Send },
+    ],
+  },
+  {
+    section: 'Контент',
+    items: [
+      { href: '/content', label: 'Планировщик', icon: CalendarDays },
+      { href: '/connections', label: 'Связи', icon: Network },
     ],
   },
   {
