@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
-import { getTenantId } from '@/lib/session'
+import { getTenantId, getSession } from '@/lib/session'
+import TaxiDashboard from './TaxiDashboard'
 import { formatMoney, timeAgo, getInitials, getActionTypeLabel } from '@/lib/utils'
 import Link from 'next/link'
 import DashboardQueue from './DashboardQueue'
@@ -45,7 +46,14 @@ const ACTIVITY_ICON_STYLES: Record<string, { bg: string; text: string; icon: str
 }
 
 export default async function DashboardPage() {
+  // Industry-aware routing — Sergey directive 2026-06-03 «новая фирма, новый дашборд».
+  // Металлопрокат → текущий dashboard. Таксопарк → отдельный TaxiDashboard
+  // с релевантными KPI (водители/машины/поездки/доход).
+  const session = await getSession()
   const TENANT_ID = await getTenantId()
+  if (session?.industry === 'taxi') {
+    return <TaxiDashboard tenantId={TENANT_ID} tenantName={session.tenant_name} />
+  }
   const supabase = await createClient()
 
   const todayStr = new Date().toISOString().split('T')[0]

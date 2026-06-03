@@ -14,6 +14,15 @@ export interface CrmSession {
    * a1000000-...-001 (legacy), такспарк «Столица» = 66fe829e-...-65.
    */
   tenant?: string
+  /**
+   * Tenant industry — определяет UI vertical:
+   *   - 'metal'  → Металлпортал (deals/contacts/calls)
+   *   - 'taxi'   → Таксопарк (drivers/cars/trips/payouts)
+   * Если поле отсутствует — fallback 'metal' (backward-compat).
+   */
+  industry?: string
+  /** Display name из tenants.name — показывается в Sidebar header. */
+  tenant_name?: string
   exp: number
 }
 
