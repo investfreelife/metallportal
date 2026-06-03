@@ -118,6 +118,7 @@ const NAV_TAXI: NavSection[] = [
     items: [
       { href: '/drivers', label: 'Водители', icon: Users },
       { href: '/cars', label: 'Машины', icon: Car },
+      { href: '/car-partners', label: 'Таксопарки', icon: Car },
       { href: '/maintenance', label: 'Обслуживание', icon: Wrench },
     ],
   },
