@@ -7,19 +7,15 @@ import {
   ChevronLeft,
   ChevronRight,
   Image as ImageIcon,
-  Send,
   CheckCircle2,
-  AlertCircle,
   Clock,
   X,
-  Upload,
-  Edit3,
-  Trash2,
   Plus,
 } from 'lucide-react';
 import type { ContentPost, PostStatus } from '@/lib/content/types';
 import { isPublishable } from '@/lib/content/types';
 import PostEditor from './PostEditor';
+import CreatePostModal from './CreatePostModal';
 
 type ViewMode = 'calendar' | 'list';
 type CalendarRange = 'month' | 'week' | 'day';
@@ -88,7 +84,11 @@ export default function ContentClient({ initialPosts, activeConnections, tenantN
     return d;
   });
   const [selectedPost, setSelectedPost] = useState<ContentPost | null>(null);
-  const [isCreating, setIsCreating] = useState(false);
+  /**
+   * Дата клика по ячейке — открывает CreatePostModal с подставленным scheduled_at.
+   * Postiz-pattern: «click on a day → form opens with that date».
+   */
+  const [createOnDate, setCreateOnDate] = useState<Date | null>(null);
 
   const refresh = useCallback(async () => {
     const r = await fetch('/api/content/posts');
@@ -132,15 +132,12 @@ export default function ContentClient({ initialPosts, activeConnections, tenantN
     setCursor(d);
   }
 
-  async function handleCreate() {
-    setIsCreating(true);
-    const r = await fetch('/api/content/posts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: 'Новый пост', status: 'draft' }) });
-    const j = await r.json();
-    setIsCreating(false);
-    if (j.post) {
-      await refresh();
-      setSelectedPost(j.post);
-    }
+  /**
+   * Кнопка «Создать пост» в header — открывает форму с текущей датой.
+   * Тот же поток что и клик по ячейке календаря (CreatePostModal).
+   */
+  function handleCreate() {
+    setCreateOnDate(new Date());
   }
 
   const cursorLabel = useMemo(() => {
@@ -171,8 +168,7 @@ export default function ContentClient({ initialPosts, activeConnections, tenantN
           )}
           <button
             onClick={handleCreate}
-            disabled={isCreating}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
           >
             <Plus size={14} />
             Создать пост
@@ -230,6 +226,7 @@ export default function ContentClient({ initialPosts, activeConnections, tenantN
             postsByDay={postsByDay}
             unscheduled={unscheduled}
             onSelect={setSelectedPost}
+            onAddOnDate={setCreateOnDate}
           />
         ) : (
           <ListView posts={posts} onSelect={setSelectedPost} />
@@ -252,6 +249,15 @@ export default function ContentClient({ initialPosts, activeConnections, tenantN
           }}
         />
       )}
+
+      {createOnDate && (
+        <CreatePostModal
+          initialDate={createOnDate}
+          activeConnections={activeConnections}
+          onClose={() => setCreateOnDate(null)}
+          onCreated={refresh}
+        />
+      )}
     </div>
   );
 }
@@ -263,12 +269,15 @@ function CalendarView({
   postsByDay,
   unscheduled,
   onSelect,
+  onAddOnDate,
 }: {
   cells: Date[];
   range: CalendarRange;
   postsByDay: Map<string, ContentPost[]>;
   unscheduled: ContentPost[];
   onSelect: (p: ContentPost) => void;
+  /** Клик по ячейке дня → открыть форму с подставленной датой (Postiz-pattern). */
+  onAddOnDate: (d: Date) => void;
 }) {
   const today = new Date();
   const dayLabels = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
@@ -279,12 +288,20 @@ function CalendarView({
     return (
       <div className="grid grid-cols-[280px_1fr] gap-4">
         <UnscheduledColumn posts={unscheduled} onSelect={onSelect} />
-        <div className="bg-white border border-gray-200 rounded-lg p-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">
-            {cells[0].toLocaleDateString('ru-RU', { weekday: 'long', day: '2-digit', month: 'long' })}
-          </h3>
-          <div className="space-y-2">
-            {dayPosts.length === 0 && <p className="text-xs text-gray-400">Постов на этот день нет.</p>}
+        <div
+          onClick={() => onAddOnDate(cells[0])}
+          className="bg-white border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-blue-300 hover:shadow-sm transition-all group"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-gray-700 capitalize">
+              {cells[0].toLocaleDateString('ru-RU', { weekday: 'long', day: '2-digit', month: 'long' })}
+            </h3>
+            <span className="opacity-0 group-hover:opacity-100 text-[10px] text-blue-600 font-medium">
+              + добавить пост
+            </span>
+          </div>
+          <div className="space-y-2" onClick={(e) => e.stopPropagation()}>
+            {dayPosts.length === 0 && <p className="text-xs text-gray-400">Постов на этот день нет — кликни в любое место, чтобы добавить.</p>}
             {dayPosts.map((p) => <PostPill key={p.id} post={p} onClick={() => onSelect(p)} />)}
           </div>
         </div>
@@ -293,20 +310,27 @@ function CalendarView({
   }
 
   const isMonth = range === 'month';
-  const gridCols = 7;
 
   return (
     <div className="grid grid-cols-[280px_1fr] gap-4">
       <UnscheduledColumn posts={unscheduled} onSelect={onSelect} />
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-        <div className={`grid grid-cols-7 bg-gray-50 border-b border-gray-200`}>
-          {dayLabels.map((d) => (
-            <div key={d} className="px-2 py-2 text-[11px] font-medium text-gray-600 text-center uppercase tracking-wide">
-              {d}
+        {/* Заголовок дней недели — для week-view показываем числа дат, чтобы было видно «вторник 02.06» как в Postiz. */}
+        <div className="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
+          {(range === 'week' ? cells : Array.from({ length: 7 }, (_, i) => null)).map((c, i) => (
+            <div key={i} className="px-2 py-2 text-center">
+              <div className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">
+                {dayLabels[i]}
+              </div>
+              {range === 'week' && c && (
+                <div className={`text-xs font-semibold mt-0.5 ${sameDay(c, today) ? 'text-blue-600' : 'text-gray-700'}`}>
+                  {c.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' })}
+                </div>
+              )}
             </div>
           ))}
         </div>
-        <div className={`grid grid-cols-${gridCols}`}>
+        <div className="grid grid-cols-7">
           {cells.map((c, i) => {
             const k = `${c.getFullYear()}-${c.getMonth()}-${c.getDate()}`;
             const dayPosts = postsByDay.get(k) ?? [];
@@ -315,20 +339,25 @@ function CalendarView({
             return (
               <div
                 key={i}
-                className={`min-h-[100px] border-r border-b border-gray-100 p-1.5 ${
+                onClick={() => onAddOnDate(c)}
+                className={`min-h-[100px] border-r border-b border-gray-100 p-1.5 cursor-pointer hover:bg-blue-50/30 hover:border-blue-200 transition-colors group ${
                   isCurrentMonth ? 'bg-white' : 'bg-gray-50/50'
                 }`}
+                title="Кликнуть — добавить пост на этот день"
               >
-                <div className={`text-[11px] mb-1 ${isToday ? 'font-bold text-blue-600' : 'text-gray-500'}`}>
-                  {c.getDate()}
+                <div className="flex items-center justify-between mb-1">
+                  <div className={`text-[11px] ${isToday ? 'font-bold text-blue-600' : 'text-gray-500'}`}>
+                    {c.getDate()}
+                  </div>
+                  <span className="opacity-0 group-hover:opacity-100 text-[10px] text-blue-600 font-bold leading-none">+</span>
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1" onClick={(e) => e.stopPropagation()}>
                   {dayPosts.slice(0, 3).map((p) => (
                     <PostPill key={p.id} post={p} onClick={() => onSelect(p)} compact />
                   ))}
                   {dayPosts.length > 3 && (
                     <button
-                      onClick={() => onSelect(dayPosts[3])}
+                      onClick={(e) => { e.stopPropagation(); onSelect(dayPosts[3]); }}
                       className="text-[10px] text-gray-500 hover:text-blue-600"
                     >
                       +{dayPosts.length - 3} ещё
