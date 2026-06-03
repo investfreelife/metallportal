@@ -24,6 +24,8 @@ import {
   Wrench,
   CalendarDays,
   ListChecks,
+  MessageSquare,
+  KanbanSquare,
 } from 'lucide-react'
 
 type NavItem = {
@@ -58,6 +60,8 @@ const NAV_METAL: NavSection[] = [
       { href: '/contacts', label: 'Контакты', icon: Users },
       { href: '/deals', label: 'Сделки', icon: Briefcase },
       { href: '/calls', label: 'Звонки', icon: Phone, badgeKey: 'calls' },
+      { href: '/dialogs', label: 'Диалоги', icon: MessageSquare },
+      { href: '/funnel', label: 'Воронка', icon: KanbanSquare },
     ],
   },
   {
@@ -94,6 +98,13 @@ const NAV_TAXI: NavSection[] = [
     items: [
       { href: '/dashboard', label: 'Дашборд', icon: LayoutDashboard },
       { href: '/inbox', label: 'Сообщения', icon: Inbox, badgeKey: 'inbox_unread' },
+    ],
+  },
+  {
+    section: 'Рекрутинг',
+    items: [
+      { href: '/dialogs', label: 'Диалоги', icon: MessageSquare },
+      { href: '/funnel', label: 'Воронка', icon: KanbanSquare },
     ],
   },
   {
