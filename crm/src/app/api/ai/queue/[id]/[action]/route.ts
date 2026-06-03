@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
 import { evaluateAndImprove } from '@/lib/ai'
 import { requireRole } from '@/lib/apiAuth'
+import { getTenantIdFromRequest } from '@/lib/session'
 
 /**
  * PATCH /api/ai/queue/:id/:action
@@ -32,6 +33,7 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string; action: string }> }
 ) {
+  const TENANT_ID = getTenantIdFromRequest(request)
   // Accept either a valid CRM session (UI/manager call)
   // OR a valid X-Internal-Secret header (bot loopback / main-site webhook).
   const auth = requireRole(request, ['owner', 'manager', 'admin'])
@@ -125,7 +127,7 @@ export async function PATCH(
         manager_decision: action as 'approved' | 'rejected',
         manager_response_minutes: responseMinutes,
         actual_result: managerFeedback || null,
-      })
+      }, TENANT_ID)
     })().catch(() => {})
   }
 

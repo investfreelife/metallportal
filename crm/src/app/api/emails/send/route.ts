@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireSession } from '@/lib/apiAuth'
+import { getTenantIdFromRequest } from '@/lib/session'
 import { createClient } from '@supabase/supabase-js'
 import nodemailer from 'nodemailer'
-
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
 function getSupabase() {
   return createClient(
@@ -13,6 +12,7 @@ function getSupabase() {
 }
 
 export async function POST(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const auth = requireSession(req)
   if (!auth.ok) return auth.error
 

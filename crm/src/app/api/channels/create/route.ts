@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireRole } from '@/lib/apiAuth'
+import { getTenantIdFromRequest } from '@/lib/session'
 import { createClient } from '@/lib/supabase/server'
-
-const TENANT_ID = process.env.TENANT_ID || 'a1000000-0000-0000-0000-000000000001'
 
 const CHANNEL_NAMES: Record<string, string> = {
   yandex_direct: 'Яндекс.Директ',
@@ -23,6 +22,7 @@ const CHANNEL_NAMES: Record<string, string> = {
 }
 
 export async function POST(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const auth = requireRole(req, ['owner', 'manager', 'admin'])
   if (!auth.ok) return auth.error
 

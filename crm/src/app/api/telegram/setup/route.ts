@@ -5,14 +5,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSetting } from '@/lib/settings'
 import { requireRole } from '@/lib/apiAuth'
+import { getTenantIdFromRequest } from '@/lib/session'
 
 const WEBHOOK_URL = 'https://metallportal.vercel.app/api/telegram/webhook'
 
 export async function POST(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const auth = requireRole(req, ['owner', 'admin'])
   if (!auth.ok) return auth.error
 
-  const token = await getSetting('TELEGRAM_BOT_TOKEN')
+  const token = await getSetting('TELEGRAM_BOT_TOKEN', TENANT_ID)
   if (!token) return NextResponse.json({ error: 'TELEGRAM_BOT_TOKEN не задан. Сначала сохраните токен бота.' }, { status: 400 })
 
   // 1. Register webhook
@@ -37,7 +39,7 @@ export async function POST(req: NextRequest) {
   const botUsername = meData.result?.username ?? ''
 
   // 3. Send test message to manager
-  const managerTgId = await getSetting('CRM_MANAGER_TG_ID')
+  const managerTgId = await getSetting('CRM_MANAGER_TG_ID', TENANT_ID)
   let testSent = false
   if (managerTgId) {
     const testRes = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
@@ -63,10 +65,11 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const auth = requireRole(req, ['owner', 'admin'])
   if (!auth.ok) return auth.error
 
-  const token = await getSetting('TELEGRAM_BOT_TOKEN')
+  const token = await getSetting('TELEGRAM_BOT_TOKEN', TENANT_ID)
   if (!token) return NextResponse.json({ error: 'No token' }, { status: 400 })
 
   const res = await fetch(`https://api.telegram.org/bot${token}/deleteWebhook`, {

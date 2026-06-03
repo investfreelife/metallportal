@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { getSetting } from '@/lib/settings'
 import { requireRole } from '@/lib/apiAuth'
+import { getTenantIdFromRequest } from '@/lib/session'
 import { LLM_MODEL_GENERAL } from '@/lib/llm-models'
 
 function getSupabase() {
@@ -16,6 +17,7 @@ function getSupabase() {
 }
 
 export async function POST(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const auth = requireRole(req, ['owner', 'manager', 'admin'])
   if (!auth.ok) return auth.error
 
@@ -24,7 +26,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'queue_id and instruction required' }, { status: 400 })
   }
 
-  const OPENROUTER_KEY = await getSetting('OPENROUTER_API_KEY')
+  const OPENROUTER_KEY = await getSetting('OPENROUTER_API_KEY', TENANT_ID)
   if (!OPENROUTER_KEY) {
     return NextResponse.json({ error: 'OPENROUTER_API_KEY не задан в настройках CRM' }, { status: 400 })
   }

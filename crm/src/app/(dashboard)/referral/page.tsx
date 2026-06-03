@@ -1,10 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
+import { getTenantId } from '@/lib/session'
 import { ReferralAdmin } from './ReferralAdmin'
 import { ReferralAdminClient } from './ReferralAdminClient'
 
-const TENANT_ID = process.env.TENANT_ID || 'a1000000-0000-0000-0000-000000000001'
-
 export default async function ReferralPage() {
+  const TENANT_ID = await getTenantId()
   const supabase = await createClient()
 
   const [{ data: partners }, { data: transactions }, { data: siteUsers }, { data: siteTx }] = await Promise.all([

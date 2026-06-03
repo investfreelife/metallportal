@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getTenantIdFromRequest } from '@/lib/session'
 import { createClient } from '@supabase/supabase-js'
 
 /**
@@ -24,8 +25,6 @@ import { createClient } from '@supabase/supabase-js'
  */
 
 export const dynamic = 'force-dynamic'
-
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
 function admin() {
   return createClient(
@@ -93,6 +92,7 @@ interface ConversationCard {
 }
 
 export async function GET(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const url = new URL(req.url)
   const view = url.searchParams.get('view') ?? 'open'
   const channelFilter = url.searchParams.get('channel')

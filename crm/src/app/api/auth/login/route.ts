@@ -6,8 +6,6 @@ import { signSession } from '@/lib/session'
 
 const scryptAsync = promisify(crypto.scrypt)
 
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
-
 // ── Simple in-memory rate limiter (resets on cold start) ──────────
 const loginAttempts = new Map<string, { count: number; resetAt: number }>()
 const MAX_ATTEMPTS = 10
@@ -72,11 +70,12 @@ export async function POST(request: NextRequest) {
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
 
-  // Fetch user by login only (never filter by password in SQL)
+  // Fetch user by login only — НЕ фильтруем по tenant_id, т.к. login
+  // глобально уникален и multitenant rollout означает: один deploy, разные
+  // фирмы. tenant_id берём ИЗ admin_users record и кладём в session.
   const { data } = await supabase
     .from('admin_users')
-    .select('id, name, login, role, is_active, password')
-    .eq('tenant_id', TENANT_ID)
+    .select('id, tenant_id, name, login, role, is_active, password')
     .eq('login', login.trim().toLowerCase())
     .eq('is_active', true)
     .single()
@@ -102,6 +101,7 @@ export async function POST(request: NextRequest) {
     login: data.login,
     name: data.name,
     role: data.role,
+    tenant: data.tenant_id,
     exp: Date.now() + 30 * 24 * 60 * 60 * 1000,
   }
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireSession } from '@/lib/apiAuth'
+import { getTenantIdFromRequest } from '@/lib/session'
 import { createClient } from '@supabase/supabase-js'
 import nodemailer from 'nodemailer'
 
@@ -12,6 +13,7 @@ function getSupabase(): any {
 }
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const auth = requireSession(req)
   if (!auth.ok) return auth.error
 
@@ -34,7 +36,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const { data: account } = await supabase
     .from('email_accounts')
     .select('*')
-    .eq('tenant_id', 'a1000000-0000-0000-0000-000000000001')
+    .eq('tenant_id', TENANT_ID)
     .eq('is_default', true)
     .eq('status', 'active')
     .single()
@@ -61,7 +63,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     // Save to emails table
     await supabase.from('emails').insert({
-      tenant_id: 'a1000000-0000-0000-0000-000000000001',
+      tenant_id: TENANT_ID,
       account_id: account.id,
       contact_id: id,
       direction: 'outbound',
@@ -76,7 +78,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     // Log to activities
     await supabase.from('activities').insert({
-      tenant_id: 'a1000000-0000-0000-0000-000000000001',
+      tenant_id: TENANT_ID,
       contact_id: id,
       type: 'email',
       direction: 'outbound',

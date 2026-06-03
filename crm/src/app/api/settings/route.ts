@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireRole, requireSession } from '@/lib/apiAuth'
+import { getTenantIdFromRequest } from '@/lib/session'
 import { getAllSettings, setSetting } from '@/lib/settings'
 
 const ALLOWED_KEYS = [
@@ -12,6 +13,7 @@ const ALLOWED_KEYS = [
 ]
 
 export async function GET(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   // Read masked settings — any session can see (values are masked).
   const auth = requireSession(req)
   if (!auth.ok) return auth.error
@@ -32,6 +34,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   // Writing settings — owner/admin only.
   const auth = requireRole(req, ['owner', 'admin'])
   if (!auth.ok) return auth.error
@@ -41,7 +44,7 @@ export async function POST(req: NextRequest) {
 
   for (const key of ALLOWED_KEYS) {
     if (body[key] !== undefined && body[key].trim() !== '' && !body[key].startsWith('••')) {
-      await setSetting(key, body[key].trim())
+      await setSetting(key, body[key].trim(), TENANT_ID)
       saved.push(key)
     }
   }

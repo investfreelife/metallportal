@@ -1,10 +1,14 @@
 /**
  * System event logger → Supabase system_logs table
- * Used by all API routes to track what's happening
+ * Used by all API routes to track what's happening.
+ *
+ * Multi-tenant 2026-06-03: `tenantId` параметр optional. Если не передан —
+ * фоллбэк к session-resolved tenant (getTenantId()), который сам падает на
+ * DEFAULT_TENANT_ID. Авторские роуты должны явно передавать `TENANT_ID`
+ * (declared as `getTenantIdFromRequest(request)` at handler entry).
  */
 import { createClient } from '@supabase/supabase-js'
-
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
+import { getTenantId } from './session'
 
 function getSupabase() {
   return createClient(
@@ -17,11 +21,13 @@ export async function logEvent(
   event: string,
   detail: Record<string, unknown> = {},
   status: 'ok' | 'failed' = 'ok',
-  error_msg?: string
+  error_msg?: string,
+  tenantId?: string
 ) {
   try {
+    const tenant = tenantId ?? await getTenantId()
     await getSupabase().from('system_logs').insert({
-      tenant_id: TENANT_ID,
+      tenant_id: tenant,
       event,
       status,
       detail,

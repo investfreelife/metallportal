@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { getTenantId } from '@/lib/session'
 
 /**
  * VisitorJourneys — Section 2.b «Последние действия посетителей».
@@ -15,8 +16,6 @@ import { createClient } from '@/lib/supabase/server'
  */
 
 export const dynamic = 'force-dynamic'
-
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
 interface SiteEvent {
   session_id: string | null
@@ -98,6 +97,7 @@ function deviceEmoji(d: string): string {
 }
 
 export default async function VisitorJourneys() {
+  const TENANT_ID = await getTenantId()
   const supabase = await createClient()
   const since = new Date()
   since.setHours(since.getHours() - 24)

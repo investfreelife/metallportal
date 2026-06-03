@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireSession } from '@/lib/apiAuth'
+import { getTenantIdFromRequest } from '@/lib/session'
 import { createClient } from '@supabase/supabase-js'
 import { getSetting } from '@/lib/settings'
 import { LLM_MODEL_GENERAL } from '@/lib/llm-models'
 
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 const REFERER = 'https://metallportal-crm2.vercel.app'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -16,13 +16,14 @@ function getSupabase(): any {
 }
 
 export async function POST(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const auth = requireSession(req)
   if (!auth.ok) return auth.error
 
   const { command } = await req.json().catch(() => ({}))
   if (!command) return NextResponse.json({ error: 'Напишите команду' }, { status: 400 })
 
-  const OPENROUTER_KEY = await getSetting('OPENROUTER_API_KEY')
+  const OPENROUTER_KEY = await getSetting('OPENROUTER_API_KEY', TENANT_ID)
   if (!OPENROUTER_KEY) return NextResponse.json({ error: 'Нет ключа OpenRouter' }, { status: 503 })
 
   const supabase = getSupabase()

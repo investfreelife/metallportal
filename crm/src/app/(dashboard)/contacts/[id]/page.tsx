@@ -1,14 +1,14 @@
 import { notFound } from 'next/navigation'
+import { getTenantId } from '@/lib/session'
 import { createClient } from '@/lib/supabase/server'
 import { ContactDetail } from './ContactDetail'
-
-const TENANT_ID = process.env.TENANT_ID || 'a1000000-0000-0000-0000-000000000001'
 
 export default async function ContactDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>
 }) {
+  const TENANT_ID = await getTenantId()
   const { id } = await params
   const supabase = await createClient()
 

@@ -1,13 +1,13 @@
 import { createClient } from '@/lib/supabase/server'
+import { getTenantId } from '@/lib/session'
 import { ContactsClient } from './ContactsClient'
-
-const TENANT_ID = process.env.TENANT_ID || 'a1000000-0000-0000-0000-000000000001'
 
 export default async function ContactsPage({
   searchParams,
 }: {
   searchParams: Promise<{ filter?: string; segment?: string; q?: string }>
 }) {
+  const TENANT_ID = await getTenantId()
   const { filter, segment, q } = await searchParams
   const supabase = await createClient()
 

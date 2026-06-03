@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { getSessionFromRequest } from '@/lib/session'
+import { getSessionFromRequest, getTenantIdFromRequest } from '@/lib/session'
 import { sendEmail } from '@/lib/email'
 
 /**
@@ -28,8 +28,6 @@ import { sendEmail } from '@/lib/email'
  */
 
 export const dynamic = 'force-dynamic'
-
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
 const SUPPORTED_CHANNELS = new Set([
   'email', 'sms', 'phone', 'telegram', 'vk', 'whatsapp', 'form', 'note', 'ai_chat',
@@ -96,6 +94,7 @@ async function stubSend(channel: string, body: SendBody): Promise<{ ok: boolean;
 }
 
 export async function POST(request: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(request)
   const auth = checkAuth(request)
   if (!auth.ok) return auth.error
 

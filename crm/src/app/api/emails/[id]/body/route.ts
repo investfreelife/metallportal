@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireSession } from '@/lib/apiAuth'
+import { getTenantIdFromRequest } from '@/lib/session'
 import { createClient } from '@supabase/supabase-js'
 import { ImapFlow } from 'imapflow'
 import { simpleParser } from 'mailparser'
-
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getSupabase(): any {
@@ -18,6 +17,7 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const TENANT_ID = getTenantIdFromRequest(_req)
   const auth = requireSession(_req)
   if (!auth.ok) return auth.error
 

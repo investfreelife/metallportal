@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { getTenantId } from '@/lib/session'
 import { formatMoney, timeAgo, getInitials, getActionTypeLabel } from '@/lib/utils'
 import Link from 'next/link'
 import DashboardQueue from './DashboardQueue'
@@ -27,8 +28,6 @@ import { RoadmapSection } from '@/components/dashboard/RoadmapSection'
 // на дашборде! отдельная полноценная вкладка». OmnichannelInbox перенесён
 // на standalone /inbox page (см. AdminSidebar «Все сообщения»).
 
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
-
 const STAGE_LABELS: Record<string, string> = {
   new: 'Новые', qualified: 'Квалификация',
   proposal: 'КП', negotiation: 'Переговоры', won: 'Закрыто ✓',
@@ -46,6 +45,7 @@ const ACTIVITY_ICON_STYLES: Record<string, { bg: string; text: string; icon: str
 }
 
 export default async function DashboardPage() {
+  const TENANT_ID = await getTenantId()
   const supabase = await createClient()
 
   const todayStr = new Date().toISOString().split('T')[0]

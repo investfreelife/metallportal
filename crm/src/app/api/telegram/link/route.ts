@@ -7,15 +7,15 @@ import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { getSetting } from '@/lib/settings'
 import { requireRole } from '@/lib/apiAuth'
+import { getTenantIdFromRequest } from '@/lib/session'
 import crypto from 'crypto'
 
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
-
 export async function POST(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const auth = requireRole(req, ['owner', 'admin'])
   if (!auth.ok) return auth.error
 
-  const token = await getSetting('TELEGRAM_BOT_TOKEN')
+  const token = await getSetting('TELEGRAM_BOT_TOKEN', TENANT_ID)
   if (!token) return NextResponse.json({ error: 'TELEGRAM_BOT_TOKEN не задан' }, { status: 400 })
 
   // Get bot username

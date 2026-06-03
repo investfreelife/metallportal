@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { getSetting, setSetting } from '@/lib/settings'
 import { requireSession } from '@/lib/apiAuth'
+import { getTenantIdFromRequest } from '@/lib/session'
 import { LLM_MODEL_GENERAL } from '@/lib/llm-models'
 
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 const REFERER = 'https://metallportal-crm2.vercel.app'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -16,16 +16,17 @@ function getSupabase(): any {
 }
 
 export async function GET(req: NextRequest) {
+  const TENANT_ID = getTenantIdFromRequest(req)
   const auth = requireSession(req)
   if (!auth.ok) return auth.error
 
   const today = new Date().toISOString().split('T')[0]
   const cacheKey = `ai_insight_${today}`
 
-  const cached = await getSetting(cacheKey)
+  const cached = await getSetting(cacheKey, TENANT_ID)
   if (cached) return NextResponse.json({ insight: cached })
 
-  const OPENROUTER_KEY = await getSetting('OPENROUTER_API_KEY')
+  const OPENROUTER_KEY = await getSetting('OPENROUTER_API_KEY', TENANT_ID)
   if (!OPENROUTER_KEY) return NextResponse.json({ insight: null })
 
   const supabase = getSupabase()
@@ -69,7 +70,7 @@ export async function GET(req: NextRequest) {
   const data = await res.json()
   const insight = data.choices?.[0]?.message?.content ?? null
 
-  if (insight) await setSetting(cacheKey, insight)
+  if (insight) await setSetting(cacheKey, insight, TENANT_ID)
 
   return NextResponse.json({ insight })
 }

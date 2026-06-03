@@ -1,6 +1,12 @@
 import { createClient } from '@supabase/supabase-js'
+import { getTenantId } from './session'
 
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
+/**
+ * Multi-tenant 2026-06-03: каждая функция принимает optional `tenantId`.
+ * Если не передан — резолвится из текущей session (Server Components,
+ * Route Handlers). Cache теперь keyed by `${tenant}::${key}` чтобы не
+ * cross-pollinate между фирмами.
+ */
 
 function getSupabase() {
   return createClient(
@@ -12,22 +18,24 @@ function getSupabase() {
 const cache = new Map<string, string>()
 
 /**
- * Read a setting: first process.env, then Supabase tenant_settings
+ * Read a setting: first process.env, then Supabase tenant_settings.
  */
-export async function getSetting(key: string): Promise<string | undefined> {
+export async function getSetting(key: string, tenantId?: string): Promise<string | undefined> {
   if (process.env[key]) return process.env[key]
-  if (cache.has(key)) return cache.get(key)
+  const tenant = tenantId ?? await getTenantId()
+  const cacheKey = `${tenant}::${key}`
+  if (cache.has(cacheKey)) return cache.get(cacheKey)
 
   try {
     const supabase = getSupabase()
     const { data } = await supabase
       .from('tenant_settings')
       .select('value')
-      .eq('tenant_id', TENANT_ID)
+      .eq('tenant_id', tenant)
       .eq('key', key)
       .single()
     if (data?.value) {
-      cache.set(key, data.value)
+      cache.set(cacheKey, data.value)
       return data.value
     }
   } catch {}
@@ -35,26 +43,28 @@ export async function getSetting(key: string): Promise<string | undefined> {
 }
 
 /**
- * Write a setting to Supabase (upsert)
+ * Write a setting to Supabase (upsert).
  */
-export async function setSetting(key: string, value: string): Promise<void> {
+export async function setSetting(key: string, value: string, tenantId?: string): Promise<void> {
+  const tenant = tenantId ?? await getTenantId()
   const supabase = getSupabase()
   await supabase.from('tenant_settings').upsert(
-    { tenant_id: TENANT_ID, key, value, updated_at: new Date().toISOString() },
+    { tenant_id: tenant, key, value, updated_at: new Date().toISOString() },
     { onConflict: 'tenant_id,key' }
   )
-  cache.set(key, value)
+  cache.set(`${tenant}::${key}`, value)
 }
 
 /**
- * Get all settings for this tenant (from DB only)
+ * Get all settings for this tenant (from DB only).
  */
-export async function getAllSettings(): Promise<Record<string, string>> {
+export async function getAllSettings(tenantId?: string): Promise<Record<string, string>> {
+  const tenant = tenantId ?? await getTenantId()
   const supabase = getSupabase()
   const { data } = await supabase
     .from('tenant_settings')
     .select('key, value')
-    .eq('tenant_id', TENANT_ID)
+    .eq('tenant_id', tenant)
 
   const result: Record<string, string> = {}
   for (const row of data ?? []) {

@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { getTenantId } from '@/lib/session'
 import Link from 'next/link'
 
 /**
@@ -17,8 +18,6 @@ import Link from 'next/link'
  */
 
 export const dynamic = 'force-dynamic'
-
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
 
 function todayStart(): string {
   const d = new Date()
@@ -53,6 +52,7 @@ function deltaText(today: number, yesterday: number, suffix = ''): { text: strin
 }
 
 export default async function TodayHero() {
+  const TENANT_ID = await getTenantId()
   const supabase = await createClient()
   const startToday = todayStart()
   const startYday = yesterdayStart()

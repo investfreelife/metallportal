@@ -1,13 +1,13 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { requireSession } from '@/lib/apiAuth'
-
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
+import { getTenantIdFromRequest } from '@/lib/session'
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const TENANT_ID = getTenantIdFromRequest(request)
   const auth = requireSession(request)
   if (!auth.ok) return auth.error
 

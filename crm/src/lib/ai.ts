@@ -8,7 +8,8 @@ import { getSetting, setSetting } from './settings'
 import { LLM_MODEL_GENERAL } from './llm-models'
 
 const REFERER = 'https://metallportal-crm2.vercel.app'
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
+// TENANT_ID was unused dead code — removed как часть multitenant refactor 2026-06-03.
+// Tenant context flows через getSetting()/setSetting() калеры с явным `tenantId`.
 
 // ─────────────────────────────────────────────
 // БАЗОВЫЙ СИСТЕМНЫЙ КОНТЕКСТ КОМПАНИИ
@@ -76,8 +77,8 @@ export interface AIAnalysis {
   quote_text?: string
 }
 
-async function getSystemPrompt(): Promise<string> {
-  const adjustments = await getSetting('AI_PROMPT_ADJUSTMENTS')
+async function getSystemPrompt(tenantId?: string): Promise<string> {
+  const adjustments = await getSetting('AI_PROMPT_ADJUSTMENTS', tenantId)
   if (adjustments) {
     return BASE_COMPANY_CONTEXT + '\n\nКОРРЕКТИРОВКИ (обновлено Claude):\n' + adjustments
   }
@@ -106,11 +107,11 @@ async function openrouterChat(key: string, messages: { role: string; content: st
   return data.choices?.[0]?.message?.content ?? null
 }
 
-export async function analyzeNewLead(ctx: LeadContext): Promise<AIAnalysis | null> {
-  const OPENROUTER_KEY = await getSetting('OPENROUTER_API_KEY')
+export async function analyzeNewLead(ctx: LeadContext, tenantId?: string): Promise<AIAnalysis | null> {
+  const OPENROUTER_KEY = await getSetting('OPENROUTER_API_KEY', tenantId)
   if (!OPENROUTER_KEY) return null
 
-  const systemPrompt = await getSystemPrompt()
+  const systemPrompt = await getSystemPrompt(tenantId)
 
   // Format items nicely for AI
   let itemsBlock = ''
@@ -184,11 +185,11 @@ export async function analyzeEmail(ctx: {
   from_name?: string | null
   subject: string
   body_text?: string | null
-}): Promise<EmailAnalysis | null> {
-  const OPENROUTER_KEY = await getSetting('OPENROUTER_API_KEY')
+}, tenantId?: string): Promise<EmailAnalysis | null> {
+  const OPENROUTER_KEY = await getSetting('OPENROUTER_API_KEY', tenantId)
   if (!OPENROUTER_KEY) return null
 
-  const systemPrompt = await getSystemPrompt()
+  const systemPrompt = await getSystemPrompt(tenantId)
 
   const userMsg = `Ты — ИИ-ассистент менеджера B2B-маркетплейса металлопроката МеталлПортал.
 Мы ПОКУПАЕМ металл у поставщиков и ПРОДАЁМ клиентам (стройки, заводы, перекупщики).
@@ -272,8 +273,8 @@ export async function evaluateAndImprove(ctx: {
   manager_decision: 'approved' | 'rejected'
   manager_response_minutes: number
   actual_result?: string | null
-}): Promise<EvalResult | null> {
-  const OPENROUTER_KEY = await getSetting('OPENROUTER_API_KEY')
+}, tenantId?: string): Promise<EvalResult | null> {
+  const OPENROUTER_KEY = await getSetting('OPENROUTER_API_KEY', tenantId)
   if (!OPENROUTER_KEY) return null
 
   const prompt = `Ты — тренер отдела продаж МеталлПортал. Оцени работу ИИ-ассистента и менеджера.
@@ -340,11 +341,11 @@ export async function generateWeeklyInsight(stats: {
   calls_made: number
   conversion_rate: number
   top_sources: string[]
-}): Promise<string> {
-  const OPENROUTER_KEY = await getSetting('OPENROUTER_API_KEY')
+}, tenantId?: string): Promise<string> {
+  const OPENROUTER_KEY = await getSetting('OPENROUTER_API_KEY', tenantId)
   if (!OPENROUTER_KEY) return ''
 
-  const systemPrompt = await getSystemPrompt()
+  const systemPrompt = await getSystemPrompt(tenantId)
 
   const prompt = `Данные за неделю:
 - Новых контактов: ${stats.new_this_week}

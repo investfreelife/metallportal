@@ -1,9 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
+import { getTenantId } from '@/lib/session'
 import { BezosPage } from './BezosPage'
 
-const TENANT_ID = process.env.TENANT_ID || 'a1000000-0000-0000-0000-000000000001'
-
 export default async function Page() {
+  const TENANT_ID = await getTenantId()
   const supabase = await createClient()
 
   const [

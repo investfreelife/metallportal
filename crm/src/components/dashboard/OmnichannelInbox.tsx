@@ -20,8 +20,6 @@ import { createClient } from '@/lib/supabase/client'
  * Phase 3 multi-day: webhooks от Voximplant / Yandex 360 / Telegram bot / VK.
  */
 
-const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
-
 type Channel = 'phone' | 'sms' | 'email' | 'form' | 'telegram' | 'vk' | 'whatsapp' | 'note' | 'ai_chat'
 
 const CHANNEL_META: Record<Channel, { icon: string; label: string; color: string }> = {
@@ -80,8 +78,17 @@ export function OmnichannelInbox() {
   const [error, setError] = useState<string | null>(null)
   const [connected, setConnected] = useState(false)
   const [aiSuggestion, setAiSuggestion] = useState<string | null>(null)
+  // Multitenant 2026-06-03 — берём tenant из /api/me, не хардкодим.
+  // Пока tenant не загружен — loadMessages держит loading=true.
+  const [tenantId, setTenantId] = useState<string>('')
+
+  useEffect(() => {
+    fetch('/api/me').then(r => r.ok ? r.json() : null).then(d => setTenantId(d?.tenant ?? ''))
+  }, [])
 
   async function loadMessages() {
+    if (!tenantId) return
+    const TENANT_ID = tenantId
     const supabase = createClient()
     setError(null)
     try {
@@ -196,6 +203,7 @@ export function OmnichannelInbox() {
   }
 
   useEffect(() => {
+    if (!tenantId) return
     loadMessages()
 
     const supabase = createClient()
@@ -211,7 +219,8 @@ export function OmnichannelInbox() {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tenantId])
 
   const filtered = useMemo(() => {
     return messages.filter((m) => {
