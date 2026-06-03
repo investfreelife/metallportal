@@ -7,19 +7,29 @@ import {
   ChevronLeft,
   ChevronRight,
   Image as ImageIcon,
-  Send,
   CheckCircle2,
-  AlertCircle,
   Clock,
   X,
-  Upload,
-  Edit3,
-  Trash2,
   Plus,
 } from 'lucide-react';
 import type { ContentPost, PostStatus } from '@/lib/content/types';
 import { isPublishable } from '@/lib/content/types';
 import PostEditor from './PostEditor';
+import CreatePostModal from './CreatePostModal';
+import {
+  fmtMsk,
+  mskAddDays,
+  mskAddMonths,
+  mskDayKey,
+  mskMonthYear,
+  mskParts,
+  mskShortDay,
+  mskStartOfDay,
+  mskStartOfMonth,
+  mskStartOfWeek,
+  mskWeekdayLongDate,
+  isSameMskDay,
+} from '@/lib/tz';
 
 type ViewMode = 'calendar' | 'list';
 type CalendarRange = 'month' | 'week' | 'day';
@@ -54,41 +64,30 @@ const STATUS_COLORS: Record<PostStatus, string> = {
   error: 'bg-red-100 text-red-700 border-red-200',
 };
 
+/**
+ * ВСЕ даты в UI показываем в МСК через crm/src/lib/tz.ts, независимо от
+ * таймзоны браузера. Хранение в БД — UTC; ввод datetime-local — МСК;
+ * показ — МСК. Никаких `new Date().toLocale*` напрямую — иначе уедет
+ * на TZ компа.
+ */
 function fmtDate(iso: string | null): string {
   if (!iso) return '';
-  return new Date(iso).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-}
-
-function startOfWeek(d: Date): Date {
-  const day = d.getDay();
-  const diff = day === 0 ? -6 : 1 - day; // ISO неделя пн-вс
-  const out = new Date(d);
-  out.setDate(d.getDate() + diff);
-  out.setHours(0, 0, 0, 0);
-  return out;
-}
-
-function addDays(d: Date, n: number): Date {
-  const out = new Date(d);
-  out.setDate(d.getDate() + n);
-  return out;
-}
-
-function sameDay(a: Date, b: Date): boolean {
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  return fmtMsk(iso, true);
 }
 
 export default function ContentClient({ initialPosts, activeConnections, tenantName }: Props) {
   const [posts, setPosts] = useState<ContentPost[]>(initialPosts);
   const [viewMode, setViewMode] = useState<ViewMode>('calendar');
   const [calendarRange, setCalendarRange] = useState<CalendarRange>('week');
-  const [cursor, setCursor] = useState<Date>(() => {
-    const d = new Date();
-    d.setHours(0, 0, 0, 0);
-    return d;
-  });
+  // cursor — Date, указывающий на 00:00 МСК «выбранного» дня. Все сдвиги
+  // и группировки идут от него в МСК-зоне через helper'ы lib/tz.
+  const [cursor, setCursor] = useState<Date>(() => mskStartOfDay(new Date()));
   const [selectedPost, setSelectedPost] = useState<ContentPost | null>(null);
-  const [isCreating, setIsCreating] = useState(false);
+  /**
+   * Дата клика по ячейке — открывает CreatePostModal с подставленным scheduled_at.
+   * Postiz-pattern: «click on a day → form opens with that date».
+   */
+  const [createOnDate, setCreateOnDate] = useState<Date | null>(null);
 
   const refresh = useCallback(async () => {
     const r = await fetch('/api/content/posts');
@@ -96,25 +95,25 @@ export default function ContentClient({ initialPosts, activeConnections, tenantN
     if (j.posts) setPosts(j.posts);
   }, []);
 
-  // ─── календарные ячейки для текущего range ──────────────────────────
+  // ─── календарные ячейки для текущего range (всё в МСК) ──────────────
   const cells = useMemo(() => {
     if (calendarRange === 'day') return [cursor];
     if (calendarRange === 'week') {
-      const start = startOfWeek(cursor);
-      return Array.from({ length: 7 }, (_, i) => addDays(start, i));
+      const start = mskStartOfWeek(cursor);
+      return Array.from({ length: 7 }, (_, i) => mskAddDays(start, i));
     }
-    // month
-    const first = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
-    const start = startOfWeek(first);
-    return Array.from({ length: 42 }, (_, i) => addDays(start, i)); // 6 недель
+    // month: сетка 6×7 от понедельника недели, в которой находится 1-е МСК.
+    const first = mskStartOfMonth(cursor);
+    const start = mskStartOfWeek(first);
+    return Array.from({ length: 42 }, (_, i) => mskAddDays(start, i));
   }, [cursor, calendarRange]);
 
+  // Группировка постов по дню МСК — ключ «YYYY-MM-DD» в МСК.
   const postsByDay = useMemo(() => {
     const map = new Map<string, ContentPost[]>();
     for (const p of posts) {
       if (!p.scheduled_at) continue;
-      const d = new Date(p.scheduled_at);
-      const k = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+      const k = mskDayKey(p.scheduled_at);
       const arr = map.get(k) ?? [];
       arr.push(p);
       map.set(k, arr);
@@ -125,32 +124,26 @@ export default function ContentClient({ initialPosts, activeConnections, tenantN
   const unscheduled = useMemo(() => posts.filter((p) => !p.scheduled_at), [posts]);
 
   function shift(delta: number) {
-    const d = new Date(cursor);
-    if (calendarRange === 'day') d.setDate(d.getDate() + delta);
-    else if (calendarRange === 'week') d.setDate(d.getDate() + 7 * delta);
-    else d.setMonth(d.getMonth() + delta);
-    setCursor(d);
+    if (calendarRange === 'day') setCursor(mskAddDays(cursor, delta));
+    else if (calendarRange === 'week') setCursor(mskAddDays(cursor, 7 * delta));
+    else setCursor(mskAddMonths(cursor, delta));
   }
 
-  async function handleCreate() {
-    setIsCreating(true);
-    const r = await fetch('/api/content/posts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: 'Новый пост', status: 'draft' }) });
-    const j = await r.json();
-    setIsCreating(false);
-    if (j.post) {
-      await refresh();
-      setSelectedPost(j.post);
-    }
+  /**
+   * Кнопка «Создать пост» в header — открывает форму с текущей датой (МСК).
+   */
+  function handleCreate() {
+    setCreateOnDate(mskStartOfDay(new Date()));
   }
 
   const cursorLabel = useMemo(() => {
-    if (calendarRange === 'day') return cursor.toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' });
+    if (calendarRange === 'day') return mskWeekdayLongDate(cursor);
     if (calendarRange === 'week') {
-      const s = startOfWeek(cursor);
-      const e = addDays(s, 6);
-      return `${s.toLocaleDateString('ru-RU', { day: '2-digit', month: 'short' })} — ${e.toLocaleDateString('ru-RU', { day: '2-digit', month: 'short', year: 'numeric' })}`;
+      const s = mskStartOfWeek(cursor);
+      const e = mskAddDays(s, 6);
+      return `${mskShortDay(s)} — ${mskShortDay(e)} ${mskParts(e).year}`;
     }
-    return cursor.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' });
+    return mskMonthYear(cursor);
   }, [cursor, calendarRange]);
 
   return (
@@ -164,6 +157,13 @@ export default function ContentClient({ initialPosts, activeConnections, tenantN
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {/* Видимая для пользователя метка зоны времени — ВСЕ даты показываются и вводятся в Москве. */}
+          <span
+            title="Все даты и время — в часовом поясе Москва (UTC+3). Не зависит от TZ браузера."
+            className="flex items-center gap-1 text-[11px] text-blue-700 bg-blue-50 border border-blue-200 px-2 py-1 rounded-md font-medium"
+          >
+            <Clock size={11} /> Время: Москва (МСК)
+          </span>
           {activeConnections.length === 0 && (
             <span className="text-xs text-amber-700 bg-amber-50 border border-amber-200 px-2 py-1 rounded-md">
               ⚠️ Нет активных связей — добавь в /connections
@@ -171,8 +171,7 @@ export default function ContentClient({ initialPosts, activeConnections, tenantN
           )}
           <button
             onClick={handleCreate}
-            disabled={isCreating}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
           >
             <Plus size={14} />
             Создать пост
@@ -184,7 +183,7 @@ export default function ContentClient({ initialPosts, activeConnections, tenantN
       <div className="flex items-center justify-between px-6 py-3 bg-white border-b border-gray-100">
         <div className="flex items-center gap-2">
           <button onClick={() => shift(-1)} className="p-1.5 hover:bg-gray-100 rounded-md text-gray-600"><ChevronLeft size={16} /></button>
-          <button onClick={() => setCursor(new Date())} className="px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100 rounded-md">Сегодня</button>
+          <button onClick={() => setCursor(mskStartOfDay(new Date()))} className="px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100 rounded-md">Сегодня</button>
           <button onClick={() => shift(1)} className="p-1.5 hover:bg-gray-100 rounded-md text-gray-600"><ChevronRight size={16} /></button>
           <span className="ml-2 text-sm font-medium text-gray-900 capitalize">{cursorLabel}</span>
         </div>
@@ -230,6 +229,7 @@ export default function ContentClient({ initialPosts, activeConnections, tenantN
             postsByDay={postsByDay}
             unscheduled={unscheduled}
             onSelect={setSelectedPost}
+            onAddOnDate={setCreateOnDate}
           />
         ) : (
           <ListView posts={posts} onSelect={setSelectedPost} />
@@ -252,6 +252,15 @@ export default function ContentClient({ initialPosts, activeConnections, tenantN
           }}
         />
       )}
+
+      {createOnDate && (
+        <CreatePostModal
+          initialDate={createOnDate}
+          activeConnections={activeConnections}
+          onClose={() => setCreateOnDate(null)}
+          onCreated={refresh}
+        />
+      )}
     </div>
   );
 }
@@ -263,28 +272,39 @@ function CalendarView({
   postsByDay,
   unscheduled,
   onSelect,
+  onAddOnDate,
 }: {
   cells: Date[];
   range: CalendarRange;
   postsByDay: Map<string, ContentPost[]>;
   unscheduled: ContentPost[];
   onSelect: (p: ContentPost) => void;
+  /** Клик по ячейке дня → открыть форму с подставленной датой (Postiz-pattern). */
+  onAddOnDate: (d: Date) => void;
 }) {
   const today = new Date();
   const dayLabels = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
   if (range === 'day') {
-    const k = `${cells[0].getFullYear()}-${cells[0].getMonth()}-${cells[0].getDate()}`;
+    const k = mskDayKey(cells[0]);
     const dayPosts = postsByDay.get(k) ?? [];
     return (
       <div className="grid grid-cols-[280px_1fr] gap-4">
         <UnscheduledColumn posts={unscheduled} onSelect={onSelect} />
-        <div className="bg-white border border-gray-200 rounded-lg p-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">
-            {cells[0].toLocaleDateString('ru-RU', { weekday: 'long', day: '2-digit', month: 'long' })}
-          </h3>
-          <div className="space-y-2">
-            {dayPosts.length === 0 && <p className="text-xs text-gray-400">Постов на этот день нет.</p>}
+        <div
+          onClick={() => onAddOnDate(cells[0])}
+          className="bg-white border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-blue-300 hover:shadow-sm transition-all group"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-gray-700 capitalize">
+              {mskWeekdayLongDate(cells[0])}
+            </h3>
+            <span className="opacity-0 group-hover:opacity-100 text-[10px] text-blue-600 font-medium">
+              + добавить пост
+            </span>
+          </div>
+          <div className="space-y-2" onClick={(e) => e.stopPropagation()}>
+            {dayPosts.length === 0 && <p className="text-xs text-gray-400">Постов на этот день нет — кликни в любое место, чтобы добавить.</p>}
             {dayPosts.map((p) => <PostPill key={p.id} post={p} onClick={() => onSelect(p)} />)}
           </div>
         </div>
@@ -293,42 +313,58 @@ function CalendarView({
   }
 
   const isMonth = range === 'month';
-  const gridCols = 7;
+  // для month-view определяем "текущий месяц" по середине сетки (это всегда
+  // принадлежит запрошенному месяцу — даже если 1-е попало на чт).
+  const monthAnchorMonth = isMonth ? mskParts(cells[Math.floor(cells.length / 2)]).month : null;
 
   return (
     <div className="grid grid-cols-[280px_1fr] gap-4">
       <UnscheduledColumn posts={unscheduled} onSelect={onSelect} />
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-        <div className={`grid grid-cols-7 bg-gray-50 border-b border-gray-200`}>
-          {dayLabels.map((d) => (
-            <div key={d} className="px-2 py-2 text-[11px] font-medium text-gray-600 text-center uppercase tracking-wide">
-              {d}
+        {/* Заголовок дней недели — для week-view показываем числа дат (МСК). */}
+        <div className="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
+          {(range === 'week' ? cells : Array.from({ length: 7 }, () => null)).map((c, i) => (
+            <div key={i} className="px-2 py-2 text-center">
+              <div className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">
+                {dayLabels[i]}
+              </div>
+              {range === 'week' && c && (
+                <div className={`text-xs font-semibold mt-0.5 ${isSameMskDay(c, today) ? 'text-blue-600' : 'text-gray-700'}`}>
+                  {mskShortDay(c)}
+                </div>
+              )}
             </div>
           ))}
         </div>
-        <div className={`grid grid-cols-${gridCols}`}>
+        <div className="grid grid-cols-7">
           {cells.map((c, i) => {
-            const k = `${c.getFullYear()}-${c.getMonth()}-${c.getDate()}`;
+            const k = mskDayKey(c);
             const dayPosts = postsByDay.get(k) ?? [];
-            const isToday = sameDay(c, today);
-            const isCurrentMonth = !isMonth || c.getMonth() === cells[Math.floor(cells.length / 2)].getMonth();
+            const isToday = isSameMskDay(c, today);
+            const isCurrentMonth = !isMonth || mskParts(c).month === monthAnchorMonth;
+            const dayNumber = mskParts(c).day;
             return (
               <div
                 key={i}
-                className={`min-h-[100px] border-r border-b border-gray-100 p-1.5 ${
+                onClick={() => onAddOnDate(c)}
+                className={`min-h-[100px] border-r border-b border-gray-100 p-1.5 cursor-pointer hover:bg-blue-50/30 hover:border-blue-200 transition-colors group ${
                   isCurrentMonth ? 'bg-white' : 'bg-gray-50/50'
                 }`}
+                title="Кликнуть — добавить пост на этот день"
               >
-                <div className={`text-[11px] mb-1 ${isToday ? 'font-bold text-blue-600' : 'text-gray-500'}`}>
-                  {c.getDate()}
+                <div className="flex items-center justify-between mb-1">
+                  <div className={`text-[11px] ${isToday ? 'font-bold text-blue-600' : 'text-gray-500'}`}>
+                    {dayNumber}
+                  </div>
+                  <span className="opacity-0 group-hover:opacity-100 text-[10px] text-blue-600 font-bold leading-none">+</span>
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1" onClick={(e) => e.stopPropagation()}>
                   {dayPosts.slice(0, 3).map((p) => (
                     <PostPill key={p.id} post={p} onClick={() => onSelect(p)} compact />
                   ))}
                   {dayPosts.length > 3 && (
                     <button
-                      onClick={() => onSelect(dayPosts[3])}
+                      onClick={(e) => { e.stopPropagation(); onSelect(dayPosts[3]); }}
                       className="text-[10px] text-gray-500 hover:text-blue-600"
                     >
                       +{dayPosts.length - 3} ещё

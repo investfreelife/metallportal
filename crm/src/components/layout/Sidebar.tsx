@@ -23,6 +23,9 @@ import {
   Wallet,
   Wrench,
   CalendarDays,
+  ListChecks,
+  MessageSquare,
+  KanbanSquare,
 } from 'lucide-react'
 
 type NavItem = {
@@ -57,6 +60,8 @@ const NAV_METAL: NavSection[] = [
       { href: '/contacts', label: 'Контакты', icon: Users },
       { href: '/deals', label: 'Сделки', icon: Briefcase },
       { href: '/calls', label: 'Звонки', icon: Phone, badgeKey: 'calls' },
+      { href: '/dialogs', label: 'Диалоги', icon: MessageSquare },
+      { href: '/funnel', label: 'Воронка', icon: KanbanSquare },
     ],
   },
   {
@@ -71,6 +76,7 @@ const NAV_METAL: NavSection[] = [
   {
     section: 'Контент',
     items: [
+      { href: '/content-plan', label: 'Контент-план', icon: ListChecks },
       { href: '/content', label: 'Планировщик', icon: CalendarDays },
       { href: '/connections', label: 'Связи', icon: Network },
     ],
@@ -95,6 +101,13 @@ const NAV_TAXI: NavSection[] = [
     ],
   },
   {
+    section: 'Рекрутинг',
+    items: [
+      { href: '/dialogs', label: 'Диалоги', icon: MessageSquare },
+      { href: '/funnel', label: 'Воронка', icon: KanbanSquare },
+    ],
+  },
+  {
     section: 'Парк',
     items: [
       { href: '/drivers', label: 'Водители', icon: Users },
@@ -113,6 +126,7 @@ const NAV_TAXI: NavSection[] = [
   {
     section: 'Контент',
     items: [
+      { href: '/content-plan', label: 'Контент-план', icon: ListChecks },
       { href: '/content', label: 'Планировщик', icon: CalendarDays },
       { href: '/connections', label: 'Связи', icon: Network },
     ],
