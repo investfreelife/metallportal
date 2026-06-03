@@ -26,13 +26,15 @@ import {
   ListChecks,
   MessageSquare,
   KanbanSquare,
+  HelpCircle,
+  BookOpen,
 } from 'lucide-react'
 
 type NavItem = {
   href: string
   label: string
   icon: React.ElementType
-  badgeKey?: 'pending' | 'emails' | 'calls' | 'inbox_unread'
+  badgeKey?: 'pending' | 'emails' | 'calls' | 'inbox_unread' | 'open_questions'
 }
 
 type NavSection = {
@@ -62,6 +64,8 @@ const NAV_METAL: NavSection[] = [
       { href: '/calls', label: 'Звонки', icon: Phone, badgeKey: 'calls' },
       { href: '/dialogs', label: 'Диалоги', icon: MessageSquare },
       { href: '/funnel', label: 'Воронка', icon: KanbanSquare },
+      { href: '/questions', label: 'Вопросы', icon: HelpCircle, badgeKey: 'open_questions' },
+      { href: '/kb', label: 'База знаний', icon: BookOpen },
     ],
   },
   {
@@ -105,6 +109,8 @@ const NAV_TAXI: NavSection[] = [
     items: [
       { href: '/dialogs', label: 'Диалоги', icon: MessageSquare },
       { href: '/funnel', label: 'Воронка', icon: KanbanSquare },
+      { href: '/questions', label: 'Вопросы', icon: HelpCircle, badgeKey: 'open_questions' },
+      { href: '/kb', label: 'База знаний', icon: BookOpen },
     ],
   },
   {
@@ -151,6 +157,7 @@ interface SidebarProps {
   unreadEmails?: number
   missedCalls?: number
   inboxUnread?: number
+  openQuestions?: number
   industry?: string
   tenantName?: string
 }
@@ -162,6 +169,7 @@ export default function Sidebar({
   unreadEmails = 0,
   missedCalls = 0,
   inboxUnread = 0,
+  openQuestions = 0,
   industry = 'metal',
   tenantName,
 }: SidebarProps) {
@@ -175,6 +183,7 @@ export default function Sidebar({
     emails: unreadEmails,
     calls: missedCalls,
     inbox_unread: inboxUnread,
+    open_questions: openQuestions,
   }
 
   async function handleLogout() {

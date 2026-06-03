@@ -13,6 +13,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     { count: pendingCount },
     { count: unreadEmails },
     { count: inboxUnread },
+    { count: openQuestions },
   ] = await Promise.all([
     supabase.from('ai_queue').select('id', { count: 'exact', head: true })
       .eq('tenant_id', TENANT_ID).eq('status', 'pending'),
@@ -22,6 +23,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
     // Phase 2 — read from conversations.unread_count после backfill.
     supabase.from('messages').select('id', { count: 'exact', head: true })
       .eq('is_read', false),
+    // Sergey directive 2026-06-03: badge на «Вопросы» = открытые pending_questions.
+    supabase.from('pending_questions').select('id', { count: 'exact', head: true })
+      .eq('tenant_id', TENANT_ID).eq('status', 'open'),
   ])
 
   return (
@@ -32,6 +36,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         pendingCount={pendingCount ?? 0}
         unreadEmails={unreadEmails ?? 0}
         inboxUnread={(unreadEmails ?? 0) + (inboxUnread ?? 0)}
+        openQuestions={openQuestions ?? 0}
         industry={session.industry}
         tenantName={session.tenant_name}
       />
