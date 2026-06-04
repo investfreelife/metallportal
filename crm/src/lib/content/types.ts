@@ -68,6 +68,14 @@ export interface ContentPost {
    * = photos[0] (если photos непустой).
    */
   photos: string[] | null;
+  /**
+   * Sergey directive 2026-06-04: выбор каналов галочками.
+   * Массив платформ для публикации, напр. ['telegram','vk'].
+   * Демон публикует пост в каждую (через соответствующую active
+   * connection того же platform). Если массив пуст — публикации нет.
+   * Заменяет старый scalar `channel` (он остался для backward-compat).
+   */
+  channels_sel: string[] | null;
   created_at: string;
   updated_at: string;
 }

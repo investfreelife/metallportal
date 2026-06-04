@@ -20,7 +20,7 @@ const ALLOWED = new Set([
   'title', 'body', 'photo_url', 'photo_tz', 'channel',
   'status', 'scheduled_at', 'approved_text', 'approved_final', 'note',
   'comment_text', 'comment_photo', 'redo', 'feedback',
-  'photo_options', 'photos',
+  'photo_options', 'photos', 'channels_sel',
 ]);
 
 export async function PATCH(
