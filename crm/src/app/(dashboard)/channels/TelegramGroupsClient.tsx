@@ -35,6 +35,10 @@ interface ChannelItem {
   is_group: boolean;
   can_post: boolean | null;
   post_via: string | null;
+  ad_contact: string | null;
+  ad_link: string | null;
+  post_mode: string | null;
+  about: string | null;
   joined: boolean | null;
   source: string | null;
   last_sync_at: string | null;
@@ -42,7 +46,7 @@ interface ChannelItem {
 
 interface ListResponse {
   items: ChannelItem[];
-  summary: { total: number; small: number; mid: number; large: number; no_members: number; joined: number; postable: number; readonly: number };
+  summary: { total: number; small: number; mid: number; large: number; no_members: number; joined: number; postable: number; readonly: number; bot_paid: number };
   page: { page: number; per: number; total: number; pages: number };
 }
 
@@ -86,7 +90,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
   const [size, setSize] = useState<'' | 'small' | 'mid' | 'large'>('');
   const [joinedF, setJoinedF] = useState<'' | 'yes' | 'no'>('');
   const [hasMembers, setHasMembers] = useState<'' | 'yes' | 'no'>('');
-  const [postF, setPostF] = useState<'' | 'yes' | 'no'>('');
+  const [postF, setPostF] = useState<'' | 'yes' | 'no' | 'paid'>('');
   const [sort, setSort] = useState<'members' | 'name'>('members');
   const [dir, setDir] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
@@ -176,7 +180,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
   }
 
   const items = resp?.items ?? [];
-  const summary = resp?.summary ?? { total: 0, small: 0, mid: 0, large: 0, no_members: 0, joined: 0, postable: 0, readonly: 0 };
+  const summary = resp?.summary ?? { total: 0, small: 0, mid: 0, large: 0, no_members: 0, joined: 0, postable: 0, readonly: 0, bot_paid: 0 };
   const pageInfo = resp?.page ?? { page: 1, per, total: 0, pages: 1 };
 
   // Эффективное состояние паузы: control.paused приоритетнее, иначе status.paused.
@@ -229,7 +233,13 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
           active={postF === 'yes'}
           onClick={() => setPostF(postF === 'yes' ? '' : 'yes')}
           color="emerald"
-          label={`🟢 Можно постить · ${fmtNum(summary.postable)}`}
+          label={`🟢 Вступи и пиши · ${fmtNum(summary.postable)}`}
+        />
+        <SectionTab
+          active={postF === 'paid'}
+          onClick={() => setPostF(postF === 'paid' ? '' : 'paid')}
+          color="amber"
+          label={`🤖 Платно (бот/админ) · ${fmtNum(summary.bot_paid)}`}
         />
         <SectionTab
           active={postF === 'no'}
@@ -243,8 +253,8 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
           color="gray"
           label="Все"
         />
-        <span className="text-[11px] text-gray-400 ml-2">
-          🟢 — свободный постинг (осторожно, анти-спам) · 🔴 — постинг запрещён участникам / только через бота
+        <span className="text-[11px] text-gray-400 ml-2 w-full">
+          🟢 — вступаешь в группу и пишешь бесплатно (осторожно, анти-спам) · 🤖 — размещение через бота/админа (платно), контакт в колонке «Платно через» · 🔴 — постинг запрещён, контакт не найден
         </span>
       </div>
 
@@ -325,6 +335,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
                 />
                 <th className="px-3 py-2 w-20">Тип</th>
                 <th className="px-3 py-2 w-24 text-center">Можно постить</th>
+                <th className="px-3 py-2 w-36">Платно через</th>
                 <th className="px-3 py-2 w-20 text-center">Подписан</th>
                 <th className="px-3 py-2 w-24">Источник</th>
                 <th className="px-3 py-2 w-8" />
@@ -364,6 +375,22 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
                       <span className="text-rose-500" title={it.post_via ?? 'постинг запрещён участникам'}>🔴 нельзя</span>
                     ) : (
                       <span className="text-gray-400" title="не размечено парсером">—</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-2 text-xs">
+                    {it.ad_contact && it.ad_link ? (
+                      <a
+                        href={it.ad_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-amber-700 hover:underline inline-flex items-center gap-1 font-medium"
+                        title={it.about ?? 'контакт для платного размещения'}
+                      >
+                        🤖 {it.ad_contact}
+                        <ExternalLink size={10} className="opacity-50" />
+                      </a>
+                    ) : (
+                      <span className="text-gray-300">—</span>
                     )}
                   </td>
                   <td className="px-3 py-2 text-xs text-center">
@@ -585,11 +612,12 @@ function SectionTab({
   active: boolean;
   onClick: () => void;
   label: string;
-  color: 'emerald' | 'rose' | 'gray';
+  color: 'emerald' | 'rose' | 'gray' | 'amber';
 }) {
   const palette = {
     emerald: active ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100',
     rose: active ? 'bg-rose-600 text-white border-rose-600' : 'bg-rose-50 text-rose-600 border-rose-200 hover:bg-rose-100',
+    amber: active ? 'bg-amber-500 text-white border-amber-500' : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100',
     gray: active ? 'bg-gray-800 text-white border-gray-800' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50',
   }[color];
   return (

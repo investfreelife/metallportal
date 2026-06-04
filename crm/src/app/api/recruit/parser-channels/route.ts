@@ -110,6 +110,10 @@ export async function GET(req: NextRequest) {
         // can_post=true → свободно; false → read-only (через бота/админа); null → не размечено.
         const canPostRaw = bool(cfg.can_post);
         const postVia = str(cfg.post_via);
+        // Обогащение со страницы t.me: контакт для ПЛАТНОГО размещения + режим постинга.
+        const adContact = str(cfg.ad_contact);   // @бот/@админ для платного поста
+        const postMode = str(cfg.post_mode);      // free | bot_paid | readonly
+        const about = str(cfg.about);
         const joined = bool(cfg.joined);
         const country = str(cfg.country) ?? null;
         const foundQuery = str(cfg.found_query) ?? null;
@@ -129,6 +133,10 @@ export async function GET(req: NextRequest) {
           is_group: isGroup,
           can_post: canPostRaw,
           post_via: postVia,
+          ad_contact: adContact,
+          ad_link: adContact ? `https://t.me/${adContact.replace(/^@/, '')}` : null,
+          post_mode: postMode,
+          about,
           joined,
           source: str(cfg.source) ?? null,
           last_sync_at: r.last_sync_at,
@@ -145,6 +153,7 @@ export async function GET(req: NextRequest) {
       joined: normalized.filter((r) => r.joined === true).length,
       postable: normalized.filter((r) => r.can_post === true).length,
       readonly: normalized.filter((r) => r.can_post === false).length,
+      bot_paid: normalized.filter((r) => !!r.ad_contact).length,
     };
 
     // Фильтры
@@ -166,6 +175,7 @@ export async function GET(req: NextRequest) {
     else if (hasMembers === 'no') filtered = filtered.filter((r) => r.members == null);
     if (postFilter === 'yes') filtered = filtered.filter((r) => r.can_post === true);
     else if (postFilter === 'no') filtered = filtered.filter((r) => r.can_post === false);
+    else if (postFilter === 'paid') filtered = filtered.filter((r) => !!r.ad_contact);
 
     // Сортировка
     const sign = dir === 'asc' ? 1 : -1;
