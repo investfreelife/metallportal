@@ -20,10 +20,21 @@ export interface FeedbackEntry {
 }
 
 /** Флаг «переделать» — кладёт фронт, читает воркер. После переделки воркер
- *  сбрасывает соответствующий ключ. */
+ *  сбрасывает соответствующий ключ.
+ *  - text/photo  → переделать существующий по комменту
+ *  - variants    → сгенерить набор кандидатов в photo_options (дешёвый Flux) */
 export interface RedoFlag {
   text?: boolean;
   photo?: boolean;
+  variants?: boolean;
+}
+
+/** Вариант фото-кандидата — воркер кладёт в photo_options[]. */
+export interface PhotoOption {
+  url: string;
+  model?: string | null;
+  cost?: number | string | null;
+  seed?: number | string | null;
 }
 
 export interface ContentPost {
@@ -45,6 +56,7 @@ export interface ContentPost {
   comment_photo: string | null;
   redo: RedoFlag | null;
   feedback: FeedbackEntry[] | null;
+  photo_options: PhotoOption[] | null;
   created_at: string;
   updated_at: string;
 }

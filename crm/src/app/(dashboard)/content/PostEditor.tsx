@@ -15,8 +15,10 @@ import {
   History,
   Pencil,
   Camera,
+  Dice5,
+  Check,
 } from 'lucide-react';
-import type { ContentPost, PostStatus, FeedbackEntry, RedoFlag } from '@/lib/content/types';
+import type { ContentPost, PostStatus, FeedbackEntry, RedoFlag, PhotoOption } from '@/lib/content/types';
 import { isPublishable } from '@/lib/content/types';
 import { STATUS_LABELS, STATUS_COLORS } from './ContentClient';
 import { toMskInputValue, mskInputToUTC, fmtMsk } from '@/lib/tz';
@@ -52,11 +54,14 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
   const redo: RedoFlag = (draft.redo ?? {}) as RedoFlag;
   const redoingText = !!redo.text;
   const redoingPhoto = !!redo.photo;
+  const generatingVariants = !!redo.variants;
+  const photoOptions: PhotoOption[] = Array.isArray(draft.photo_options) ? draft.photo_options : [];
 
   // ── Поллинг пока хотя бы один redo-флаг активен ────────────────────
-  // Воркер сам переделает body / photo_url и сбросит redo. Фронт ждёт.
+  // Воркер сам переделает body / photo_url / сгенерит photo_options
+  // и сбросит соответствующий флаг. Фронт ждёт.
   useEffect(() => {
-    if (!redoingText && !redoingPhoto) return;
+    if (!redoingText && !redoingPhoto && !generatingVariants) return;
     const id = setInterval(async () => {
       try {
         const r = await fetch(`/api/content/posts?id=${post.id}`, { cache: 'no-store' });
@@ -73,7 +78,7 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
       }
     }, POLL_MS);
     return () => clearInterval(id);
-  }, [redoingText, redoingPhoto, post.id]);
+  }, [redoingText, redoingPhoto, generatingVariants, post.id]);
 
   async function patch(body: Partial<ContentPost>) {
     setSaving(true);
@@ -138,6 +143,57 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
 
   async function reject() {
     await patch({ status: 'rejected' as PostStatus });
+  }
+
+  /**
+   * Запросить у воркера сгенерить набор вариантов фото (бесплатный Flux на
+   * Cloudflare и т.п.). Воркер положит результат в photo_options[] и
+   * сбросит redo.variants=false. Фронт уже поллит и подхватит галерею.
+   */
+  async function requestVariants() {
+    setBusy('variants');
+    setError(null);
+    const newRedo: RedoFlag = { ...(draft.redo as RedoFlag | null ?? {}), variants: true };
+    try {
+      const r = await fetch(`/api/content/posts/${post.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ redo: newRedo }),
+      });
+      const j = await r.json();
+      if (!r.ok || j.error) throw new Error(j.error || 'variants failed');
+      setDraft(j.post);
+      await onChanged(j.post);
+    } catch (e: any) {
+      setError(String(e.message || e));
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  /**
+   * Выбрать вариант из photo_options — переставить photo_url, статус
+   * вернуть в photo_review (ожидает финального согласования).
+   */
+  async function pickVariant(opt: PhotoOption) {
+    if (!opt?.url) return;
+    setBusy(`pick:${opt.url}`);
+    setError(null);
+    try {
+      const r = await fetch(`/api/content/posts/${post.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ photo_url: opt.url, status: 'photo_review' as PostStatus }),
+      });
+      const j = await r.json();
+      if (!r.ok || j.error) throw new Error(j.error || 'pick failed');
+      setDraft(j.post);
+      await onChanged(j.post);
+    } catch (e: any) {
+      setError(String(e.message || e));
+    } finally {
+      setBusy(null);
+    }
   }
 
   /**
@@ -298,8 +354,11 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
                 </span>
               </div>
             ) : draft.photo_url ? (
-              <div className="rounded-md overflow-hidden border border-gray-200 bg-gray-50">
+              <div className="rounded-md overflow-hidden border border-gray-200 bg-gray-50 relative">
                 <img src={draft.photo_url} alt="" className="w-full max-h-72 object-contain" />
+                <span className="absolute top-1.5 left-1.5 inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-white/90 text-gray-700 border border-gray-200 backdrop-blur-sm">
+                  <ImageIcon size={10} /> текущее
+                </span>
               </div>
             ) : (
               <div className="rounded-md border border-dashed border-amber-300 bg-amber-50/40 p-3">
@@ -328,14 +387,102 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
                 if (f) uploadPhoto(f);
               }}
             />
-            <button
-              onClick={() => fileRef.current?.click()}
-              disabled={busy === 'upload' || redoingPhoto}
-              className="mt-2 flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 disabled:opacity-50"
-            >
-              <Upload size={12} />
-              {draft.photo_url ? 'Заменить фото' : 'Загрузить фото'}
-            </button>
+            <div className="mt-2 flex items-center gap-3 flex-wrap">
+              <button
+                onClick={() => fileRef.current?.click()}
+                disabled={busy === 'upload' || redoingPhoto}
+                className="flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 disabled:opacity-50"
+              >
+                <Upload size={12} />
+                {draft.photo_url ? 'Заменить фото' : 'Загрузить фото'}
+              </button>
+
+              {/* «Дать варианты» — воркер сгенерит 3 бесплатных Flux. */}
+              <button
+                onClick={requestVariants}
+                disabled={generatingVariants || busy === 'variants'}
+                className="flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium bg-amber-500 text-white rounded-md hover:bg-amber-600 disabled:opacity-40"
+                title="Воркер сгенерит 3 бесплатных варианта (Flux) и положит в галерею"
+              >
+                {generatingVariants ? <RefreshCw size={11} className="animate-spin" /> : <Dice5 size={11} />}
+                {generatingVariants ? 'Воркер генерит…' : '🎲 Дать варианты'}
+              </button>
+            </div>
+
+            {/* ── Галерея вариантов ─────────────────────────────── */}
+            {(photoOptions.length > 0 || generatingVariants) && (
+              <div className="mt-3 border-t border-gray-100 pt-3">
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide flex items-center gap-1.5">
+                    <ImageIcon size={11} />
+                    Варианты ({photoOptions.length})
+                  </label>
+                  {photoOptions.length > 0 && !generatingVariants && (
+                    <button
+                      onClick={() => patch({ photo_options: [] })}
+                      className="text-[10px] text-gray-500 hover:text-red-600"
+                      disabled={saving}
+                    >
+                      Очистить
+                    </button>
+                  )}
+                </div>
+                {generatingVariants && photoOptions.length === 0 && (
+                  <div className="rounded-md border border-amber-200 bg-amber-50/40 p-3 text-xs text-amber-800 flex items-center gap-2">
+                    <RefreshCw size={12} className="animate-spin" />
+                    Воркер генерит набор кандидатов…
+                  </div>
+                )}
+                {photoOptions.length > 0 && (
+                  <div className="grid grid-cols-3 gap-2">
+                    {photoOptions.map((opt, i) => {
+                      const isCurrent = !!opt?.url && opt.url === draft.photo_url;
+                      const picking = busy === `pick:${opt.url}`;
+                      const cost = opt?.cost == null ? null
+                        : typeof opt.cost === 'number'
+                          ? `$${opt.cost.toFixed(opt.cost < 0.01 ? 4 : 2)}`
+                          : String(opt.cost);
+                      return (
+                        <div
+                          key={i}
+                          className={`relative rounded-md overflow-hidden border bg-gray-50 ${
+                            isCurrent ? 'border-emerald-500 ring-2 ring-emerald-200' : 'border-gray-200'
+                          }`}
+                        >
+                          {opt?.url ? (
+                            <img src={opt.url} alt="" className="w-full aspect-square object-cover" />
+                          ) : (
+                            <div className="w-full aspect-square flex items-center justify-center text-gray-300">
+                              <ImageIcon size={20} />
+                            </div>
+                          )}
+                          {isCurrent && (
+                            <span className="absolute top-1 left-1 inline-flex items-center gap-0.5 text-[9px] px-1 py-0.5 rounded bg-emerald-600 text-white">
+                              <Check size={8} /> выбрано
+                            </span>
+                          )}
+                          <div className="px-1.5 py-1 text-[10px] text-gray-700 border-t border-gray-200 bg-white">
+                            <div className="truncate">{opt?.model ?? 'модель'}</div>
+                            <div className="flex items-center justify-between gap-1">
+                              <span className="text-gray-500">{cost ?? '—'}</span>
+                              {!isCurrent && opt?.url && (
+                                <button
+                                  onClick={() => pickVariant(opt)}
+                                  disabled={picking || saving}
+                                  className="text-[10px] text-blue-600 hover:text-blue-800 font-medium disabled:opacity-40"
+                                >
+                                  {picking ? '…' : '✅ Выбрать'}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
 
             {!redoingPhoto && (
               <RedoBlock

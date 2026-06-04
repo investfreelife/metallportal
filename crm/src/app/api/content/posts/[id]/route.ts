@@ -19,7 +19,7 @@ import { getSession, getTenantId } from '@/lib/session';
 const ALLOWED = new Set([
   'title', 'body', 'photo_url', 'photo_tz', 'channel',
   'status', 'scheduled_at', 'approved_text', 'approved_final', 'note',
-  'comment_text', 'comment_photo', 'redo', 'feedback',
+  'comment_text', 'comment_photo', 'redo', 'feedback', 'photo_options',
 ]);
 
 export async function PATCH(
