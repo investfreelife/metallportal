@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { safeFetchJson } from '@/lib/safe-fetch';
 import { MessageSquare, Search, Clock, RefreshCw, User as UserIcon, Inbox as InboxIcon, UserCheck, Bot, Send, Sparkles, AlertCircle } from 'lucide-react';
 import type { DialogSummary, DialogMessage } from '@/lib/recruit/types';
 import { STAGE_LABELS, STAGE_COLORS } from '@/lib/recruit/types';
@@ -16,19 +17,6 @@ interface HandoffState {
  * Безопасный JSON-fetch: проверяем content-type перед res.json(), иначе
  * HTML-ошибки прода (500/redirect) ломали парсер с «Unexpected token '<'».
  */
-async function safeFetchJson<T = unknown>(input: string, init?: RequestInit): Promise<T> {
-  const r = await fetch(input, { cache: 'no-store', ...init });
-  const ct = r.headers.get('content-type') || '';
-  if (!ct.includes('application/json')) {
-    const text = await r.text().catch(() => '');
-    throw new Error(`Сервер ответил не-JSON (HTTP ${r.status}): ${text.slice(0, 120)}`);
-  }
-  const j = await r.json();
-  if (!r.ok || (j as { error?: string })?.error) {
-    throw new Error((j as { error?: string })?.error || `HTTP ${r.status}`);
-  }
-  return j as T;
-}
 
 interface Props {
   initialChatId: string | null;

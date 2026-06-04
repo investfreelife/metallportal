@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { safeFetchJson } from '@/lib/safe-fetch';
 import { X, Plus, Search, Check, AlertCircle, UserPlus } from 'lucide-react';
 import { FUNNEL_COLUMNS } from '@/lib/recruit/types';
 
@@ -20,19 +21,6 @@ interface Props {
   onAdded: (info: { contact_id: string; chat_id: string; stage: string }) => void | Promise<void>;
 }
 
-async function safeFetchJson<T>(url: string, init?: RequestInit): Promise<T> {
-  const r = await fetch(url, { cache: 'no-store', ...init });
-  const ct = r.headers.get('content-type') || '';
-  if (!ct.includes('application/json')) {
-    const text = await r.text().catch(() => '');
-    throw new Error(`HTTP ${r.status}: ${text.slice(0, 120)}`);
-  }
-  const j = await r.json();
-  if (!r.ok || (j as { error?: string })?.error) {
-    throw new Error((j as { error?: string })?.error || `HTTP ${r.status}`);
-  }
-  return j as T;
-}
 
 const SOURCES = [
   { v: 'tg',       label: 'Telegram-бот' },

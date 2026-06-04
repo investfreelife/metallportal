@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { safeFetchJson } from '@/lib/safe-fetch';
 import {
   Target,
   Check,
@@ -16,19 +17,6 @@ import type { StrategyStep, StrategyStatus } from '@/lib/marketing/strategy';
 import { STRATEGY_STATUS_LABELS, STRATEGY_KIND_LABELS } from '@/lib/marketing/strategy';
 import { fmtMsk } from '@/lib/tz';
 
-async function safeFetchJson<T>(url: string, init?: RequestInit): Promise<T> {
-  const r = await fetch(url, { cache: 'no-store', ...init });
-  const ct = r.headers.get('content-type') || '';
-  if (!ct.includes('application/json')) {
-    const text = await r.text().catch(() => '');
-    throw new Error(`HTTP ${r.status}: ${text.slice(0, 120)}`);
-  }
-  const j = await r.json();
-  if (!r.ok || (j as { error?: string })?.error) {
-    throw new Error((j as { error?: string })?.error || `HTTP ${r.status}`);
-  }
-  return j as T;
-}
 
 interface Props { tenantName: string | null }
 

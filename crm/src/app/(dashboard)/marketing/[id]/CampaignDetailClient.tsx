@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
+import { safeFetchJson } from '@/lib/safe-fetch';
 import { useRouter } from 'next/navigation';
 import {
   ArrowLeft,
@@ -65,19 +66,6 @@ interface AnalyticsResp {
 
 type Tab = 'variants' | 'channels' | 'mailing' | 'analytics';
 
-async function safeFetchJson<T>(url: string, init?: RequestInit): Promise<T> {
-  const r = await fetch(url, { cache: 'no-store', ...init });
-  const ct = r.headers.get('content-type') || '';
-  if (!ct.includes('application/json')) {
-    const text = await r.text().catch(() => '');
-    throw new Error(`HTTP ${r.status}: ${text.slice(0, 120)}`);
-  }
-  const j = await r.json();
-  if (!r.ok || (j as { error?: string })?.error) {
-    throw new Error((j as { error?: string })?.error || `HTTP ${r.status}`);
-  }
-  return j as T;
-}
 
 function fmtNum(n: number | null | undefined): string {
   if (n == null || !Number.isFinite(n)) return '—';

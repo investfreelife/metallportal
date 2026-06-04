@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { safeFetchJson } from '@/lib/safe-fetch';
 import { Users, Search, RefreshCw, Phone, Send, MessageSquare, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { fmtMsk } from '@/lib/tz';
@@ -21,14 +22,6 @@ interface DriverRow {
 
 interface Props { tenantName: string | null }
 
-async function safeFetchJson<T>(url: string): Promise<T> {
-  const r = await fetch(url, { cache: 'no-store' });
-  const ct = r.headers.get('content-type') || '';
-  if (!ct.includes('application/json')) throw new Error(`HTTP ${r.status}`);
-  const j = await r.json();
-  if (!r.ok || (j as { error?: string })?.error) throw new Error((j as { error?: string })?.error || `HTTP ${r.status}`);
-  return j as T;
-}
 
 function transportFromTags(tags: string[] | null): string | null {
   if (!Array.isArray(tags)) return null;
