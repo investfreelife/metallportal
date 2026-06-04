@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { getSession, getTenantId } from '@/lib/session'
 import { createClient } from '@/lib/supabase/server'
 import Sidebar from '@/components/layout/Sidebar'
+import BrainStatusBanner from '@/components/layout/BrainStatusBanner'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession()
@@ -41,6 +42,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         tenantName={session.tenant_name}
       />
       <main className="flex-1 overflow-auto bg-gray-50">
+        <BrainStatusBanner />
         {children}
       </main>
     </div>
