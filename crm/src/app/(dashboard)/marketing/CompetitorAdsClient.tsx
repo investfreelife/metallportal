@@ -14,6 +14,10 @@ import {
   Layers,
   Building2,
   Megaphone,
+  Trash2,
+  Plus,
+  X,
+  Check,
 } from 'lucide-react';
 import { fmtMsk } from '@/lib/tz';
 
@@ -56,6 +60,8 @@ export default function CompetitorAdsClient({ tenantName: _tn }: Props) {
   const [brand, setBrand] = useState<string>('');
   const [q, setQ] = useState<string>('');
   const [groupBy, setGroupBy] = useState<GroupBy>('brand');
+  const [addOpen, setAddOpen] = useState(false);
+  const [busyDelete, setBusyDelete] = useState<string | null>(null);
 
   async function reload(silent = false) {
     if (!silent) setRefreshing(true);
@@ -80,6 +86,28 @@ export default function CompetitorAdsClient({ tenantName: _tn }: Props) {
   }, [channel, brand, q]);
   useEffect(() => { reload(); /* eslint-disable-next-line */ }, []);
 
+  async function handleDelete(id: string) {
+    if (!confirm('Удалить это объявление из насмотренности? Скрейпер может найти снова — для постоянной блокировки нужен блок-лист.')) return;
+    setBusyDelete(id);
+    try {
+      await safeFetchJson(`/api/recruit/marketing/competitor-ads/${id}`, { method: 'DELETE' });
+      // оптимистично выкинем
+      setResp((prev) => prev ? { ...prev, items: prev.items.filter((x) => x.id !== id) } : prev);
+    } catch (e) {
+      alert(e instanceof Error ? e.message : String(e));
+    } finally { setBusyDelete(null); }
+  }
+
+  async function handleAdd(payload: AddPayload): Promise<void> {
+    await safeFetchJson('/api/recruit/marketing/competitor-ads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    setAddOpen(false);
+    await reload(true);
+  }
+
   const items = resp?.items ?? [];
   const totals = resp?.totals ?? { total: 0, by_channel: {}, by_brand: {} };
 
@@ -100,6 +128,18 @@ export default function CompetitorAdsClient({ tenantName: _tn }: Props) {
 
   return (
     <div className="space-y-3">
+      {/* ── Форма добавления (раскрывающаяся) ───────────────────── */}
+      {addOpen ? (
+        <AddCompetitorForm onClose={() => setAddOpen(false)} onSubmit={handleAdd} />
+      ) : (
+        <button
+          onClick={() => setAddOpen(true)}
+          className="w-full flex items-center justify-center gap-1.5 py-2 text-xs font-medium text-blue-700 bg-blue-50 border border-dashed border-blue-300 rounded-md hover:bg-blue-100"
+        >
+          <Plus size={12} /> Добавить ссылку конкурента
+        </button>
+      )}
+
       {/* ── Сводка + фильтры ─────────────────────────────────────── */}
       <div className="bg-white border border-gray-200 rounded-lg p-3 space-y-2">
         <div className="flex items-center gap-2 flex-wrap">
@@ -200,7 +240,14 @@ export default function CompetitorAdsClient({ tenantName: _tn }: Props) {
               <span className="text-[10px] text-gray-500">{g.items.length} объявлений</span>
             </header>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 p-3">
-              {g.items.map((it) => <AdCard key={it.id} ad={it} />)}
+              {g.items.map((it) => (
+                <AdCard
+                  key={it.id}
+                  ad={it}
+                  onDelete={() => handleDelete(it.id)}
+                  deleting={busyDelete === it.id}
+                />
+              ))}
             </div>
           </section>
         ))
@@ -209,7 +256,7 @@ export default function CompetitorAdsClient({ tenantName: _tn }: Props) {
   );
 }
 
-function AdCard({ ad }: { ad: AdRow }) {
+function AdCard({ ad, onDelete, deleting }: { ad: AdRow; onDelete: () => void; deleting: boolean }) {
   const [expanded, setExpanded] = useState(false);
   const meta = CHANNEL_META[(ad.channel ?? '').toLowerCase()];
   const text = ad.text ?? '';
@@ -265,18 +312,164 @@ function AdCard({ ad }: { ad: AdRow }) {
         )}
         <div className="mt-auto pt-2 border-t border-gray-100 flex items-center justify-between gap-2">
           <span className="text-[9px] text-gray-400">{fmtMsk(ad.created_at, false)}</span>
-          {ad.source_link && (
-            <a
-              href={ad.source_link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[10px] text-blue-600 hover:text-blue-800 inline-flex items-center gap-0.5"
+          <div className="flex items-center gap-2">
+            {ad.source_link && (
+              <a
+                href={ad.source_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] text-blue-600 hover:text-blue-800 inline-flex items-center gap-0.5"
+              >
+                Открыть оригинал <ExternalLink size={9} />
+              </a>
+            )}
+            <button
+              onClick={onDelete}
+              disabled={deleting}
+              title="Удалить из насмотренности"
+              className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded disabled:opacity-40"
             >
-              Открыть оригинал <ExternalLink size={9} />
-            </a>
-          )}
+              <Trash2 size={11} />
+            </button>
+          </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+interface AddPayload {
+  channel: string;
+  brand: string;
+  text: string;
+  source_link: string;
+  image_url: string;
+  hooks: string;
+  reach: number | null;
+}
+
+function AddCompetitorForm({ onClose, onSubmit }: { onClose: () => void; onSubmit: (p: AddPayload) => Promise<void> }) {
+  const [channel, setChannel] = useState('vk');
+  const [brand, setBrand] = useState('');
+  const [text, setText] = useState('');
+  const [link, setLink] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [hooks, setHooks] = useState('');
+  const [reach, setReach] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function submit() {
+    setBusy(true); setErr(null);
+    try {
+      await onSubmit({
+        channel,
+        brand: brand.trim(),
+        text: text.trim(),
+        source_link: link.trim(),
+        image_url: imageUrl.trim(),
+        hooks: hooks.trim(),
+        reach: reach.trim() === '' ? null : Number(reach),
+      });
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e));
+    } finally { setBusy(false); }
+  }
+
+  return (
+    <div className="bg-white border border-blue-200 rounded-lg overflow-hidden">
+      <header className="px-3 py-2 border-b border-blue-100 bg-blue-50 flex items-center justify-between">
+        <h3 className="text-xs font-semibold text-blue-900 flex items-center gap-1.5">
+          <Plus size={12} /> Добавить ссылку конкурента
+        </h3>
+        <button onClick={onClose} className="p-1 text-blue-700 hover:bg-blue-100 rounded"><X size={12} /></button>
+      </header>
+      <div className="px-3 py-3 grid grid-cols-1 md:grid-cols-2 gap-2.5">
+        <label className="text-[11px] text-gray-700 space-y-1">
+          <span className="text-gray-500 uppercase tracking-wide text-[10px]">Канал</span>
+          <select
+            value={channel}
+            onChange={(e) => setChannel(e.target.value)}
+            className="w-full px-2 py-1 text-xs border border-gray-200 rounded-md focus:border-blue-500 focus:outline-none bg-white"
+          >
+            <option value="vk">VK</option>
+            <option value="telegram">Telegram</option>
+            <option value="site">Сайт</option>
+            <option value="yandex">Яндекс</option>
+          </select>
+        </label>
+        <label className="text-[11px] text-gray-700 space-y-1">
+          <span className="text-gray-500 uppercase tracking-wide text-[10px]">Бренд</span>
+          <input
+            value={brand}
+            onChange={(e) => setBrand(e.target.value)}
+            placeholder="«ЯндексGO» / «Maximum» / …"
+            className="w-full px-2 py-1 text-xs border border-gray-200 rounded-md focus:border-blue-500 focus:outline-none"
+          />
+        </label>
+        <label className="text-[11px] text-gray-700 space-y-1 md:col-span-2">
+          <span className="text-gray-500 uppercase tracking-wide text-[10px]">Ссылка <span className="text-red-500">*</span></span>
+          <input
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
+            placeholder="https://vk.com/wall-… / https://t.me/… / https://…"
+            className="w-full px-2 py-1 text-xs border border-gray-200 rounded-md focus:border-blue-500 focus:outline-none"
+          />
+        </label>
+        <label className="text-[11px] text-gray-700 space-y-1 md:col-span-2">
+          <span className="text-gray-500 uppercase tracking-wide text-[10px]">Текст / заметка</span>
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            rows={3}
+            placeholder="Полный текст объявления, или твоя заметка зачем сохранили."
+            className="w-full px-2 py-1 text-xs border border-gray-200 rounded-md focus:border-blue-500 focus:outline-none resize-y"
+          />
+        </label>
+        <label className="text-[11px] text-gray-700 space-y-1">
+          <span className="text-gray-500 uppercase tracking-wide text-[10px]">Фото-URL</span>
+          <input
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            placeholder="опц. — превью"
+            className="w-full px-2 py-1 text-xs border border-gray-200 rounded-md focus:border-blue-500 focus:outline-none"
+          />
+        </label>
+        <label className="text-[11px] text-gray-700 space-y-1">
+          <span className="text-gray-500 uppercase tracking-wide text-[10px]">Охват</span>
+          <input
+            value={reach}
+            onChange={(e) => setReach(e.target.value.replace(/[^0-9]/g, ''))}
+            placeholder="опц. — число просмотров"
+            className="w-full px-2 py-1 text-xs border border-gray-200 rounded-md focus:border-blue-500 focus:outline-none"
+          />
+        </label>
+        <label className="text-[11px] text-gray-700 space-y-1 md:col-span-2">
+          <span className="text-gray-500 uppercase tracking-wide text-[10px]">Хуки (через запятую)</span>
+          <input
+            value={hooks}
+            onChange={(e) => setHooks(e.target.value)}
+            placeholder="«жильё бесплатно», «100к в неделю», «без аренды»…"
+            className="w-full px-2 py-1 text-xs border border-gray-200 rounded-md focus:border-blue-500 focus:outline-none"
+          />
+        </label>
+      </div>
+      {err && (
+        <div className="mx-3 mb-2 text-[11px] text-red-700 bg-red-50 border border-red-200 rounded px-2 py-1.5 flex items-start gap-1.5">
+          <AlertCircle size={12} className="mt-0.5 flex-shrink-0" />
+          {err}
+        </div>
+      )}
+      <footer className="px-3 py-2 border-t border-gray-100 bg-gray-50/60 flex items-center justify-end gap-2">
+        <button onClick={onClose} className="px-2.5 py-1 text-[11px] text-gray-700 hover:bg-gray-200 rounded">Отмена</button>
+        <button
+          onClick={submit}
+          disabled={busy || !link.trim()}
+          className="flex items-center gap-1 px-2.5 py-1 text-[11px] bg-blue-600 text-white font-medium rounded hover:bg-blue-700 disabled:opacity-40"
+        >
+          <Check size={11} /> {busy ? 'Сохранение…' : 'Добавить'}
+        </button>
+      </footer>
     </div>
   );
 }

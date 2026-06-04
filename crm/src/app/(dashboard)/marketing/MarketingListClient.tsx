@@ -3,32 +3,31 @@
 import { useEffect, useState } from 'react';
 import { safeFetchJson } from '@/lib/safe-fetch';
 import { useRouter } from 'next/navigation';
-import { Megaphone, Plus, ArrowRight, AlertCircle, X, RefreshCw, Check, Target } from 'lucide-react';
+import { Megaphone, Plus, AlertCircle, X, RefreshCw, Check, Target } from 'lucide-react';
 import type { Campaign } from '@/lib/marketing/types';
-import { CAMPAIGN_STATUS_LABELS } from '@/lib/marketing/types';
-import { fmtMsk } from '@/lib/tz';
 import StrategyClient from './StrategyClient';
-import CampaignsBySegment from './CampaignsBySegment';
 import CompetitorAdsClient from './CompetitorAdsClient';
 import OurMarketingClient from './OurMarketingClient';
 
 interface Props { tenantName: string | null }
 
 
-type Tab = 'ours' | 'competitors' | 'strategy' | 'campaigns';
+type Tab = 'ours' | 'competitors' | 'strategy';
 
 export default function MarketingListClient({ tenantName }: Props) {
   const router = useRouter();
-  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [, setCampaigns] = useState<Campaign[]>([]);
+  const [, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [tab, setTab] = useState<Tab>('ours');
+  const [reloadKey, setReloadKey] = useState(0);
 
   async function reload() {
     try {
       const j = await safeFetchJson<{ campaigns: Campaign[] }>('/api/recruit/campaigns');
       setCampaigns(j.campaigns ?? []);
+      setReloadKey((k) => k + 1);
       setError(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -47,11 +46,11 @@ export default function MarketingListClient({ tenantName }: Props) {
             Маркетинг{tenantName ? ` · ${tenantName}` : ''}
           </h1>
           <p className="text-xs text-gray-500 mt-0.5">
-            Стратегия + Кампании (A/B-варианты, посев в Telegram-группы). Время МСК.
+            Каналы → готовые лендинги, посты в ВК и Telegram + насмотренность по конкурентам. Время МСК.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {(tab === 'campaigns' || tab === 'ours') && (
+          {tab === 'ours' && (
             <>
               <button onClick={reload} className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-gray-200 text-gray-700 text-xs font-medium rounded-md hover:bg-gray-50">
                 <RefreshCw size={12} />
@@ -66,7 +65,7 @@ export default function MarketingListClient({ tenantName }: Props) {
         </div>
       </header>
 
-      {/* ── Tabs: Наш маркетинг / Конкуренты / Стратегия / Кампании ── */}
+      {/* ── 3 top-таба: Наш маркетинг / Конкуренты / Стратегия ── */}
       <div className="flex items-center gap-1 px-6 bg-white border-b border-gray-200 overflow-x-auto">
         <TabBtn active={tab === 'ours'} onClick={() => setTab('ours')}>
           🚀 Наш маркетинг
@@ -78,10 +77,6 @@ export default function MarketingListClient({ tenantName }: Props) {
           <Target size={12} />
           Стратегия
         </TabBtn>
-        <TabBtn active={tab === 'campaigns'} onClick={() => setTab('campaigns')}>
-          <Megaphone size={12} />
-          Кампании ({campaigns.length})
-        </TabBtn>
       </div>
 
       {error && (
@@ -91,12 +86,9 @@ export default function MarketingListClient({ tenantName }: Props) {
       )}
 
       <div className="flex-1 overflow-auto p-6">
-        {tab === 'ours' && (
-          <OurMarketingClient tenantName={tenantName} onJumpTab={(t) => setTab(t)} />
-        )}
+        {tab === 'ours' && <OurMarketingClient key={reloadKey} tenantName={tenantName} />}
         {tab === 'competitors' && <CompetitorAdsClient tenantName={tenantName} />}
         {tab === 'strategy' && <StrategyClient tenantName={tenantName} />}
-        {tab === 'campaigns' && <CampaignsBySegment tenantName={tenantName} />}
       </div>
 
       {creating && (
@@ -106,41 +98,6 @@ export default function MarketingListClient({ tenantName }: Props) {
           router.push(`/marketing/${c.id}`);
         }} />
       )}
-    </div>
-  );
-}
-
-function CampaignCard({ campaign, onOpen }: { campaign: Campaign; onOpen: () => void }) {
-  const meta = CAMPAIGN_STATUS_LABELS[campaign.status ?? 'draft'] ?? CAMPAIGN_STATUS_LABELS.draft;
-  return (
-    <button onClick={onOpen} className="block w-full text-left bg-white border border-gray-200 rounded-lg p-4 hover:border-blue-200 hover:shadow-sm transition-all">
-      <div className="flex items-start justify-between gap-2 mb-2">
-        <h3 className="text-sm font-semibold text-gray-900 leading-snug flex-1">{campaign.name}</h3>
-        <span className={`inline-block text-[10px] px-1.5 py-0.5 rounded border whitespace-nowrap ${meta.color}`}>{meta.label}</span>
-      </div>
-      {campaign.objective && <div className="text-[11px] text-gray-600 mb-1">🎯 {campaign.objective}</div>}
-      {campaign.audience && <div className="text-[11px] text-gray-500 line-clamp-2">{campaign.audience}</div>}
-      <div className="border-t border-gray-100 pt-2 mt-3 flex items-center justify-between">
-        <span className="text-[10px] text-gray-400">{fmtMsk(campaign.created_at, false)} МСК</span>
-        <span className="text-[11px] text-blue-600 inline-flex items-center gap-1 font-medium">
-          Открыть <ArrowRight size={11} />
-        </span>
-      </div>
-    </button>
-  );
-}
-
-function EmptyState({ onCreate }: { onCreate: () => void }) {
-  return (
-    <div className="text-center py-12 max-w-md mx-auto">
-      <Megaphone size={36} className="text-gray-300 mx-auto mb-3" />
-      <h2 className="text-sm font-medium text-gray-700">Пока нет кампаний</h2>
-      <p className="text-xs text-gray-500 mt-2">
-        Создай первую: задай цель и аудиторию, добавь A/B-варианты, выбери TG-группы из донорского списка и поставь посев в очередь. Демон пошлёт по-человечески.
-      </p>
-      <button onClick={onCreate} className="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-md hover:bg-blue-700">
-        <Plus size={12} /> Новая кампания
-      </button>
     </div>
   );
 }

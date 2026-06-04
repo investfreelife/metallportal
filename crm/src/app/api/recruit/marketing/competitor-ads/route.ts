@@ -15,8 +15,66 @@ import { getSession, getTenantId } from '@/lib/session';
  *
  * Возвращает:
  *   {items, totals: {total, by_channel, by_brand}, brands: string[]}
+ *
+ * POST /api/recruit/marketing/competitor-ads
+ *   Body: {channel, brand, text, source_link, image_url?, hooks?, reach?}
+ *   Sergey directive 2026-06-04: ручное добавление интересных конкурентов.
+ *   Скрейпер заполнит автоматом основной поток, эта форма — для редкого «глянул, сохрани».
  */
 export const dynamic = 'force-dynamic';
+
+const ALLOWED_CHANNELS = new Set(['vk', 'site', 'telegram', 'yandex']);
+
+export async function POST(req: NextRequest) {
+  try {
+    const session = await getSession();
+    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const tenantId = await getTenantId();
+
+    const body = await req.json().catch(() => ({}));
+    const channel = String(body.channel ?? '').trim().toLowerCase();
+    const brand = String(body.brand ?? '').trim();
+    const text = String(body.text ?? '').trim();
+    const source_link = String(body.source_link ?? '').trim();
+    const image_url = String(body.image_url ?? '').trim();
+    const hooks = String(body.hooks ?? '').trim();
+    const reachRaw = body.reach;
+    const reach = reachRaw === null || reachRaw === undefined || reachRaw === ''
+      ? null
+      : Number(reachRaw);
+
+    if (channel && !ALLOWED_CHANNELS.has(channel)) {
+      return NextResponse.json({ error: `channel должен быть одним из: ${[...ALLOWED_CHANNELS].join(', ')}` }, { status: 400 });
+    }
+    if (!source_link && !text) {
+      return NextResponse.json({ error: 'Нужна ссылка или текст' }, { status: 400 });
+    }
+    if (reach !== null && (!Number.isFinite(reach) || reach < 0)) {
+      return NextResponse.json({ error: 'reach должен быть числом ≥ 0' }, { status: 400 });
+    }
+
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from('competitor_ads')
+      .insert({
+        tenant_id: tenantId,
+        channel: channel || null,
+        brand: brand || null,
+        text: text || null,
+        source_link: source_link || null,
+        image_url: image_url || null,
+        hooks: hooks || null,
+        reach,
+      })
+      .select('id, channel, brand, text, image_url, source_link, hooks, reach, created_at')
+      .single();
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ ad: data });
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
+}
 
 interface AdRow {
   id: string;
