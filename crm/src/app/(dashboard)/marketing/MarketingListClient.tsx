@@ -9,11 +9,13 @@ import { CAMPAIGN_STATUS_LABELS } from '@/lib/marketing/types';
 import { fmtMsk } from '@/lib/tz';
 import StrategyClient from './StrategyClient';
 import CampaignsBySegment from './CampaignsBySegment';
+import CompetitorAdsClient from './CompetitorAdsClient';
+import OurMarketingClient from './OurMarketingClient';
 
 interface Props { tenantName: string | null }
 
 
-type Tab = 'strategy' | 'campaigns';
+type Tab = 'ours' | 'competitors' | 'strategy' | 'campaigns';
 
 export default function MarketingListClient({ tenantName }: Props) {
   const router = useRouter();
@@ -21,7 +23,7 @@ export default function MarketingListClient({ tenantName }: Props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
-  const [tab, setTab] = useState<Tab>('strategy');
+  const [tab, setTab] = useState<Tab>('ours');
 
   async function reload() {
     try {
@@ -49,7 +51,7 @@ export default function MarketingListClient({ tenantName }: Props) {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {tab === 'campaigns' && (
+          {(tab === 'campaigns' || tab === 'ours') && (
             <>
               <button onClick={reload} className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-gray-200 text-gray-700 text-xs font-medium rounded-md hover:bg-gray-50">
                 <RefreshCw size={12} />
@@ -64,8 +66,14 @@ export default function MarketingListClient({ tenantName }: Props) {
         </div>
       </header>
 
-      {/* ── Tabs: Стратегия / Кампании ───────────────────────────── */}
-      <div className="flex items-center gap-1 px-6 bg-white border-b border-gray-200">
+      {/* ── Tabs: Наш маркетинг / Конкуренты / Стратегия / Кампании ── */}
+      <div className="flex items-center gap-1 px-6 bg-white border-b border-gray-200 overflow-x-auto">
+        <TabBtn active={tab === 'ours'} onClick={() => setTab('ours')}>
+          🚀 Наш маркетинг
+        </TabBtn>
+        <TabBtn active={tab === 'competitors'} onClick={() => setTab('competitors')}>
+          🕵️ Конкуренты
+        </TabBtn>
         <TabBtn active={tab === 'strategy'} onClick={() => setTab('strategy')}>
           <Target size={12} />
           Стратегия
@@ -83,11 +91,12 @@ export default function MarketingListClient({ tenantName }: Props) {
       )}
 
       <div className="flex-1 overflow-auto p-6">
-        {tab === 'strategy' ? (
-          <StrategyClient tenantName={tenantName} />
-        ) : (
-          <CampaignsBySegment tenantName={tenantName} />
+        {tab === 'ours' && (
+          <OurMarketingClient tenantName={tenantName} onJumpTab={(t) => setTab(t)} />
         )}
+        {tab === 'competitors' && <CompetitorAdsClient tenantName={tenantName} />}
+        {tab === 'strategy' && <StrategyClient tenantName={tenantName} />}
+        {tab === 'campaigns' && <CampaignsBySegment tenantName={tenantName} />}
       </div>
 
       {creating && (
