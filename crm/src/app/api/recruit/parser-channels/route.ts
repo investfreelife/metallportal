@@ -66,6 +66,7 @@ export async function GET(req: NextRequest) {
     const size = sp.get('size'); // small|mid|large
     const joinedFilter = sp.get('joined'); // yes|no
     const hasMembers = sp.get('has_members'); // yes|no
+    const postFilter = sp.get('post'); // yes (свободно) | no (read-only)
     const sort = sp.get('sort') ?? 'members';
     const dir = sp.get('dir') === 'asc' ? 'asc' : 'desc';
     const page = Math.max(1, parseInt(sp.get('page') ?? '1', 10) || 1);
@@ -105,6 +106,10 @@ export async function GET(req: NextRequest) {
           ?? (username ? `https://t.me/${username.replace(/^@/, '')}` : null);
         const members = num(cfg.members);
         const isGroup = cfg.is_group === true || str(cfg.role) === 'donor_group';
+        // Реальная разметка парсера: можно ли обычному участнику писать в группу.
+        // can_post=true → свободно; false → read-only (через бота/админа); null → не размечено.
+        const canPostRaw = bool(cfg.can_post);
+        const postVia = str(cfg.post_via);
         const joined = bool(cfg.joined);
         const country = str(cfg.country) ?? null;
         const foundQuery = str(cfg.found_query) ?? null;
@@ -122,7 +127,8 @@ export async function GET(req: NextRequest) {
           found_query: foundQuery,
           city,
           is_group: isGroup,
-          can_post: isGroup,
+          can_post: canPostRaw,
+          post_via: postVia,
           joined,
           source: str(cfg.source) ?? null,
           last_sync_at: r.last_sync_at,
@@ -137,6 +143,8 @@ export async function GET(req: NextRequest) {
       large: normalized.filter((r) => r.members != null && r.members > 10000).length,
       no_members: normalized.filter((r) => r.members == null).length,
       joined: normalized.filter((r) => r.joined === true).length,
+      postable: normalized.filter((r) => r.can_post === true).length,
+      readonly: normalized.filter((r) => r.can_post === false).length,
     };
 
     // Фильтры
@@ -156,6 +164,8 @@ export async function GET(req: NextRequest) {
     else if (joinedFilter === 'no') filtered = filtered.filter((r) => r.joined !== true);
     if (hasMembers === 'yes') filtered = filtered.filter((r) => r.members != null);
     else if (hasMembers === 'no') filtered = filtered.filter((r) => r.members == null);
+    if (postFilter === 'yes') filtered = filtered.filter((r) => r.can_post === true);
+    else if (postFilter === 'no') filtered = filtered.filter((r) => r.can_post === false);
 
     // Сортировка
     const sign = dir === 'asc' ? 1 : -1;

@@ -33,7 +33,8 @@ interface ChannelItem {
   found_query: string | null;
   city: string | null;
   is_group: boolean;
-  can_post: boolean;
+  can_post: boolean | null;
+  post_via: string | null;
   joined: boolean | null;
   source: string | null;
   last_sync_at: string | null;
@@ -41,7 +42,7 @@ interface ChannelItem {
 
 interface ListResponse {
   items: ChannelItem[];
-  summary: { total: number; small: number; mid: number; large: number; no_members: number; joined: number };
+  summary: { total: number; small: number; mid: number; large: number; no_members: number; joined: number; postable: number; readonly: number };
   page: { page: number; per: number; total: number; pages: number };
 }
 
@@ -85,6 +86,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
   const [size, setSize] = useState<'' | 'small' | 'mid' | 'large'>('');
   const [joinedF, setJoinedF] = useState<'' | 'yes' | 'no'>('');
   const [hasMembers, setHasMembers] = useState<'' | 'yes' | 'no'>('');
+  const [postF, setPostF] = useState<'' | 'yes' | 'no'>('');
   const [sort, setSort] = useState<'members' | 'name'>('members');
   const [dir, setDir] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
@@ -98,6 +100,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
       if (size) qs.set('size', size);
       if (joinedF) qs.set('joined', joinedF);
       if (hasMembers) qs.set('has_members', hasMembers);
+      if (postF) qs.set('post', postF);
       qs.set('sort', sort);
       qs.set('dir', dir);
       qs.set('page', String(page));
@@ -111,7 +114,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [search, size, joinedF, hasMembers, sort, dir, page]);
+  }, [search, size, joinedF, hasMembers, postF, sort, dir, page]);
 
   const reloadStatus = useCallback(async () => {
     try {
@@ -134,7 +137,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
   }, [search]);
 
   // Прочие фильтры/sort — мгновенно
-  useEffect(() => { setPage(1); reloadList(); /* eslint-disable-next-line */ }, [size, joinedF, hasMembers, sort, dir]);
+  useEffect(() => { setPage(1); reloadList(); /* eslint-disable-next-line */ }, [size, joinedF, hasMembers, postF, sort, dir]);
   // Page changes
   useEffect(() => { reloadList(); /* eslint-disable-next-line */ }, [page]);
 
@@ -173,7 +176,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
   }
 
   const items = resp?.items ?? [];
-  const summary = resp?.summary ?? { total: 0, small: 0, mid: 0, large: 0, no_members: 0, joined: 0 };
+  const summary = resp?.summary ?? { total: 0, small: 0, mid: 0, large: 0, no_members: 0, joined: 0, postable: 0, readonly: 0 };
   const pageInfo = resp?.page ?? { page: 1, per, total: 0, pages: 1 };
 
   // Эффективное состояние паузы: control.paused приоритетнее, иначе status.paused.
@@ -217,6 +220,32 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
         <TotalCard label="Средних 1k–10k" value={fmtNum(summary.mid)} />
         <TotalCard label="Крупных >10k" value={fmtNum(summary.large)} />
         <TotalCard label="Подписан" value={fmtNum(summary.joined)} hint={`${summary.no_members} без members`} />
+      </div>
+
+      {/* ── Разделы «Где могу писать» (главное) ───────────────────── */}
+      <div className="flex items-center gap-2 px-6 py-3 bg-white border-b border-gray-100 flex-wrap">
+        <span className="text-xs font-semibold text-gray-700 mr-1">Где могу писать:</span>
+        <SectionTab
+          active={postF === 'yes'}
+          onClick={() => setPostF(postF === 'yes' ? '' : 'yes')}
+          color="emerald"
+          label={`🟢 Можно постить · ${fmtNum(summary.postable)}`}
+        />
+        <SectionTab
+          active={postF === 'no'}
+          onClick={() => setPostF(postF === 'no' ? '' : 'no')}
+          color="rose"
+          label={`🔴 Только чтение · ${fmtNum(summary.readonly)}`}
+        />
+        <SectionTab
+          active={postF === ''}
+          onClick={() => setPostF('')}
+          color="gray"
+          label="Все"
+        />
+        <span className="text-[11px] text-gray-400 ml-2">
+          🟢 — свободный постинг (осторожно, анти-спам) · 🔴 — постинг запрещён участникам / только через бота
+        </span>
       </div>
 
       {/* ── Фильтры ─────────────────────────────────────────────── */}
@@ -329,7 +358,13 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
                   <td className="px-3 py-2 text-xs text-right font-medium tabular-nums">{fmtNum(it.members)}</td>
                   <td className="px-3 py-2 text-xs text-gray-700">{it.is_group ? 'группа' : 'канал'}</td>
                   <td className="px-3 py-2 text-xs text-center text-gray-700">
-                    {it.is_group ? <span className="text-emerald-600">да</span> : <span className="text-gray-400">—</span>}
+                    {it.can_post === true ? (
+                      <span className="text-emerald-600 font-medium" title={it.post_via ?? 'свободно'}>🟢 можно</span>
+                    ) : it.can_post === false ? (
+                      <span className="text-rose-500" title={it.post_via ?? 'постинг запрещён участникам'}>🔴 нельзя</span>
+                    ) : (
+                      <span className="text-gray-400" title="не размечено парсером">—</span>
+                    )}
                   </td>
                   <td className="px-3 py-2 text-xs text-center">
                     {it.joined === true ? <span className="text-emerald-600">✓</span> : <span className="text-gray-400">—</span>}
@@ -538,6 +573,32 @@ function FilterChip({
         ))}
       </select>
     </label>
+  );
+}
+
+function SectionTab({
+  active,
+  onClick,
+  label,
+  color,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  color: 'emerald' | 'rose' | 'gray';
+}) {
+  const palette = {
+    emerald: active ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100',
+    rose: active ? 'bg-rose-600 text-white border-rose-600' : 'bg-rose-50 text-rose-600 border-rose-200 hover:bg-rose-100',
+    gray: active ? 'bg-gray-800 text-white border-gray-800' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50',
+  }[color];
+  return (
+    <button
+      onClick={onClick}
+      className={`px-3 py-1.5 text-xs font-medium border rounded-md transition-colors ${palette}`}
+    >
+      {label}
+    </button>
   );
 }
 
