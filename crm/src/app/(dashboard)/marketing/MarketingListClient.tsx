@@ -8,6 +8,7 @@ import type { Campaign } from '@/lib/marketing/types';
 import { CAMPAIGN_STATUS_LABELS } from '@/lib/marketing/types';
 import { fmtMsk } from '@/lib/tz';
 import StrategyClient from './StrategyClient';
+import CampaignsBySegment from './CampaignsBySegment';
 
 interface Props { tenantName: string | null }
 
@@ -84,16 +85,8 @@ export default function MarketingListClient({ tenantName }: Props) {
       <div className="flex-1 overflow-auto p-6">
         {tab === 'strategy' ? (
           <StrategyClient tenantName={tenantName} />
-        ) : loading ? (
-          <p className="text-xs text-gray-400 text-center py-12">Загрузка…</p>
-        ) : campaigns.length === 0 ? (
-          <EmptyState onCreate={() => setCreating(true)} />
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 max-w-7xl">
-            {campaigns.map((c) => (
-              <CampaignCard key={c.id} campaign={c} onOpen={() => router.push(`/marketing/${c.id}`)} />
-            ))}
-          </div>
+          <CampaignsBySegment tenantName={tenantName} />
         )}
       </div>
 

@@ -17,7 +17,7 @@ export async function GET() {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from('campaigns')
-      .select('id, name, objective, audience, status, created_at')
+      .select('id, name, objective, audience, status, segment, portrait, seg_order, created_at')
       .eq('tenant_id', tenantId)
       .order('created_at', { ascending: false })
       .limit(500);
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
     const { data, error } = await supabase
       .from('campaigns')
       .insert({ tenant_id: tenantId, name, objective, audience, status })
-      .select('id, name, objective, audience, status, created_at')
+      .select('id, name, objective, audience, status, segment, portrait, seg_order, created_at')
       .single();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ campaign: data });

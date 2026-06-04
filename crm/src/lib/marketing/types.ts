@@ -12,6 +12,12 @@ export interface Campaign {
   objective: string | null;
   audience: string | null;
   status: CampaignStatus | string | null;
+  /** Ярлык портрета ЦА с эмодзи: «🟢 В Москве, местный», «🚲 Без прав» и т.п. */
+  segment: string | null;
+  /** Короткое описание ЦА (боль / хук) — серым под segment. */
+  portrait: string | null;
+  /** Порядок сегментов 1..5; null → группа «Без сегмента» внизу. */
+  seg_order: number | null;
   created_at: string;
 }
 

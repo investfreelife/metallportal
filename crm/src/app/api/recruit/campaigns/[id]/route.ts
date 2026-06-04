@@ -20,7 +20,7 @@ export async function GET(
     const [{ data: campaign, error: cErr }, { data: variants }, { data: jobs }] = await Promise.all([
       supabase
         .from('campaigns')
-        .select('id, name, objective, audience, status, created_at')
+        .select('id, name, objective, audience, status, segment, portrait, seg_order, created_at')
         .eq('id', id)
         .eq('tenant_id', tenantId)
         .maybeSingle(),
@@ -83,7 +83,7 @@ export async function PATCH(
       .update(patch)
       .eq('id', id)
       .eq('tenant_id', tenantId)
-      .select('id, name, objective, audience, status, created_at')
+      .select('id, name, objective, audience, status, segment, portrait, seg_order, created_at')
       .single();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     if (!data) return NextResponse.json({ error: 'Не найдено' }, { status: 404 });
