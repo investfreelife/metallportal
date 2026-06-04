@@ -226,6 +226,17 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
         <TotalCard label="Подписан" value={fmtNum(summary.joined)} hint={`${summary.no_members} без members`} />
       </div>
 
+      {/* ── Пояснение «как это работает» (чтобы было понятно) ──────── */}
+      <div className="mx-6 mt-3 mb-1 text-xs bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-gray-700 leading-relaxed">
+        <div className="font-semibold text-gray-900 mb-1">📌 Как машина тут работает (тебе руками ничего делать не надо)</div>
+        <div className="grid sm:grid-cols-3 gap-2 mt-2">
+          <div><span className="text-emerald-700 font-medium">🟢 Вступи и пиши</span> — чтобы постить в группу, надо в неё <b>вступить</b>. Машина вступает <b>медленно сама</b> (анти-бан, несколько в день) и публикует твои согласованные посты. Постить во все сразу нельзя — это спам и бан, поэтому только в хорошие и по чуть-чуть.</div>
+          <div><span className="text-amber-700 font-medium">🤖 Платно (бот/админ)</span> — размещение за деньги через рекламного бота/админа (так делают Озон, Х5, Магнит). Жмёшь контакт в колонке «Платно через» → машина пишет ему, узнаёт цену. <b>Оплату подтверждаешь только ты.</b></div>
+          <div><span className="text-rose-600 font-medium">🔴 Только чтение</span> — писать нельзя и платный контакт не нашёлся. Пропускаем.</div>
+        </div>
+        <div className="mt-2 text-[11px] text-gray-500">Сами посты ты согласовываешь во вкладке <b>Контент</b>. Здесь — только база каналов, куда машина их разносит.</div>
+      </div>
+
       {/* ── Разделы «Где могу писать» (главное) ───────────────────── */}
       <div className="flex items-center gap-2 px-6 py-3 bg-white border-b border-gray-100 flex-wrap">
         <span className="text-xs font-semibold text-gray-700 mr-1">Где могу писать:</span>
