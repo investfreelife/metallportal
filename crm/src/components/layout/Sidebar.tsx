@@ -28,6 +28,7 @@ import {
   KanbanSquare,
   HelpCircle,
   BookOpen,
+  MailOpen,
 } from 'lucide-react'
 
 type NavItem = {
@@ -108,6 +109,7 @@ const NAV_TAXI: NavSection[] = [
     section: 'Рекрутинг',
     items: [
       { href: '/dialogs', label: 'Диалоги', icon: MessageSquare },
+      { href: '/business', label: 'Бизнес-личка', icon: MailOpen },
       { href: '/funnel', label: 'Воронка', icon: KanbanSquare },
       { href: '/questions', label: 'Вопросы', icon: HelpCircle, badgeKey: 'open_questions' },
       { href: '/kb', label: 'База знаний', icon: BookOpen },

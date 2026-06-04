@@ -33,11 +33,23 @@ async function safeFetchJson<T = unknown>(input: string, init?: RequestInit): Pr
 interface Props {
   initialChatId: string | null;
   tenantName: string | null;
+  /**
+   * scope — фильтр chat_id'ов:
+   *   - 'business' → только tgb:* (Telegram Business / личка Сергея)
+   *   - 'recruit'  → всё ОСТАЛЬНОЕ (кандидаты из бота/VK/ручные)
+   *   - undefined  → всё
+   * Передаётся в /api/recruit/dialogs?scope=...
+   */
+  scope?: 'business' | 'recruit';
+  /** Заголовок страницы (по умолчанию «Диалоги»). */
+  pageTitle?: string;
+  /** Подзаголовок под H1. */
+  pageHint?: string;
 }
 
 const POLL_MS = 10_000;
 
-export default function DialogsClient({ initialChatId, tenantName }: Props) {
+export default function DialogsClient({ initialChatId, tenantName, scope, pageTitle = 'Диалоги', pageHint }: Props) {
   const [dialogs, setDialogs] = useState<DialogSummary[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(initialChatId);
   const [messages, setMessages] = useState<DialogMessage[]>([]);
@@ -53,7 +65,8 @@ export default function DialogsClient({ initialChatId, tenantName }: Props) {
   // ─── Load dialogs (with polling) ────────────────────────────────────
   async function loadDialogs() {
     try {
-      const j = await safeFetchJson<{ dialogs: DialogSummary[] }>('/api/recruit/dialogs');
+      const scopeQs = scope ? `?scope=${scope}` : '';
+      const j = await safeFetchJson<{ dialogs: DialogSummary[] }>(`/api/recruit/dialogs${scopeQs}`);
       setDialogs(j.dialogs ?? []);
       setError(null);
       if (!selectedChatId && (j.dialogs ?? []).length > 0) {
@@ -149,10 +162,10 @@ export default function DialogsClient({ initialChatId, tenantName }: Props) {
         <header className="px-4 py-3 border-b border-gray-200">
           <h1 className="text-base font-bold text-gray-900 flex items-center gap-1.5">
             <MessageSquare size={16} className="text-gray-600" />
-            Диалоги{tenantName ? ` · ${tenantName}` : ''}
+            {pageTitle}{tenantName ? ` · ${tenantName}` : ''}
           </h1>
           <p className="text-[10px] text-gray-500 mt-0.5">
-            Переписки бот ↔ кандидат · обновление каждые 10 сек · время МСК
+            {pageHint ?? 'Переписки бот ↔ кандидат · обновление каждые 10 сек · время МСК'}
           </p>
         </header>
         <div className="px-3 py-2 border-b border-gray-100">

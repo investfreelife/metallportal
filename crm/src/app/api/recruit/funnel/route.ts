@@ -38,11 +38,16 @@ function detectSource(chat_id: string): string {
   return 'other';
 }
 
-export async function GET() {
+export async function GET(req: import('next/server').NextRequest) {
   try {
     const session = await getSession();
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const tenantId = await getTenantId();
+
+    // scope=business → только tgb:* (бизнес-личка)
+    // scope=recruit  → все ОСТАЛЬНЫЕ (бот/вк/мануал) — это рекрутинг-воронка
+    // отсутствие scope → все
+    const scope = req.nextUrl.searchParams.get('scope');
 
     const supabase = await createClient();
     const { data, error } = await supabase
@@ -60,6 +65,10 @@ export async function GET() {
     const map = new Map<string, FunnelItem>();
     for (const m of data ?? []) {
       if (!m.chat_id) continue;
+      // scope-фильтрация по префиксу chat_id
+      const isBusiness = m.chat_id.toLowerCase().startsWith('tgb:');
+      if (scope === 'business' && !isBusiness) continue;
+      if (scope === 'recruit' && isBusiness) continue;
       const existing = map.get(m.chat_id);
       if (!existing) {
         map.set(m.chat_id, {

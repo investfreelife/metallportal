@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getSession, getTenantId } from '@/lib/session';
 import type { DialogMessage, DialogSummary } from '@/lib/recruit/types';
@@ -9,15 +9,22 @@ import type { DialogMessage, DialogSummary } from '@/lib/recruit/types';
  * Список диалогов tenant'а — по одной записи на chat_id, с последним
  * сообщением, счётчиком, текущим stage. Сорт: последний контакт DESC.
  *
+ * scope=business → только tgb:* (Telegram Business — бизнес-личка Сергея)
+ * scope=recruit  → ВСЁ кроме tgb:* (кандидаты из бота / VK / ручные)
+ * без scope     → все
+ *
  * NB: dialog_messages — это лог event'ов (каждое сообщение бот↔кандидат).
  * Группировку считаем здесь в JS: тянем последние N сообщений (5000)
  * и проходим по ним. Объём низкий — кандидаты Столицы, не миллион строк.
  * Для масштаба позже — материализуем view либо table dialog_summaries.
  */
-export async function GET() {
+export const dynamic = 'force-dynamic';
+
+export async function GET(req: NextRequest) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const tenantId = await getTenantId();
+  const scope = req.nextUrl.searchParams.get('scope');
 
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -35,6 +42,9 @@ export async function GET() {
   const map = new Map<string, DialogSummary>();
   for (const m of rows) {
     if (!m.chat_id) continue;
+    const isBusiness = m.chat_id.toLowerCase().startsWith('tgb:');
+    if (scope === 'business' && !isBusiness) continue;
+    if (scope === 'recruit' && isBusiness) continue;
     const existing = map.get(m.chat_id);
     if (!existing) {
       map.set(m.chat_id, {

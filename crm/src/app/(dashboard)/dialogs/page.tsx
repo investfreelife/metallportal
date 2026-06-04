@@ -5,11 +5,11 @@ import DialogsClient from './DialogsClient';
 export const dynamic = 'force-dynamic';
 
 /**
- * /dialogs — переписки бот↔кандидат, чтобы Сергей видел КАЖДЫЙ диалог.
- * Sergey directive 2026-06-03: «нужны диалоги кандидатов».
+ * /dialogs — переписки бот↔кандидат (рекрутинг).
+ * Бизнес-личка (tgb:*) живёт на отдельной странице /business.
  *
- * Данные тянутся клиентом — не SSR, потому что есть автополлинг (10с)
- * и интерактивный выбор чата. На сервере — только session/redirect guard.
+ * Sergey directive 2026-06-04: разделить scope'ы, чтобы не мешать
+ * личные сообщения от Сергея и переписки кандидатов в одном списке.
  */
 export default async function DialogsPage({
   searchParams,
@@ -24,6 +24,7 @@ export default async function DialogsPage({
     <DialogsClient
       initialChatId={sp.chat ?? null}
       tenantName={session.tenant_name ?? null}
+      scope="recruit"
     />
   );
 }

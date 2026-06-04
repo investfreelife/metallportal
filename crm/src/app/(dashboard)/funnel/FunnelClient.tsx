@@ -2,9 +2,10 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { KanbanSquare, RefreshCw, Users, MessageCircle } from 'lucide-react';
+import { KanbanSquare, RefreshCw, Users, MessageCircle, Plus, UserCheck } from 'lucide-react';
 import { FUNNEL_COLUMNS } from '@/lib/recruit/types';
 import { fmtMsk } from '@/lib/tz';
+import AddCandidateModal from './AddCandidateModal';
 
 interface FunnelItem {
   chat_id: string;
@@ -29,11 +30,13 @@ export default function FunnelClient({ tenantName }: Props) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
+  const [promoting, setPromoting] = useState<string | null>(null);
 
   async function reload(silent = false) {
     if (!silent) setRefreshing(true);
     try {
-      const r = await fetch('/api/recruit/funnel', { cache: 'no-store' });
+      const r = await fetch('/api/recruit/funnel?scope=recruit', { cache: 'no-store' });
       const ct = r.headers.get('content-type') || '';
       if (!ct.includes('application/json')) {
         throw new Error(`Сервер ответил не-JSON (HTTP ${r.status})`);
@@ -73,6 +76,28 @@ export default function FunnelClient({ tenantName }: Props) {
     router.push(`/dialogs?chat=${encodeURIComponent(it.chat_id)}`);
   };
 
+  async function promoteToDriver(it: FunnelItem) {
+    if (!confirm(`Перевести «${it.who || it.username || it.chat_id}» в действующие водители?`)) return;
+    setPromoting(it.chat_id);
+    try {
+      const r = await fetch('/api/recruit/funnel/promote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: it.chat_id }),
+      });
+      const j = await r.json();
+      if (!r.ok || j.error) throw new Error(j.error || 'promote failed');
+      await reload(true);
+      if (j.reused) {
+        // уже водитель — ничего особенного
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setPromoting(null);
+    }
+  }
+
   return (
     <div className="flex flex-col h-full bg-gray-50">
       <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200">
@@ -98,6 +123,13 @@ export default function FunnelClient({ tenantName }: Props) {
             <RefreshCw size={12} className={refreshing ? 'animate-spin' : ''} />
             Обновить
           </button>
+          <button
+            onClick={() => setAdding(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-md hover:bg-blue-700"
+          >
+            <Plus size={12} />
+            Добавить кандидата
+          </button>
         </div>
       </header>
 
@@ -105,6 +137,13 @@ export default function FunnelClient({ tenantName }: Props) {
         <div className="mx-6 mt-3 text-xs text-red-700 bg-red-50 border border-red-200 rounded-md px-3 py-2">
           Ошибка: {error}
         </div>
+      )}
+
+      {adding && (
+        <AddCandidateModal
+          onClose={() => setAdding(false)}
+          onAdded={async () => { setAdding(false); await reload(true); }}
+        />
       )}
 
       <div className="flex-1 overflow-x-auto overflow-y-hidden p-6">
@@ -129,7 +168,13 @@ export default function FunnelClient({ tenantName }: Props) {
                     {colItems.length === 0 ? (
                       <p className="text-[11px] text-gray-400 text-center py-6">Пусто</p>
                     ) : colItems.map((it) => (
-                      <Card key={it.chat_id} item={it} onClick={() => openDialog(it)} />
+                      <Card
+                        key={it.chat_id}
+                        item={it}
+                        onClick={() => openDialog(it)}
+                        onPromote={() => promoteToDriver(it)}
+                        promoting={promoting === it.chat_id}
+                      />
                     ))}
                   </div>
                 </div>
@@ -142,30 +187,50 @@ export default function FunnelClient({ tenantName }: Props) {
   );
 }
 
-function Card({ item, onClick }: { item: FunnelItem; onClick: () => void }) {
+function Card({
+  item,
+  onClick,
+  onPromote,
+  promoting,
+}: {
+  item: FunnelItem;
+  onClick: () => void;
+  onPromote: () => void;
+  promoting: boolean;
+}) {
   const displayName = item.who || (item.username ? `@${item.username.replace(/^@/, '')}` : `чат ${item.chat_id}`);
   return (
-    <button
-      onClick={onClick}
-      className="block w-full text-left bg-white border border-gray-200 rounded-md p-2 hover:border-blue-300 hover:shadow-sm transition-all"
-    >
-      <div className="flex items-start justify-between gap-2">
-        <div className="text-sm font-medium text-gray-900 truncate">{displayName}</div>
-        <SourceBadge source={item.source} />
-      </div>
-      {item.last_text && (
-        <div className="text-[11px] text-gray-600 truncate mt-1 leading-snug">
-          {item.last_text}
+    <div className="bg-white border border-gray-200 rounded-md p-2 hover:border-blue-300 hover:shadow-sm transition-all">
+      <button onClick={onClick} className="block w-full text-left">
+        <div className="flex items-start justify-between gap-2">
+          <div className="text-sm font-medium text-gray-900 truncate">{displayName}</div>
+          <SourceBadge source={item.source} />
         </div>
+        {item.last_text && (
+          <div className="text-[11px] text-gray-600 truncate mt-1 leading-snug">
+            {item.last_text}
+          </div>
+        )}
+        <div className="flex items-center justify-between gap-2 mt-1.5 text-[10px] text-gray-500">
+          <span className="flex items-center gap-1">
+            <MessageCircle size={9} />
+            {item.msg_count}
+          </span>
+          <span>{fmtMsk(item.last_at, true)} МСК</span>
+        </div>
+      </button>
+      {(item.stage === 'on_line' || item.stage === 'docs') && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onPromote(); }}
+          disabled={promoting}
+          className="mt-1.5 w-full flex items-center justify-center gap-1 px-2 py-1 text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 rounded hover:bg-emerald-100 disabled:opacity-40"
+          title="Перевести в действующие водители"
+        >
+          <UserCheck size={10} />
+          {promoting ? 'Перевод…' : '✅ В водители'}
+        </button>
       )}
-      <div className="flex items-center justify-between gap-2 mt-1.5 text-[10px] text-gray-500">
-        <span className="flex items-center gap-1">
-          <MessageCircle size={9} />
-          {item.msg_count}
-        </span>
-        <span>{fmtMsk(item.last_at, true)} МСК</span>
-      </div>
-    </button>
+    </div>
   );
 }
 
