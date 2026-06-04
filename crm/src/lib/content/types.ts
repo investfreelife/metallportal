@@ -35,7 +35,12 @@ export interface PhotoOption {
   model?: string | null;
   cost?: number | string | null;
   seed?: number | string | null;
+  /** Тип варианта — для подписи и подсказки «обложка/инфографика». */
+  kind?: 'photo' | 'cover' | 'info' | string | null;
 }
+
+/** Telegram-лимит для альбома. */
+export const CAROUSEL_LIMIT = 10;
 
 export interface ContentPost {
   id: string;
@@ -57,6 +62,12 @@ export interface ContentPost {
   redo: RedoFlag | null;
   feedback: FeedbackEntry[] | null;
   photo_options: PhotoOption[] | null;
+  /**
+   * Карусель — ВЫБРАННЫЕ для поста URL'ы по порядку. Telegram отправит
+   * альбомом если >1. photo_url хранится для обратной совместимости
+   * = photos[0] (если photos непустой).
+   */
+  photos: string[] | null;
   created_at: string;
   updated_at: string;
 }

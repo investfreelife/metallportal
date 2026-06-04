@@ -17,9 +17,13 @@ import {
   Camera,
   Dice5,
   Check,
+  ArrowUp,
+  ArrowDown,
+  Layers,
+  Save,
 } from 'lucide-react';
 import type { ContentPost, PostStatus, FeedbackEntry, RedoFlag, PhotoOption } from '@/lib/content/types';
-import { isPublishable } from '@/lib/content/types';
+import { isPublishable, CAROUSEL_LIMIT } from '@/lib/content/types';
 import { STATUS_LABELS, STATUS_COLORS } from './ContentClient';
 import { toMskInputValue, mskInputToUTC, fmtMsk } from '@/lib/tz';
 
@@ -56,6 +60,62 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
   const redoingPhoto = !!redo.photo;
   const generatingVariants = !!redo.variants;
   const photoOptions: PhotoOption[] = Array.isArray(draft.photo_options) ? draft.photo_options : [];
+
+  // ── Карусель ───────────────────────────────────────────────────────
+  // Локальный state: список URL'ов карусели (порядок задан пользователем).
+  // Инициализация: draft.photos если есть, иначе [photo_url] если есть, иначе [].
+  const initialCarousel = (() => {
+    if (Array.isArray(draft.photos) && draft.photos.length > 0) {
+      return draft.photos.filter((u) => typeof u === 'string' && u);
+    }
+    return draft.photo_url ? [draft.photo_url] : [];
+  })();
+  const [carousel, setCarousel] = useState<string[]>(initialCarousel);
+  // Синхроним carousel когда воркер обновляет draft.photos извне (polling).
+  useEffect(() => {
+    const remote = Array.isArray(draft.photos) ? draft.photos.filter((u) => typeof u === 'string' && u) : null;
+    if (remote && JSON.stringify(remote) !== JSON.stringify(carousel)) {
+      setCarousel(remote);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draft.photos]);
+
+  const isInCarousel = (url: string) => carousel.includes(url);
+  const carouselDirty = JSON.stringify(carousel) !== JSON.stringify(initialCarousel);
+
+  function toggleCarousel(url: string) {
+    if (!url) return;
+    setCarousel((c) => {
+      if (c.includes(url)) return c.filter((u) => u !== url);
+      if (c.length >= CAROUSEL_LIMIT) return c;
+      return [...c, url];
+    });
+  }
+  function moveCarousel(i: number, dir: -1 | 1) {
+    setCarousel((c) => {
+      const j = i + dir;
+      if (j < 0 || j >= c.length) return c;
+      const next = c.slice();
+      [next[i], next[j]] = [next[j], next[i]];
+      return next;
+    });
+  }
+  function removeFromCarousel(i: number) {
+    setCarousel((c) => c.filter((_, idx) => idx !== i));
+  }
+  async function saveCarousel() {
+    setBusy('carousel:save');
+    setError(null);
+    try {
+      await patch({
+        photos: carousel,
+        // photo_url остаётся «обложкой» = первое в карусели (для backward-compat).
+        photo_url: carousel[0] ?? null,
+      });
+    } finally {
+      setBusy(null);
+    }
+  }
 
   // ── Поллинг пока хотя бы один redo-флаг активен ────────────────────
   // Воркер сам переделает body / photo_url / сгенерит photo_options
@@ -434,53 +494,170 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
                   </div>
                 )}
                 {photoOptions.length > 0 && (
-                  <div className="grid grid-cols-3 gap-2">
-                    {photoOptions.map((opt, i) => {
-                      const isCurrent = !!opt?.url && opt.url === draft.photo_url;
-                      const picking = busy === `pick:${opt.url}`;
-                      const cost = opt?.cost == null ? null
-                        : typeof opt.cost === 'number'
-                          ? `$${opt.cost.toFixed(opt.cost < 0.01 ? 4 : 2)}`
-                          : String(opt.cost);
-                      return (
-                        <div
-                          key={i}
-                          className={`relative rounded-md overflow-hidden border bg-gray-50 ${
-                            isCurrent ? 'border-emerald-500 ring-2 ring-emerald-200' : 'border-gray-200'
-                          }`}
-                        >
-                          {opt?.url ? (
-                            <img src={opt.url} alt="" className="w-full aspect-square object-cover" />
-                          ) : (
-                            <div className="w-full aspect-square flex items-center justify-center text-gray-300">
-                              <ImageIcon size={20} />
-                            </div>
-                          )}
-                          {isCurrent && (
-                            <span className="absolute top-1 left-1 inline-flex items-center gap-0.5 text-[9px] px-1 py-0.5 rounded bg-emerald-600 text-white">
-                              <Check size={8} /> выбрано
-                            </span>
-                          )}
-                          <div className="px-1.5 py-1 text-[10px] text-gray-700 border-t border-gray-200 bg-white">
-                            <div className="truncate">{opt?.model ?? 'модель'}</div>
-                            <div className="flex items-center justify-between gap-1">
-                              <span className="text-gray-500">{cost ?? '—'}</span>
-                              {!isCurrent && opt?.url && (
-                                <button
-                                  onClick={() => pickVariant(opt)}
-                                  disabled={picking || saving}
-                                  className="text-[10px] text-blue-600 hover:text-blue-800 font-medium disabled:opacity-40"
-                                >
-                                  {picking ? '…' : '✅ Выбрать'}
-                                </button>
-                              )}
+                  <>
+                    <p className="text-[10px] text-gray-500 mb-1.5">
+                      Можно выбрать несколько (фото + инфографика и т.п.) — Telegram отправит каруселью.
+                    </p>
+                    <div className="grid grid-cols-3 gap-2">
+                      {photoOptions.map((opt, i) => {
+                        const isCurrent = !!opt?.url && opt.url === draft.photo_url;
+                        const inCarousel = !!opt?.url && isInCarousel(opt.url);
+                        const carouselIdx = opt?.url ? carousel.indexOf(opt.url) : -1;
+                        const picking = busy === `pick:${opt.url}`;
+                        const cost = opt?.cost == null ? null
+                          : typeof opt.cost === 'number'
+                            ? `$${opt.cost.toFixed(opt.cost < 0.01 ? 4 : 2)}`
+                            : String(opt.cost);
+                        const kindLabel = opt?.kind === 'info' ? 'инфографика'
+                          : opt?.kind === 'cover' ? 'обложка'
+                          : opt?.kind === 'photo' ? 'фото'
+                          : opt?.kind ?? null;
+                        const atLimit = carousel.length >= CAROUSEL_LIMIT && !inCarousel;
+                        return (
+                          <div
+                            key={i}
+                            className={`relative rounded-md overflow-hidden border bg-gray-50 ${
+                              inCarousel
+                                ? 'border-blue-500 ring-2 ring-blue-200'
+                                : isCurrent
+                                  ? 'border-emerald-500 ring-2 ring-emerald-200'
+                                  : 'border-gray-200'
+                            }`}
+                          >
+                            {opt?.url ? (
+                              <img src={opt.url} alt="" className="w-full aspect-square object-cover" />
+                            ) : (
+                              <div className="w-full aspect-square flex items-center justify-center text-gray-300">
+                                <ImageIcon size={20} />
+                              </div>
+                            )}
+                            {/* checkbox «в карусель» — левый верх */}
+                            {opt?.url && (
+                              <label
+                                title={atLimit ? `Лимит ${CAROUSEL_LIMIT} фото в карусели` : 'Добавить в карусель'}
+                                className={`absolute top-1 left-1 inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded bg-white/95 backdrop-blur-sm border ${
+                                  inCarousel ? 'border-blue-300 text-blue-700' : 'border-gray-200 text-gray-700'
+                                } ${atLimit ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={inCarousel}
+                                  disabled={atLimit}
+                                  onChange={() => toggleCarousel(opt.url)}
+                                  className="w-3 h-3 accent-blue-600"
+                                />
+                                {inCarousel ? <>в карусели {carouselIdx + 1}</> : 'в карусель'}
+                              </label>
+                            )}
+                            {isCurrent && (
+                              <span className="absolute bottom-[34px] right-1 inline-flex items-center gap-0.5 text-[9px] px-1 py-0.5 rounded bg-emerald-600 text-white">
+                                <Check size={8} /> обложка
+                              </span>
+                            )}
+                            <div className="px-1.5 py-1 text-[10px] text-gray-700 border-t border-gray-200 bg-white">
+                              <div className="flex items-center justify-between gap-1 mb-0.5">
+                                <span className="truncate">{opt?.model ?? 'модель'}</span>
+                                {kindLabel && (
+                                  <span className="text-[8px] px-1 rounded bg-gray-100 text-gray-600 border border-gray-200 flex-shrink-0">
+                                    {kindLabel}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex items-center justify-between gap-1">
+                                <span className="text-gray-500">{cost ?? '—'}</span>
+                                {!isCurrent && opt?.url && (
+                                  <button
+                                    onClick={() => pickVariant(opt)}
+                                    disabled={picking || saving}
+                                    className="text-[10px] text-blue-600 hover:text-blue-800 font-medium disabled:opacity-40"
+                                    title="Сделать обложкой (photo_url)"
+                                  >
+                                    {picking ? '…' : '✅ Обложка'}
+                                  </button>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                        );
+                      })}
+                    </div>
+                  </>
                 )}
+              </div>
+            )}
+
+            {/* ── Карусель поста ───────────────────────────────── */}
+            {carousel.length > 0 && (
+              <div className="mt-3 border-t border-gray-100 pt-3">
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide flex items-center gap-1.5">
+                    <Layers size={11} />
+                    Карусель поста ({carousel.length}{carousel.length >= CAROUSEL_LIMIT ? ` · лимит ${CAROUSEL_LIMIT}` : ''})
+                  </label>
+                  <button
+                    onClick={() => setCarousel([])}
+                    className="text-[10px] text-gray-500 hover:text-red-600"
+                    disabled={saving}
+                  >
+                    Очистить
+                  </button>
+                </div>
+                <p className="text-[10px] text-gray-500 mb-2">
+                  {carousel.length === 1
+                    ? 'Telegram отправит одно фото (обложка).'
+                    : `Telegram отправит альбомом ${carousel.length} фото. Первое — обложка.`}
+                </p>
+                <ol className="space-y-1.5">
+                  {carousel.map((url, idx) => (
+                    <li
+                      key={url + idx}
+                      className="flex items-center gap-2 bg-white border border-gray-200 rounded-md px-2 py-1.5"
+                    >
+                      <span className="inline-flex items-center justify-center w-5 h-5 bg-blue-600 text-white text-[10px] font-bold rounded-full flex-shrink-0">
+                        {idx + 1}
+                      </span>
+                      <img src={url} alt="" className="w-10 h-10 object-cover rounded flex-shrink-0" />
+                      <div className="flex-1 text-[10px] text-gray-500 truncate font-mono">
+                        {url.split('/').slice(-1)[0]?.slice(0, 60) ?? url.slice(0, 60)}
+                      </div>
+                      <div className="flex items-center gap-0.5 flex-shrink-0">
+                        <button
+                          onClick={() => moveCarousel(idx, -1)}
+                          disabled={idx === 0}
+                          className="p-1 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                          title="Вверх"
+                        >
+                          <ArrowUp size={12} />
+                        </button>
+                        <button
+                          onClick={() => moveCarousel(idx, 1)}
+                          disabled={idx === carousel.length - 1}
+                          className="p-1 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                          title="Вниз"
+                        >
+                          <ArrowDown size={12} />
+                        </button>
+                        <button
+                          onClick={() => removeFromCarousel(idx)}
+                          className="p-1 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded"
+                          title="Убрать из карусели"
+                        >
+                          <X size={12} />
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+                <div className="mt-2 flex items-center justify-end">
+                  <button
+                    onClick={saveCarousel}
+                    disabled={!carouselDirty || busy === 'carousel:save' || saving}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-md hover:bg-blue-700 disabled:opacity-40"
+                  >
+                    <Save size={12} />
+                    {busy === 'carousel:save' ? 'Сохранение…' : 'Сохранить карусель'}
+                  </button>
+                </div>
               </div>
             )}
 
