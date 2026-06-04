@@ -168,7 +168,13 @@ export default function CompetitorAdsClient({ tenantName: _tn }: Props) {
       {error && (
         <div className="text-xs text-red-700 bg-red-50 border border-red-200 rounded-md px-3 py-2 flex items-start gap-2">
           <AlertCircle size={14} className="mt-0.5 flex-shrink-0" />
-          {error}
+          <span className="flex-1">{error}</span>
+          <button
+            onClick={() => reload()}
+            className="flex-shrink-0 px-2 py-0.5 text-[11px] bg-white border border-red-300 text-red-700 font-medium rounded hover:bg-red-100"
+          >
+            🔄 Повторить
+          </button>
         </div>
       )}
 

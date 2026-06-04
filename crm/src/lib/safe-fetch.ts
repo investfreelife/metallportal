@@ -27,11 +27,16 @@ export class FetchJsonError extends Error {
   }
 }
 
-export async function safeFetchJson<T = unknown>(input: string, init?: RequestInit): Promise<T> {
+/** Авто-ретрай на Vercel-challenge: тихая пауза + 1 повтор (вернёт ту же ошибку
+ *  если firewall всё ещё держит). Достаточно для типичной ситуации «cookie
+ *  _vcrcs ещё не успела поставиться». */
+const VC_RETRY_DELAY_MS = 800;
+const VC_MAX_RETRIES = 2; // 1 исходный + 2 ретрая = 3 попытки максимум
+
+async function singleAttempt<T = unknown>(input: string, init?: RequestInit): Promise<T> {
   const r = await fetch(input, { cache: 'no-store', credentials: 'same-origin', ...init });
   const ct = r.headers.get('content-type') || '';
 
-  // ── 401: вне зависимости от content-type — сессия истекла ───────
   if (r.status === 401) {
     throw new FetchJsonError('Сессия истекла. Войди заново (выйти → войти).', {
       status: 401, isAuth: true,
@@ -40,11 +45,10 @@ export async function safeFetchJson<T = unknown>(input: string, init?: RequestIn
 
   if (!ct.includes('application/json')) {
     const text = await r.text().catch(() => '');
-    // ── 403 + Vercel challenge HTML ───────────────────────────────
     const isVc =
       r.headers.has('x-vercel-challenge-token') ||
       text.includes('Vercel Security Checkpoint') ||
-      /data-astro-cid-nbv56vs3/.test(text); // маркер challenge-страницы Vercel
+      /data-astro-cid-nbv56vs3/.test(text);
     if (r.status === 403 && isVc) {
       throw new FetchJsonError(
         '🛡 Vercel защита: обнови страницу (F5) и попробуй снова. Firewall кратко перепроверяет браузер.',
@@ -63,4 +67,22 @@ export async function safeFetchJson<T = unknown>(input: string, init?: RequestIn
     throw new FetchJsonError(errMsg, { status: r.status });
   }
   return j as T;
+}
+
+export async function safeFetchJson<T = unknown>(input: string, init?: RequestInit): Promise<T> {
+  let lastError: unknown = null;
+  for (let i = 0; i <= VC_MAX_RETRIES; i++) {
+    try {
+      return await singleAttempt<T>(input, init);
+    } catch (e) {
+      lastError = e;
+      // Ретрай ТОЛЬКО на Vercel-challenge — sessions/json-errors пробрасываем сразу.
+      if (e instanceof FetchJsonError && e.isVercelChallenge && i < VC_MAX_RETRIES) {
+        await new Promise((res) => setTimeout(res, VC_RETRY_DELAY_MS * (i + 1)));
+        continue;
+      }
+      throw e;
+    }
+  }
+  throw lastError;
 }
