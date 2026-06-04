@@ -12,6 +12,20 @@ export type PostStatus =
   | 'rejected'        // отклонён, в архив
   | 'error';          // ошибка публикации, см. note
 
+/** Запись истории «переделанных» правок — пишется фоновым воркером. */
+export interface FeedbackEntry {
+  target: 'text' | 'photo';
+  comment: string;
+  applied_at?: string | null;
+}
+
+/** Флаг «переделать» — кладёт фронт, читает воркер. После переделки воркер
+ *  сбрасывает соответствующий ключ. */
+export interface RedoFlag {
+  text?: boolean;
+  photo?: boolean;
+}
+
 export interface ContentPost {
   id: string;
   tenant_id: string;
@@ -21,12 +35,16 @@ export interface ContentPost {
   photo_url: string | null;
   photo_tz: string | null;
   channel: string | null;
-  status: PostStatus;
+  status: PostStatus | string | null;
   scheduled_at: string | null;
   published_at: string | null;
   approved_text: boolean | null;
   approved_final: boolean | null;
   note: string | null;
+  comment_text: string | null;
+  comment_photo: string | null;
+  redo: RedoFlag | null;
+  feedback: FeedbackEntry[] | null;
   created_at: string;
   updated_at: string;
 }

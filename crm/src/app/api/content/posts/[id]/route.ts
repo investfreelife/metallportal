@@ -9,11 +9,17 @@ import { getSession, getTenantId } from '@/lib/session';
  *
  * Допустимые поля:
  *   title, body, photo_url, photo_tz, channel, status,
- *   scheduled_at, approved_text, approved_final, note
+ *   scheduled_at, approved_text, approved_final, note,
+ *   comment_text, comment_photo, redo, feedback
+ *
+ * Sergey directive 2026-06-04: фронт ставит redo:{text:true} и
+ * comment_text — фоновый воркер переделывает body, потом сам сбрасывает
+ * redo.text и записывает в feedback[]. Аналогично для photo.
  */
 const ALLOWED = new Set([
   'title', 'body', 'photo_url', 'photo_tz', 'channel',
   'status', 'scheduled_at', 'approved_text', 'approved_final', 'note',
+  'comment_text', 'comment_photo', 'redo', 'feedback',
 ]);
 
 export async function PATCH(

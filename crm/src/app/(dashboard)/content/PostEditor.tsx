@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   X,
   Upload,
@@ -10,11 +10,18 @@ import {
   Clock,
   AlertCircle,
   Image as ImageIcon,
+  RefreshCw,
+  RotateCcw,
+  History,
+  Pencil,
+  Camera,
 } from 'lucide-react';
-import type { ContentPost, PostStatus } from '@/lib/content/types';
+import type { ContentPost, PostStatus, FeedbackEntry, RedoFlag } from '@/lib/content/types';
 import { isPublishable } from '@/lib/content/types';
 import { STATUS_LABELS, STATUS_COLORS } from './ContentClient';
 import { toMskInputValue, mskInputToUTC, fmtMsk } from '@/lib/tz';
+
+const POLL_MS = 10_000;
 
 interface Props {
   post: ContentPost;
@@ -30,7 +37,7 @@ interface Props {
  *  пока нет photo_url И approved_final=true.
  */
 export default function PostEditor({ post, activeConnections, onClose, onChanged, onDeleted }: Props) {
-  const [draft, setDraft] = useState(post);
+  const [draft, setDraft] = useState<ContentPost>(post);
   const [saving, setSaving] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -42,6 +49,31 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
 
   const status = (draft.status as PostStatus) ?? 'draft';
   const canPublish = isPublishable(draft);
+  const redo: RedoFlag = (draft.redo ?? {}) as RedoFlag;
+  const redoingText = !!redo.text;
+  const redoingPhoto = !!redo.photo;
+
+  // ── Поллинг пока хотя бы один redo-флаг активен ────────────────────
+  // Воркер сам переделает body / photo_url и сбросит redo. Фронт ждёт.
+  useEffect(() => {
+    if (!redoingText && !redoingPhoto) return;
+    const id = setInterval(async () => {
+      try {
+        const r = await fetch(`/api/content/posts?id=${post.id}`, { cache: 'no-store' });
+        // Дёшёво: список + filter по id (отдельного GET роута пока нет).
+        // Если возвращает 200 и есть наш пост — обновим draft.
+        const j = await r.json().catch(() => null);
+        const updated = (j?.posts ?? []).find((p: ContentPost) => p.id === post.id);
+        if (updated) {
+          setDraft(updated);
+          if (updated.scheduled_at) setScheduleAt(toMskInputValue(updated.scheduled_at));
+        }
+      } catch {
+        // тихо игнорим — следующий тик попробует
+      }
+    }, POLL_MS);
+    return () => clearInterval(id);
+  }, [redoingText, redoingPhoto, post.id]);
 
   async function patch(body: Partial<ContentPost>) {
     setSaving(true);
@@ -108,6 +140,45 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
     await patch({ status: 'rejected' as PostStatus });
   }
 
+  /**
+   * Поставить redo-флаг для воркера. Сохраняет comment + redo + status='redo'.
+   * Воркер сам:
+   *  • переделает body (если target='text') или photo_url (target='photo')
+   *  • запишет правку в feedback[]
+   *  • сбросит redo.<target>=false
+   *  • поставит status обратно (text_review / photo_review)
+   */
+  async function requestRedo(target: 'text' | 'photo', comment: string) {
+    if (!comment.trim()) {
+      setError(`Опиши, что не так с ${target === 'text' ? 'текстом' : 'фото'} — короткой фразы достаточно.`);
+      return;
+    }
+    setBusy(`redo:${target}`);
+    setError(null);
+    const newRedo: RedoFlag = { ...(draft.redo as RedoFlag | null ?? {}), [target]: true };
+    const body: Partial<ContentPost> = {
+      redo: newRedo,
+      status: 'redo' as PostStatus,
+    };
+    if (target === 'text') body.comment_text = comment.trim();
+    else body.comment_photo = comment.trim();
+    try {
+      const r = await fetch(`/api/content/posts/${post.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const j = await r.json();
+      if (!r.ok || j.error) throw new Error(j.error || 'redo failed');
+      setDraft(j.post);
+      await onChanged(j.post);
+    } catch (e: any) {
+      setError(String(e.message || e));
+    } finally {
+      setBusy(null);
+    }
+  }
+
   async function remove() {
     if (!confirm('Удалить пост?')) return;
     setBusy('delete');
@@ -151,36 +222,82 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
             />
           </section>
 
-          {/* ── Body ──────────────────────────────────────────────── */}
+          {/* ── Body + комментарий + переделать ───────────────────── */}
           <section className="px-4 py-3">
-            <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Текст поста</label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide flex items-center gap-1.5">
+                <Pencil size={11} />
+                Текст поста
+              </label>
+              {draft.approved_text && (
+                <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700">
+                  <CheckCircle2 size={10} /> Согласован
+                </span>
+              )}
+            </div>
             <textarea
               value={draft.body ?? ''}
               onChange={(e) => setDraft({ ...draft, body: e.target.value })}
               onBlur={(e) => patch({ body: e.target.value })}
               rows={6}
-              className="mt-1 w-full px-2.5 py-2 text-sm border border-gray-200 rounded-md focus:border-blue-500 focus:outline-none resize-y"
+              disabled={redoingText}
+              className={`mt-1 w-full px-2.5 py-2 text-sm border border-gray-200 rounded-md focus:border-blue-500 focus:outline-none resize-y ${
+                redoingText ? 'bg-violet-50 border-violet-200 opacity-60' : ''
+              }`}
               placeholder="Текст поста (поддерживается HTML для Telegram: b/i/u/a/code/pre)"
             />
             <div className="mt-1 text-[10px] text-gray-400">{(draft.body ?? '').length} симв.</div>
+
+            {redoingText ? (
+              <div className="mt-2 flex items-center gap-2 text-xs text-violet-700 bg-violet-50 border border-violet-200 rounded px-2.5 py-1.5">
+                <RefreshCw size={12} className="animate-spin" />
+                <span>
+                  🔄 Воркер переделывает текст… {draft.comment_text && <em className="text-violet-600">(твой коммент: {draft.comment_text})</em>}
+                </span>
+              </div>
+            ) : (
+              <RedoBlock
+                kind="text"
+                placeholder="Что не так с текстом? «Сократи в 2 раза», «убери штампы», «сделай теплее»…"
+                busyKey={busy}
+                onSubmit={(c) => requestRedo('text', c)}
+              />
+            )}
           </section>
 
-          {/* ── Photo ─────────────────────────────────────────────── */}
+          {/* ── Photo + комментарий + переделать ──────────────────── */}
           <section className="px-4 py-3 border-t border-gray-100">
             <div className="flex items-center justify-between mb-2">
-              <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Фото</label>
-              {draft.photo_url && (
-                <button
-                  onClick={() => patch({ photo_url: null, status: 'awaiting_photo' as PostStatus })}
-                  className="text-[10px] text-red-500 hover:text-red-700"
-                  disabled={saving}
-                >
-                  Удалить
-                </button>
-              )}
+              <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide flex items-center gap-1.5">
+                <Camera size={11} />
+                Фото
+              </label>
+              <div className="flex items-center gap-2">
+                {draft.approved_final && (
+                  <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700">
+                    <CheckCircle2 size={10} /> Финал ок
+                  </span>
+                )}
+                {draft.photo_url && !redoingPhoto && (
+                  <button
+                    onClick={() => patch({ photo_url: null, status: 'awaiting_photo' as PostStatus })}
+                    className="text-[10px] text-red-500 hover:text-red-700"
+                    disabled={saving}
+                  >
+                    Удалить
+                  </button>
+                )}
+              </div>
             </div>
 
-            {draft.photo_url ? (
+            {redoingPhoto ? (
+              <div className="rounded-md border border-violet-200 bg-violet-50 p-4 text-xs text-violet-700 flex items-center gap-2">
+                <RefreshCw size={14} className="animate-spin flex-shrink-0" />
+                <span>
+                  🔄 Воркер генерирует новое фото… {draft.comment_photo && <em className="text-violet-600">(твой коммент: {draft.comment_photo})</em>}
+                </span>
+              </div>
+            ) : draft.photo_url ? (
               <div className="rounded-md overflow-hidden border border-gray-200 bg-gray-50">
                 <img src={draft.photo_url} alt="" className="w-full max-h-72 object-contain" />
               </div>
@@ -213,13 +330,48 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
             />
             <button
               onClick={() => fileRef.current?.click()}
-              disabled={busy === 'upload'}
+              disabled={busy === 'upload' || redoingPhoto}
               className="mt-2 flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 disabled:opacity-50"
             >
               <Upload size={12} />
               {draft.photo_url ? 'Заменить фото' : 'Загрузить фото'}
             </button>
+
+            {!redoingPhoto && (
+              <RedoBlock
+                kind="photo"
+                placeholder="Что не так с фото? «Другой ракурс», «без людей», «больше неба»…"
+                busyKey={busy}
+                onSubmit={(c) => requestRedo('photo', c)}
+              />
+            )}
           </section>
+
+          {/* ── История правок (feedback[]) ──────────────────────── */}
+          {Array.isArray(draft.feedback) && draft.feedback.length > 0 && (
+            <section className="px-4 py-3 border-t border-gray-100">
+              <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide flex items-center gap-1.5">
+                <History size={11} />
+                История правок ({draft.feedback.length})
+              </label>
+              <ul className="mt-1.5 space-y-1.5">
+                {draft.feedback.slice().reverse().map((f: FeedbackEntry, i) => (
+                  <li
+                    key={i}
+                    className="text-[11px] bg-gray-50 border border-gray-200 rounded-md px-2 py-1.5"
+                  >
+                    <span className={`inline-block text-[9px] px-1 py-0 mr-1.5 rounded border ${f.target === 'text' ? 'bg-blue-100 text-blue-700 border-blue-200' : 'bg-violet-100 text-violet-700 border-violet-200'}`}>
+                      {f.target === 'text' ? 'ТЕКСТ' : 'ФОТО'}
+                    </span>
+                    <span className="text-gray-700 break-words">{f.comment}</span>
+                    {f.applied_at && (
+                      <span className="block text-[9px] text-gray-400 mt-0.5">{fmtMsk(f.applied_at, true)} МСК</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           {/* ── Channel ───────────────────────────────────────────── */}
           <section className="px-4 py-3 border-t border-gray-100">
@@ -338,6 +490,56 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
           </button>
         </footer>
       </aside>
+    </div>
+  );
+}
+
+/**
+ * Блок «коммент + кнопка переделать» — общий для текста и фото.
+ * Локальный state для textarea, чтобы не сохранять при каждом нажатии.
+ */
+function RedoBlock({
+  kind,
+  placeholder,
+  busyKey,
+  onSubmit,
+}: {
+  kind: 'text' | 'photo';
+  placeholder: string;
+  busyKey: string | null;
+  onSubmit: (comment: string) => void | Promise<void>;
+}) {
+  const [comment, setComment] = useState('');
+  const busy = busyKey === `redo:${kind}`;
+  return (
+    <div className="mt-2.5 rounded-md border border-gray-200 bg-gray-50/50 p-2.5">
+      <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide flex items-center gap-1.5">
+        <RotateCcw size={10} />
+        Комментарий к {kind === 'text' ? 'тексту' : 'фото'}
+      </label>
+      <textarea
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        rows={2}
+        placeholder={placeholder}
+        className="mt-1 w-full px-2 py-1.5 text-xs bg-white border border-gray-200 rounded focus:border-blue-500 focus:outline-none resize-y"
+      />
+      <div className="flex items-center justify-end mt-1.5">
+        <button
+          onClick={async () => { await onSubmit(comment); setComment(''); }}
+          disabled={busy || !comment.trim()}
+          className={`flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium rounded-md disabled:opacity-40 ${
+            kind === 'text'
+              ? 'bg-blue-600 text-white hover:bg-blue-700'
+              : 'bg-violet-600 text-white hover:bg-violet-700'
+          }`}
+        >
+          {busy
+            ? <RefreshCw size={11} className="animate-spin" />
+            : kind === 'text' ? <Pencil size={11} /> : <Camera size={11} />}
+          {busy ? 'Отправка…' : kind === 'text' ? '✏️ Переделать текст' : '🖼 Переделать фото'}
+        </button>
+      </div>
     </div>
   );
 }
