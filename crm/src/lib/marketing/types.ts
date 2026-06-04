@@ -25,6 +25,7 @@ export interface AdVariant {
   utm: string | null;
   status: string | null;
   sent_count: number | null;
+  note: string | null;
   created_at: string;
 }
 

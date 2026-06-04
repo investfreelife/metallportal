@@ -5,7 +5,7 @@ import { buildUtm } from '@/lib/marketing/types';
 
 export const dynamic = 'force-dynamic';
 
-const ALLOWED = new Set(['label', 'text', 'photo_url', 'status']);
+const ALLOWED = new Set(['label', 'text', 'photo_url', 'status', 'note']);
 
 export async function PATCH(
   req: NextRequest,
@@ -50,7 +50,7 @@ export async function PATCH(
       .update(patch)
       .eq('id', id)
       .eq('tenant_id', tenantId)
-      .select('id, campaign_id, label, text, photo_url, utm, status, sent_count, created_at')
+      .select('id, campaign_id, label, text, photo_url, utm, status, sent_count, note, created_at')
       .single();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     if (!data) return NextResponse.json({ error: 'Не найдено' }, { status: 404 });

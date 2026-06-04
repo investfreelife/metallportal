@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Megaphone, Plus, ArrowRight, AlertCircle, X, RefreshCw, Check } from 'lucide-react';
+import { Megaphone, Plus, ArrowRight, AlertCircle, X, RefreshCw, Check, Target } from 'lucide-react';
 import type { Campaign } from '@/lib/marketing/types';
 import { CAMPAIGN_STATUS_LABELS } from '@/lib/marketing/types';
 import { fmtMsk } from '@/lib/tz';
+import StrategyClient from './StrategyClient';
 
 interface Props { tenantName: string | null }
 
@@ -23,12 +24,15 @@ async function safeFetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   return j as T;
 }
 
+type Tab = 'strategy' | 'campaigns';
+
 export default function MarketingListClient({ tenantName }: Props) {
   const router = useRouter();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  const [tab, setTab] = useState<Tab>('strategy');
 
   async function reload() {
     try {
@@ -52,20 +56,36 @@ export default function MarketingListClient({ tenantName }: Props) {
             Маркетинг{tenantName ? ` · ${tenantName}` : ''}
           </h1>
           <p className="text-xs text-gray-500 mt-0.5">
-            Рекламные кампании с A/B-вариантами и посевом в Telegram-группы. Время МСК.
+            Стратегия + Кампании (A/B-варианты, посев в Telegram-группы). Время МСК.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={reload} className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-gray-200 text-gray-700 text-xs font-medium rounded-md hover:bg-gray-50">
-            <RefreshCw size={12} />
-            Обновить
-          </button>
-          <button onClick={() => setCreating(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-md hover:bg-blue-700">
-            <Plus size={14} />
-            Новая кампания
-          </button>
+          {tab === 'campaigns' && (
+            <>
+              <button onClick={reload} className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-gray-200 text-gray-700 text-xs font-medium rounded-md hover:bg-gray-50">
+                <RefreshCw size={12} />
+                Обновить
+              </button>
+              <button onClick={() => setCreating(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-md hover:bg-blue-700">
+                <Plus size={14} />
+                Новая кампания
+              </button>
+            </>
+          )}
         </div>
       </header>
+
+      {/* ── Tabs: Стратегия / Кампании ───────────────────────────── */}
+      <div className="flex items-center gap-1 px-6 bg-white border-b border-gray-200">
+        <TabBtn active={tab === 'strategy'} onClick={() => setTab('strategy')}>
+          <Target size={12} />
+          Стратегия
+        </TabBtn>
+        <TabBtn active={tab === 'campaigns'} onClick={() => setTab('campaigns')}>
+          <Megaphone size={12} />
+          Кампании ({campaigns.length})
+        </TabBtn>
+      </div>
 
       {error && (
         <div className="mx-6 mt-3 text-xs text-red-700 bg-red-50 border border-red-200 rounded-md px-3 py-2 flex items-start gap-2">
@@ -74,7 +94,9 @@ export default function MarketingListClient({ tenantName }: Props) {
       )}
 
       <div className="flex-1 overflow-auto p-6">
-        {loading ? (
+        {tab === 'strategy' ? (
+          <StrategyClient tenantName={tenantName} />
+        ) : loading ? (
           <p className="text-xs text-gray-400 text-center py-12">Загрузка…</p>
         ) : campaigns.length === 0 ? (
           <EmptyState onCreate={() => setCreating(true)} />
@@ -189,6 +211,19 @@ function CreateForm({ onClose, onCreated }: { onClose: () => void; onCreated: (c
         </footer>
       </div>
     </div>
+  );
+}
+
+function TabBtn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium border-b-2 transition-colors ${
+        active ? 'border-blue-600 text-blue-700' : 'border-transparent text-gray-600 hover:text-gray-900'
+      }`}
+    >
+      {children}
+    </button>
   );
 }
 

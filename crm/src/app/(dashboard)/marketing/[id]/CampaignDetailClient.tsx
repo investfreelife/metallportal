@@ -428,11 +428,115 @@ function VariantCard({ variant, onChanged }: { variant: AdVariant; onChanged: ()
           </button>
         </div>
 
+        {/* ── Согласование «✅ Ок» / «✏️ Переделать» ───────────── */}
+        <VariantApproveBlock variant={variant} onChanged={onChanged} />
+
         <div className="border-t border-gray-100 pt-2 text-[10px] text-gray-400 flex items-center justify-between">
           <span>Отправлено: {fmtNum(variant.sent_count)}</span>
           <span>{fmtMsk(variant.created_at, false)} МСК</span>
         </div>
       </div>
+    </div>
+  );
+}
+
+function VariantApproveBlock({ variant, onChanged }: { variant: AdVariant; onChanged: () => void | Promise<void> }) {
+  const [reviseOpen, setReviseOpen] = useState(false);
+  const [note, setNote] = useState(variant.note ?? '');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const status = variant.status ?? 'draft';
+
+  async function patch(body: Partial<AdVariant>) {
+    setBusy(true); setError(null);
+    try {
+      await safeFetchJson(`/api/recruit/variants/${variant.id}`, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+      });
+      await onChanged();
+      if (body.status === 'revise') setReviseOpen(false);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="border-t border-gray-100 pt-2 space-y-1.5">
+      {status === 'revise' && variant.note && (
+        <div className="text-[10px] text-orange-800 bg-orange-50 border border-orange-200 rounded px-2 py-1">
+          <strong>На правке:</strong> {variant.note}
+        </div>
+      )}
+      {error && (
+        <div className="text-[10px] text-red-700 bg-red-50 border border-red-200 rounded px-2 py-1">{error}</div>
+      )}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1.5">
+          {status === 'approved' && (
+            <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded border bg-emerald-100 text-emerald-700 border-emerald-200">
+              ✓ согласовано
+            </span>
+          )}
+          {status === 'revise' && (
+            <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded border bg-orange-100 text-orange-700 border-orange-200">
+              ✏️ на правке
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-1">
+          {!reviseOpen ? (
+            <button
+              onClick={() => setReviseOpen(true)}
+              disabled={busy}
+              className="flex items-center gap-1 px-2 py-0.5 text-[10px] text-orange-700 border border-orange-300 rounded hover:bg-orange-50 disabled:opacity-40"
+            >
+              ✏️ Переделать
+            </button>
+          ) : null}
+          {status !== 'approved' && (
+            <button
+              onClick={() => patch({ status: 'approved', note: null })}
+              disabled={busy}
+              className="flex items-center gap-1 px-2 py-0.5 text-[10px] bg-emerald-600 text-white rounded hover:bg-emerald-700 disabled:opacity-40"
+            >
+              ✅ Ок
+            </button>
+          )}
+          {status === 'approved' && (
+            <button
+              onClick={() => patch({ status: 'draft', note: null })}
+              disabled={busy}
+              className="flex items-center gap-1 px-2 py-0.5 text-[10px] text-gray-600 hover:bg-gray-100 rounded"
+              title="Снять согласование"
+            >
+              ↩ Снять
+            </button>
+          )}
+        </div>
+      </div>
+      {reviseOpen && (
+        <div className="space-y-1">
+          <textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            rows={2}
+            placeholder="Что переделать?"
+            className="w-full px-2 py-1.5 text-[11px] border border-orange-200 rounded focus:border-orange-400 focus:outline-none resize-y"
+          />
+          <div className="flex items-center justify-end gap-1.5">
+            <button onClick={() => { setReviseOpen(false); setNote(variant.note ?? ''); }} className="px-2 py-0.5 text-[10px] text-gray-700 hover:bg-gray-100 rounded">Отмена</button>
+            <button
+              onClick={() => patch({ status: 'revise', note: note.trim() })}
+              disabled={busy || !note.trim()}
+              className="px-2 py-0.5 text-[10px] bg-orange-500 text-white rounded hover:bg-orange-600 disabled:opacity-40"
+            >
+              {busy ? '…' : '✏️ Поправить'}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

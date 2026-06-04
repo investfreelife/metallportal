@@ -26,7 +26,7 @@ export async function GET(
         .maybeSingle(),
       supabase
         .from('ad_variants')
-        .select('id, campaign_id, label, text, photo_url, utm, status, sent_count, created_at')
+        .select('id, campaign_id, label, text, photo_url, utm, status, sent_count, note, created_at')
         .eq('campaign_id', id)
         .eq('tenant_id', tenantId)
         .order('label', { ascending: true })
