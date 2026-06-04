@@ -3,6 +3,7 @@ import { getSession, getTenantId } from '@/lib/session'
 import { createClient } from '@/lib/supabase/server'
 import Sidebar from '@/components/layout/Sidebar'
 import BrainStatusBanner from '@/components/layout/BrainStatusBanner'
+import BrainBox from '@/components/layout/BrainBox'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession()
@@ -41,9 +42,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
         industry={session.industry}
         tenantName={session.tenant_name}
       />
-      <main className="flex-1 overflow-auto bg-gray-50">
+      <main className="flex-1 flex flex-col bg-gray-50 min-w-0">
         <BrainStatusBanner />
-        {children}
+        <div className="flex-1 overflow-auto min-h-0">
+          {children}
+        </div>
+        <BrainBox />
       </main>
     </div>
   )
