@@ -94,6 +94,8 @@ const STATUS_LABELS: Record<string, string> = {
   found: '🔍 найдена',
   analyzed: '📋 разобрана',
   pending_admin: '⏳ ждём админа',
+  negotiation: '💬 переговоры',
+  pending: '🕒 неподтверждённая',
   paid: '💰 платная',
   diaspora: '🌐 диаспора',
   ready: '✅ готова',
