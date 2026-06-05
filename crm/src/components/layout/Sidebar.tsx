@@ -118,6 +118,7 @@ const NAV_TAXI: NavSection[] = [
       { href: '/questions', label: 'Вопросы', icon: HelpCircle, badgeKey: 'open_questions' },
       { href: '/kb', label: 'База знаний', icon: BookOpen },
       { href: '/marketing', label: '📣 Маркетинг', icon: Megaphone },
+      { href: '/marketing-planner', label: '📅 Посев-планировщик', icon: CalendarDays },
     ],
   },
   {
