@@ -115,6 +115,10 @@ export async function GET(req: NextRequest) {
         const postMode = str(cfg.post_mode);      // free | bot_paid | readonly
         const about = str(cfg.about);
         const joined = bool(cfg.joined);
+        // Новые поля парсера: статус наших постов / правила / условие подписки.
+        const postRejected = bool(cfg.post_rejected); // наши посты удаляют/забанили → не постим
+        const rules = str(cfg.rules);                 // правила/описание группы
+        const requiredChannel = str(cfg.required_channel); // username без @, нужна подписка
         const country = str(cfg.country) ?? null;
         const foundQuery = str(cfg.found_query) ?? null;
         // Город = последнее непустое слово запроса, если его можно угадать
@@ -138,6 +142,10 @@ export async function GET(req: NextRequest) {
           post_mode: postMode,
           about,
           joined,
+          post_rejected: postRejected,
+          rules,
+          required_channel: requiredChannel,
+          required_link: requiredChannel ? `https://t.me/${requiredChannel.replace(/^@/, '')}` : null,
           source: str(cfg.source) ?? null,
           last_sync_at: r.last_sync_at,
         };
@@ -154,6 +162,7 @@ export async function GET(req: NextRequest) {
       postable: normalized.filter((r) => r.can_post === true).length,
       readonly: normalized.filter((r) => r.can_post === false).length,
       bot_paid: normalized.filter((r) => !!r.ad_contact).length,
+      rejected: normalized.filter((r) => r.post_rejected === true).length,
     };
 
     // Фильтры
@@ -176,6 +185,7 @@ export async function GET(req: NextRequest) {
     if (postFilter === 'yes') filtered = filtered.filter((r) => r.can_post === true);
     else if (postFilter === 'no') filtered = filtered.filter((r) => r.can_post === false);
     else if (postFilter === 'paid') filtered = filtered.filter((r) => !!r.ad_contact);
+    else if (postFilter === 'rejected') filtered = filtered.filter((r) => r.post_rejected === true);
 
     // Сортировка
     const sign = dir === 'asc' ? 1 : -1;

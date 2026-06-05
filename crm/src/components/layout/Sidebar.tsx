@@ -30,6 +30,7 @@ import {
   HelpCircle,
   BookOpen,
   MailOpen,
+  Lightbulb,
 } from 'lucide-react'
 
 type NavItem = {
@@ -84,6 +85,7 @@ const NAV_METAL: NavSection[] = [
     items: [
       { href: '/content-plan', label: 'Контент-план', icon: ListChecks },
       { href: '/content', label: 'Планировщик', icon: CalendarDays },
+      { href: '/content-ideas', label: '💡 Инфо-поводы', icon: Lightbulb },
       { href: '/seed-plan', label: '📅 Посев-план', icon: CalendarClock },
       { href: '/connections', label: 'Связи', icon: Network },
     ],
@@ -142,6 +144,7 @@ const NAV_TAXI: NavSection[] = [
     items: [
       { href: '/content-plan', label: 'Контент-план', icon: ListChecks },
       { href: '/content', label: 'Планировщик', icon: CalendarDays },
+      { href: '/content-ideas', label: '💡 Инфо-поводы', icon: Lightbulb },
       { href: '/seed-plan', label: '📅 Посев-план', icon: CalendarClock },
       { href: '/connections', label: 'Связи', icon: Network },
     ],

@@ -40,13 +40,17 @@ interface ChannelItem {
   post_mode: string | null;
   about: string | null;
   joined: boolean | null;
+  post_rejected: boolean | null;
+  rules: string | null;
+  required_channel: string | null;
+  required_link: string | null;
   source: string | null;
   last_sync_at: string | null;
 }
 
 interface ListResponse {
   items: ChannelItem[];
-  summary: { total: number; small: number; mid: number; large: number; no_members: number; joined: number; postable: number; readonly: number; bot_paid: number };
+  summary: { total: number; small: number; mid: number; large: number; no_members: number; joined: number; postable: number; readonly: number; bot_paid: number; rejected: number };
   page: { page: number; per: number; total: number; pages: number };
 }
 
@@ -90,7 +94,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
   const [size, setSize] = useState<'' | 'small' | 'mid' | 'large'>('');
   const [joinedF, setJoinedF] = useState<'' | 'yes' | 'no'>('');
   const [hasMembers, setHasMembers] = useState<'' | 'yes' | 'no'>('');
-  const [postF, setPostF] = useState<'' | 'yes' | 'no' | 'paid'>('');
+  const [postF, setPostF] = useState<'' | 'yes' | 'no' | 'paid' | 'rejected'>('');
   const [sort, setSort] = useState<'members' | 'name'>('members');
   const [dir, setDir] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
@@ -180,7 +184,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
   }
 
   const items = resp?.items ?? [];
-  const summary = resp?.summary ?? { total: 0, small: 0, mid: 0, large: 0, no_members: 0, joined: 0, postable: 0, readonly: 0, bot_paid: 0 };
+  const summary = resp?.summary ?? { total: 0, small: 0, mid: 0, large: 0, no_members: 0, joined: 0, postable: 0, readonly: 0, bot_paid: 0, rejected: 0 };
   const pageInfo = resp?.page ?? { page: 1, per, total: 0, pages: 1 };
 
   // Эффективное состояние паузы: control.paused приоритетнее, иначе status.paused.
@@ -257,6 +261,12 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
           onClick={() => setPostF(postF === 'no' ? '' : 'no')}
           color="rose"
           label={`🔴 Только чтение · ${fmtNum(summary.readonly)}`}
+        />
+        <SectionTab
+          active={postF === 'rejected'}
+          onClick={() => setPostF(postF === 'rejected' ? '' : 'rejected')}
+          color="red"
+          label={`🚫 Отклонённые · ${fmtNum(summary.rejected)}`}
         />
         <SectionTab
           active={postF === ''}
@@ -347,6 +357,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
                 <th className="px-3 py-2 w-20">Тип</th>
                 <th className="px-3 py-2 w-24 text-center">Можно постить</th>
                 <th className="px-3 py-2 w-36">Платно через</th>
+                <th className="px-3 py-2 w-12 text-center">Правила</th>
                 <th className="px-3 py-2 w-20 text-center">Подписан</th>
                 <th className="px-3 py-2 w-24">Источник</th>
                 <th className="px-3 py-2 w-8" />
@@ -380,12 +391,27 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
                   <td className="px-3 py-2 text-xs text-right font-medium tabular-nums">{fmtNum(it.members)}</td>
                   <td className="px-3 py-2 text-xs text-gray-700">{it.is_group ? 'группа' : 'канал'}</td>
                   <td className="px-3 py-2 text-xs text-center text-gray-700">
-                    {it.can_post === true ? (
+                    {it.post_rejected ? (
+                      <span className="inline-block px-1.5 py-0.5 bg-red-100 text-red-700 border border-red-300 rounded font-medium" title="в этой группе наши посты удаляют / нас забанили">🚫 удаляют наши посты</span>
+                    ) : it.can_post === true ? (
                       <span className="text-emerald-600 font-medium" title={it.post_via ?? 'свободно'}>🟢 можно</span>
                     ) : it.can_post === false ? (
                       <span className="text-rose-500" title={it.post_via ?? 'постинг запрещён участникам'}>🔴 нельзя</span>
                     ) : (
                       <span className="text-gray-400" title="не размечено парсером">—</span>
+                    )}
+                    {it.required_channel && (
+                      <div className="mt-0.5">
+                        <a
+                          href={it.required_link ?? `https://t.me/${it.required_channel.replace(/^@/, '')}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[10px] text-amber-700 hover:underline"
+                          title="для записи в группу требуется подписка на этот канал"
+                        >
+                          🔒 нужна подписка @{it.required_channel.replace(/^@/, '')}
+                        </a>
+                      </div>
                     )}
                   </td>
                   <td className="px-3 py-2 text-xs">
@@ -400,6 +426,13 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
                         🤖 {it.ad_contact}
                         <ExternalLink size={10} className="opacity-50" />
                       </a>
+                    ) : (
+                      <span className="text-gray-300">—</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-2 text-xs text-center">
+                    {it.rules ? (
+                      <span className="cursor-help" title={it.rules}>📋</span>
                     ) : (
                       <span className="text-gray-300">—</span>
                     )}
@@ -623,12 +656,13 @@ function SectionTab({
   active: boolean;
   onClick: () => void;
   label: string;
-  color: 'emerald' | 'rose' | 'gray' | 'amber';
+  color: 'emerald' | 'rose' | 'gray' | 'amber' | 'red';
 }) {
   const palette = {
     emerald: active ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100',
     rose: active ? 'bg-rose-600 text-white border-rose-600' : 'bg-rose-50 text-rose-600 border-rose-200 hover:bg-rose-100',
     amber: active ? 'bg-amber-500 text-white border-amber-500' : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100',
+    red: active ? 'bg-red-700 text-white border-red-700' : 'bg-red-50 text-red-700 border-red-300 hover:bg-red-100',
     gray: active ? 'bg-gray-800 text-white border-gray-800' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50',
   }[color];
   return (
