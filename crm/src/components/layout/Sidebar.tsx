@@ -66,7 +66,7 @@ const NAV_METAL: NavSection[] = [
       { href: '/deals', label: 'Сделки', icon: Briefcase },
       { href: '/calls', label: 'Звонки', icon: Phone, badgeKey: 'calls' },
       { href: '/dialogs', label: 'Диалоги', icon: MessageSquare },
-      { href: '/funnel', label: 'Воронка', icon: KanbanSquare },
+      { href: '/funnel-stages', label: '🔻 Воронка', icon: KanbanSquare },
       { href: '/questions', label: 'Вопросы', icon: HelpCircle, badgeKey: 'open_questions' },
       { href: '/kb', label: 'База знаний', icon: BookOpen },
     ],
@@ -114,8 +114,7 @@ const NAV_TAXI: NavSection[] = [
     items: [
       { href: '/dialogs', label: 'Диалоги', icon: MessageSquare },
       { href: '/business', label: 'Бизнес-личка', icon: MailOpen },
-      { href: '/funnel', label: 'Воронка', icon: KanbanSquare },
-      { href: '/funnel-stages', label: '🔻 Воронка-стадии', icon: KanbanSquare },
+      { href: '/funnel-stages', label: '🔻 Воронка', icon: KanbanSquare },
       { href: '/questions', label: 'Вопросы', icon: HelpCircle, badgeKey: 'open_questions' },
       { href: '/kb', label: 'База знаний', icon: BookOpen },
       { href: '/marketing', label: 'Маркетинг', icon: Megaphone },

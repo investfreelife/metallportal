@@ -10,6 +10,7 @@ import {
   ArrowRight,
   Calendar,
   AlertCircle,
+  UserPlus,
 } from 'lucide-react';
 import { safeFetchJson } from '@/lib/safe-fetch';
 import {
@@ -18,6 +19,7 @@ import {
   type FunnelContact, type FunnelStage,
 } from '@/lib/recruit/stages';
 import { fmtMsk, toMskInputValue, mskInputToUTC } from '@/lib/tz';
+import AddCandidateModal from '../funnel/AddCandidateModal';
 
 interface RedPanel {
   missing_next_touch: string[];
@@ -43,6 +45,7 @@ export default function FunnelStagesClient({ tenantName }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<keyof RedPanel | null>(null);
   const [editing, setEditing] = useState<FunnelContact | null>(null);
+  const [adding, setAdding] = useState(false);
 
   const reload = useCallback(async (silent = false) => {
     if (!silent) setRefreshing(true);
@@ -95,14 +98,23 @@ export default function FunnelStagesClient({ tenantName }: Props) {
             Стадии new → online → retained, красная панель просрочек. Обновление каждую минуту.
           </p>
         </div>
-        <button
-          onClick={() => reload()}
-          disabled={refreshing}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-gray-200 text-gray-700 text-xs font-medium rounded-md hover:bg-gray-50 disabled:opacity-50"
-        >
-          <RefreshCw size={12} className={refreshing ? 'animate-spin' : ''} />
-          Обновить
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => reload()}
+            disabled={refreshing}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-gray-200 text-gray-700 text-xs font-medium rounded-md hover:bg-gray-50 disabled:opacity-50"
+          >
+            <RefreshCw size={12} className={refreshing ? 'animate-spin' : ''} />
+            Обновить
+          </button>
+          <button
+            onClick={() => setAdding(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-md hover:bg-blue-700"
+          >
+            <UserPlus size={12} />
+            Добавить кандидата
+          </button>
+        </div>
       </header>
 
       {/* ── Красная панель ─────────────────────────────────────────── */}
@@ -123,19 +135,22 @@ export default function FunnelStagesClient({ tenantName }: Props) {
       )}
 
       {/* ── Канбан ──────────────────────────────────────────────── */}
-      <div className="flex-1 overflow-auto p-4">
+      <div className="flex-1 flex flex-col overflow-hidden">
         {loading ? (
           <p className="text-xs text-gray-400 text-center py-12">Загрузка…</p>
         ) : (
-          <div className="flex gap-3 min-w-max">
-            {STAGE_ORDER.map((s) => (
-              <StageColumn
-                key={s}
-                stage={s}
-                contacts={grouped.get(s) ?? []}
-                onOpen={(c) => setEditing(c)}
-              />
-            ))}
+          // hscroll: видимый горизонтальный ползунок (см. globals.css). Task 059.
+          <div className="hscroll flex-1 overflow-x-auto overflow-y-hidden p-4">
+            <div className="flex gap-3 min-w-max h-full">
+              {STAGE_ORDER.map((s) => (
+                <StageColumn
+                  key={s}
+                  stage={s}
+                  contacts={grouped.get(s) ?? []}
+                  onOpen={(c) => setEditing(c)}
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -147,6 +162,15 @@ export default function FunnelStagesClient({ tenantName }: Props) {
           onSave={async (patch) => {
             await patchContact(editing.id, patch);
             setEditing(null);
+          }}
+        />
+      )}
+      {adding && (
+        <AddCandidateModal
+          onClose={() => setAdding(false)}
+          onAdded={async () => {
+            setAdding(false);
+            await reload(true);
           }}
         />
       )}
