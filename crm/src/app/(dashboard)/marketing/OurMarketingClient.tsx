@@ -70,18 +70,31 @@ const CHANNEL_META: Record<Channel, { label: string; emoji: string; color: strin
 
 export default function OurMarketingClient({ tenantName: _tn }: Props) {
   const [channel, setChannel] = useState<Channel>('landings');
+  // Task 062 §2: по умолчанию архивные тексты скрыты, тумблер на heroe.
+  const [includeArchived, setIncludeArchived] = useState(false);
 
   return (
     <div className="space-y-3 max-w-5xl">
       {/* ── Hero ────────────────────────────────────────────────── */}
-      <header className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-lg p-4 shadow-sm">
-        <div className="flex items-center gap-2 mb-1">
-          <Rocket size={18} />
-          <h2 className="text-base font-bold">Наш маркетинг</h2>
+      <header className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-lg p-4 shadow-sm flex items-start justify-between gap-3">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <Rocket size={18} />
+            <h2 className="text-base font-bold">Наш маркетинг</h2>
+          </div>
+          <p className="text-[11px] text-blue-100 leading-relaxed">
+            Что уже готово к запуску — по каналам. Копируй текст → постируй / запускай / отправляй ссылкой.
+          </p>
         </div>
-        <p className="text-[11px] text-blue-100 leading-relaxed">
-          Что уже готово к запуску — по каналам. Копируй текст → постируй / запускай / отправляй ссылкой.
-        </p>
+        <label className="flex items-center gap-1.5 text-[11px] text-blue-50 cursor-pointer whitespace-nowrap mt-0.5">
+          <input
+            type="checkbox"
+            checked={includeArchived}
+            onChange={(e) => setIncludeArchived(e.target.checked)}
+            className="accent-white"
+          />
+          Показать архив
+        </label>
       </header>
 
       {/* ── Sub-tabs по каналу ──────────────────────────────────── */}
@@ -106,8 +119,8 @@ export default function OurMarketingClient({ tenantName: _tn }: Props) {
 
       {/* ── Содержимое ──────────────────────────────────────────── */}
       {channel === 'landings' && <LandingsTab />}
-      {channel === 'vk' && <CampaignsByChannel hint="vk" />}
-      {channel === 'tg' && <CampaignsByChannel hint="tg" />}
+      {channel === 'vk' && <CampaignsByChannel hint="vk" includeArchived={includeArchived} />}
+      {channel === 'tg' && <CampaignsByChannel hint="tg" includeArchived={includeArchived} />}
       {channel === 'other' && <OtherChannelStub />}
     </div>
   );
@@ -210,7 +223,7 @@ function StatusPill({ status }: { status: string | null }) {
  *  ВК / Telegram — кампании по портретам + (для TG) content_posts
  * ──────────────────────────────────────────────────────────────── */
 
-function CampaignsByChannel({ hint }: { hint: 'vk' | 'tg' }) {
+function CampaignsByChannel({ hint, includeArchived }: { hint: 'vk' | 'tg'; includeArchived: boolean }) {
   const router = useRouter();
   const [groups, setGroups] = useState<Group[]>([]);
   const [posts, setPosts] = useState<ContentPostRow[]>([]);
@@ -222,7 +235,9 @@ function CampaignsByChannel({ hint }: { hint: 'vk' | 'tg' }) {
     try {
       // Кампании одинаковые на обоих каналах — это «связка сообщений», текст
       // одинаковый, отличается только куда его постят.
-      const g = await safeFetchJson<{ groups: Group[] }>('/api/recruit/marketing/campaigns-grouped');
+      // Task 062 §2: skip archived по умолчанию.
+      const qs = includeArchived ? '?include_archived=1' : '';
+      const g = await safeFetchJson<{ groups: Group[] }>(`/api/recruit/marketing/campaigns-grouped${qs}`);
       setGroups(g.groups ?? []);
       // content_posts грузим параллельно только для Telegram-таба, чтобы UX был
       // быстрее на ВК (там их нет).
@@ -241,7 +256,7 @@ function CampaignsByChannel({ hint }: { hint: 'vk' | 'tg' }) {
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally { setLoading(false); }
-  }, [hint]);
+  }, [hint, includeArchived]);
   useEffect(() => { reload(); }, [reload]);
 
   async function patchVariant(id: string, body: Partial<AdVariant>) {

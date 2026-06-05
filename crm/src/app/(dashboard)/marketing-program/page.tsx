@@ -1,18 +1,12 @@
-import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
-import MarketingProgramClient from './MarketingProgramClient';
-
-export const dynamic = 'force-dynamic';
 
 /**
- * /marketing-program — отражает Маркетинг-программу v2 проекта Таксопарк-
- * Машина (Столица). Все данные уже лежат в Supabase (channels type='tracking')
- * — это клиент-страница, грузит через /api/recruit/marketing/program.
+ * /marketing-program — устарел.
  *
- * Task 051 (sergey-coder, taksopark-machine).
+ * Task 062: единая страница /marketing с под-вкладками вместо 4 разных
+ * страниц. Старые ссылки/закладки редиректим, чтобы 404 не было.
+ * Контент этой страницы доступен под-вкладкой «📐 Стратегия» в /marketing.
  */
-export default async function MarketingProgramPage() {
-  const session = await getSession();
-  if (!session) redirect('/login');
-  return <MarketingProgramClient tenantName={session.tenant_name ?? null} />;
+export default function MarketingProgramDeprecatedPage() {
+  redirect('/marketing');
 }

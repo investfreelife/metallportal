@@ -11,6 +11,8 @@ import {
   Calendar,
   AlertCircle,
   UserPlus,
+  X,
+  Move,
 } from 'lucide-react';
 import { safeFetchJson } from '@/lib/safe-fetch';
 import {
@@ -148,6 +150,8 @@ export default function FunnelStagesClient({ tenantName }: Props) {
                   stage={s}
                   contacts={grouped.get(s) ?? []}
                   onOpen={(c) => setEditing(c)}
+                  onMove={(c, to) => patchContact(c.id, { stage: to })}
+                  onDelete={(c) => patchContact(c.id, { stage: 'lost' as FunnelStage })}
                 />
               ))}
             </div>
@@ -248,11 +252,13 @@ function RedPanelStrip({
 /* ─── Колонка стадии ───────────────────────────────────────────── */
 
 function StageColumn({
-  stage, contacts, onOpen,
+  stage, contacts, onOpen, onMove, onDelete,
 }: {
   stage: FunnelStage;
   contacts: FunnelContact[];
   onOpen: (c: FunnelContact) => void;
+  onMove: (c: FunnelContact, to: FunnelStage) => void;
+  onDelete: (c: FunnelContact) => void;
 }) {
   return (
     <div className="w-72 flex-shrink-0 flex flex-col bg-white border border-gray-200 rounded-md overflow-hidden">
@@ -265,48 +271,117 @@ function StageColumn({
       <div className="flex-1 overflow-y-auto p-2 space-y-2 max-h-[calc(100vh-260px)]">
         {contacts.length === 0 ? (
           <p className="text-[10px] text-gray-300 text-center py-4">Пусто</p>
-        ) : contacts.map((c) => <ContactCard key={c.id} c={c} onOpen={() => onOpen(c)} />)}
+        ) : contacts.map((c) => (
+          <ContactCard key={c.id} c={c}
+            onOpen={() => onOpen(c)}
+            onMove={(to) => onMove(c, to)}
+            onDelete={() => onDelete(c)} />
+        ))}
       </div>
     </div>
   );
 }
 
-function ContactCard({ c, onOpen }: { c: FunnelContact; onOpen: () => void }) {
+function ContactCard({
+  c, onOpen, onMove, onDelete,
+}: {
+  c: FunnelContact;
+  onOpen: () => void;
+  onMove: (to: FunnelStage) => void;
+  onDelete: () => void;
+}) {
+  const [menuOpen, setMenuOpen] = useState(false);
   const overdue = isActiveStage(c.stage as string) && !c.next_touch_at;
+  const currentStage = (c.stage as FunnelStage) ?? 'new';
+  const locked = currentStage === 'scheduled' || currentStage === 'online' || c.human_locked;
+
   return (
-    <button
-      onClick={onOpen}
-      className={`block w-full text-left bg-white border rounded p-2 hover:border-blue-300 hover:shadow-sm transition-all ${
+    <div
+      className={`relative bg-white border rounded p-2 hover:border-blue-300 hover:shadow-sm transition-all ${
         overdue ? 'border-red-200 bg-red-50/30' : 'border-gray-200'
       }`}
     >
-      <div className="flex items-start justify-between gap-1.5 mb-1">
-        <span className="text-xs font-medium text-gray-900 truncate flex-1">
-          {c.full_name ?? c.telegram_chat_id ?? '—'}
-        </span>
-        {c.human_locked && (
-          <Lock size={10} className="text-amber-600 flex-shrink-0" />
+      <button onClick={onOpen} className="block w-full text-left">
+        <div className="flex items-start justify-between gap-1.5 mb-1">
+          <span className="text-xs font-medium text-gray-900 truncate flex-1">
+            {c.full_name ?? c.telegram_chat_id ?? '—'}
+          </span>
+          {c.human_locked && <Lock size={10} className="text-amber-600 flex-shrink-0" />}
+        </div>
+        <div className="flex items-center gap-1 text-[10px] text-gray-500 mb-1 flex-wrap">
+          {c.segment && <span className="px-1 py-0 bg-gray-100 rounded">{c.segment}</span>}
+          {c.city && <span>📍 {c.city}</span>}
+          {typeof c.has_car === 'boolean' && <span>{c.has_car ? '🚗' : '🚲'}</span>}
+        </div>
+        {c.last_text && (
+          <p className="text-[10px] text-gray-600 line-clamp-2 leading-snug mb-1">{c.last_text}</p>
         )}
+        <div className="flex items-center justify-between text-[10px] mt-1.5 pt-1.5 border-t border-gray-100">
+          {c.next_touch_at ? (
+            <span className="text-blue-700 inline-flex items-center gap-0.5"><Clock size={9} />{fmtMsk(c.next_touch_at, false)}</span>
+          ) : overdue ? (
+            <span className="text-red-700 font-semibold">⚠ нет касания</span>
+          ) : (
+            <span className="text-gray-400">—</span>
+          )}
+          <span className="text-gray-400">{c.last_at ? fmtMsk(c.last_at, false) : ''}</span>
+        </div>
+      </button>
+
+      {/* ── Кнопки быстрого действия (Task 062 §3) ─────────── */}
+      <div className="absolute top-1 right-1 flex gap-0.5">
+        <div className="relative">
+          <button
+            onClick={(e) => { e.stopPropagation(); setMenuOpen((v) => !v); }}
+            title="Перенести в стадию…"
+            className="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded"
+          >
+            <Move size={10} />
+          </button>
+          {menuOpen && (
+            <div
+              className="absolute right-0 top-full mt-0.5 z-20 bg-white border border-gray-200 rounded shadow-lg min-w-[150px]"
+              onMouseLeave={() => setMenuOpen(false)}
+            >
+              <div className="px-2 py-1 text-[10px] text-gray-500 border-b border-gray-100">Перенести в…</div>
+              {STAGE_ORDER.filter((s) => s !== currentStage).map((s) => {
+                const allowed = canMoveTo(currentStage, s);
+                return (
+                  <button
+                    key={s}
+                    disabled={!allowed}
+                    onClick={() => {
+                      setMenuOpen(false);
+                      if (locked && !confirm(`Карточка под замком (${STAGE_LABELS[currentStage]}). Точно переносим в «${STAGE_LABELS[s]}»?`)) return;
+                      onMove(s);
+                    }}
+                    className={`w-full text-left px-2 py-1 text-[11px] hover:bg-blue-50 ${allowed ? 'text-gray-800' : 'text-gray-300 cursor-not-allowed'}`}
+                  >
+                    {STAGE_LABELS[s]}
+                    {!allowed && <span className="text-[9px] ml-1 text-gray-400">(откат)</span>}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            const ok = confirm(
+              locked
+                ? `Карточка под замком (${STAGE_LABELS[currentStage]}). Удалить из активной воронки (→ потерян)?`
+                : 'Удалить кандидата из активной воронки? Карточка переедет в «❌ Потерян», не удалится физически.'
+            );
+            if (ok) onDelete();
+          }}
+          title="Удалить из воронки (→ потерян)"
+          className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
+        >
+          <X size={11} />
+        </button>
       </div>
-      <div className="flex items-center gap-1 text-[10px] text-gray-500 mb-1 flex-wrap">
-        {c.segment && <span className="px-1 py-0 bg-gray-100 rounded">{c.segment}</span>}
-        {c.city && <span>📍 {c.city}</span>}
-        {typeof c.has_car === 'boolean' && <span>{c.has_car ? '🚗' : '🚲'}</span>}
-      </div>
-      {c.last_text && (
-        <p className="text-[10px] text-gray-600 line-clamp-2 leading-snug mb-1">{c.last_text}</p>
-      )}
-      <div className="flex items-center justify-between text-[10px] mt-1.5 pt-1.5 border-t border-gray-100">
-        {c.next_touch_at ? (
-          <span className="text-blue-700 inline-flex items-center gap-0.5"><Clock size={9} />{fmtMsk(c.next_touch_at, false)}</span>
-        ) : overdue ? (
-          <span className="text-red-700 font-semibold">⚠ нет касания</span>
-        ) : (
-          <span className="text-gray-400">—</span>
-        )}
-        <span className="text-gray-400">{c.last_at ? fmtMsk(c.last_at, false) : ''}</span>
-      </div>
-    </button>
+    </div>
   );
 }
 

@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getSession, getTenantId } from '@/lib/session';
 import type { Campaign, AdVariant } from '@/lib/marketing/types';
@@ -28,12 +28,29 @@ import type { Campaign, AdVariant } from '@/lib/marketing/types';
  */
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const session = await getSession();
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const tenantId = await getTenantId();
     const supabase = await createClient();
+
+    // Task 062 §2: по умолчанию архив скрыт (status='archived' от старых
+    // поколений ФЛАГМАН/AIDA/v2 замусоривает). Тумблер ?include_archived=1
+    // на клиенте показывает всё.
+    const includeArchived = req.nextUrl.searchParams.get('include_archived') === '1';
+
+    let variantsQ = supabase
+      .from('ad_variants')
+      .select('id, campaign_id, label, text, photo_url, utm, status, sent_count, note, created_at')
+      .eq('tenant_id', tenantId)
+      .order('label', { ascending: true, nullsFirst: false })
+      .order('created_at', { ascending: true })
+      .limit(2000);
+    if (!includeArchived) {
+      // Жёсткий whitelist живых статусов согласно ТЗ-062.
+      variantsQ = variantsQ.in('status', ['ready', 'redo', 'approved', 'draft']);
+    }
 
     const [{ data: campaigns, error: cErr }, { data: variants, error: vErr }] = await Promise.all([
       supabase
@@ -43,13 +60,7 @@ export async function GET() {
         .order('seg_order', { ascending: true, nullsFirst: false })
         .order('created_at', { ascending: false })
         .limit(500),
-      supabase
-        .from('ad_variants')
-        .select('id, campaign_id, label, text, photo_url, utm, status, sent_count, note, created_at')
-        .eq('tenant_id', tenantId)
-        .order('label', { ascending: true, nullsFirst: false })
-        .order('created_at', { ascending: true })
-        .limit(2000),
+      variantsQ,
     ]);
     if (cErr) return NextResponse.json({ error: cErr.message }, { status: 500 });
     if (vErr) return NextResponse.json({ error: vErr.message }, { status: 500 });
