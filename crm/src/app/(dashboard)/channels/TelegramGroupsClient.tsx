@@ -33,6 +33,11 @@ interface ChannelItem {
   found_query: string | null;
   city: string | null;
   is_group: boolean;
+  status: string | null;
+  needs_human: boolean | null;
+  join_type: string | null;
+  audience: string | null;
+  work_status: string | null;
   can_post: boolean | null;
   post_via: string | null;
   ad_contact: string | null;
@@ -53,7 +58,7 @@ interface ChannelItem {
 
 interface ListResponse {
   items: ChannelItem[];
-  summary: { total: number; small: number; mid: number; large: number; no_members: number; joined: number; postable: number; readonly: number; bot_paid: number; rejected: number; verified: number };
+  summary: { total: number; small: number; mid: number; large: number; no_members: number; joined: number; postable: number; readonly: number; bot_paid: number; rejected: number; verified: number; needs_human: number };
   page: { page: number; per: number; total: number; pages: number };
 }
 
@@ -84,6 +89,22 @@ function fmtNum(n: number | null | undefined): string {
   return n.toLocaleString('ru-RU');
 }
 
+// Человекочитаемая метка стадии пайплайна группы.
+const STATUS_LABELS: Record<string, string> = {
+  found: '🔍 найдена',
+  analyzed: '📋 разобрана',
+  pending_admin: '⏳ ждём админа',
+  paid: '💰 платная',
+  diaspora: '🌐 диаспора',
+  ready: '✅ готова',
+  posting: '📤 постим',
+  rejected: '🚫 стоп',
+};
+function fmtStatus(s: string | null | undefined): string {
+  if (!s) return '—';
+  return STATUS_LABELS[s] ?? '—';
+}
+
 export default function TelegramGroupsClient({ tenantName }: Props) {
   const [resp, setResp] = useState<ListResponse | null>(null);
   const [status, setStatus] = useState<ParserStatus | null>(null);
@@ -98,6 +119,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
   const [joinedF, setJoinedF] = useState<'' | 'yes' | 'no'>('');
   const [hasMembers, setHasMembers] = useState<'' | 'yes' | 'no'>('');
   const [postF, setPostF] = useState<'' | 'yes' | 'no' | 'paid' | 'rejected' | 'verified'>('');
+  const [needsHuman, setNeedsHuman] = useState(false);
   const [sort, setSort] = useState<'members' | 'name'>('members');
   const [dir, setDir] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
@@ -112,6 +134,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
       if (joinedF) qs.set('joined', joinedF);
       if (hasMembers) qs.set('has_members', hasMembers);
       if (postF) qs.set('post', postF);
+      if (needsHuman) qs.set('needs_human', '1');
       qs.set('sort', sort);
       qs.set('dir', dir);
       qs.set('page', String(page));
@@ -125,7 +148,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [search, size, joinedF, hasMembers, postF, sort, dir, page]);
+  }, [search, size, joinedF, hasMembers, postF, needsHuman, sort, dir, page]);
 
   const reloadStatus = useCallback(async () => {
     try {
@@ -148,7 +171,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
   }, [search]);
 
   // Прочие фильтры/sort — мгновенно
-  useEffect(() => { setPage(1); reloadList(); /* eslint-disable-next-line */ }, [size, joinedF, hasMembers, postF, sort, dir]);
+  useEffect(() => { setPage(1); reloadList(); /* eslint-disable-next-line */ }, [size, joinedF, hasMembers, postF, needsHuman, sort, dir]);
   // Page changes
   useEffect(() => { reloadList(); /* eslint-disable-next-line */ }, [page]);
 
@@ -187,7 +210,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
   }
 
   const items = resp?.items ?? [];
-  const summary = resp?.summary ?? { total: 0, small: 0, mid: 0, large: 0, no_members: 0, joined: 0, postable: 0, readonly: 0, bot_paid: 0, rejected: 0, verified: 0 };
+  const summary = resp?.summary ?? { total: 0, small: 0, mid: 0, large: 0, no_members: 0, joined: 0, postable: 0, readonly: 0, bot_paid: 0, rejected: 0, verified: 0, needs_human: 0 };
   const pageInfo = resp?.page ?? { page: 1, per, total: 0, pages: 1 };
 
   // Эффективное состояние паузы: control.paused приоритетнее, иначе status.paused.
@@ -278,6 +301,12 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
           label={`✅ Проверена · ${fmtNum(summary.verified)}`}
         />
         <SectionTab
+          active={needsHuman}
+          onClick={() => setNeedsHuman((v) => !v)}
+          color="amber"
+          label={`🙋 Требуется человек · ${fmtNum(summary.needs_human)}`}
+        />
+        <SectionTab
           active={postF === ''}
           onClick={() => setPostF('')}
           color="gray"
@@ -364,6 +393,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
                   width="w-28"
                 />
                 <th className="px-3 py-2 w-20">Тип</th>
+                <th className="px-3 py-2 w-32">Статус</th>
                 <th className="px-3 py-2 w-24 text-center">Можно постить</th>
                 <th className="px-3 py-2 w-36">Платно через</th>
                 <th className="px-3 py-2 w-12 text-center">Правила</th>
@@ -400,6 +430,13 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
                   <td className="px-3 py-2 text-xs text-gray-700">{it.country || '—'}</td>
                   <td className="px-3 py-2 text-xs text-right font-medium tabular-nums">{fmtNum(it.members)}</td>
                   <td className="px-3 py-2 text-xs text-gray-700">{it.is_group ? 'группа' : 'канал'}</td>
+                  <td
+                    className="px-3 py-2 text-xs text-gray-700 whitespace-nowrap"
+                    title={`Вход: ${it.join_type ?? '—'} · ЦА: ${it.audience ?? '—'} · ${it.work_status ?? '—'}`}
+                  >
+                    <span>{fmtStatus(it.status)}</span>
+                    {it.needs_human && <span className="ml-1" title="требует взгляда человека">🙋</span>}
+                  </td>
                   <td className="px-3 py-2 text-xs text-center text-gray-700">
                     {it.post_rejected ? (
                       <span className="inline-block px-1.5 py-0.5 bg-red-100 text-red-700 border border-red-300 rounded font-medium" title="в этой группе наши посты удаляют / нас забанили">🚫 удаляют наши посты</span>

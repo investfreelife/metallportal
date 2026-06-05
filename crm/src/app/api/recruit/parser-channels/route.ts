@@ -123,6 +123,12 @@ export async function GET(req: NextRequest) {
         const publishOk = bool(cfg.publish_ok);       // проверена: Россия + легально + без угроз
         const legal = str(cfg.legal);                 // «чисто» или описание противозаконного
         const threatsSeen = str(cfg.threats_seen);    // найденные угрозы или «нет»
+        // Поля статуса/категоризации группы (новый пайплайн парсера).
+        const status = str(cfg.status);               // стадия пайплайна
+        const needsHuman = bool(cfg.needs_human);     // нужен взгляд человека
+        const joinType = str(cfg.join_type);          // как вступать
+        const audience = str(cfg.audience);           // целевая аудитория
+        const workStatus = str(cfg.work_status);      // работаем ли мы с этой группой сейчас
         const country = str(cfg.country) ?? null;
         const foundQuery = str(cfg.found_query) ?? null;
         // Город = последнее непустое слово запроса, если его можно угадать
@@ -139,6 +145,11 @@ export async function GET(req: NextRequest) {
           found_query: foundQuery,
           city,
           is_group: isGroup,
+          status,
+          needs_human: needsHuman,
+          join_type: joinType,
+          audience,
+          work_status: workStatus,
           can_post: canPostRaw,
           post_via: postVia,
           ad_contact: adContact,
@@ -171,6 +182,7 @@ export async function GET(req: NextRequest) {
       bot_paid: normalized.filter((r) => !!r.ad_contact).length,
       rejected: normalized.filter((r) => r.post_rejected === true).length,
       verified: normalized.filter((r) => r.publish_ok === true).length,
+      needs_human: normalized.filter((r) => r.needs_human === true).length,
     };
 
     // Фильтры
@@ -195,6 +207,9 @@ export async function GET(req: NextRequest) {
     else if (postFilter === 'paid') filtered = filtered.filter((r) => !!r.ad_contact);
     else if (postFilter === 'rejected') filtered = filtered.filter((r) => r.post_rejected === true);
     else if (postFilter === 'verified') filtered = filtered.filter((r) => r.publish_ok === true);
+    const statusFilter = sp.get('status');
+    if (statusFilter) filtered = filtered.filter((r) => r.status === statusFilter);
+    if (sp.get('needs_human') === '1') filtered = filtered.filter((r) => r.needs_human === true);
 
     // Сортировка
     const sign = dir === 'asc' ? 1 : -1;
