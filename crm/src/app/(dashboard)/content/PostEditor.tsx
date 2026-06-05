@@ -21,6 +21,7 @@ import {
   ArrowDown,
   Layers,
   Save,
+  Lock,
 } from 'lucide-react';
 import type { ContentPost, PostStatus, FeedbackEntry, RedoFlag, PhotoOption } from '@/lib/content/types';
 import { isPublishable, CAROUSEL_LIMIT } from '@/lib/content/types';
@@ -331,6 +332,13 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
         </header>
 
         <div className="flex-1 overflow-y-auto">
+          {/* 🔒 Согласовано человеком — автоматика не двигает дату/фото/текст. */}
+          {draft.approved_final === true && (
+            <div className="mx-4 mt-3 flex items-start gap-2 bg-amber-50 border border-amber-200 text-amber-800 text-xs rounded px-3 py-2">
+              <Lock size={14} className="flex-shrink-0 mt-0.5" />
+              <span>🔒 Согласовано человеком — меняет только человек. Автоматика не двигает дату/фото/текст.</span>
+            </div>
+          )}
           {error && (
             <div className="mx-4 mt-3 flex items-start gap-2 text-xs text-red-700 bg-red-50 border border-red-200 rounded-md px-2.5 py-2">
               <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
