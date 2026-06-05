@@ -119,6 +119,10 @@ export async function GET(req: NextRequest) {
         const postRejected = bool(cfg.post_rejected); // наши посты удаляют/забанили → не постим
         const rules = str(cfg.rules);                 // правила/описание группы
         const requiredChannel = str(cfg.required_channel); // username без @, нужна подписка
+        // Профиль проверки группы (новые поля парсера).
+        const publishOk = bool(cfg.publish_ok);       // проверена: Россия + легально + без угроз
+        const legal = str(cfg.legal);                 // «чисто» или описание противозаконного
+        const threatsSeen = str(cfg.threats_seen);    // найденные угрозы или «нет»
         const country = str(cfg.country) ?? null;
         const foundQuery = str(cfg.found_query) ?? null;
         // Город = последнее непустое слово запроса, если его можно угадать
@@ -143,6 +147,9 @@ export async function GET(req: NextRequest) {
           about,
           joined,
           post_rejected: postRejected,
+          publish_ok: publishOk,
+          legal,
+          threats_seen: threatsSeen,
           rules,
           required_channel: requiredChannel,
           required_link: requiredChannel ? `https://t.me/${requiredChannel.replace(/^@/, '')}` : null,
@@ -163,6 +170,7 @@ export async function GET(req: NextRequest) {
       readonly: normalized.filter((r) => r.can_post === false).length,
       bot_paid: normalized.filter((r) => !!r.ad_contact).length,
       rejected: normalized.filter((r) => r.post_rejected === true).length,
+      verified: normalized.filter((r) => r.publish_ok === true).length,
     };
 
     // Фильтры
@@ -186,6 +194,7 @@ export async function GET(req: NextRequest) {
     else if (postFilter === 'no') filtered = filtered.filter((r) => r.can_post === false);
     else if (postFilter === 'paid') filtered = filtered.filter((r) => !!r.ad_contact);
     else if (postFilter === 'rejected') filtered = filtered.filter((r) => r.post_rejected === true);
+    else if (postFilter === 'verified') filtered = filtered.filter((r) => r.publish_ok === true);
 
     // Сортировка
     const sign = dir === 'asc' ? 1 : -1;

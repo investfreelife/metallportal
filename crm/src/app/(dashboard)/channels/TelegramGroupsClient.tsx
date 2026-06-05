@@ -41,6 +41,9 @@ interface ChannelItem {
   about: string | null;
   joined: boolean | null;
   post_rejected: boolean | null;
+  publish_ok: boolean | null;
+  legal: string | null;
+  threats_seen: string | null;
   rules: string | null;
   required_channel: string | null;
   required_link: string | null;
@@ -50,7 +53,7 @@ interface ChannelItem {
 
 interface ListResponse {
   items: ChannelItem[];
-  summary: { total: number; small: number; mid: number; large: number; no_members: number; joined: number; postable: number; readonly: number; bot_paid: number; rejected: number };
+  summary: { total: number; small: number; mid: number; large: number; no_members: number; joined: number; postable: number; readonly: number; bot_paid: number; rejected: number; verified: number };
   page: { page: number; per: number; total: number; pages: number };
 }
 
@@ -94,7 +97,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
   const [size, setSize] = useState<'' | 'small' | 'mid' | 'large'>('');
   const [joinedF, setJoinedF] = useState<'' | 'yes' | 'no'>('');
   const [hasMembers, setHasMembers] = useState<'' | 'yes' | 'no'>('');
-  const [postF, setPostF] = useState<'' | 'yes' | 'no' | 'paid' | 'rejected'>('');
+  const [postF, setPostF] = useState<'' | 'yes' | 'no' | 'paid' | 'rejected' | 'verified'>('');
   const [sort, setSort] = useState<'members' | 'name'>('members');
   const [dir, setDir] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
@@ -184,7 +187,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
   }
 
   const items = resp?.items ?? [];
-  const summary = resp?.summary ?? { total: 0, small: 0, mid: 0, large: 0, no_members: 0, joined: 0, postable: 0, readonly: 0, bot_paid: 0, rejected: 0 };
+  const summary = resp?.summary ?? { total: 0, small: 0, mid: 0, large: 0, no_members: 0, joined: 0, postable: 0, readonly: 0, bot_paid: 0, rejected: 0, verified: 0 };
   const pageInfo = resp?.page ?? { page: 1, per, total: 0, pages: 1 };
 
   // Эффективное состояние паузы: control.paused приоритетнее, иначе status.paused.
@@ -267,6 +270,12 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
           onClick={() => setPostF(postF === 'rejected' ? '' : 'rejected')}
           color="red"
           label={`🚫 Отклонённые · ${fmtNum(summary.rejected)}`}
+        />
+        <SectionTab
+          active={postF === 'verified'}
+          onClick={() => setPostF(postF === 'verified' ? '' : 'verified')}
+          color="green"
+          label={`✅ Проверена · ${fmtNum(summary.verified)}`}
         />
         <SectionTab
           active={postF === ''}
@@ -359,6 +368,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
                 <th className="px-3 py-2 w-36">Платно через</th>
                 <th className="px-3 py-2 w-12 text-center">Правила</th>
                 <th className="px-3 py-2 w-20 text-center">Подписан</th>
+                <th className="px-3 py-2 w-24 text-center">Профиль</th>
                 <th className="px-3 py-2 w-24">Источник</th>
                 <th className="px-3 py-2 w-8" />
               </tr>
@@ -439,6 +449,20 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
                   </td>
                   <td className="px-3 py-2 text-xs text-center">
                     {it.joined === true ? <span className="text-emerald-600">✓</span> : <span className="text-gray-400">—</span>}
+                  </td>
+                  <td className="px-3 py-2 text-xs text-center">
+                    {it.publish_ok === true ? (
+                      <span
+                        className="inline-block px-1.5 py-0.5 bg-green-50 text-green-700 border border-green-300 rounded font-medium"
+                        title={`Страна: ${it.country ?? '—'} · Легально: ${it.legal ?? '—'} · Угрозы: ${it.threats_seen ?? '—'}`}
+                      >
+                        ✅ готова
+                      </span>
+                    ) : it.post_rejected ? (
+                      <span className="text-red-600" title="наши посты удаляют / нас забанили">🚫</span>
+                    ) : (
+                      <span className="text-gray-400" title="ещё не проверена">—</span>
+                    )}
                   </td>
                   <td className="px-3 py-2 text-[10px] text-gray-500">{it.source ?? '—'}</td>
                   <td className="px-3 py-2 text-center">
@@ -656,13 +680,14 @@ function SectionTab({
   active: boolean;
   onClick: () => void;
   label: string;
-  color: 'emerald' | 'rose' | 'gray' | 'amber' | 'red';
+  color: 'emerald' | 'rose' | 'gray' | 'amber' | 'red' | 'green';
 }) {
   const palette = {
     emerald: active ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100',
     rose: active ? 'bg-rose-600 text-white border-rose-600' : 'bg-rose-50 text-rose-600 border-rose-200 hover:bg-rose-100',
     amber: active ? 'bg-amber-500 text-white border-amber-500' : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100',
     red: active ? 'bg-red-700 text-white border-red-700' : 'bg-red-50 text-red-700 border-red-300 hover:bg-red-100',
+    green: active ? 'bg-green-600 text-white border-green-600' : 'bg-green-50 text-green-700 border-green-300 hover:bg-green-100',
     gray: active ? 'bg-gray-800 text-white border-gray-800' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50',
   }[color];
   return (
