@@ -19,6 +19,33 @@ const CONFIG_FIELDS = new Set([
   'publish_ok', 'legal', 'threats_seen',
   'status', 'needs_human', 'join_type', 'work_status',
   'found_query', 'kind',
+  // ТЗ-064: ручные поля «Готовы к засеву» (whitelist ENRICH_KEYS у парсера).
+  'seed_ready', 'human_joined', 'human_verified',
+  'manual_mechanics', 'manual_desc', 'assigned_text', 'human_status',
+]);
+
+const HUMAN_STATUS_ENUM = new Set(['ready', 'paid', 'admin', 'rejected', 'testing']);
+const MAX_NOTE = 2000;
+
+/** Sanitize seed-groups-only ручных полей: тримим, длину режем, enum проверяем. */
+function sanitizeSeedField(k: string, v: unknown): unknown {
+  if (k === 'manual_mechanics' || k === 'manual_desc') {
+    return typeof v === 'string' ? v.trim().slice(0, MAX_NOTE) : null;
+  }
+  if (k === 'human_status') {
+    return typeof v === 'string' && HUMAN_STATUS_ENUM.has(v) ? v : null;
+  }
+  if (k === 'assigned_text') {
+    return typeof v === 'string' ? v.trim().slice(0, 500) : null;
+  }
+  if (k === 'seed_ready' || k === 'human_joined' || k === 'human_verified') {
+    return typeof v === 'boolean' ? v : (v === 'true' ? true : v === 'false' ? false : null);
+  }
+  return v;
+}
+const SEED_FIELDS = new Set([
+  'seed_ready', 'human_joined', 'human_verified',
+  'manual_mechanics', 'manual_desc', 'assigned_text', 'human_status',
 ]);
 
 export async function PATCH(
@@ -34,7 +61,9 @@ export async function PATCH(
     const body = await req.json().catch(() => ({}));
     const cfgPatch: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(body.config ?? {})) {
-      if (CONFIG_FIELDS.has(k)) cfgPatch[k] = v;
+      if (CONFIG_FIELDS.has(k)) {
+        cfgPatch[k] = SEED_FIELDS.has(k) ? sanitizeSeedField(k, v) : v;
+      }
     }
     const topPatch: Record<string, unknown> = {};
     if (typeof body.name === 'string') topPatch.name = body.name.slice(0, 500);

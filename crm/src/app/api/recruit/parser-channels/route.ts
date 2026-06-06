@@ -131,6 +131,14 @@ export async function GET(req: NextRequest) {
         const workStatus = str(cfg.work_status);      // работаем ли мы с этой группой сейчас
         const country = str(cfg.country) ?? null;
         const foundQuery = str(cfg.found_query) ?? null;
+        // ТЗ-064: ручные поля «Готовы к засеву» — что Сергей сам проставил.
+        const seedReady = bool(cfg.seed_ready);
+        const humanJoined = bool(cfg.human_joined);
+        const humanVerified = bool(cfg.human_verified);
+        const manualMechanics = str(cfg.manual_mechanics);
+        const manualDesc = str(cfg.manual_desc);
+        const assignedText = str(cfg.assigned_text);
+        const humanStatus = str(cfg.human_status);
         // Город = последнее непустое слово запроса, если его можно угадать
         const city = foundQuery
           ? (foundQuery.trim().split(/\s+/).slice(-1)[0] || null)
@@ -166,6 +174,14 @@ export async function GET(req: NextRequest) {
           required_link: requiredChannel ? `https://t.me/${requiredChannel.replace(/^@/, '')}` : null,
           source: str(cfg.source) ?? null,
           last_sync_at: r.last_sync_at,
+          // ТЗ-064: ручные поля «Готовы к засеву»
+          seed_ready: seedReady,
+          human_joined: humanJoined,
+          human_verified: humanVerified,
+          manual_mechanics: manualMechanics,
+          manual_desc: manualDesc,
+          assigned_text: assignedText,
+          human_status: humanStatus,
         };
       });
 
@@ -183,6 +199,9 @@ export async function GET(req: NextRequest) {
       rejected: normalized.filter((r) => r.post_rejected === true).length,
       verified: normalized.filter((r) => r.publish_ok === true).length,
       needs_human: normalized.filter((r) => r.needs_human === true).length,
+      // ТЗ-064: счётчик готовых к засеву (главный фильтр /seed-groups).
+      seed_ready: normalized.filter((r) => r.seed_ready === true).length,
+      human_joined: normalized.filter((r) => r.human_joined === true).length,
     };
 
     // Фильтры
@@ -210,6 +229,16 @@ export async function GET(req: NextRequest) {
     const statusFilter = sp.get('status');
     if (statusFilter) filtered = filtered.filter((r) => r.status === statusFilter);
     if (sp.get('needs_human') === '1') filtered = filtered.filter((r) => r.needs_human === true);
+    // ТЗ-064: фильтр готовых к засеву / кандидатов (joined+can_post)
+    const seedReadyFilter = sp.get('seed_ready');
+    if (seedReadyFilter === 'yes') filtered = filtered.filter((r) => r.seed_ready === true);
+    else if (seedReadyFilter === 'candidate') {
+      filtered = filtered.filter((r) =>
+        r.seed_ready !== true && (r.joined === true || r.human_joined === true) && r.can_post !== false
+      );
+    }
+    const humanStatusFilter = sp.get('human_status');
+    if (humanStatusFilter) filtered = filtered.filter((r) => r.human_status === humanStatusFilter);
 
     // Сортировка
     const sign = dir === 'asc' ? 1 : -1;
@@ -260,7 +289,29 @@ const CONFIG_FIELDS_FOR_INSERT = new Set([
   'publish_ok', 'legal', 'threats_seen',
   'status', 'needs_human', 'join_type', 'work_status',
   'found_query',
+  // ТЗ-064: ручные поля «Готовы к засеву» — можно задать при создании.
+  'seed_ready', 'human_joined', 'human_verified',
+  'manual_mechanics', 'manual_desc', 'assigned_text', 'human_status',
 ]);
+
+/** ТЗ-064: вытащить @username'ы из строки или массива. Лояльный парсер.
+ *  Принимает: "@a b c", "a,b,c", ["a","b"], "https://t.me/a https://t.me/b". */
+function extractUsernames(input: unknown): string[] {
+  const arr = Array.isArray(input) ? input : [input];
+  const out = new Set<string>();
+  for (const it of arr) {
+    if (typeof it !== 'string') continue;
+    const re = /(?:t\.me\/|@)?([A-Za-z][A-Za-z0-9_]{4,31})/g;
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(it)) !== null) {
+      const u = m[1].toLowerCase();
+      // Отсекаем мусорные слова, которые случайно подходят под формат (опц.)
+      if (/^(http|https|com|org|join|chat|user|bot|admin|t)$/.test(u)) continue;
+      out.add(u);
+    }
+  }
+  return [...out];
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -268,9 +319,75 @@ export async function POST(req: NextRequest) {
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const tenantId = await getTenantId();
     const body = await req.json().catch(() => ({}));
+    const supabase = await createClient();
 
+    // ----- ТЗ-064: batch-режим. body = {usernames: string[]} или {usernames_text: string} -----
+    if (body && (Array.isArray(body.usernames) || typeof body.usernames_text === 'string')) {
+      const candidates = extractUsernames(body.usernames ?? body.usernames_text);
+      if (!candidates.length) {
+        return NextResponse.json({ error: 'Не нашёл ни одного @username в вводе' }, { status: 400 });
+      }
+      // Дедупим по уже существующим в тенанте (config->>username — строка).
+      // Чанком по 1000, как и в GET.
+      const existing = new Set<string>();
+      const CHUNK = 1000;
+      const MAX = 5000;
+      for (let offset = 0; offset < MAX; offset += CHUNK) {
+        const { data, error } = await supabase
+          .from('channels')
+          .select('config')
+          .eq('tenant_id', tenantId)
+          .eq('type', 'telegram_channel')
+          .order('id', { ascending: true })
+          .range(offset, offset + CHUNK - 1);
+        if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+        const batch = data ?? [];
+        for (const r of batch) {
+          const u = (r.config as { username?: unknown } | null)?.username;
+          if (typeof u === 'string') existing.add(u.toLowerCase().replace(/^@/, ''));
+        }
+        if (batch.length < CHUNK) break;
+      }
+      const fresh = candidates.filter((u) => !existing.has(u));
+      const skipped = candidates.filter((u) => existing.has(u));
+
+      const now = new Date().toISOString();
+      const rows = fresh.map((u) => ({
+        tenant_id: tenantId,
+        type: 'telegram_channel',
+        name: `@${u}`,
+        status: 'inactive',
+        config: {
+          username: u,
+          link: `https://t.me/${u}`,
+          is_group: true,
+          source: 'manual',
+          human_joined: true,
+          seed_ready: false,
+          country: 'Россия',
+          manual: true,
+          human_locked: true,
+          human_locked_at: now,
+        },
+      }));
+
+      const added: Array<{ id: string; username: string }> = [];
+      if (rows.length) {
+        const { data, error } = await supabase
+          .from('channels').insert(rows)
+          .select('id, config');
+        if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+        for (const r of data ?? []) {
+          const u = (r.config as { username?: unknown } | null)?.username;
+          if (typeof u === 'string') added.push({ id: r.id, username: u });
+        }
+      }
+      return NextResponse.json({ added, skipped, requested: candidates.length });
+    }
+
+    // ----- Одиночное создание (старый контракт, оставлен совместимым) -----
     const name = typeof body.name === 'string' ? body.name.trim().slice(0, 500) : '';
-    if (!name) return NextResponse.json({ error: 'name обязателен' }, { status: 400 });
+    if (!name) return NextResponse.json({ error: 'name обязателен (или передай {usernames:[...]} для batch)' }, { status: 400 });
     const status = typeof body.status === 'string' ? body.status.slice(0, 50) : null;
 
     // human_locked=true сразу при создании руками — парсер не должен ничего
@@ -288,7 +405,6 @@ export async function POST(req: NextRequest) {
       config.link = `https://t.me/${String(config.username).replace(/^@/, '')}`;
     }
 
-    const supabase = await createClient();
     const insertBody: Record<string, unknown> = {
       tenant_id: tenantId,
       type: 'telegram_channel',

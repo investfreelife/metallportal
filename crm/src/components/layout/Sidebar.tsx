@@ -34,6 +34,7 @@ import {
   Flame,
   MessagesSquare,
   Gift,
+  Sprout,
 } from 'lucide-react'
 
 type NavItem = {
@@ -151,6 +152,7 @@ const NAV_TAXI: NavSection[] = [
       { href: '/content', label: 'Планировщик', icon: CalendarDays },
       { href: '/content-ideas', label: '💡 Инфо-поводы', icon: Lightbulb },
       { href: '/seed-plan', label: '📅 Посев-план', icon: CalendarClock },
+      { href: '/seed-groups', label: '🌱 Готовы к засеву', icon: Sprout },
       { href: '/connections', label: 'Связи', icon: Network },
     ],
   },
