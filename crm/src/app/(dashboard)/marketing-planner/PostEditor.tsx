@@ -803,6 +803,31 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
           {/* ── Approval ──────────────────────────────────────────── */}
           <section className="px-4 py-3 border-t border-gray-100">
             <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide mb-2 block">Согласование</label>
+
+            {/* Крупная явная кнопка согласования (Sergey 2026-06-06: «сделай
+                нормальные кнопки чтоб согласовывать»). Ставит approved_text +
+                approved_final + status='approved' одним кликом — чтобы ВСЕ гейты
+                (ручная публикация, расписание, isPublishable) совпадали. */}
+            {draft.approved_final ? (
+              <button
+                onClick={() => patch({ approved_final: false, status: 'photo_review' as MarketingPostStatus })}
+                disabled={saving}
+                className="w-full mb-2 flex items-center justify-center gap-2 px-3 py-2.5 bg-emerald-600 text-white text-sm font-semibold rounded-md hover:bg-emerald-700 disabled:opacity-40"
+                title="Снять согласование — вернуть на доработку"
+              >
+                <CheckCircle2 size={16} /> Согласовано ✓ — нажми, чтобы снять
+              </button>
+            ) : (
+              <button
+                onClick={() => patch({ approved_text: true, approved_final: true, status: 'approved' as MarketingPostStatus })}
+                disabled={saving}
+                className="w-full mb-2 flex items-center justify-center gap-2 px-3 py-2.5 bg-white border-2 border-emerald-500 text-emerald-700 text-sm font-semibold rounded-md hover:bg-emerald-50 disabled:opacity-40"
+                title="Согласовать текст и финал — пост станет публикуемым"
+              >
+                <CheckCircle2 size={16} /> ✅ Согласовать (финал)
+              </button>
+            )}
+
             <div className="space-y-1.5">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -817,7 +842,7 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
                 <input
                   type="checkbox"
                   checked={!!draft.approved_final}
-                  onChange={(e) => patch({ approved_final: e.target.checked })}
+                  onChange={(e) => patch({ approved_final: e.target.checked, ...(e.target.checked ? { status: 'approved' as MarketingPostStatus } : {}) })}
                   className="rounded text-blue-600"
                 />
                 <span className="text-sm text-gray-700">Финал согласован</span>

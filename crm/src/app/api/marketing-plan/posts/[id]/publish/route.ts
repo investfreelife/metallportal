@@ -36,11 +36,23 @@ export async function POST(
     .single();
   if (!post) return NextResponse.json({ error: 'Пост не найден' }, { status: 404 });
 
-  if (post.status !== 'approved') {
-    return NextResponse.json({ error: 'Пост ещё не согласован (status≠approved)' }, { status: 400 });
+  // Согласование = approved_final (галочка «Финал согласован») ЛИБО status='approved'.
+  // Раньше гейт был ТОЛЬКО по status → согласованный пост (approved_final=true,
+  // но status='photo_review') молча НЕ публиковался. Фикс 2026-06-06 по Сергею.
+  if (!post.approved_final && post.status !== 'approved') {
+    return NextResponse.json({ error: 'Пост ещё не согласован (нет ☑ «Финал согласован»)' }, { status: 400 });
   }
-  if (!post.photo_url) {
+  // Карусель: photos[] (в заданном порядке), иначе одиночная обложка photo_url.
+  const carousel: string[] = Array.isArray(post.photos) && post.photos.length
+    ? post.photos.filter((u: unknown): u is string => typeof u === 'string' && !!u)
+    : (post.photo_url ? [post.photo_url] : []);
+  if (!carousel.length) {
     return NextResponse.json({ error: 'Нет фото поста' }, { status: 400 });
+  }
+  // Защита: {LINK} обязан быть подставлен ДО публикации, иначе в посте уйдёт
+  // литерал «{LINK}». Лучше громкая ошибка, чем битый пост в публичную группу.
+  if ((post.text || '').includes('{LINK}')) {
+    return NextResponse.json({ error: 'Текст содержит несработавший {LINK} — подставь ссылку/код перед публикацией' }, { status: 400 });
   }
 
   const platformGuess = (post.channel || '').toLowerCase().includes('vk') ? 'vk' : 'telegram';
@@ -68,7 +80,7 @@ export async function POST(
   };
   const result = await publish(connObj, {
     text: post.text || post.label || '',
-    media: post.photo_url ? [{ type: 'image', url: post.photo_url }] : [],
+    media: carousel.map((url) => ({ type: 'image' as const, url })),
   });
 
   if (!result.ok) {
