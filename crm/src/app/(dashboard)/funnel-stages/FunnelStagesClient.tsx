@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   KanbanSquare,
   RefreshCw,
@@ -48,6 +48,11 @@ export default function FunnelStagesClient({ tenantName }: Props) {
   const [expanded, setExpanded] = useState<keyof RedPanel | null>(null);
   const [editing, setEditing] = useState<FunnelContact | null>(null);
   const [adding, setAdding] = useState(false);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  function scrollBy(dx: number) {
+    scrollRef.current?.scrollBy({ left: dx, behavior: 'smooth' });
+  }
 
   const reload = useCallback(async (silent = false) => {
     if (!silent) setRefreshing(true);
@@ -136,13 +141,32 @@ export default function FunnelStagesClient({ tenantName }: Props) {
         </div>
       )}
 
-      {/* ── Канбан ──────────────────────────────────────────────── */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      {/* ── Канбан + кнопки прокрутки ───────────────────────── */}
+      <div className="relative flex-1 flex flex-col overflow-hidden">
+        {/* Floating ◀ ▶ — фолбэк на случай если webkit скроллбар спрятался */}
+        {!loading && (
+          <>
+            <button
+              onClick={() => scrollBy(-360)}
+              title="Прокрутить влево"
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-white border border-gray-300 shadow-lg rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-50 hover:scale-105 active:scale-95 transition"
+            >
+              ◀
+            </button>
+            <button
+              onClick={() => scrollBy(360)}
+              title="Прокрутить вправо"
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-white border border-gray-300 shadow-lg rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-50 hover:scale-105 active:scale-95 transition"
+            >
+              ▶
+            </button>
+          </>
+        )}
         {loading ? (
           <p className="text-xs text-gray-400 text-center py-12">Загрузка…</p>
         ) : (
-          // hscroll: видимый горизонтальный ползунок (см. globals.css). Task 059.
-          <div className="hscroll flex-1 overflow-x-auto overflow-y-hidden p-4">
+          // hscroll: видимый горизонтальный ползунок (см. globals.css). Task 059/063+1.
+          <div ref={scrollRef} className="hscroll flex-1 overflow-y-hidden p-4 pb-2">
             <div className="flex gap-3 min-w-max h-full">
               {STAGE_ORDER.map((s) => (
                 <StageColumn
