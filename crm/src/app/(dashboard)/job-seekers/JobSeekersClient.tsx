@@ -184,6 +184,7 @@ function SeekerCard({ row, onPatch, onDelete, onSaved }: { row: Row; onPatch: (p
   const name = (c.name as string) ?? null;
   const link = `https://t.me/${String(username).replace(/^@/, '')}`;
   const fromGroup = (c.from_group_name as string) ?? (c.from_group as string) ?? '';
+  const postLink = (c.post_link as string) || (c.from_group ? `https://t.me/${String(c.from_group).replace(/^@/, '')}` : '');
   const city = (c.city as string) ?? '';
   const text = (c.text as string) ?? '';
   const original = (c.original as string) ?? '';
@@ -225,7 +226,17 @@ function SeekerCard({ row, onPatch, onDelete, onSaved }: { row: Row; onPatch: (p
             {city && <span className="text-xs text-gray-500">· 📍 {city}</span>}
           </div>
           {fromGroup && (
-            <div className="text-[10px] text-gray-500 mt-0.5">в чате: <span className="font-medium">{fromGroup}</span></div>
+            <div className="text-[10px] text-gray-500 mt-0.5">
+              в чате:{' '}
+              {postLink ? (
+                <a href={postLink} target="_blank" rel="noopener noreferrer" className="font-medium text-blue-600 hover:underline inline-flex items-center gap-0.5">
+                  {fromGroup} <ExternalLink size={9} />
+                </a>
+              ) : (
+                <span className="font-medium">{fromGroup}</span>
+              )}
+              {c.post_link && <span className="text-gray-400"> · ↗ открыть пост</span>}
+            </div>
           )}
         </div>
         <span className={`inline-block text-[10px] px-1.5 py-0.5 rounded border font-medium whitespace-nowrap ${statusMeta.color}`}>
