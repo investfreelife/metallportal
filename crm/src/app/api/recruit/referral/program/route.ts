@@ -16,7 +16,8 @@ export const dynamic = 'force-dynamic';
 
 const ALLOWED = new Set([
   'enabled', 'inviter_reward', 'inviter_threshold_shifts', 'newbie_reward',
-  'statuses', 'tiers', 'leaderboard', 'note',
+  'statuses', 'tiers', 'leaderboard', 'note', 'rules_human',
+  'our_take_pct', 'inviter_share_pct', 'qualify_months', 'payout', 'leaderboard_prizes',
 ]);
 
 async function loadProgram(tenantId: string) {

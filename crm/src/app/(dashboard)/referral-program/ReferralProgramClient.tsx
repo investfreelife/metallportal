@@ -14,6 +14,7 @@ interface ProgramConfig {
   statuses?: StatusItem[];
   leaderboard?: boolean;
   note?: string;
+  rules_human?: string;
 }
 interface ProgramRow {
   id: string;
@@ -225,6 +226,7 @@ function ProgramCard({ program, onSaved }: { program: ProgramRow; onSaved: () =>
   const [statuses, setStatuses] = useState<StatusItem[]>(c.statuses ?? []);
   const [leaderboard, setLeaderboard] = useState<boolean>(c.leaderboard !== false);
   const [note, setNote] = useState<string>(c.note ?? '');
+  const [rulesHuman, setRulesHuman] = useState<string>(c.rules_human ?? '');
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<string | null>(null);
 
@@ -235,7 +237,7 @@ function ProgramCard({ program, onSaved }: { program: ProgramRow; onSaved: () =>
         method: 'PATCH', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           enabled, inviter_reward: inviterReward, inviter_threshold_shifts: inviterThreshold,
-          newbie_reward: newbieReward, statuses, leaderboard, note,
+          newbie_reward: newbieReward, statuses, leaderboard, note, rules_human: rulesHuman,
         }),
       });
       setSavedAt(new Date().toISOString());
@@ -299,6 +301,18 @@ function ProgramCard({ program, onSaved }: { program: ProgramRow; onSaved: () =>
       <Field label="Заметка">
         <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="источник, дата подтверждения и т.п."
           className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+      </Field>
+
+      {/* Подробные правила программы — человеческое описание (как работает, сколько, условия) */}
+      <Field label="📖 Подробные правила (как это работает)">
+        <textarea value={rulesHuman} onChange={(e) => setRulesHuman(e.target.value)} rows={22}
+          placeholder="Полное описание реферальной программы простыми словами…"
+          className="w-full px-2 py-2 text-xs border border-gray-200 rounded font-mono leading-relaxed whitespace-pre-wrap" />
+        {rulesHuman && (
+          <div className="mt-2 bg-emerald-50 border border-emerald-200 rounded-md p-3 text-[12px] text-emerald-900 whitespace-pre-wrap leading-relaxed">
+            {rulesHuman}
+          </div>
+        )}
       </Field>
 
       {/* Предпросмотр для бота */}
