@@ -15,6 +15,7 @@ interface ProgramConfig {
   leaderboard?: boolean;
   note?: string;
   rules_human?: string;
+  qualify_months?: number;
 }
 interface ProgramRow {
   id: string;
@@ -221,12 +222,12 @@ function ProgramCard({ program, onSaved }: { program: ProgramRow; onSaved: () =>
   const c = program.config;
   const [enabled, setEnabled] = useState<boolean>(c.enabled !== false);
   const [inviterReward, setInviterReward] = useState<number>(c.inviter_reward ?? 3000);
-  const [inviterThreshold, setInviterThreshold] = useState<number>(c.inviter_threshold_shifts ?? 10);
   const [newbieReward, setNewbieReward] = useState<number>(c.newbie_reward ?? 2000);
   const [statuses, setStatuses] = useState<StatusItem[]>(c.statuses ?? []);
   const [leaderboard, setLeaderboard] = useState<boolean>(c.leaderboard !== false);
   const [note, setNote] = useState<string>(c.note ?? '');
   const [rulesHuman, setRulesHuman] = useState<string>(c.rules_human ?? '');
+  const [qualifyMonths, setQualifyMonths] = useState<number>(c.qualify_months ?? 1);
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<string | null>(null);
 
@@ -236,8 +237,9 @@ function ProgramCard({ program, onSaved }: { program: ProgramRow; onSaved: () =>
       await safeFetchJson('/api/recruit/referral/program', {
         method: 'PATCH', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          enabled, inviter_reward: inviterReward, inviter_threshold_shifts: inviterThreshold,
+          enabled, inviter_reward: inviterReward,
           newbie_reward: newbieReward, statuses, leaderboard, note, rules_human: rulesHuman,
+          qualify_months: qualifyMonths,
         }),
       });
       setSavedAt(new Date().toISOString());
@@ -259,12 +261,12 @@ function ProgramCard({ program, onSaved }: { program: ProgramRow; onSaved: () =>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <Field label="Приведшему (₽ после X смен)">
+        <Field label="Приведшему (до ₽ за друга, потолок)">
           <input type="number" value={inviterReward} onChange={(e) => setInviterReward(Number(e.target.value) || 0)}
             className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
         </Field>
-        <Field label="Порог смен (X)">
-          <input type="number" value={inviterThreshold} onChange={(e) => setInviterThreshold(Number(e.target.value) || 0)}
+        <Field label="Порог: месяцев работы друга">
+          <input type="number" value={qualifyMonths} onChange={(e) => setQualifyMonths(Number(e.target.value) || 0)}
             className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
         </Field>
         <Field label="Новичку (₽ к первым сменам)">
@@ -320,8 +322,8 @@ function ProgramCard({ program, onSaved }: { program: ProgramRow; onSaved: () =>
         <div className="font-semibold mb-0.5">🎁 Так увидит водитель в боте:</div>
         <div className="whitespace-pre-wrap">
 {`Реферальная программа парка «Столица»
-• Приведи водителя → ${inviterReward.toLocaleString('ru-RU')} ₽ после ${inviterThreshold} смен новичка
-• Новичку — ${newbieReward.toLocaleString('ru-RU')} ₽ за первые смены
+• Приведи водителя → до ${inviterReward.toLocaleString('ru-RU')} ₽ после ${qualifyMonths} мес. его работы
+• Новичку — ${newbieReward.toLocaleString('ru-RU')} ₽ бонусом
 ${statuses.map((s) => `• ${s.name} — ${s.active_needed} активных`).join('\n')}
 
 Твоя ссылка: t.me/<bot_username>?start=ref_<tg_id>`}
