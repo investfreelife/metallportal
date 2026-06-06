@@ -22,7 +22,7 @@ interface Resp {
 
 interface Props { tenantName: string | null }
 
-const BOT_USERNAME = 'stolica_dostavka_zbium_bot';
+const BOT_USERNAME = 'stolica_dostavka_bot';
 const STATUSES: Array<{ v: string; label: string; color: string }> = [
   { v: 'new',       label: '🆕 Новые',      color: 'bg-blue-100 text-blue-700 border-blue-200' },
   { v: 'contacted', label: '📤 Написал',    color: 'bg-amber-100 text-amber-700 border-amber-200' },
