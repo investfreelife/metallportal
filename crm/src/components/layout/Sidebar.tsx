@@ -143,6 +143,7 @@ const NAV_TAXI: NavSection[] = [
       { href: '/trips', label: 'Поездки', icon: MapPin },
       { href: '/payouts', label: 'Выплаты', icon: Wallet },
       { href: '/channels', label: 'Telegram каналы', icon: Send },
+      { href: '/vk-groups', label: 'VK группы', icon: Users },
     ],
   },
   {
