@@ -32,10 +32,37 @@ const STATUSES: Array<{ v: string; label: string; color: string }> = [
   { v: 'rejected',  label: '❌ Отказ',      color: 'bg-red-50 text-red-600 border-red-200' },
 ];
 
-function buildOpener(name: string | null, seekerId: string): string {
-  const n = (name && name.trim()) ? name.trim() : 'привет';
-  return `Привет, ${n}! Увидел в чате, что ищешь работу — актуально ещё?
-Подбираю ребят в доставку (курьером — пешком/вело/авто), работа в день обращения, выплаты тоже в первый день. Если интересно или хочешь просто посмотреть варианты — напиши боту: t.me/${BOT_USERNAME}?start=seeker_${seekerId.slice(0, 8)}. Там за пару минут подберём, что тебе подходит 👇`;
+// ТЗ-068.B: сегменты опенера, у каждого свой ключ в config.variants.
+export type SeekerSegment = 'A' | 'B' | 'C';
+const SEGMENTS: Array<{ v: SeekerSegment; label: string; key: string }> = [
+  { v: 'A', label: 'A · Приезжий', key: 'A_Приезжий' },
+  { v: 'B', label: 'B · Местный',  key: 'B_Местный' },
+  { v: 'C', label: 'C · Новичок',  key: 'C_Новичок' },
+];
+
+interface OpenerCfg {
+  variants?: Record<string, string>;
+  default?: string | null;
+  note?: string | null;
+  two_step?: string | boolean | null;
+}
+
+/** ТЗ-068.B: текст из CRM (config.variants[<segment>] | default) с подстановкой
+ *  {Имя}, {Город}, fallback на «привет» при пустых данных. seekerId оставлен
+ *  чтобы старая ссылка ?start=seeker_<id> работала; реальная CRM-версия
+ *  обычно содержит уже свою CTA-ссылку. */
+function buildOpener(opener: OpenerCfg | null, segment: SeekerSegment, name: string | null, city: string | null, seekerId: string): string {
+  const segKey = SEGMENTS.find((s) => s.v === segment)?.key;
+  const raw = (segKey && opener?.variants?.[segKey])
+    || opener?.default
+    || `Привет, {Имя}! Увидел в чате, что ищешь работу — актуально ещё?\nПодбираю ребят в доставку (курьером — пешком/вело/авто), работа в день обращения, выплаты тоже в первый день. Если интересно — напиши боту: t.me/${BOT_USERNAME}?start=seeker_${seekerId.slice(0, 8)}. Там за пару минут подберём, что тебе подходит 👇`;
+  const safeName = (name && name.trim()) ? name.trim() : 'привет';
+  const safeCity = (city && city.trim()) ? city.trim() : 'Москва';
+  return raw
+    .replace(/\{Имя\}/g, safeName)
+    .replace(/\{Город\}/g, safeCity)
+    .replace(/\{ИмяБота\}/g, BOT_USERNAME)
+    .replace(/\{СоискательID\}/g, seekerId.slice(0, 8));
 }
 
 export default function JobSeekersClient({ tenantName }: Props) {
@@ -48,6 +75,8 @@ export default function JobSeekersClient({ tenantName }: Props) {
   const [q, setQ] = useState('');
   const [page, setPage] = useState(1);
   const [adding, setAdding] = useState(false);
+  // ТЗ-068.B: опенеры из CRM (channels kind='seeker_opener'), один раз на маунт.
+  const [opener, setOpener] = useState<OpenerCfg | null>(null);
 
   const reload = useCallback(async (silent = false) => {
     if (!silent) setRefreshing(true);
@@ -64,6 +93,18 @@ export default function JobSeekersClient({ tenantName }: Props) {
     } finally { setLoading(false); setRefreshing(false); }
   }, [statusFilter, hotOnly, q, page]);
   useEffect(() => { reload(); }, [reload]);
+
+  // ТЗ-068.B: опенеры из CRM — грузим один раз, не блокируя список.
+  useEffect(() => {
+    (async () => {
+      try {
+        const r = await safeFetchJson<{ opener: OpenerCfg | null }>('/api/recruit/seeker-opener');
+        if (r.opener) setOpener(r.opener);
+      } catch {
+        // не критично — будет fallback внутри buildOpener
+      }
+    })();
+  }, []);
 
   const items = resp?.items ?? [];
   const summary = resp?.summary ?? { total: 0, hot: 0, new: 0, contacted: 0, in_bot: 0, joined: 0 };
@@ -156,6 +197,7 @@ export default function JobSeekersClient({ tenantName }: Props) {
         ) : (
           items.map((r) => (
             <SeekerCard key={r.id} row={r}
+              opener={opener}
               onPatch={(patch) => patchSeeker(r.id, patch)}
               onDelete={() => deleteSeeker(r.id)}
               onSaved={() => reload(true)} />
@@ -177,7 +219,7 @@ export default function JobSeekersClient({ tenantName }: Props) {
   );
 }
 
-function SeekerCard({ row, onPatch, onDelete, onSaved }: { row: Row; onPatch: (patch: Record<string, unknown>) => Promise<void> | void; onDelete: () => void; onSaved: () => void | Promise<void> }) {
+function SeekerCard({ row, opener, onPatch, onDelete, onSaved }: { row: Row; opener: OpenerCfg | null; onPatch: (patch: Record<string, unknown>) => Promise<void> | void; onDelete: () => void; onSaved: () => void | Promise<void> }) {
   const [editing, setEditing] = useState(false);
   const c = (row.config ?? {}) as Record<string, unknown>;
   const username = (c.username as string) ?? '';
@@ -195,10 +237,20 @@ function SeekerCard({ row, onPatch, onDelete, onSaved }: { row: Row; onPatch: (p
   const msgTs = typeof c.msg_ts === 'number' ? c.msg_ts : null;
   const when = msgTs ? new Date(msgTs * 1000).toISOString() : row.created_at;
 
-  const [opener, setOpener] = useState(buildOpener(name, row.id));
+  const [segment, setSegment] = useState<SeekerSegment>('A');
+  const [openerText, setOpenerText] = useState<string>(() => buildOpener(opener, 'A', name, city, row.id));
+  // Если opener-config пришёл позже маунта или сменился сегмент — обновляем текст,
+  // только если пользователь его сам не редактировал (т.е. он совпадает с пред. сгенерённым).
+  const [lastGenerated, setLastGenerated] = useState<string>(openerText);
+  useEffect(() => {
+    const next = buildOpener(opener, segment, name, city, row.id);
+    setOpenerText((prev) => (prev === lastGenerated || !prev.trim() ? next : prev));
+    setLastGenerated(next);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [opener, segment, name, city, row.id]);
 
   function copyOpener() {
-    navigator.clipboard?.writeText(opener);
+    navigator.clipboard?.writeText(openerText);
   }
 
   function openTg() {
@@ -258,11 +310,37 @@ function SeekerCard({ row, onPatch, onDelete, onSaved }: { row: Row; onPatch: (p
           📋 Готовый тёплый опенер
         </summary>
         <div className="mt-1.5 space-y-1.5">
-          <textarea value={opener} onChange={(e) => setOpener(e.target.value)} rows={5}
+          {/* ТЗ-068.B: переключатель сегмента A/B/C — варианты из CRM seeker_opener.variants */}
+          <div className="flex items-center gap-1 text-[10px]">
+            {SEGMENTS.map((s) => {
+              const has = !!(opener?.variants && opener.variants[s.key]);
+              const active = segment === s.v;
+              return (
+                <button
+                  key={s.v}
+                  onClick={() => setSegment(s.v)}
+                  title={has ? `Вариант из CRM: ${s.key}` : 'В CRM нет — будет fallback (default)'}
+                  className={`px-1.5 py-0.5 rounded border ${
+                    active
+                      ? 'bg-emerald-600 text-white border-emerald-700'
+                      : has
+                        ? 'bg-white text-emerald-700 border-emerald-300 hover:bg-emerald-50'
+                        : 'bg-white text-gray-400 border-gray-200'
+                  }`}
+                >
+                  {s.label}
+                </button>
+              );
+            })}
+            {opener && (
+              <span className="ml-auto text-emerald-700/70">из CRM seeker_opener</span>
+            )}
+          </div>
+          <textarea value={openerText} onChange={(e) => setOpenerText(e.target.value)} rows={5}
             className="w-full px-2 py-1.5 text-[11px] border border-emerald-200 bg-emerald-50/40 rounded focus:border-emerald-400 focus:outline-none resize-y" />
           <div className="flex items-center gap-2">
             <button onClick={copyOpener} className="flex items-center gap-1 px-2 py-1 text-[11px] bg-white border border-emerald-300 text-emerald-700 rounded hover:bg-emerald-50">
-              <Copy size={11} /> Копировать
+              <Copy size={11} /> 📋 Копировать
             </button>
             <button onClick={openTg} disabled={!username}
               className="flex items-center gap-1 px-2 py-1 text-[11px] bg-emerald-600 text-white rounded hover:bg-emerald-700 disabled:opacity-40">
