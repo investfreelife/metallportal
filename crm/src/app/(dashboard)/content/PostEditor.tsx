@@ -382,6 +382,13 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
         </header>
 
         <div className="flex-1 overflow-y-auto">
+          {/* ── Куда публиковать (Postiz-style: круглые аватары наверху) ── */}
+          <ChannelsPicker
+            activeConnections={activeConnections}
+            value={Array.isArray(draft.channels_sel) ? draft.channels_sel : ['telegram', 'vk']}
+            onChange={(next) => { setDraft({ ...draft, channels_sel: next }); patch({ channels_sel: next }); }}
+          />
+
           {/* 🔒 Согласовано человеком — автоматика не двигает дату/фото/текст. */}
           {draft.approved_final === true && (
             <div className="mx-4 mt-3 flex items-start gap-2 bg-amber-50 border border-amber-200 text-amber-800 text-xs rounded px-3 py-2">
@@ -789,12 +796,9 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
             </section>
           )}
 
-          {/* ── Channels (multi-select galo4kami) ─────────────────── */}
-          <ChannelsPicker
-            activeConnections={activeConnections}
-            value={Array.isArray(draft.channels_sel) ? draft.channels_sel : ['telegram', 'vk']}
-            onChange={(next) => { setDraft({ ...draft, channels_sel: next }); patch({ channels_sel: next }); }}
-          />
+          {/* Sergey directive 2026-06-06 (по скрину Postiz): пикер каналов
+              ПЕРЕЕХАЛ в шапку (см. блок «Куда публиковать» сразу под header).
+              Здесь оставлен пустой anchor чтобы сохранить нумерацию секций. */}
 
           {/* ── Approval ──────────────────────────────────────────── */}
           <section className="px-4 py-3 border-t border-gray-100">
@@ -984,73 +988,76 @@ function ChannelsPicker({
   onChange: (next: string[]) => void;
 }) {
   const conns = activeConnections.filter((c) => c.enabled && (c.platform === 'telegram' || c.platform === 'vk'));
-  // Уникальные платформы из connections (если есть несколько TG — всё равно
-  // галочка одна «telegram», т.к. демон выберет первую активную).
   const platforms = Array.from(new Set(conns.map((c) => c.platform))) as Array<'telegram' | 'vk'>;
-  if (platforms.length === 0 && conns.length === 0) {
-    return (
-      <section className="px-4 py-3 border-t border-gray-100">
-        <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Куда публиковать</label>
-        <p className="text-[10px] text-amber-700 mt-1">
-          Нет активных связей. Добавь в <a href="/connections" className="underline">/connections</a>.
-        </p>
-      </section>
-    );
-  }
+  const hasAnyConn = platforms.length > 0;
 
   function toggle(p: string) {
     if (value.includes(p)) onChange(value.filter((x) => x !== p));
     else onChange([...value, p]);
   }
 
-  // Подписи под платформой — берём первую connection.
+  // Подписи под аватаром — берём label первой connection платформы.
   const labelByPlatform: Record<string, string> = {};
   for (const c of conns) {
     if (!labelByPlatform[c.platform]) labelByPlatform[c.platform] = c.label;
   }
 
+  // Postiz-style: круглые большие аватары с буквой; активный — синяя обводка
+  // + галочка ✓ в углу. Клик по аватару = toggle. Нет связей — амбер-баннер.
   return (
-    <section className="px-4 py-3 border-t border-gray-100">
-      <div className="flex items-center justify-between mb-1.5">
+    <section className="px-4 py-3 border-b border-gray-100 bg-gray-50/50">
+      <div className="flex items-center justify-between mb-2">
         <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
-          Куда публиковать ({value.length})
+          📣 Куда публиковать
         </label>
-        <span className="text-[10px] text-gray-400">можно несколько</span>
+        <span className="text-[10px] text-gray-400">клик = вкл/выкл · можно несколько</span>
       </div>
-      <div className="space-y-1">
+      <div className="flex items-end gap-3">
         {(['telegram', 'vk'] as const).map((p) => {
           const isAvailable = platforms.includes(p);
           const isChecked = value.includes(p);
           const label = labelByPlatform[p] ?? (p === 'telegram' ? 'Telegram' : 'VK');
-          const pretty = p === 'telegram' ? 'Telegram' : 'VK';
+          const platformPretty = p === 'telegram' ? 'TG' : 'VK';
           return (
-            <label
+            <button
               key={p}
-              className={`flex items-center gap-2 px-2.5 py-2 border rounded-md cursor-pointer ${
-                !isAvailable ? 'opacity-50 cursor-not-allowed' : isChecked ? 'border-blue-300 bg-blue-50' : 'border-gray-200 bg-white hover:bg-gray-50'
-              }`}
+              type="button"
+              onClick={() => isAvailable && toggle(p)}
+              disabled={!isAvailable}
+              title={!isAvailable ? `${p === 'telegram' ? 'Telegram' : 'VK'} не настроен в /connections` : (isChecked ? `Снять «${label}»` : `Публиковать в «${label}»`)}
+              className={`group flex flex-col items-center gap-1 ${!isAvailable ? 'cursor-not-allowed opacity-40' : 'cursor-pointer'}`}
             >
-              <input
-                type="checkbox"
-                checked={isChecked}
-                disabled={!isAvailable}
-                onChange={() => isAvailable && toggle(p)}
-                className="rounded text-blue-600"
-              />
-              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                p === 'telegram' ? 'bg-sky-100 text-sky-700' : 'bg-blue-100 text-blue-800'
+              <span className={`relative w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-base transition-all ${
+                p === 'telegram'
+                  ? (isChecked ? 'bg-sky-500 ring-2 ring-sky-600 ring-offset-2' : 'bg-sky-200 hover:bg-sky-300')
+                  : (isChecked ? 'bg-blue-600 ring-2 ring-blue-700 ring-offset-2' : 'bg-blue-200 hover:bg-blue-300')
               }`}>
-                {pretty}
+                {platformPretty}
+                {isChecked && (
+                  <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center">
+                    <Check size={9} strokeWidth={3} className="text-white" />
+                  </span>
+                )}
               </span>
-              <span className="flex-1 text-xs text-gray-800 truncate">{label}</span>
-              {!isAvailable && <span className="text-[10px] text-gray-500">не настроен</span>}
-            </label>
+              <span className={`text-[10px] max-w-[80px] truncate ${isChecked ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
+                {label}
+              </span>
+            </button>
           );
         })}
+        <div className="flex-1" />
+        <div className="text-[10px] text-gray-500 pb-1">
+          выбрано: <strong className="text-gray-900">{value.length}</strong>
+        </div>
       </div>
-      {value.length === 0 && (
-        <p className="text-[10px] text-amber-700 mt-1.5">
-          ⚠️ Выбери хотя бы один канал — иначе пост не опубликуется.
+      {!hasAnyConn && (
+        <p className="text-[10px] text-amber-700 mt-2">
+          ⚠️ Нет активных связей. Добавь в <a href="/connections" className="underline">/connections</a>.
+        </p>
+      )}
+      {hasAnyConn && value.length === 0 && (
+        <p className="text-[10px] text-amber-700 mt-2">
+          ⚠️ Не выбран ни один канал — пост не опубликуется. Кликни по аватару выше.
         </p>
       )}
     </section>
