@@ -161,7 +161,9 @@ export async function POST(req: NextRequest) {
       labels: Array.isArray(body.labels)
         ? body.labels.map((s: unknown) => String(s).slice(0, 80)).slice(0, 50)
         : [],
-      manual: true, // пометка «руками Сергея, не парсером»
+      manual: true,                       // пометка «руками Сергея, не парсером»
+      human_locked: true,                 // парсер не трогает (Sergey 2026-06-06)
+      human_locked_at: new Date().toISOString(),
     };
 
     const supabase = await createClient();

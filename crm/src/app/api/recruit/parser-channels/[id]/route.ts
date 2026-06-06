@@ -54,6 +54,12 @@ export async function PATCH(
     // Защита: не даём менять kind через config-merge (parser_* остаются собой).
     delete cfgPatch.kind;
 
+    // Sergey directive 2026-06-06: «мои правки должны сохраняться всегда».
+    // Ставим human_locked=true → парсер обязан skip'нуть эту строку при
+    // следующем проходе и НЕ перезаписывать никакие config-поля.
+    cfgPatch.human_locked = true;
+    cfgPatch.human_locked_at = new Date().toISOString();
+
     const nextConfig = Object.keys(cfgPatch).length ? { ...cfg, ...cfgPatch } : null;
     const update: Record<string, unknown> = { ...topPatch };
     if (nextConfig) update.config = nextConfig;

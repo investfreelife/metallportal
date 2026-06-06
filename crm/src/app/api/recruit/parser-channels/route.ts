@@ -273,7 +273,13 @@ export async function POST(req: NextRequest) {
     if (!name) return NextResponse.json({ error: 'name обязателен' }, { status: 400 });
     const status = typeof body.status === 'string' ? body.status.slice(0, 50) : null;
 
-    const config: Record<string, unknown> = { manual: true };
+    // human_locked=true сразу при создании руками — парсер не должен ничего
+    // переписать в этой строке никогда (Sergey directive 2026-06-06).
+    const config: Record<string, unknown> = {
+      manual: true,
+      human_locked: true,
+      human_locked_at: new Date().toISOString(),
+    };
     for (const [k, v] of Object.entries(body.config ?? {})) {
       if (CONFIG_FIELDS_FOR_INSERT.has(k)) config[k] = v;
     }

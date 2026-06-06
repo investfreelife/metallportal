@@ -63,6 +63,11 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
       return NextResponse.json({ error: 'Нет полей для обновления' }, { status: 400 });
     }
 
+    // Sergey directive 2026-06-06: «мои правки должны сохраняться всегда».
+    // Ставим human_locked=true → парсер обязан skip'нуть эту строку.
+    patch.human_locked = true;
+    patch.human_locked_at = new Date().toISOString();
+
     const supabase = await createClient();
     const { data: existing, error: getErr } = await supabase
       .from('channels')
