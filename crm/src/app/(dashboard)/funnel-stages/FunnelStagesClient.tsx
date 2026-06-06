@@ -20,7 +20,7 @@ import {
 import { safeFetchJson } from '@/lib/safe-fetch';
 import {
   STAGE_ORDER, STAGE_LABELS, STAGE_COLORS,
-  isActiveStage, canMoveTo,
+  isActiveStage,
   type FunnelContact, type FunnelStage,
 } from '@/lib/recruit/stages';
 import { fmtMsk, toMskInputValue, mskInputToUTC } from '@/lib/tz';
@@ -64,11 +64,9 @@ export default function FunnelStagesClient({ tenantName }: Props) {
     if (!dragging || dragging.fromStage === toStage) {
       setDragging(null); setDragOverStage(null); return;
     }
-    if (!canMoveTo(dragging.fromStage, toStage)) {
-      const yes = confirm(`Откат стадии (${dragging.fromStage} → ${toStage}) обычно запрещён. Точно перенести?`);
-      if (!yes) { setDragging(null); setDragOverStage(null); return; }
-    }
-    // 🔒 для scheduled/online или human_locked
+    // canMoveTo() убран — в реальной работе кандидаты ходят туда-сюда (agreed→engaged,
+    // engaged→qualified когда уточняем и т.д.). Запрет мешал, фриктион на drag-drop
+    // не нужен. Замок 🔒 остаётся — это важная защита от случайных тыков.
     const card = resp?.contacts.find((c) => c.id === dragging.id);
     if (card && (dragging.fromStage === 'scheduled' || dragging.fromStage === 'online' || card.human_locked)) {
       const yes = confirm(`Карточка под замком (${dragging.fromStage}). Точно перенести в «${toStage}»?`);
@@ -440,20 +438,19 @@ function ContactCard({
             >
               <div className="px-2 py-1 text-[10px] text-gray-500 border-b border-gray-100">Перенести в…</div>
               {STAGE_ORDER.filter((s) => s !== currentStage).map((s) => {
-                const allowed = canMoveTo(currentStage, s);
+                const isBack = STAGE_ORDER.indexOf(s) < STAGE_ORDER.indexOf(currentStage);
                 return (
                   <button
                     key={s}
-                    disabled={!allowed}
                     onClick={() => {
                       setMenuOpen(false);
                       if (locked && !confirm(`Карточка под замком (${STAGE_LABELS[currentStage]}). Точно переносим в «${STAGE_LABELS[s]}»?`)) return;
                       onMove(s);
                     }}
-                    className={`w-full text-left px-2 py-1 text-[11px] hover:bg-blue-50 ${allowed ? 'text-gray-800' : 'text-gray-300 cursor-not-allowed'}`}
+                    className="w-full text-left px-2 py-1 text-[11px] hover:bg-blue-50 text-gray-800"
                   >
                     {STAGE_LABELS[s]}
-                    {!allowed && <span className="text-[9px] ml-1 text-gray-400">(откат)</span>}
+                    {isBack && <span className="text-[9px] ml-1 text-gray-400">↩</span>}
                   </button>
                 );
               })}
@@ -587,7 +584,8 @@ function EditDrawer({
   const [lostReason, setLostReason] = useState(contact.lost_reason ?? '');
   const [busy, setBusy] = useState(false);
 
-  const allowedStages = STAGE_ORDER.filter((s) => canMoveTo(contact.stage as string, s));
+  // canMoveTo больше не используется — все стадии доступны (см. handleDrop коммент).
+  const allowedStages = STAGE_ORDER;
 
   async function save() {
     setBusy(true);

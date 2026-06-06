@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getSession, getTenantId } from '@/lib/session';
-import { isActiveStage, canMoveTo, type FunnelContact, type FunnelStage } from '@/lib/recruit/stages';
+import { isActiveStage, type FunnelContact, type FunnelStage } from '@/lib/recruit/stages';
 
 /**
  * GET /api/recruit/funnel-stages
@@ -186,22 +186,9 @@ export async function PATCH(req: NextRequest) {
 
     const supabase = await createClient();
 
-    // Проверка canMoveTo() для смены стадии: запрещаем откат назад в UI.
-    if (typeof patch.stage === 'string') {
-      const { data: existing } = await supabase
-        .from('contacts')
-        .select('stage')
-        .eq('id', id)
-        .eq('tenant_id', tenantId)
-        .single();
-      const cur = (existing?.stage as string | null) ?? null;
-      if (!canMoveTo(cur, patch.stage as FunnelStage)) {
-        return NextResponse.json(
-          { error: `Откат стадии запрещён: ${cur} → ${patch.stage}` },
-          { status: 400 }
-        );
-      }
-    }
+    // Task 063+1: canMoveTo() убрана из API — Сергей-кодер: реальные кандидаты
+    // ходят туда-сюда (например, agreed→engaged когда передумали), запрет
+    // мешал работе. UI больше тоже не подтверждает откаты на drag-drop.
 
     const { data, error } = await supabase
       .from('contacts')
