@@ -362,13 +362,15 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
       )}
 
       {/* ── Таблица ───────────────────────────────────────────── */}
-      <div className="flex-1 overflow-auto">
+      {/* Sergey directive 2026-06-06: правая колонка «Подписан» обрезается,
+          нужен видимый h-скролл (тот же hscroll, что на /funnel-stages). */}
+      <div className="hscroll flex-1 overflow-y-auto">
         {loading ? (
           <p className="text-xs text-gray-400 text-center py-12">Загрузка…</p>
         ) : items.length === 0 ? (
           <p className="text-sm text-gray-400 text-center py-12">Ничего не найдено.</p>
         ) : (
-          <table className="w-full text-sm">
+          <table className="min-w-[1500px] text-sm">
             <thead className="bg-gray-50 border-y border-gray-200 sticky top-0">
               <tr className="text-left text-[11px] font-medium text-gray-600 uppercase tracking-wide">
                 <th className="px-3 py-2 w-8" />
