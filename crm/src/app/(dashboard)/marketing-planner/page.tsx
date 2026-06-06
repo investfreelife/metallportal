@@ -24,6 +24,7 @@ export default async function MarketingPlannerPage() {
     .from('ad_variants')
     .select('*')
     .eq('tenant_id', tenantId)
+    .neq('status', 'archived')              // не показываем архив (история A/B) — только активные посты
     .order('scheduled_at', { ascending: true, nullsFirst: false })
     .order('created_at', { ascending: false });
 
