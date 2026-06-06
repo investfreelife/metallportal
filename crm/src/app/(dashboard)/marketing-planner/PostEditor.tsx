@@ -417,11 +417,21 @@ export default function PostEditor({ post, onClose, onChanged, onDeleted }: Prop
             <div className="mt-1 text-[10px] text-gray-400">{(draft.text ?? '').length} симв.</div>
 
             {redoingText ? (
-              <div className="mt-2 flex items-center gap-2 text-xs text-violet-700 bg-violet-50 border border-violet-200 rounded px-2.5 py-1.5">
-                <RefreshCw size={12} className="animate-spin" />
-                <span>
+              <div className="mt-2 flex items-start gap-2 text-xs text-violet-700 bg-violet-50 border border-violet-200 rounded px-2.5 py-1.5">
+                <RefreshCw size={12} className="animate-spin mt-0.5" />
+                <span className="flex-1">
                   🔄 Воркер переделывает текст… {draft.comment_text && <em className="text-violet-600">(твой коммент: {draft.comment_text})</em>}
                 </span>
+                <button
+                  onClick={async () => {
+                    if (!confirm('Снять флаг переделки текста? Воркер перестанет ждать его.')) return;
+                    await patch({ redo: { ...(redo as RedoFlag), text: false } });
+                  }}
+                  title="Снять флаг переделки (воркер завис / больше не нужно)"
+                  className="flex items-center gap-1 px-2 py-0.5 text-[10px] bg-white border border-violet-300 text-violet-700 rounded hover:bg-violet-100 flex-shrink-0"
+                >
+                  <X size={10} /> Отменить
+                </button>
               </div>
             ) : (
               <RedoBlock
@@ -459,11 +469,21 @@ export default function PostEditor({ post, onClose, onChanged, onDeleted }: Prop
             </div>
 
             {redoingPhoto ? (
-              <div className="rounded-md border border-violet-200 bg-violet-50 p-4 text-xs text-violet-700 flex items-center gap-2">
-                <RefreshCw size={14} className="animate-spin flex-shrink-0" />
-                <span>
+              <div className="rounded-md border border-violet-200 bg-violet-50 p-4 text-xs text-violet-700 flex items-start gap-2">
+                <RefreshCw size={14} className="animate-spin flex-shrink-0 mt-0.5" />
+                <span className="flex-1">
                   🔄 Воркер генерирует новое фото… {draft.comment_photo && <em className="text-violet-600">(твой коммент: {draft.comment_photo})</em>}
                 </span>
+                <button
+                  onClick={async () => {
+                    if (!confirm('Снять флаг переделки фото? Воркер перестанет ждать его, текущее фото останется.')) return;
+                    await patch({ redo: { ...(redo as RedoFlag), photo: false } });
+                  }}
+                  title="Снять флаг переделки (воркер завис / больше не нужно)"
+                  className="flex items-center gap-1 px-2 py-0.5 text-[10px] bg-white border border-violet-300 text-violet-700 rounded hover:bg-violet-100 flex-shrink-0"
+                >
+                  <X size={10} /> Отменить
+                </button>
               </div>
             ) : draft.photo_url ? (
               <div className="rounded-md overflow-hidden border border-gray-200 bg-gray-50 relative">
