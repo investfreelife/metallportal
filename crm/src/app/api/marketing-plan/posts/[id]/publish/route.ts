@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getSession, getTenantId } from '@/lib/session';
 import { publish } from '@/lib/publisher';
 import type { Connection } from '@/lib/publisher';
+import { mintSourceCode, attachPostUrl } from '@/lib/attribution';
 
 /**
  * POST /api/marketing-plan/posts/[id]/publish — публикация маркетинг-поста
@@ -49,11 +50,6 @@ export async function POST(
   if (!carousel.length) {
     return NextResponse.json({ error: 'Нет фото поста' }, { status: 400 });
   }
-  // Защита: {LINK} обязан быть подставлен ДО публикации, иначе в посте уйдёт
-  // литерал «{LINK}». Лучше громкая ошибка, чем битый пост в публичную группу.
-  if ((post.text || '').includes('{LINK}')) {
-    return NextResponse.json({ error: 'Текст содержит несработавший {LINK} — подставь ссылку/код перед публикацией' }, { status: 400 });
-  }
 
   const platformGuess = (post.channel || '').toLowerCase().includes('vk') ? 'vk' : 'telegram';
   const { data: conns } = await supabase
@@ -78,8 +74,29 @@ export async function POST(
     token: conn.token,
     target_id: conn.target_id,
   };
+
+  // ── Атрибуция мирового уровня ──────────────────────────────────────
+  // Если в тексте есть токен {LINK} — чеканим уникальный код ЭТОЙ публикации
+  // (где=канал/группа, какой пост, сегмент, КОГДА), пишем строку реестра и
+  // подставляем t.me/<bot>?start=<код>. Без {LINK} — постим как есть (но тогда
+  // лид из этого поста не атрибутируется → у рекрут-постов {LINK} обязателен).
+  let text = post.text || post.label || '';
+  let mintedCode: string | null = null;
+  if (text.includes('{LINK}')) {
+    const { code, link } = await mintSourceCode(supabase, tenantId, {
+      channel: conn.platform,
+      placement: conn.label || String(conn.target_id),
+      postRef: post.label ?? null,
+      segment: post.entry_segment ?? null,
+      campaign: post.campaign_id ?? null,
+      placedAt: new Date().toISOString(),
+    });
+    mintedCode = code;
+    text = text.split('{LINK}').join(link);
+  }
+
   const result = await publish(connObj, {
-    text: post.text || post.label || '',
+    text,
     media: carousel.map((url) => ({ type: 'image' as const, url })),
   });
 
@@ -90,6 +107,11 @@ export async function POST(
       .eq('id', id)
       .eq('tenant_id', tenantId);
     return NextResponse.json({ error: result.error || 'publish failed' }, { status: 502 });
+  }
+
+  // Дописываем ссылку на живой пост в строку реестра кодов (best-effort).
+  if (mintedCode && result.url) {
+    await attachPostUrl(supabase, tenantId, mintedCode, result.url).catch(() => {});
   }
 
   const { data: upd } = await supabase
@@ -104,5 +126,5 @@ export async function POST(
     .select()
     .single();
 
-  return NextResponse.json({ post: upd, result });
+  return NextResponse.json({ post: upd, result, sourceCode: mintedCode });
 }
