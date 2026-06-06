@@ -185,6 +185,7 @@ function SeekerCard({ row, onPatch, onDelete, onSaved }: { row: Row; onPatch: (p
   const link = `https://t.me/${String(username).replace(/^@/, '')}`;
   const fromGroup = (c.from_group_name as string) ?? (c.from_group as string) ?? '';
   const postLink = (c.post_link as string) || (c.from_group ? `https://t.me/${String(c.from_group).replace(/^@/, '')}` : '');
+  const hasExactPost = Boolean(c.post_link);
   const city = (c.city as string) ?? '';
   const text = (c.text as string) ?? '';
   const original = (c.original as string) ?? '';
@@ -235,7 +236,7 @@ function SeekerCard({ row, onPatch, onDelete, onSaved }: { row: Row; onPatch: (p
               ) : (
                 <span className="font-medium">{fromGroup}</span>
               )}
-              {c.post_link && <span className="text-gray-400"> · ↗ открыть пост</span>}
+              {hasExactPost && <span className="text-gray-400"> · ↗ открыть пост</span>}
             </div>
           )}
         </div>
