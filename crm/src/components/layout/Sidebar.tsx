@@ -154,6 +154,7 @@ const NAV_TAXI: NavSection[] = [
       { href: '/content-ideas', label: '💡 Инфо-поводы', icon: Lightbulb },
       { href: '/seed-plan', label: '📅 Посев-план', icon: CalendarClock },
       { href: '/seed-groups', label: '🌱 Готовы к засеву', icon: Sprout },
+      { href: '/post-history', label: '📢 История постинга', icon: Megaphone },
       { href: '/connections', label: 'Связи', icon: Network },
     ],
   },
