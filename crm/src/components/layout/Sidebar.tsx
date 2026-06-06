@@ -31,6 +31,9 @@ import {
   BookOpen,
   MailOpen,
   Lightbulb,
+  Flame,
+  MessagesSquare,
+  Gift,
 } from 'lucide-react'
 
 type NavItem = {
@@ -115,6 +118,9 @@ const NAV_TAXI: NavSection[] = [
       { href: '/dialogs', label: 'Диалоги', icon: MessageSquare },
       { href: '/business', label: 'Бизнес-личка', icon: MailOpen },
       { href: '/funnel-stages', label: '🔻 Воронка', icon: KanbanSquare },
+      { href: '/job-seekers', label: '🔥 Соискатели', icon: Flame },
+      { href: '/communication', label: '💬 Общение', icon: MessagesSquare },
+      { href: '/referral-program', label: '🎁 Рефералка', icon: Gift },
       { href: '/questions', label: 'Вопросы', icon: HelpCircle, badgeKey: 'open_questions' },
       { href: '/kb', label: 'База знаний', icon: BookOpen },
       { href: '/marketing', label: '📣 Маркетинг', icon: Megaphone },
