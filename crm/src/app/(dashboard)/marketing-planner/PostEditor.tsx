@@ -43,7 +43,7 @@ interface Props {
  * Жёсткое UI-правило: «Запланировать»/«Опубликовать» НЕДОСТУПНЫ
  *  пока нет photo_url И approved_final=true.
  */
-export default function PostEditor({ post, onClose, onChanged, onDeleted }: Props) {
+export default function PostEditor({ post, activeConnections, onClose, onChanged, onDeleted }: Props) {
   const [draft, setDraft] = useState<MarketingPost>(post);
   const [saving, setSaving] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
@@ -61,6 +61,12 @@ export default function PostEditor({ post, onClose, onChanged, onDeleted }: Prop
   const redoingPhoto = !!redo.photo;
   const generatingVariants = !!redo.variants;
   const photoOptions: PhotoOption[] = Array.isArray(draft.photo_options) ? draft.photo_options : [];
+  // channels_sel: список платформ (telegram/vk) куда публиковать.
+  // Default ['telegram','vk'] для постов до миграции — чтобы кнопка
+  // «Запланировать» сразу была доступна.
+  const channelsSelected: string[] = Array.isArray(draft.channels_sel)
+    ? draft.channels_sel
+    : ['telegram', 'vk'];
 
   // ── Карусель ───────────────────────────────────────────────────────
   // Локальный state: список URL'ов карусели (порядок задан пользователем).
@@ -75,8 +81,10 @@ export default function PostEditor({ post, onClose, onChanged, onDeleted }: Prop
   // Помним последний remote-snapshot — чтобы понимать, трогал юзер или нет.
   const lastRemoteRef = useRef<string>(JSON.stringify(initialCarousel));
   // Синхроним carousel когда воркер обновляет draft.photos извне (polling).
-  // ВАЖНО (фикс 2026-06-06): НЕ перезаписываем локальный выбор юзера.
-  // Подхватываем remote ТОЛЬКО если юзер не менял carousel с прошлой синхр.
+  // ВАЖНО (фикс 2026-06-06 по скрину Сергея): НЕ перезаписываем локальный
+  // выбор пользователя. Подхватываем remote ТОЛЬКО если юзер ничего не
+  // менял с прошлой синхронизации (carousel === lastRemoteRef.current).
+  // Иначе свежие галочки моментально слетали обратно к старому БД-значению.
   useEffect(() => {
     const remote = Array.isArray(draft.photos)
       ? draft.photos.filter((u) => typeof u === 'string' && u)
@@ -84,11 +92,17 @@ export default function PostEditor({ post, onClose, onChanged, onDeleted }: Prop
     if (!remote) return;
     const remoteJson = JSON.stringify(remote);
     const localJson = JSON.stringify(carousel);
-    if (remoteJson === localJson) { lastRemoteRef.current = remoteJson; return; }
+    if (remoteJson === localJson) {
+      // уже совпадает — просто запомним
+      lastRemoteRef.current = remoteJson;
+      return;
+    }
+    // Юзер не трогал (локальное == прошлый remote) → можно подхватить новый
     if (localJson === lastRemoteRef.current) {
       setCarousel(remote);
       lastRemoteRef.current = remoteJson;
     }
+    // иначе игнорируем: у юзера есть несохранённые изменения, не сбиваем.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draft.photos]);
 
@@ -196,9 +210,13 @@ export default function PostEditor({ post, onClose, onChanged, onDeleted }: Prop
     }
   }
 
-  /** Sergey directive 2026-06-06: «загружать сразу несколько файлов».
-   *  Multi-upload по списку с прогрессом N/M. Падения одного не валят
-   *  остальные — копим errors[] и показываем баннером. */
+  /**
+   * Sergey directive 2026-06-06: «загружать сразу несколько файлов».
+   * Бегает по списку файлов и грузит ПОСЛЕДОВАТЕЛЬНО (чтобы порядок в
+   * photo_options совпадал с выбором юзера и сервер не перегрузился).
+   * Прогресс: «загружено N/M…» в busy-надписи. Если хотя бы один файл
+   * упал — копим текст ошибок и показываем в банере; продолжаем дальше.
+   */
   async function uploadMany(files: File[] | FileList) {
     const list = Array.from(files).filter((f) => f.type.startsWith('image/'));
     if (!list.length) return;
@@ -365,7 +383,7 @@ export default function PostEditor({ post, onClose, onChanged, onDeleted }: Prop
 
         <div className="flex-1 overflow-y-auto">
           {/* 🔒 Согласовано человеком — автоматика не двигает дату/фото/текст. */}
-          {status === 'approved' && (
+          {draft.approved_final === true && (
             <div className="mx-4 mt-3 flex items-start gap-2 bg-amber-50 border border-amber-200 text-amber-800 text-xs rounded px-3 py-2">
               <Lock size={14} className="flex-shrink-0 mt-0.5" />
               <span>🔒 Согласовано человеком — меняет только человек. Автоматика не двигает дату/фото/текст.</span>
@@ -378,7 +396,7 @@ export default function PostEditor({ post, onClose, onChanged, onDeleted }: Prop
             </div>
           )}
 
-          {/* ── Title ─────────────────────────────────────────────── */}
+          {/* ── Label (в маркетинг-плане это короткая метка варианта, аналог title) ── */}
           <section className="px-4 pt-4 pb-3">
             <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Заголовок</label>
             <input
@@ -424,7 +442,7 @@ export default function PostEditor({ post, onClose, onChanged, onDeleted }: Prop
                 </span>
                 <button
                   onClick={async () => {
-                    if (!confirm('Снять флаг переделки текста? Воркер перестанет ждать его.')) return;
+                    if (!confirm('Снять флаг переделки текста? Воркер перестанет ждать его, текст останется как сейчас.')) return;
                     await patch({ redo: { ...(redo as RedoFlag), text: false } });
                   }}
                   title="Снять флаг переделки (воркер завис / больше не нужно)"
@@ -476,7 +494,7 @@ export default function PostEditor({ post, onClose, onChanged, onDeleted }: Prop
                 </span>
                 <button
                   onClick={async () => {
-                    if (!confirm('Снять флаг переделки фото? Воркер перестанет ждать его, текущее фото останется.')) return;
+                    if (!confirm('Снять флаг переделки фото? Воркер перестанет ждать его, текущее фото останется как есть.')) return;
                     await patch({ redo: { ...(redo as RedoFlag), photo: false } });
                   }}
                   title="Снять флаг переделки (воркер завис / больше не нужно)"
@@ -518,6 +536,7 @@ export default function PostEditor({ post, onClose, onChanged, onDeleted }: Prop
               onChange={(e) => {
                 const files = e.target.files;
                 if (files && files.length) uploadMany(files);
+                // Сбрасываем чтобы можно было загрузить те же файлы повторно.
                 if (fileRef.current) fileRef.current.value = '';
               }}
             />
@@ -770,16 +789,12 @@ export default function PostEditor({ post, onClose, onChanged, onDeleted }: Prop
             </section>
           )}
 
-          {/* ── Куда публиковать (инфо, не редактируется) ─────────── */}
-          {/* Маркетинг-посты распространяются НЕ в наш канал, а по
-              рекрутинговым группам — их выбирает и постит агент сам
-              (см. «Посев-план»). Человек только согласовывает текст/фото. */}
-          <section className="px-4 py-3 border-t border-gray-100">
-            <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Куда публиковать</label>
-            <div className="mt-1.5 bg-gray-50 border border-gray-200 rounded-md px-3 py-2 text-xs text-gray-600 leading-relaxed">
-              📣 Рекрутинговые группы — агент распространяет автоматически (см. вкладку «Посев-план»), во много групп, человеческим темпом. VK → наше сообщество. Отдельно от Контент-плана.
-            </div>
-          </section>
+          {/* ── Channels (multi-select galo4kami) ─────────────────── */}
+          <ChannelsPicker
+            activeConnections={activeConnections}
+            value={Array.isArray(draft.channels_sel) ? draft.channels_sel : ['telegram', 'vk']}
+            onChange={(next) => { setDraft({ ...draft, channels_sel: next }); patch({ channels_sel: next }); }}
+          />
 
           {/* ── Approval ──────────────────────────────────────────── */}
           <section className="px-4 py-3 border-t border-gray-100">
@@ -821,25 +836,37 @@ export default function PostEditor({ post, onClose, onChanged, onDeleted }: Prop
               />
               <button
                 onClick={schedule}
-                disabled={!canPublish || saving || !scheduleAt}
-                title={!canPublish ? 'Нужно фото и approved_final' : ''}
+                disabled={!canPublish || saving || !scheduleAt || !channelsSelected.length}
+                title={
+                  !channelsSelected.length ? 'Выбери хотя бы один канал (☑ Telegram / VK)'
+                  : !canPublish ? 'Нужно фото и approved_final'
+                  : ''
+                }
                 className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 text-white text-xs font-medium rounded-md hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <Clock size={12} />
                 Запланировать
               </button>
             </div>
-            {/* Крупный summary «когда» */}
+            {/* Крупный summary «когда + куда» */}
             {scheduleAt && (
-              <div className="mt-2 px-3 py-2 rounded-md border bg-indigo-50 border-indigo-200 text-indigo-900">
-                <div className="text-sm font-semibold flex items-center gap-1.5">📅 Запланировано:</div>
+              <div className={`mt-2 px-3 py-2 rounded-md border ${
+                channelsSelected.length
+                  ? 'bg-indigo-50 border-indigo-200 text-indigo-900'
+                  : 'bg-amber-50 border-amber-200 text-amber-900'
+              }`}>
+                <div className="text-sm font-semibold flex items-center gap-1.5">
+                  📅 {channelsSelected.length ? 'Запланировано:' : 'Дата выбрана, но:'}
+                </div>
                 <div className="text-xs mt-0.5">
-                  <strong>{fmtMsk(mskInputToUTC(scheduleAt), true)} МСК</strong>
+                  {channelsSelected.length
+                    ? <><strong>{channelsSelected.map((p) => p === 'telegram' ? 'Telegram' : p === 'vk' ? 'VK' : p).join(' + ')}</strong> · <strong>{fmtMsk(mskInputToUTC(scheduleAt), true)} МСК</strong></>
+                    : '⚠️ выберите хотя бы один канал выше'}
                 </div>
               </div>
             )}
             <p className="text-[10px] text-gray-400 mt-1">
-              {canPublish ? 'Готов к публикации.' : 'Нужно фото И финальное согласование.'}
+              {canPublish ? (channelsSelected.length ? 'Готов к публикации.' : 'Не выбран ни один канал.') : 'Нужно фото И финальное согласование.'}
             </p>
           </section>
 
@@ -899,6 +926,7 @@ function UploadDropArea({
   onFiles,
 }: {
   busy: boolean;
+  /** Прогресс типа «3/8» — если идёт multi-upload (Sergey directive 2026-06-06). */
   busyLabel?: string | null;
   disabled: boolean;
   onPick: () => void;
@@ -937,6 +965,95 @@ function UploadDropArea({
         Файлы уходят в Storage, появляются в галерее «Варианты» — обложкой можно сделать кнопкой ✅ Обложка
       </div>
     </div>
+  );
+}
+
+/**
+ * Картотека каналов с чекбоксами «куда публиковать».
+ * Sergey directive 2026-06-04: вместо одного непонятного дропдауна —
+ * галочки на каждую активную connection (платформа telegram/vk).
+ * vk_msg (личка) НЕ показываем — это не publish-канал.
+ */
+function ChannelsPicker({
+  activeConnections,
+  value,
+  onChange,
+}: {
+  activeConnections: { id: string; platform: string; label: string; enabled: boolean }[];
+  value: string[];
+  onChange: (next: string[]) => void;
+}) {
+  const conns = activeConnections.filter((c) => c.enabled && (c.platform === 'telegram' || c.platform === 'vk'));
+  // Уникальные платформы из connections (если есть несколько TG — всё равно
+  // галочка одна «telegram», т.к. демон выберет первую активную).
+  const platforms = Array.from(new Set(conns.map((c) => c.platform))) as Array<'telegram' | 'vk'>;
+  if (platforms.length === 0 && conns.length === 0) {
+    return (
+      <section className="px-4 py-3 border-t border-gray-100">
+        <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Куда публиковать</label>
+        <p className="text-[10px] text-amber-700 mt-1">
+          Нет активных связей. Добавь в <a href="/connections" className="underline">/connections</a>.
+        </p>
+      </section>
+    );
+  }
+
+  function toggle(p: string) {
+    if (value.includes(p)) onChange(value.filter((x) => x !== p));
+    else onChange([...value, p]);
+  }
+
+  // Подписи под платформой — берём первую connection.
+  const labelByPlatform: Record<string, string> = {};
+  for (const c of conns) {
+    if (!labelByPlatform[c.platform]) labelByPlatform[c.platform] = c.label;
+  }
+
+  return (
+    <section className="px-4 py-3 border-t border-gray-100">
+      <div className="flex items-center justify-between mb-1.5">
+        <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+          Куда публиковать ({value.length})
+        </label>
+        <span className="text-[10px] text-gray-400">можно несколько</span>
+      </div>
+      <div className="space-y-1">
+        {(['telegram', 'vk'] as const).map((p) => {
+          const isAvailable = platforms.includes(p);
+          const isChecked = value.includes(p);
+          const label = labelByPlatform[p] ?? (p === 'telegram' ? 'Telegram' : 'VK');
+          const pretty = p === 'telegram' ? 'Telegram' : 'VK';
+          return (
+            <label
+              key={p}
+              className={`flex items-center gap-2 px-2.5 py-2 border rounded-md cursor-pointer ${
+                !isAvailable ? 'opacity-50 cursor-not-allowed' : isChecked ? 'border-blue-300 bg-blue-50' : 'border-gray-200 bg-white hover:bg-gray-50'
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={isChecked}
+                disabled={!isAvailable}
+                onChange={() => isAvailable && toggle(p)}
+                className="rounded text-blue-600"
+              />
+              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                p === 'telegram' ? 'bg-sky-100 text-sky-700' : 'bg-blue-100 text-blue-800'
+              }`}>
+                {pretty}
+              </span>
+              <span className="flex-1 text-xs text-gray-800 truncate">{label}</span>
+              {!isAvailable && <span className="text-[10px] text-gray-500">не настроен</span>}
+            </label>
+          );
+        })}
+      </div>
+      {value.length === 0 && (
+        <p className="text-[10px] text-amber-700 mt-1.5">
+          ⚠️ Выбери хотя бы один канал — иначе пост не опубликуется.
+        </p>
+      )}
+    </section>
   );
 }
 

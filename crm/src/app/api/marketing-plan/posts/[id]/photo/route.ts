@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getSession, getTenantId } from '@/lib/session';
+import type { PhotoOption } from '@/lib/content/types';
 
 /**
  * POST /api/marketing-plan/posts/[id]/photo
@@ -8,11 +9,12 @@ import { getSession, getTenantId } from '@/lib/session';
  * Загрузка ручного фото маркетинг-поста (ad_variants) в Storage bucket 'content'.
  * Принимает multipart/form-data с полем `file`.
  *
- * Task 050: копия /api/content/posts/[id]/photo с упрощениями —
- * у ad_variants нет photo_options/awaiting_photo, только photo_url.
- * Поэтому просто заливаем и ставим в photo_url.
+ * Sergey directive 2026-06-06: «делай всё как в Планировщике нашем — оба
+ * редактора должны быть одинаковые по настройкам, multi-upload, карусель».
+ * Унифицировано с /api/content/posts/[id]/photo: поведение 1-в-1 (append
+ * в photo_options, auto-cover если photo_url пустой, ?cover=1 для force).
  *
- * Путь в bucket: <tenant>/marketing/ad-<idShort>-<ts>.<ext>
+ * Путь в bucket: <tenant>/marketing/ad-<idShort>-manual-<ts>.<ext>
  */
 export async function POST(
   req: NextRequest,
@@ -22,6 +24,7 @@ export async function POST(
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const tenantId = await getTenantId();
   const { id } = await ctx.params;
+  const forceCover = req.nextUrl.searchParams.get('cover') === '1';
 
   const form = await req.formData().catch(() => null);
   const file = form?.get('file') as File | null;
@@ -38,14 +41,17 @@ export async function POST(
   // Anti-IDOR + достанем существующие поля
   const { data: existing } = await supabase
     .from('ad_variants')
-    .select('id, status, photo_url')
+    .select('id, n, status, photo_url, photo_options')
     .eq('id', id)
     .eq('tenant_id', tenantId)
     .single();
   if (!existing) return NextResponse.json({ error: 'Не найдено' }, { status: 404 });
 
   const ext = (file.name.split('.').pop() || 'jpg').replace(/[^a-z0-9]/gi, '').slice(0, 5) || 'jpg';
-  const path = `${tenantId}/marketing/ad-${id.slice(0, 8)}-${Date.now()}.${ext}`;
+  const nLabel = (existing as { n?: number | null }).n != null
+    ? String((existing as { n: number }).n)
+    : id.slice(0, 8);
+  const path = `${tenantId}/marketing/ad-${nLabel}-manual-${Date.now()}.${ext}`;
   const buf = Buffer.from(await file.arrayBuffer());
 
   const { error: upErr } = await supabase.storage
@@ -56,14 +62,30 @@ export async function POST(
   const { data: pub } = supabase.storage.from('content').getPublicUrl(path);
   const url = pub.publicUrl;
 
+  // Append к photo_options (как в /content)
+  const oldOptions: PhotoOption[] = Array.isArray(existing.photo_options) ? existing.photo_options : [];
+  const newOption: PhotoOption = { url, model: 'Моё фото', kind: 'photo', cost: 0 };
+  const photo_options = [...oldOptions, newOption];
+
+  // Auto-cover если photo_url пустой ИЛИ если явно попросили
+  const shouldSetCover = forceCover || !existing.photo_url;
+  const patch: Record<string, unknown> = { photo_options };
+  if (shouldSetCover) patch.photo_url = url;
+  // Авто-переключение awaiting_photo → photo_review (зеркало content-flow)
+  if (existing.status === 'awaiting_photo') patch.status = 'photo_review';
+
   const { data: upd, error: updErr } = await supabase
     .from('ad_variants')
-    .update({ photo_url: url })
+    .update(patch)
     .eq('id', id)
     .eq('tenant_id', tenantId)
     .select()
     .single();
   if (updErr) return NextResponse.json({ error: updErr.message }, { status: 500 });
 
-  return NextResponse.json({ url, photo_url_changed: true, post: upd });
+  return NextResponse.json({
+    url,
+    photo_url_changed: shouldSetCover,
+    post: upd,
+  });
 }

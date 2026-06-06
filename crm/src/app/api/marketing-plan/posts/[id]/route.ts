@@ -9,13 +9,25 @@ import { getSession, getTenantId } from '@/lib/session';
  *
  * Допустимые поля:
  *   label, text, photo_url, campaign_id, channel, status,
- *   scheduled_at, published_at, note, utm
+ *   scheduled_at, published_at, note, utm,
+ *   photos, photo_options, photo_tz, channels_sel,
+ *   approved_text, approved_final, comment_text, comment_photo,
+ *   redo, feedback
  *
- * Task 050: копия /api/content/posts/[id] с маппингом полей.
+ * Sergey directive 2026-06-06: «делай всё как в Планировщике нашем —
+ * редакторы должны быть одинаковые по настройкам». ad_variants уже
+ * зеркалит feature-колонки content_posts (миграция 20260604220000),
+ * нужно лишь не отбрасывать их в PATCH.
  */
 const ALLOWED = new Set([
   'label', 'text', 'photo_url', 'campaign_id', 'channel',
   'status', 'scheduled_at', 'published_at', 'note', 'utm',
+  // ── feature-колонки, общие с content_posts ─────────────────
+  'photos', 'photo_options', 'photo_tz',
+  'channels_sel',
+  'approved_text', 'approved_final',
+  'comment_text', 'comment_photo',
+  'redo', 'feedback',
 ]);
 
 export async function PATCH(
