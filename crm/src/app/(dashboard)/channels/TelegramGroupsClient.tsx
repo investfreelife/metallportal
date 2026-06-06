@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { safeFetchJson } from '@/lib/safe-fetch';
 import {
   Send,
@@ -218,6 +218,11 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
   // Эффективное состояние паузы: control.paused приоритетнее, иначе status.paused.
   const effectivePaused = control?.paused ?? status?.paused ?? false;
 
+  const tableScrollRef = useRef<HTMLDivElement | null>(null);
+  function scrollTableBy(dx: number) {
+    tableScrollRef.current?.scrollBy({ left: dx, behavior: 'smooth' });
+  }
+
   return (
     <div className="flex flex-col h-full bg-gray-50">
       <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200">
@@ -363,14 +368,40 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
 
       {/* ── Таблица ───────────────────────────────────────────── */}
       {/* Sergey directive 2026-06-06: правая колонка «Подписан» обрезается,
-          нужен видимый h-скролл (тот же hscroll, что на /funnel-stages). */}
-      <div className="hscroll flex-1 overflow-y-auto">
+          ползунка не видно (родительский <main> ловит весь overflow).
+          Чиню «двойной» обёрткой: внешний relative + ◀▶ кнопки, внутренний
+          с явным style.overflowX='scroll' и paddingBottom, чтобы ползунок
+          гарантированно сидел внутри страницы. */}
+      <div className="relative flex-1 min-h-0">
+        {!loading && items.length > 0 && (
+          <>
+            <button
+              onClick={() => scrollTableBy(-500)}
+              title="Прокрутить таблицу влево"
+              className="absolute left-2 top-12 z-10 w-9 h-9 bg-white border border-gray-300 shadow-lg rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-50 hover:scale-105 active:scale-95 transition"
+            >
+              ◀
+            </button>
+            <button
+              onClick={() => scrollTableBy(500)}
+              title="Прокрутить таблицу вправо"
+              className="absolute right-2 top-12 z-10 w-9 h-9 bg-white border border-gray-300 shadow-lg rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-50 hover:scale-105 active:scale-95 transition"
+            >
+              ▶
+            </button>
+          </>
+        )}
+        <div
+          ref={tableScrollRef}
+          className="hscroll h-full"
+          style={{ overflowX: 'scroll', overflowY: 'auto', paddingBottom: 0 }}
+        >
         {loading ? (
           <p className="text-xs text-gray-400 text-center py-12">Загрузка…</p>
         ) : items.length === 0 ? (
           <p className="text-sm text-gray-400 text-center py-12">Ничего не найдено.</p>
         ) : (
-          <table className="min-w-[1500px] text-sm">
+          <table className="min-w-[1700px] text-sm">
             <thead className="bg-gray-50 border-y border-gray-200 sticky top-0">
               <tr className="text-left text-[11px] font-medium text-gray-600 uppercase tracking-wide">
                 <th className="px-3 py-2 w-8" />
@@ -520,6 +551,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
             </tbody>
           </table>
         )}
+        </div>
       </div>
 
       {/* ── Пагинация ─────────────────────────────────────────── */}
