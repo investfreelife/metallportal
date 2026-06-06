@@ -116,3 +116,68 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
+
+/**
+ * POST /api/recruit/job-seekers
+ *
+ * Task 065+ручное добавление: Сергей может вручную завести соискателя
+ * (например, увидел в чате не через парсер). Тело — те же поля что у
+ * парсера (см. config-таблицу в ТЗ-065). Минимум — username или name.
+ */
+export async function POST(req: NextRequest) {
+  try {
+    const session = await getSession();
+    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const tenantId = await getTenantId();
+    const body = await req.json().catch(() => ({}));
+
+    const cleanStr = (v: unknown, max = 1000): string | null => {
+      if (typeof v !== 'string') return null;
+      const s = v.trim();
+      return s ? s.slice(0, max) : null;
+    };
+
+    const username = cleanStr(body.username, 200);
+    const name = cleanStr(body.name, 200);
+    if (!username && !name) {
+      return NextResponse.json({ error: 'Минимум: username или имя' }, { status: 400 });
+    }
+
+    const config: Record<string, unknown> = {
+      kind: 'job_seeker',
+      username: username ? username.replace(/^@/, '') : null,
+      name,
+      link: username ? `https://t.me/${username.replace(/^@/, '')}` : (cleanStr(body.link, 500) ?? null),
+      text: cleanStr(body.text, 2000),
+      original: cleanStr(body.original, 4000),
+      from_group: cleanStr(body.from_group, 200),
+      from_group_name: cleanStr(body.from_group_name, 200),
+      city: cleanStr(body.city, 100),
+      msg_ts: typeof body.msg_ts === 'number' ? body.msg_ts : Math.floor(Date.now() / 1000),
+      extra_hot: !!body.extra_hot,
+      contacted: !!body.contacted,
+      human_status: typeof body.human_status === 'string' ? body.human_status : 'new',
+      note: cleanStr(body.note, 2000),
+      labels: Array.isArray(body.labels)
+        ? body.labels.map((s: unknown) => String(s).slice(0, 80)).slice(0, 50)
+        : [],
+      manual: true, // пометка «руками Сергея, не парсером»
+    };
+
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from('channels')
+      .insert({
+        tenant_id: tenantId,
+        type: 'tracking',
+        name: `seeker:${username ?? name}`,
+        config,
+      })
+      .select('id, config, created_at')
+      .single();
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ row: data });
+  } catch (e) {
+    return NextResponse.json({ error: e instanceof Error ? e.message : String(e) }, { status: 500 });
+  }
+}

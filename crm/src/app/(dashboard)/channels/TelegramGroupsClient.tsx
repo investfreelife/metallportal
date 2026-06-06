@@ -7,6 +7,10 @@ import {
   RefreshCw,
   Search,
   Trash2,
+  Plus,
+  Pencil,
+  X,
+  Save,
   ExternalLink,
   Pause,
   Play,
@@ -115,6 +119,8 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
+  const [editing, setEditing] = useState<ChannelItem | null>(null);
 
   const [search, setSearch] = useState('');
   const [size, setSize] = useState<'' | 'small' | 'mid' | 'large'>('');
@@ -235,15 +241,32 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
             Спарсенные Telegram-группы и каналы (доноры для рекрутинга) + панель парсера. Время МСК.
           </p>
         </div>
-        <button
-          onClick={() => { reloadList(); reloadStatus(); }}
-          disabled={refreshing}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 text-gray-700 text-xs font-medium rounded-md hover:bg-gray-50 disabled:opacity-50"
-        >
-          <RefreshCw size={12} className={refreshing ? 'animate-spin' : ''} />
-          Обновить
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => { reloadList(); reloadStatus(); }}
+            disabled={refreshing}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 text-gray-700 text-xs font-medium rounded-md hover:bg-gray-50 disabled:opacity-50"
+          >
+            <RefreshCw size={12} className={refreshing ? 'animate-spin' : ''} />
+            Обновить
+          </button>
+          <button
+            onClick={() => setAdding(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-md hover:bg-blue-700"
+          >
+            <Plus size={12} />
+            Добавить канал
+          </button>
+        </div>
       </header>
+      {adding && (
+        <ChannelFormModal mode="create" onClose={() => setAdding(false)} onSaved={async () => { setAdding(false); await reloadList(true); }} />
+      )}
+      {editing && (
+        <ChannelFormModal mode="edit" initial={editing}
+          onClose={() => setEditing(null)}
+          onSaved={async () => { setEditing(null); await reloadList(true); }} />
+      )}
 
       {/* ── Панель парсера ───────────────────────────────────────────── */}
       <ParserPanel
@@ -537,7 +560,14 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
                     )}
                   </td>
                   <td className="px-3 py-2 text-[10px] text-gray-500">{it.source ?? '—'}</td>
-                  <td className="px-3 py-2 text-center">
+                  <td className="px-3 py-2 text-center whitespace-nowrap">
+                    <button
+                      onClick={() => setEditing(it)}
+                      className="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded mr-0.5"
+                      title="Редактировать"
+                    >
+                      <Pencil size={12} />
+                    </button>
                     <button
                       onClick={() => removeRow(it)}
                       className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
@@ -798,5 +828,234 @@ function SortableTh({
         {active && (dir === 'asc' ? <ArrowUp size={9} /> : <ArrowDown size={9} />)}
       </span>
     </th>
+  );
+}
+
+/* ─── Модалка добавления/редактирования канала (Sergey directive 2026-06-06) ─── */
+function ChannelFormModal({
+  mode, initial, onClose, onSaved,
+}: {
+  mode: 'create' | 'edit';
+  initial?: ChannelItem;
+  onClose: () => void;
+  onSaved: () => void | Promise<void>;
+}) {
+  const [name, setName] = useState(initial?.name ?? '');
+  const [username, setUsername] = useState(initial?.username ?? '');
+  const [link, setLink] = useState(initial?.link ?? '');
+  const [members, setMembers] = useState<number | ''>(typeof initial?.members === 'number' ? initial.members : '');
+  const [city, setCity] = useState(initial?.city ?? '');
+  const [country, setCountry] = useState(initial?.country ?? '');
+  const [audience, setAudience] = useState(initial?.audience ?? '');
+  const [isGroup, setIsGroup] = useState<boolean>(initial?.is_group === true);
+  const [canPostStr, setCanPostStr] = useState<string>(
+    initial?.can_post === true ? 'yes' : initial?.can_post === false ? 'no' : ''
+  );
+  const [postVia, setPostVia] = useState(initial?.post_via ?? '');
+  const [postMode, setPostMode] = useState(initial?.post_mode ?? '');
+  const [adContact, setAdContact] = useState(initial?.ad_contact ?? '');
+  const [joinedStr, setJoinedStr] = useState<string>(
+    initial?.joined === true ? 'yes' : initial?.joined === false ? 'no' : ''
+  );
+  const [rules, setRules] = useState(initial?.rules ?? '');
+  const [requiredChannel, setRequiredChannel] = useState(initial?.required_channel ?? '');
+  const [publishOkStr, setPublishOkStr] = useState<string>(
+    initial?.publish_ok === true ? 'yes' : initial?.publish_ok === false ? 'no' : ''
+  );
+  const [legal, setLegal] = useState(initial?.legal ?? '');
+  const [threatsSeen, setThreatsSeen] = useState(initial?.threats_seen ?? '');
+  const [status, setStatus] = useState(initial?.status ?? '');
+  const [workStatus, setWorkStatus] = useState(initial?.work_status ?? '');
+  const [needsHumanFlag, setNeedsHumanFlag] = useState<boolean>(initial?.needs_human === true);
+  const [foundQuery, setFoundQuery] = useState(initial?.found_query ?? '');
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function submit() {
+    setBusy(true); setErr(null);
+    try {
+      const triBool = (s: string) => s === 'yes' ? true : s === 'no' ? false : null;
+      const trim = (s: string | null | undefined): string | null => (s ?? '').trim() || null;
+      const config: Record<string, unknown> = {
+        username: trim(username)?.replace(/^@/, '') ?? null,
+        link: trim(link),
+        members: typeof members === 'number' ? members : null,
+        city: trim(city), country: trim(country), audience: trim(audience),
+        is_group: isGroup, role: isGroup ? 'donor_group' : null,
+        can_post: triBool(canPostStr), post_via: trim(postVia),
+        post_mode: trim(postMode), ad_contact: trim(adContact),
+        joined: triBool(joinedStr),
+        rules: trim(rules), required_channel: trim(requiredChannel),
+        publish_ok: triBool(publishOkStr), legal: trim(legal), threats_seen: trim(threatsSeen),
+        status: trim(status), needs_human: needsHumanFlag, work_status: trim(workStatus),
+        found_query: trim(foundQuery),
+      };
+      const body = { name: name.trim(), status: status.trim() || null, config };
+      const url = mode === 'create' ? '/api/recruit/parser-channels' : `/api/recruit/parser-channels/${initial!.id}`;
+      const method = mode === 'create' ? 'POST' : 'PATCH';
+      const r = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const j = await r.json();
+      if (!r.ok || j.error) throw new Error(j.error || `HTTP ${r.status}`);
+      await onSaved();
+    } catch (e) { setErr(e instanceof Error ? e.message : String(e)); }
+    finally { setBusy(false); }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="relative bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <header className="px-4 py-3 border-b border-gray-200 flex items-center justify-between sticky top-0 bg-white">
+          <h2 className="text-sm font-semibold text-gray-900">
+            {mode === 'create' ? '➕ Добавить канал/группу' : '✏️ Редактировать канал/группу'}
+          </h2>
+          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded"><X size={16} /></button>
+        </header>
+        <div className="px-4 py-3 space-y-3">
+          {err && <div className="text-xs text-red-700 bg-red-50 border border-red-200 rounded px-2 py-1.5">{err}</div>}
+
+          <div className="grid grid-cols-2 gap-2">
+            <ChField label="Название (обязательно)">
+              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Работа Москва"
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </ChField>
+            <ChField label="@username">
+              <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="rabota_moskva"
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </ChField>
+            <ChField label="Ссылка (link)">
+              <input value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://t.me/…"
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </ChField>
+            <ChField label="Участников">
+              <input type="number" value={members} onChange={(e) => setMembers(e.target.value === '' ? '' : Number(e.target.value))}
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </ChField>
+            <ChField label="Город">
+              <input value={city} onChange={(e) => setCity(e.target.value)}
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </ChField>
+            <ChField label="Страна">
+              <input value={country} onChange={(e) => setCountry(e.target.value)}
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </ChField>
+            <ChField label="Аудитория">
+              <input value={audience} onChange={(e) => setAudience(e.target.value)} placeholder="курьеры / диаспора / …"
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </ChField>
+            <ChField label="Found-запрос">
+              <input value={foundQuery} onChange={(e) => setFoundQuery(e.target.value)} placeholder="аренда мурманск"
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </ChField>
+          </div>
+
+          <fieldset className="border border-gray-200 rounded p-2 space-y-2">
+            <legend className="text-[10px] font-medium text-gray-500 px-1">Постинг</legend>
+            <div className="grid grid-cols-2 gap-2">
+              <ChField label="Можно постить (can_post)">
+                <select value={canPostStr} onChange={(e) => setCanPostStr(e.target.value)}
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded">
+                  <option value="">—</option>
+                  <option value="yes">🟢 да</option>
+                  <option value="no">🔴 нет</option>
+                </select>
+              </ChField>
+              <ChField label="Через кого (post_via)">
+                <input value={postVia} onChange={(e) => setPostVia(e.target.value)} placeholder="@admin / бот"
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+              </ChField>
+              <ChField label="Режим (post_mode)">
+                <select value={postMode} onChange={(e) => setPostMode(e.target.value)}
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded">
+                  <option value="">—</option>
+                  <option value="free">🟢 free</option>
+                  <option value="bot_paid">💰 bot_paid</option>
+                  <option value="readonly">🔴 readonly</option>
+                </select>
+              </ChField>
+              <ChField label="Контакт для платного (ad_contact)">
+                <input value={adContact} onChange={(e) => setAdContact(e.target.value)} placeholder="@menager"
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+              </ChField>
+              <ChField label="Группа?">
+                <select value={isGroup ? 'yes' : 'no'} onChange={(e) => setIsGroup(e.target.value === 'yes')}
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded">
+                  <option value="no">канал</option>
+                  <option value="yes">группа</option>
+                </select>
+              </ChField>
+              <ChField label="Вступили?">
+                <select value={joinedStr} onChange={(e) => setJoinedStr(e.target.value)}
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded">
+                  <option value="">—</option>
+                  <option value="yes">✓ да</option>
+                  <option value="no">✗ нет</option>
+                </select>
+              </ChField>
+            </div>
+          </fieldset>
+
+          <fieldset className="border border-gray-200 rounded p-2 space-y-2">
+            <legend className="text-[10px] font-medium text-gray-500 px-1">Проверка</legend>
+            <div className="grid grid-cols-2 gap-2">
+              <ChField label="Готова к публикации (publish_ok)">
+                <select value={publishOkStr} onChange={(e) => setPublishOkStr(e.target.value)}
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded">
+                  <option value="">—</option>
+                  <option value="yes">✅ да</option>
+                  <option value="no">— нет</option>
+                </select>
+              </ChField>
+              <ChField label="Статус пайплайна">
+                <input value={status} onChange={(e) => setStatus(e.target.value)} placeholder="raw / checked / …"
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+              </ChField>
+              <ChField label="Легально (legal)">
+                <input value={legal} onChange={(e) => setLegal(e.target.value)} placeholder="чисто / описание"
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+              </ChField>
+              <ChField label="Угрозы (threats_seen)">
+                <input value={threatsSeen} onChange={(e) => setThreatsSeen(e.target.value)} placeholder="нет / описание"
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+              </ChField>
+              <ChField label="Правила (rules)">
+                <input value={rules} onChange={(e) => setRules(e.target.value)} placeholder="условия группы"
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+              </ChField>
+              <ChField label="Нужна подписка (required_channel)">
+                <input value={requiredChannel} onChange={(e) => setRequiredChannel(e.target.value)} placeholder="@chan"
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+              </ChField>
+              <ChField label="Работаем (work_status)">
+                <input value={workStatus} onChange={(e) => setWorkStatus(e.target.value)} placeholder="active / paused / …"
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+              </ChField>
+              <div className="flex items-end pb-1">
+                <label className="text-xs flex items-center gap-1.5">
+                  <input type="checkbox" checked={needsHumanFlag} onChange={(e) => setNeedsHumanFlag(e.target.checked)} />
+                  🤔 нужен взгляд человека
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+        <footer className="px-4 py-3 border-t border-gray-200 bg-gray-50 flex items-center justify-end gap-2 sticky bottom-0">
+          <button onClick={onClose} className="px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-200 rounded">Отмена</button>
+          <button onClick={submit} disabled={busy || !name.trim()}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 disabled:opacity-40">
+            <Save size={12} /> {busy ? 'Сохранение…' : (mode === 'create' ? 'Создать' : 'Сохранить')}
+          </button>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+function ChField({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide block mb-0.5">{label}</label>
+      {children}
+    </div>
   );
 }

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Flame, Search, RefreshCw, ExternalLink, Copy, MessageSquare,
-  Check, AlertCircle,
+  Check, AlertCircle, Plus, X, Pencil, Trash2, Save,
 } from 'lucide-react';
 import { safeFetchJson } from '@/lib/safe-fetch';
 import { fmtMsk } from '@/lib/tz';
@@ -47,6 +47,7 @@ export default function JobSeekersClient({ tenantName }: Props) {
   const [hotOnly, setHotOnly] = useState(false);
   const [q, setQ] = useState('');
   const [page, setPage] = useState(1);
+  const [adding, setAdding] = useState(false);
 
   const reload = useCallback(async (silent = false) => {
     if (!silent) setRefreshing(true);
@@ -78,6 +79,13 @@ export default function JobSeekersClient({ tenantName }: Props) {
       alert(e instanceof Error ? e.message : String(e));
     }
   }
+  async function deleteSeeker(id: string) {
+    if (!confirm('Удалить соискателя? Восстановить нельзя — только если парсер найдёт заново.')) return;
+    try {
+      await safeFetchJson(`/api/recruit/job-seekers/${id}`, { method: 'DELETE' });
+      await reload(true);
+    } catch (e) { alert(e instanceof Error ? e.message : String(e)); }
+  }
 
   return (
     <div className="flex flex-col h-full bg-gray-50">
@@ -91,11 +99,19 @@ export default function JobSeekersClient({ tenantName }: Props) {
             Люди, которые САМИ пишут «ищу работу» в чатах. Парсер ловит, ты пишешь мягко с личного аккаунта и ведёшь в бота.
           </p>
         </div>
-        <button onClick={() => reload()} disabled={refreshing} className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-gray-200 text-gray-700 text-xs font-medium rounded-md hover:bg-gray-50 disabled:opacity-50">
-          <RefreshCw size={12} className={refreshing ? 'animate-spin' : ''} />
-          Обновить
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => reload()} disabled={refreshing} className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-gray-200 text-gray-700 text-xs font-medium rounded-md hover:bg-gray-50 disabled:opacity-50">
+            <RefreshCw size={12} className={refreshing ? 'animate-spin' : ''} />
+            Обновить
+          </button>
+          <button onClick={() => setAdding(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-md hover:bg-blue-700">
+            <Plus size={12} />
+            Добавить соискателя
+          </button>
+        </div>
       </header>
+
+      {adding && <SeekerFormModal mode="create" onClose={() => setAdding(false)} onSaved={async () => { setAdding(false); await reload(true); }} />}
 
       {/* ── Фильтры + сводка ─────────────────────────────────── */}
       <div className="px-6 py-3 bg-white border-b border-gray-200 flex items-center gap-2 flex-wrap">
@@ -139,7 +155,10 @@ export default function JobSeekersClient({ tenantName }: Props) {
           </div>
         ) : (
           items.map((r) => (
-            <SeekerCard key={r.id} row={r} onPatch={(patch) => patchSeeker(r.id, patch)} />
+            <SeekerCard key={r.id} row={r}
+              onPatch={(patch) => patchSeeker(r.id, patch)}
+              onDelete={() => deleteSeeker(r.id)}
+              onSaved={() => reload(true)} />
           ))
         )}
       </div>
@@ -158,7 +177,8 @@ export default function JobSeekersClient({ tenantName }: Props) {
   );
 }
 
-function SeekerCard({ row, onPatch }: { row: Row; onPatch: (patch: Record<string, unknown>) => Promise<void> | void }) {
+function SeekerCard({ row, onPatch, onDelete, onSaved }: { row: Row; onPatch: (patch: Record<string, unknown>) => Promise<void> | void; onDelete: () => void; onSaved: () => void | Promise<void> }) {
+  const [editing, setEditing] = useState(false);
   const c = (row.config ?? {}) as Record<string, unknown>;
   const username = (c.username as string) ?? '';
   const name = (c.name as string) ?? null;
@@ -256,8 +276,155 @@ function SeekerCard({ row, onPatch }: { row: Row; onPatch: (patch: Record<string
 
       <div className="text-[9px] text-gray-400 mt-2 flex items-center justify-between">
         <span>{when ? fmtMsk(when, true) : ''} МСК</span>
-        {c.contacted ? <span className="text-emerald-700 inline-flex items-center gap-0.5"><Check size={9} /> контакт</span> : null}
+        <div className="flex items-center gap-2">
+          {c.contacted ? <span className="text-emerald-700 inline-flex items-center gap-0.5"><Check size={9} /> контакт</span> : null}
+          <button onClick={() => setEditing(true)} title="Редактировать все поля"
+            className="text-blue-600 hover:bg-blue-50 rounded p-0.5"><Pencil size={10} /></button>
+          <button onClick={onDelete} title="Удалить"
+            className="text-red-500 hover:bg-red-50 rounded p-0.5"><Trash2 size={10} /></button>
+        </div>
       </div>
+      {editing && (
+        <SeekerFormModal mode="edit" initial={row}
+          onClose={() => setEditing(false)}
+          onSaved={async () => { setEditing(false); await onSaved(); }} />
+      )}
+    </div>
+  );
+}
+
+/* ─── Модалка добавления/редактирования соискателя ──────────────── */
+function SeekerFormModal({
+  mode, initial, onClose, onSaved,
+}: {
+  mode: 'create' | 'edit';
+  initial?: Row;
+  onClose: () => void;
+  onSaved: () => void | Promise<void>;
+}) {
+  const c = ((initial?.config ?? {}) as Record<string, unknown>);
+  const [username, setUsername] = useState(String(c.username ?? ''));
+  const [name, setName] = useState(String(c.name ?? ''));
+  const [city, setCity] = useState(String(c.city ?? ''));
+  const [text, setText] = useState(String(c.text ?? ''));
+  const [original, setOriginal] = useState(String(c.original ?? ''));
+  const [fromGroup, setFromGroup] = useState(String(c.from_group ?? ''));
+  const [fromGroupName, setFromGroupName] = useState(String(c.from_group_name ?? ''));
+  const [extraHot, setExtraHot] = useState<boolean>(c.extra_hot === true);
+  const [contacted, setContacted] = useState<boolean>(c.contacted === true);
+  const [humanStatus, setHumanStatus] = useState<string>(String(c.human_status ?? 'new'));
+  const [note, setNote] = useState(String(c.note ?? ''));
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function submit() {
+    setBusy(true); setErr(null);
+    try {
+      const body = {
+        username: username.trim() || null,
+        name: name.trim() || null,
+        city: city.trim() || null,
+        text: text.trim() || null,
+        original: original.trim() || null,
+        from_group: fromGroup.trim() || null,
+        from_group_name: fromGroupName.trim() || null,
+        extra_hot: extraHot,
+        contacted,
+        human_status: humanStatus,
+        note: note.trim() || null,
+      };
+      const url = mode === 'create' ? '/api/recruit/job-seekers' : `/api/recruit/job-seekers/${initial!.id}`;
+      const method = mode === 'create' ? 'POST' : 'PATCH';
+      await safeFetchJson(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      await onSaved();
+    } catch (e) { setErr(e instanceof Error ? e.message : String(e)); }
+    finally { setBusy(false); }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="relative bg-white rounded-lg shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <header className="px-4 py-3 border-b border-gray-200 flex items-center justify-between sticky top-0 bg-white">
+          <h2 className="text-sm font-semibold text-gray-900">
+            {mode === 'create' ? '➕ Добавить соискателя' : '✏️ Редактировать соискателя'}
+          </h2>
+          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded"><X size={16} /></button>
+        </header>
+        <div className="px-4 py-3 space-y-2.5">
+          {err && <div className="text-xs text-red-700 bg-red-50 border border-red-200 rounded px-2 py-1.5">{err}</div>}
+          <div className="grid grid-cols-2 gap-2">
+            <SeekerField label="Telegram username (без @)">
+              <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="ivan_petrov"
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </SeekerField>
+            <SeekerField label="Имя">
+              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Иван"
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </SeekerField>
+          </div>
+          <SeekerField label="Город">
+            <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="Москва / Бишкек / …"
+              className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+          </SeekerField>
+          <SeekerField label="Что написал (text)">
+            <textarea value={text} onChange={(e) => setText(e.target.value)} rows={3}
+              placeholder="ищу работу 18 лет курьер" className="w-full px-2 py-1 text-xs border border-gray-200 rounded resize-y" />
+          </SeekerField>
+          <SeekerField label="Оригинал запроса (полный текст)">
+            <textarea value={original} onChange={(e) => setOriginal(e.target.value)} rows={4}
+              placeholder="Полное сообщение из чата (опционально)" className="w-full px-2 py-1 text-xs border border-gray-200 rounded resize-y" />
+          </SeekerField>
+          <div className="grid grid-cols-2 gap-2">
+            <SeekerField label="Чат-источник (username)">
+              <input value={fromGroup} onChange={(e) => setFromGroup(e.target.value)} placeholder="@chat_xyz"
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </SeekerField>
+            <SeekerField label="Чат-источник (название)">
+              <input value={fromGroupName} onChange={(e) => setFromGroupName(e.target.value)} placeholder="Работа Москва"
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </SeekerField>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <SeekerField label="Статус">
+              <select value={humanStatus} onChange={(e) => setHumanStatus(e.target.value)}
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded">
+                {STATUSES.map((s) => <option key={s.v} value={s.v}>{s.label}</option>)}
+              </select>
+            </SeekerField>
+            <div className="flex items-end gap-3 pb-1">
+              <label className="text-xs flex items-center gap-1">
+                <input type="checkbox" checked={extraHot} onChange={(e) => setExtraHot(e.target.checked)} />
+                ⚡ горячий
+              </label>
+              <label className="text-xs flex items-center gap-1">
+                <input type="checkbox" checked={contacted} onChange={(e) => setContacted(e.target.checked)} />
+                контакт
+              </label>
+            </div>
+          </div>
+          <SeekerField label="Заметка">
+            <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="свои мысли"
+              className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+          </SeekerField>
+        </div>
+        <footer className="px-4 py-3 border-t border-gray-200 bg-gray-50 flex items-center justify-end gap-2 sticky bottom-0">
+          <button onClick={onClose} className="px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-200 rounded">Отмена</button>
+          <button onClick={submit} disabled={busy}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 disabled:opacity-40">
+            <Save size={12} /> {busy ? 'Сохранение…' : (mode === 'create' ? 'Создать' : 'Сохранить')}
+          </button>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+function SeekerField({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide block mb-0.5">{label}</label>
+      {children}
     </div>
   );
 }

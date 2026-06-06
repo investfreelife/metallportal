@@ -29,6 +29,7 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
 
     const body = await req.json().catch(() => ({}));
     const patch: Record<string, unknown> = {};
+    // Базовые поля (была первая итерация Task 065).
     if (typeof body.contacted === 'boolean') patch.contacted = body.contacted;
     if (typeof body.human_status === 'string' && ALLOWED_STATUSES.has(body.human_status)) {
       patch.human_status = body.human_status;
@@ -36,6 +37,27 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
     if (typeof body.note === 'string') patch.note = body.note.slice(0, 2000);
     if (Array.isArray(body.labels)) {
       patch.labels = body.labels.map((s: unknown) => String(s).slice(0, 80)).slice(0, 50);
+    }
+    // Расширенный whitelist (Sergey directive 2026-06-06: «дай редактировать
+    // все поля»). Парсер периодически пишет новые строки — он НЕ
+    // перезаписывает существующие config, так что правки сохраняются.
+    const strField = (k: string, max = 2000) => {
+      if (typeof body[k] === 'string') patch[k] = body[k].slice(0, max);
+      else if (body[k] === null) patch[k] = null;
+    };
+    strField('username', 200);
+    strField('name', 200);
+    strField('text', 4000);
+    strField('original', 4000);
+    strField('from_group', 200);
+    strField('from_group_name', 200);
+    strField('city', 100);
+    strField('link', 500);
+    if (typeof body.extra_hot === 'boolean') patch.extra_hot = body.extra_hot;
+    if (typeof body.msg_ts === 'number') patch.msg_ts = body.msg_ts;
+    // Если поменяли username — обновим и link автоматически.
+    if (typeof patch.username === 'string' && patch.username) {
+      patch.link = `https://t.me/${String(patch.username).replace(/^@/, '')}`;
     }
     if (!Object.keys(patch).length) {
       return NextResponse.json({ error: 'Нет полей для обновления' }, { status: 400 });
@@ -70,5 +92,34 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     return NextResponse.json({ error: msg }, { status: 500 });
+  }
+}
+
+/** DELETE /api/recruit/job-seekers/[id] — удалить запись (только kind=job_seeker). */
+export async function DELETE(
+  _req: NextRequest,
+  ctx: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getSession();
+    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const tenantId = await getTenantId();
+    const { id } = await ctx.params;
+
+    const supabase = await createClient();
+    const { data: existing } = await supabase
+      .from('channels').select('id, config')
+      .eq('id', id).eq('tenant_id', tenantId).single();
+    if (!existing) return NextResponse.json({ error: 'Не найдено' }, { status: 404 });
+    if ((existing.config as { kind?: string } | null)?.kind !== 'job_seeker') {
+      return NextResponse.json({ error: 'kind != job_seeker' }, { status: 400 });
+    }
+    const { error } = await supabase
+      .from('channels').delete()
+      .eq('id', id).eq('tenant_id', tenantId);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ ok: true });
+  } catch (e) {
+    return NextResponse.json({ error: e instanceof Error ? e.message : String(e) }, { status: 500 });
   }
 }

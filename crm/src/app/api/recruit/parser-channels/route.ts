@@ -245,3 +245,59 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
+
+/**
+ * POST /api/recruit/parser-channels
+ *
+ * Sergey directive 2026-06-06: «дай добавлять каналы вручную». Принимает
+ * базовые поля + любые config-поля из whitelist'а (см. PATCH). type
+ * фиксируется = 'telegram_channel' (системные parser_* сюда не пускаем).
+ */
+const CONFIG_FIELDS_FOR_INSERT = new Set([
+  'username', 'link', 'members', 'about', 'city', 'country', 'audience',
+  'is_group', 'role', 'can_post', 'post_via', 'post_mode', 'ad_contact',
+  'joined', 'rules', 'required_channel',
+  'publish_ok', 'legal', 'threats_seen',
+  'status', 'needs_human', 'join_type', 'work_status',
+  'found_query',
+]);
+
+export async function POST(req: NextRequest) {
+  try {
+    const session = await getSession();
+    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const tenantId = await getTenantId();
+    const body = await req.json().catch(() => ({}));
+
+    const name = typeof body.name === 'string' ? body.name.trim().slice(0, 500) : '';
+    if (!name) return NextResponse.json({ error: 'name обязателен' }, { status: 400 });
+    const status = typeof body.status === 'string' ? body.status.slice(0, 50) : null;
+
+    const config: Record<string, unknown> = { manual: true };
+    for (const [k, v] of Object.entries(body.config ?? {})) {
+      if (CONFIG_FIELDS_FOR_INSERT.has(k)) config[k] = v;
+    }
+    // Авто-link если задан username.
+    if (!config.link && typeof config.username === 'string' && config.username) {
+      config.link = `https://t.me/${String(config.username).replace(/^@/, '')}`;
+    }
+
+    const supabase = await createClient();
+    const insertBody: Record<string, unknown> = {
+      tenant_id: tenantId,
+      type: 'telegram_channel',
+      name,
+      config,
+    };
+    if (status) insertBody.status = status;
+
+    const { data, error } = await supabase
+      .from('channels').insert(insertBody)
+      .select('id, name, type, status, config, last_sync_at')
+      .single();
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ row: data });
+  } catch (e) {
+    return NextResponse.json({ error: e instanceof Error ? e.message : String(e) }, { status: 500 });
+  }
+}
