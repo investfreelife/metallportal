@@ -72,11 +72,22 @@ export default function PostEditor({ post, onClose, onChanged, onDeleted }: Prop
     return draft.photo_url ? [draft.photo_url] : [];
   })();
   const [carousel, setCarousel] = useState<string[]>(initialCarousel);
+  // Помним последний remote-snapshot — чтобы понимать, трогал юзер или нет.
+  const lastRemoteRef = useRef<string>(JSON.stringify(initialCarousel));
   // Синхроним carousel когда воркер обновляет draft.photos извне (polling).
+  // ВАЖНО (фикс 2026-06-06): НЕ перезаписываем локальный выбор юзера.
+  // Подхватываем remote ТОЛЬКО если юзер не менял carousel с прошлой синхр.
   useEffect(() => {
-    const remote = Array.isArray(draft.photos) ? draft.photos.filter((u) => typeof u === 'string' && u) : null;
-    if (remote && JSON.stringify(remote) !== JSON.stringify(carousel)) {
+    const remote = Array.isArray(draft.photos)
+      ? draft.photos.filter((u) => typeof u === 'string' && u)
+      : null;
+    if (!remote) return;
+    const remoteJson = JSON.stringify(remote);
+    const localJson = JSON.stringify(carousel);
+    if (remoteJson === localJson) { lastRemoteRef.current = remoteJson; return; }
+    if (localJson === lastRemoteRef.current) {
       setCarousel(remote);
+      lastRemoteRef.current = remoteJson;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draft.photos]);

@@ -78,12 +78,31 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
     return draft.photo_url ? [draft.photo_url] : [];
   })();
   const [carousel, setCarousel] = useState<string[]>(initialCarousel);
+  // Помним последний remote-snapshot — чтобы понимать, трогал юзер или нет.
+  const lastRemoteRef = useRef<string>(JSON.stringify(initialCarousel));
   // Синхроним carousel когда воркер обновляет draft.photos извне (polling).
+  // ВАЖНО (фикс 2026-06-06 по скрину Сергея): НЕ перезаписываем локальный
+  // выбор пользователя. Подхватываем remote ТОЛЬКО если юзер ничего не
+  // менял с прошлой синхронизации (carousel === lastRemoteRef.current).
+  // Иначе свежие галочки моментально слетали обратно к старому БД-значению.
   useEffect(() => {
-    const remote = Array.isArray(draft.photos) ? draft.photos.filter((u) => typeof u === 'string' && u) : null;
-    if (remote && JSON.stringify(remote) !== JSON.stringify(carousel)) {
-      setCarousel(remote);
+    const remote = Array.isArray(draft.photos)
+      ? draft.photos.filter((u) => typeof u === 'string' && u)
+      : null;
+    if (!remote) return;
+    const remoteJson = JSON.stringify(remote);
+    const localJson = JSON.stringify(carousel);
+    if (remoteJson === localJson) {
+      // уже совпадает — просто запомним
+      lastRemoteRef.current = remoteJson;
+      return;
     }
+    // Юзер не трогал (локальное == прошлый remote) → можно подхватить новый
+    if (localJson === lastRemoteRef.current) {
+      setCarousel(remote);
+      lastRemoteRef.current = remoteJson;
+    }
+    // иначе игнорируем: у юзера есть несохранённые изменения, не сбиваем.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draft.photos]);
 
