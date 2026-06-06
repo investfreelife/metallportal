@@ -13,6 +13,9 @@ import {
   UserPlus,
   X,
   Move,
+  GripVertical,
+  Pencil,
+  Check,
 } from 'lucide-react';
 import { safeFetchJson } from '@/lib/safe-fetch';
 import {
@@ -49,9 +52,30 @@ export default function FunnelStagesClient({ tenantName }: Props) {
   const [editing, setEditing] = useState<FunnelContact | null>(null);
   const [adding, setAdding] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  // Drag-and-drop состояние: {id, fromStage}
+  const [dragging, setDragging] = useState<{ id: string; fromStage: FunnelStage } | null>(null);
+  const [dragOverStage, setDragOverStage] = useState<FunnelStage | null>(null);
 
   function scrollBy(dx: number) {
     scrollRef.current?.scrollBy({ left: dx, behavior: 'smooth' });
+  }
+
+  async function handleDrop(toStage: FunnelStage) {
+    if (!dragging || dragging.fromStage === toStage) {
+      setDragging(null); setDragOverStage(null); return;
+    }
+    if (!canMoveTo(dragging.fromStage, toStage)) {
+      const yes = confirm(`Откат стадии (${dragging.fromStage} → ${toStage}) обычно запрещён. Точно перенести?`);
+      if (!yes) { setDragging(null); setDragOverStage(null); return; }
+    }
+    // 🔒 для scheduled/online или human_locked
+    const card = resp?.contacts.find((c) => c.id === dragging.id);
+    if (card && (dragging.fromStage === 'scheduled' || dragging.fromStage === 'online' || card.human_locked)) {
+      const yes = confirm(`Карточка под замком (${dragging.fromStage}). Точно перенести в «${toStage}»?`);
+      if (!yes) { setDragging(null); setDragOverStage(null); return; }
+    }
+    await patchContact(dragging.id, { stage: toStage });
+    setDragging(null); setDragOverStage(null);
   }
 
   const reload = useCallback(async (silent = false) => {
@@ -176,6 +200,13 @@ export default function FunnelStagesClient({ tenantName }: Props) {
                   onOpen={(c) => setEditing(c)}
                   onMove={(c, to) => patchContact(c.id, { stage: to })}
                   onDelete={(c) => patchContact(c.id, { stage: 'lost' as FunnelStage })}
+                  onPatch={(id, patch) => patchContact(id, patch)}
+                  dragging={dragging}
+                  isDragOver={dragOverStage === s}
+                  onDragStart={(id, fromStage) => setDragging({ id, fromStage })}
+                  onDragEnd={() => { setDragging(null); setDragOverStage(null); }}
+                  onDragOverColumn={(over) => setDragOverStage(over ? s : null)}
+                  onDropColumn={() => handleDrop(s)}
                 />
               ))}
             </div>
@@ -276,16 +307,32 @@ function RedPanelStrip({
 /* ─── Колонка стадии ───────────────────────────────────────────── */
 
 function StageColumn({
-  stage, contacts, onOpen, onMove, onDelete,
+  stage, contacts, onOpen, onMove, onDelete, onPatch,
+  dragging, isDragOver, onDragStart, onDragEnd, onDragOverColumn, onDropColumn,
 }: {
   stage: FunnelStage;
   contacts: FunnelContact[];
   onOpen: (c: FunnelContact) => void;
   onMove: (c: FunnelContact, to: FunnelStage) => void;
   onDelete: (c: FunnelContact) => void;
+  onPatch: (id: string, patch: Partial<FunnelContact>) => Promise<void> | void;
+  dragging: { id: string; fromStage: FunnelStage } | null;
+  isDragOver: boolean;
+  onDragStart: (id: string, fromStage: FunnelStage) => void;
+  onDragEnd: () => void;
+  onDragOverColumn: (over: boolean) => void;
+  onDropColumn: () => void;
 }) {
+  const dragActive = !!dragging && dragging.fromStage !== stage;
   return (
-    <div className="w-72 flex-shrink-0 flex flex-col bg-white border border-gray-200 rounded-md overflow-hidden">
+    <div
+      onDragOver={(e) => { if (dragActive) { e.preventDefault(); onDragOverColumn(true); } }}
+      onDragLeave={() => onDragOverColumn(false)}
+      onDrop={(e) => { if (dragActive) { e.preventDefault(); onDropColumn(); } }}
+      className={`w-72 flex-shrink-0 flex flex-col bg-white border rounded-md overflow-hidden transition-colors ${
+        isDragOver ? 'border-blue-500 bg-blue-50/40 ring-2 ring-blue-300' : 'border-gray-200'
+      }`}
+    >
       <header className="px-3 py-2 border-b border-gray-100 bg-gray-50/60 flex items-center justify-between">
         <span className={`inline-block text-[10px] px-1.5 py-0.5 rounded border font-semibold ${STAGE_COLORS[stage]}`}>
           {STAGE_LABELS[stage]}
@@ -294,66 +341,90 @@ function StageColumn({
       </header>
       <div className="flex-1 overflow-y-auto p-2 space-y-2 max-h-[calc(100vh-260px)]">
         {contacts.length === 0 ? (
-          <p className="text-[10px] text-gray-300 text-center py-4">Пусто</p>
+          <p className={`text-[10px] text-center py-4 ${isDragOver ? 'text-blue-600 font-medium' : 'text-gray-300'}`}>
+            {isDragOver ? '↓ отпусти, чтобы перенести' : 'Пусто'}
+          </p>
         ) : contacts.map((c) => (
           <ContactCard key={c.id} c={c}
             onOpen={() => onOpen(c)}
             onMove={(to) => onMove(c, to)}
-            onDelete={() => onDelete(c)} />
+            onDelete={() => onDelete(c)}
+            onPatch={onPatch}
+            onDragStart={() => onDragStart(c.id, stage)}
+            onDragEnd={onDragEnd} />
         ))}
       </div>
     </div>
   );
 }
 
+/** Варианты сегмента кандидата — соответствуют entry_segment из бота
+ *  (см. memory taksopark_audience_and_group_rules). */
+const SEGMENT_OPTIONS = [
+  { v: 'priezzhiy', label: '🟠 Приезжий' },
+  { v: 'mestnyy',   label: '🟢 Местный' },
+  { v: 'novichok',  label: '🟡 Новичок' },
+  { v: 'referral',  label: '🔵 Реферал' },
+  { v: 'other',     label: '⚪ Другой' },
+];
+
 function ContactCard({
-  c, onOpen, onMove, onDelete,
+  c, onOpen, onMove, onDelete, onPatch, onDragStart, onDragEnd,
 }: {
   c: FunnelContact;
   onOpen: () => void;
   onMove: (to: FunnelStage) => void;
   onDelete: () => void;
+  onPatch: (id: string, patch: Partial<FunnelContact>) => Promise<void> | void;
+  onDragStart: () => void;
+  onDragEnd: () => void;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [editing, setEditing] = useState(false);
   const overdue = isActiveStage(c.stage as string) && !c.next_touch_at;
   const currentStage = (c.stage as FunnelStage) ?? 'new';
   const locked = currentStage === 'scheduled' || currentStage === 'online' || c.human_locked;
 
+  // Локальные поля inline-квалификации
+  const [segment, setSegment] = useState<string>(c.segment ?? '');
+  const [city, setCity] = useState<string>(c.city ?? '');
+  const [hasCarStr, setHasCarStr] = useState<string>(
+    c.has_car === true ? 'yes' : c.has_car === false ? 'no' : ''
+  );
+
+  async function saveQualification() {
+    const patch: Partial<FunnelContact> = {
+      segment: segment.trim() || null,
+      city: city.trim() || null,
+      has_car: hasCarStr === 'yes' ? true : hasCarStr === 'no' ? false : null,
+    };
+    await onPatch(c.id, patch);
+    setEditing(false);
+  }
+
   return (
     <div
-      className={`relative bg-white border rounded p-2 hover:border-blue-300 hover:shadow-sm transition-all ${
+      draggable
+      onDragStart={(e) => {
+        // Setting data so external drop zones don't interfere; payload via state.
+        try { e.dataTransfer.setData('text/plain', c.id); e.dataTransfer.effectAllowed = 'move'; } catch {}
+        onDragStart();
+      }}
+      onDragEnd={onDragEnd}
+      className={`relative bg-white border rounded p-2 transition-all ${
         overdue ? 'border-red-200 bg-red-50/30' : 'border-gray-200'
-      }`}
+      } hover:border-blue-300 hover:shadow-sm cursor-grab active:cursor-grabbing`}
+      title="Перетащи в другую колонку"
     >
-      <button onClick={onOpen} className="block w-full text-left">
-        <div className="flex items-start justify-between gap-1.5 mb-1">
-          <span className="text-xs font-medium text-gray-900 truncate flex-1">
-            {c.full_name ?? c.telegram_chat_id ?? '—'}
-          </span>
-          {c.human_locked && <Lock size={10} className="text-amber-600 flex-shrink-0" />}
-        </div>
-        <div className="flex items-center gap-1 text-[10px] text-gray-500 mb-1 flex-wrap">
-          {c.segment && <span className="px-1 py-0 bg-gray-100 rounded">{c.segment}</span>}
-          {c.city && <span>📍 {c.city}</span>}
-          {typeof c.has_car === 'boolean' && <span>{c.has_car ? '🚗' : '🚲'}</span>}
-        </div>
-        {c.last_text && (
-          <p className="text-[10px] text-gray-600 line-clamp-2 leading-snug mb-1">{c.last_text}</p>
-        )}
-        <div className="flex items-center justify-between text-[10px] mt-1.5 pt-1.5 border-t border-gray-100">
-          {c.next_touch_at ? (
-            <span className="text-blue-700 inline-flex items-center gap-0.5"><Clock size={9} />{fmtMsk(c.next_touch_at, false)}</span>
-          ) : overdue ? (
-            <span className="text-red-700 font-semibold">⚠ нет касания</span>
-          ) : (
-            <span className="text-gray-400">—</span>
-          )}
-          <span className="text-gray-400">{c.last_at ? fmtMsk(c.last_at, false) : ''}</span>
-        </div>
-      </button>
-
-      {/* ── Кнопки быстрого действия (Task 062 §3) ─────────── */}
-      <div className="absolute top-1 right-1 flex gap-0.5">
+      {/* Drag-handle полоска сверху + кнопки действий */}
+      <div className="absolute top-1 right-1 flex gap-0.5 items-center z-10">
+        <button
+          onClick={(e) => { e.stopPropagation(); setEditing((v) => !v); }}
+          title={editing ? 'Закрыть редактирование' : 'Квалификация (сегмент/город/авто)'}
+          className={`p-1 rounded ${editing ? 'bg-emerald-100 text-emerald-700' : 'text-gray-400 hover:text-emerald-600 hover:bg-emerald-50'}`}
+        >
+          <Pencil size={10} />
+        </button>
         <div className="relative">
           <button
             onClick={(e) => { e.stopPropagation(); setMenuOpen((v) => !v); }}
@@ -404,6 +475,91 @@ function ContactCard({
         >
           <X size={11} />
         </button>
+      </div>
+
+      {/* Имя + drag-handle + lock-индикатор */}
+      <div className="flex items-start gap-1.5 mb-1 pr-20">
+        <GripVertical size={11} className="text-gray-300 flex-shrink-0 mt-0.5" />
+        <button onClick={onOpen} className="text-xs font-medium text-gray-900 truncate flex-1 text-left hover:underline">
+          {c.full_name ?? c.telegram_chat_id ?? '—'}
+        </button>
+        {c.human_locked && <Lock size={10} className="text-amber-600 flex-shrink-0 mt-0.5" />}
+      </div>
+
+      {/* Inline-квалификация (раскрывается по карандашу) */}
+      {editing ? (
+        <div className="space-y-1.5 my-1.5 p-2 bg-emerald-50/50 border border-emerald-200 rounded">
+          <div>
+            <label className="text-[9px] text-gray-500 uppercase tracking-wide block">Сегмент</label>
+            <select
+              value={segment}
+              onChange={(e) => setSegment(e.target.value)}
+              className="w-full px-1.5 py-0.5 text-[11px] border border-gray-200 rounded bg-white"
+            >
+              <option value="">—</option>
+              {SEGMENT_OPTIONS.map((o) => (
+                <option key={o.v} value={o.v}>{o.label}</option>
+              ))}
+            </select>
+          </div>
+          <div className="grid grid-cols-2 gap-1.5">
+            <div>
+              <label className="text-[9px] text-gray-500 uppercase tracking-wide block">Город</label>
+              <input
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="Москва / …"
+                className="w-full px-1.5 py-0.5 text-[11px] border border-gray-200 rounded bg-white"
+              />
+            </div>
+            <div>
+              <label className="text-[9px] text-gray-500 uppercase tracking-wide block">Авто</label>
+              <select
+                value={hasCarStr}
+                onChange={(e) => setHasCarStr(e.target.value)}
+                className="w-full px-1.5 py-0.5 text-[11px] border border-gray-200 rounded bg-white"
+              >
+                <option value="">—</option>
+                <option value="yes">🚗 есть</option>
+                <option value="no">🚲 нет</option>
+              </select>
+            </div>
+          </div>
+          <div className="flex items-center justify-end gap-1 pt-0.5">
+            <button
+              onClick={(e) => { e.stopPropagation(); setEditing(false); setSegment(c.segment ?? ''); setCity(c.city ?? ''); setHasCarStr(c.has_car === true ? 'yes' : c.has_car === false ? 'no' : ''); }}
+              className="px-1.5 py-0.5 text-[10px] text-gray-600 hover:bg-gray-100 rounded"
+            >
+              Отмена
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); saveQualification(); }}
+              className="flex items-center gap-1 px-2 py-0.5 text-[10px] bg-emerald-600 text-white rounded hover:bg-emerald-700"
+            >
+              <Check size={9} /> Сохранить
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex items-center gap-1 text-[10px] text-gray-500 mb-1 flex-wrap">
+          {c.segment && <span className="px-1 py-0 bg-gray-100 rounded">{c.segment}</span>}
+          {c.city && <span>📍 {c.city}</span>}
+          {typeof c.has_car === 'boolean' && <span>{c.has_car ? '🚗' : '🚲'}</span>}
+        </div>
+      )}
+
+      {c.last_text && !editing && (
+        <p className="text-[10px] text-gray-600 line-clamp-2 leading-snug mb-1">{c.last_text}</p>
+      )}
+      <div className="flex items-center justify-between text-[10px] mt-1.5 pt-1.5 border-t border-gray-100">
+        {c.next_touch_at ? (
+          <span className="text-blue-700 inline-flex items-center gap-0.5"><Clock size={9} />{fmtMsk(c.next_touch_at, false)}</span>
+        ) : overdue ? (
+          <span className="text-red-700 font-semibold">⚠ нет касания</span>
+        ) : (
+          <span className="text-gray-400">—</span>
+        )}
+        <span className="text-gray-400">{c.last_at ? fmtMsk(c.last_at, false) : ''}</span>
       </div>
     </div>
   );
