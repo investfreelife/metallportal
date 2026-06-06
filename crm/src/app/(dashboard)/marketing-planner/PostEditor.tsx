@@ -196,6 +196,33 @@ export default function PostEditor({ post, onClose, onChanged, onDeleted }: Prop
     }
   }
 
+  /** Sergey directive 2026-06-06: «загружать сразу несколько файлов».
+   *  Multi-upload по списку с прогрессом N/M. Падения одного не валят
+   *  остальные — копим errors[] и показываем баннером. */
+  async function uploadMany(files: File[] | FileList) {
+    const list = Array.from(files).filter((f) => f.type.startsWith('image/'));
+    if (!list.length) return;
+    setError(null);
+    const errors: string[] = [];
+    for (let i = 0; i < list.length; i++) {
+      const f = list[i];
+      setBusy(`upload:${i + 1}/${list.length}`);
+      try {
+        const fd = new FormData();
+        fd.append('file', f);
+        const r = await fetch(`/api/marketing-plan/posts/${post.id}/photo`, { method: 'POST', body: fd });
+        const j = await r.json();
+        if (!r.ok || j.error) throw new Error(j.error || 'upload failed');
+        setDraft(j.post);
+        await onChanged(j.post);
+      } catch (e: any) {
+        errors.push(`${f.name}: ${String(e.message || e)}`);
+      }
+    }
+    if (errors.length) setError(`Ошибки загрузки:\n${errors.join('\n')}`);
+    setBusy(null);
+  }
+
   async function publishNow() {
     setBusy('publish');
     setError(null);
@@ -466,20 +493,21 @@ export default function PostEditor({ post, onClose, onChanged, onDeleted }: Prop
               ref={fileRef}
               type="file"
               accept="image/png,image/jpeg,image/webp,image/*"
+              multiple
               hidden
               onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) uploadPhoto(f);
-                // Сбрасываем чтобы можно было загрузить тот же файл повторно.
+                const files = e.target.files;
+                if (files && files.length) uploadMany(files);
                 if (fileRef.current) fileRef.current.value = '';
               }}
             />
             {/* Drag&drop / клик зона */}
             <UploadDropArea
-              busy={busy === 'upload'}
+              busy={!!busy && busy.startsWith('upload')}
+              busyLabel={busy && busy.startsWith('upload:') ? busy.replace('upload:', '') : null}
               disabled={redoingPhoto}
               onPick={() => fileRef.current?.click()}
-              onFile={(f) => uploadPhoto(f)}
+              onFiles={(files) => uploadMany(files)}
             />
             <div className="mt-2 flex items-center gap-3 flex-wrap">
               {/* «Дать варианты» — воркер сгенерит 3 бесплатных Flux. */}
@@ -845,14 +873,16 @@ export default function PostEditor({ post, onClose, onChanged, onDeleted }: Prop
  */
 function UploadDropArea({
   busy,
+  busyLabel,
   disabled,
   onPick,
-  onFile,
+  onFiles,
 }: {
   busy: boolean;
+  busyLabel?: string | null;
   disabled: boolean;
   onPick: () => void;
-  onFile: (f: File) => void;
+  onFiles: (files: FileList | File[]) => void;
 }) {
   const [over, setOver] = useState(false);
   return (
@@ -864,8 +894,8 @@ function UploadDropArea({
         e.preventDefault();
         setOver(false);
         if (disabled || busy) return;
-        const f = e.dataTransfer.files?.[0];
-        if (f && f.type.startsWith('image/')) onFile(f);
+        const files = Array.from(e.dataTransfer.files || []).filter((f) => f.type.startsWith('image/'));
+        if (files.length) onFiles(files);
       }}
       className={`mt-2 rounded-md border-2 border-dashed px-3 py-3 text-center cursor-pointer transition-colors ${
         disabled || busy
@@ -878,13 +908,13 @@ function UploadDropArea({
       <div className="flex items-center justify-center gap-1.5 text-xs font-medium">
         <Upload size={12} />
         {busy
-          ? 'Загрузка…'
+          ? `Загрузка${busyLabel ? ` ${busyLabel}` : ''}…`
           : over
-            ? 'Отпусти — добавлю в варианты'
-            : '⬆️ Загрузить своё фото (клик или перетащи PNG / JPG)'}
+            ? 'Отпусти — добавлю в варианты (можно несколько)'
+            : '⬆️ Загрузить свои фото (клик или перетащи — можно несколько PNG/JPG)'}
       </div>
       <div className="text-[10px] text-blue-600/80 mt-0.5">
-        Файл уходит в Storage, появляется в галерее «Варианты» — обложкой можно сделать кнопкой ✅ Обложка
+        Файлы уходят в Storage, появляются в галерее «Варианты» — обложкой можно сделать кнопкой ✅ Обложка
       </div>
     </div>
   );
