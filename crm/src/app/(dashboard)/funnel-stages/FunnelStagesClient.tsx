@@ -37,7 +37,22 @@ interface Resp {
   contacts: FunnelContact[];
   red: RedPanel;
   summary: Record<string, number>;
+  period?: { key: string; from: string | null; to: string | null };
+  total?: number;
+  total_all?: number;
+  total_spam?: number;
 }
+
+// ТЗ-077: фильтр периода
+type PeriodKey = 'today' | 'week' | 'month' | 'year' | 'all' | 'custom';
+const PERIOD_OPTIONS: Array<{ v: PeriodKey; label: string }> = [
+  { v: 'today',  label: 'Сегодня' },
+  { v: 'week',   label: 'Неделя' },
+  { v: 'month',  label: 'Месяц' },
+  { v: 'year',   label: 'Год' },
+  { v: 'all',    label: 'Всё' },
+  { v: 'custom', label: 'Период…' },
+];
 
 interface Props { tenantName: string | null }
 
@@ -55,6 +70,10 @@ export default function FunnelStagesClient({ tenantName }: Props) {
   // Drag-and-drop состояние: {id, fromStage}
   const [dragging, setDragging] = useState<{ id: string; fromStage: FunnelStage } | null>(null);
   const [dragOverStage, setDragOverStage] = useState<FunnelStage | null>(null);
+  // ТЗ-077: фильтр периода + кастомные даты
+  const [period, setPeriod] = useState<PeriodKey>('month');
+  const [customFrom, setCustomFrom] = useState<string>('');
+  const [customTo, setCustomTo] = useState<string>('');
 
   function scrollBy(dx: number) {
     scrollRef.current?.scrollBy({ left: dx, behavior: 'smooth' });
@@ -79,12 +98,19 @@ export default function FunnelStagesClient({ tenantName }: Props) {
   const reload = useCallback(async (silent = false) => {
     if (!silent) setRefreshing(true);
     try {
-      const j = await safeFetchJson<Resp>('/api/recruit/funnel-stages');
+      const sp = new URLSearchParams();
+      if (period === 'custom') {
+        if (customFrom) sp.set('from', new Date(customFrom).toISOString());
+        if (customTo) sp.set('to', new Date(customTo).toISOString());
+      } else {
+        sp.set('period', period);
+      }
+      const j = await safeFetchJson<Resp>(`/api/recruit/funnel-stages?${sp.toString()}`);
       setResp(j); setError(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally { setLoading(false); setRefreshing(false); }
-  }, []);
+  }, [period, customFrom, customTo]);
   useEffect(() => {
     reload();
     const id = setInterval(() => reload(true), POLL_MS);
@@ -124,10 +150,26 @@ export default function FunnelStagesClient({ tenantName }: Props) {
             🔻 Воронка{tenantName ? ` · ${tenantName}` : ''}
           </h1>
           <p className="text-xs text-gray-500 mt-0.5">
-            Стадии new → online → retained, красная панель просрочек. Обновление каждую минуту.
+            Стадии new → online → retained · спам/тесты исключены · период: <strong>{PERIOD_OPTIONS.find((p) => p.v === period)?.label}</strong>
+            {resp?.total != null && <> · <strong className="text-blue-700">{resp.total}</strong> лидов</>}
+            {resp?.total_spam != null && resp.total_spam > 0 && <> <span className="text-rose-600">· 🚫 {resp.total_spam} спам/тест</span></>}
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {/* ТЗ-077: переключатель периода */}
+          <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-md p-0.5">
+            {PERIOD_OPTIONS.map((p) => (
+              <button
+                key={p.v}
+                onClick={() => setPeriod(p.v)}
+                className={`px-2 py-1 text-[11px] font-medium rounded ${
+                  period === p.v ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
           <button
             onClick={() => reload()}
             disabled={refreshing}
@@ -145,6 +187,21 @@ export default function FunnelStagesClient({ tenantName }: Props) {
           </button>
         </div>
       </header>
+
+      {/* ТЗ-077: кастомный date-range picker — появляется при period='custom' */}
+      {period === 'custom' && (
+        <div className="px-6 py-2 bg-blue-50/40 border-b border-blue-100 flex items-center gap-2 text-xs">
+          <span className="text-gray-600">Период:</span>
+          <label className="flex items-center gap-1">
+            от <input type="date" value={customFrom} onChange={(e) => setCustomFrom(e.target.value)} className="px-1.5 py-0.5 border border-gray-300 rounded" />
+          </label>
+          <label className="flex items-center gap-1">
+            до <input type="date" value={customTo} onChange={(e) => setCustomTo(e.target.value)} className="px-1.5 py-0.5 border border-gray-300 rounded" />
+          </label>
+          <button onClick={() => reload()} className="px-2 py-0.5 bg-blue-600 text-white rounded text-[11px]">Применить</button>
+          <button onClick={() => { setCustomFrom(''); setCustomTo(''); setPeriod('month'); }} className="px-2 py-0.5 text-gray-500 hover:underline text-[11px]">Сбросить</button>
+        </div>
+      )}
 
       {/* ── Красная панель ─────────────────────────────────────────── */}
       {resp && (
