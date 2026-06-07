@@ -22,6 +22,8 @@ interface Item {
   reposts: number | null;
   above: number | null;
   hour_msk: number | null;
+  status: string;
+  deleted_at: string | null;
 }
 
 interface HourStat {
@@ -44,6 +46,8 @@ export default function PostHistoryClient() {
   const [items, setItems] = useState<Item[]>([]);
   const [totalLeads, setTotalLeads] = useState(0);
   const [totalAudience, setTotalAudience] = useState(0);
+  const [totalDeleted, setTotalDeleted] = useState(0);
+  const [totalBlocked, setTotalBlocked] = useState(0);
   const [byHour, setByHour] = useState<HourStat[]>([]);
   const [byVariant, setByVariant] = useState<{ variant: string; posts: number; leads: number; audience: number; comments: number; cr: number | null }[]>([]);
   const [loading, setLoading] = useState(true);
@@ -59,6 +63,8 @@ export default function PostHistoryClient() {
       setItems(j.items ?? []);
       setTotalLeads(j.total_leads ?? 0);
       setTotalAudience(j.total_audience ?? 0);
+      setTotalDeleted(j.total_deleted ?? 0);
+      setTotalBlocked(j.total_blocked ?? 0);
       setByHour(j.byHour ?? []);
       setByVariant(j.byVariant ?? []);
     } catch (e) {
@@ -104,6 +110,10 @@ export default function PostHistoryClient() {
         <div className="px-4 py-2 bg-amber-50 border border-amber-200 rounded-md">
           <div className="text-2xl font-bold text-amber-700">{totalAudience > 0 ? (Math.round((totalLeads / totalAudience) * 100000) / 1000) : 0}%</div>
           <div className="text-[11px] text-amber-600 uppercase tracking-wide">конверсия охват→лид</div>
+        </div>
+        <div className={`px-4 py-2 rounded-md border ${(totalDeleted + totalBlocked) > 0 ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-200'}`}>
+          <div className={`text-2xl font-bold ${(totalDeleted + totalBlocked) > 0 ? 'text-red-700' : 'text-gray-400'}`}>{totalDeleted}{totalBlocked > 0 ? `+${totalBlocked}` : ''}</div>
+          <div className="text-[11px] uppercase tracking-wide text-red-600">удалено / 🚫 блок</div>
         </div>
       </div>
 
@@ -198,7 +208,9 @@ export default function PostHistoryClient() {
                   <td className="px-3 py-2">
                     <span className="inline-flex items-center gap-1">
                       {it.channel === 'vk' ? <Users size={13} className="text-blue-600" /> : <Send size={13} className="text-sky-500" />}
-                      <span className="font-medium">{it.placement ?? '—'}</span>
+                      <span className={`font-medium ${it.status !== 'live' ? 'line-through text-gray-400' : ''}`}>{it.placement ?? '—'}</span>
+                      {it.status === 'deleted' && <span className="text-[10px] px-1 rounded bg-red-100 text-red-700 border border-red-200" title={it.deleted_at ? `замечено ${it.deleted_at}` : ''}>🗑 удалён</span>}
+                      {it.status === 'blocked' && <span className="text-[10px] px-1 rounded bg-red-100 text-red-700 border border-red-200">🚫 блок</span>}
                     </span>
                   </td>
                   <td className="px-3 py-2 text-gray-700">

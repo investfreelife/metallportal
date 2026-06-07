@@ -84,6 +84,8 @@ export async function GET(_req: NextRequest) {
         likes: num(st.likes),
         reposts: num(st.reposts),
         above: num(st.above),                                // сколько постов сверху (утонул)
+        status: str(st.status) ?? 'live',                    // live | deleted | blocked
+        deleted_at: str(st.deleted_at),
         stats_at: str(st.checked_at),
         hour_msk: (() => { const d = new Date(str(c.placed_at) ?? r.created_at); return Number.isNaN(d.getTime()) ? null : (d.getUTCHours() + 3) % 24; })(),
       };
@@ -121,6 +123,9 @@ export async function GET(_req: NextRequest) {
       total: items.length,
       total_leads: items.reduce((s, i) => s + i.leads, 0),
       total_audience: items.reduce((s, i) => s + (i.audience ?? 0), 0),
+      total_deleted: items.filter((i) => i.status === 'deleted').length,
+      total_blocked: items.filter((i) => i.status === 'blocked').length,
+      total_live: items.filter((i) => i.status === 'live').length,
       byHour,
       byVariant,
     });
