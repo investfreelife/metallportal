@@ -68,7 +68,7 @@ function num(v: unknown): number | null {
 }
 
 interface SourceRow { id: string; config: Record<string, unknown> | null; created_at: string; }
-interface ContactRow { id: string; stage: string | null; config: Record<string, unknown> | null; source_code: string | null; }
+interface ContactRow { id: string; stage: string | null; source_code: string | null; }
 
 export async function GET() {
   try {
@@ -92,7 +92,7 @@ export async function GET() {
     // 2. Контакты — для подсчёта найма и лидов по коду.
     const { data: contactsData, error: cErr } = await supabase
       .from('contacts')
-      .select('id, stage, config, source_code')
+      .select('id, stage, source_code')
       .eq('tenant_id', tenantId)
       .limit(20000);
     if (cErr) return NextResponse.json({ error: cErr.message }, { status: 500 });
@@ -103,7 +103,7 @@ export async function GET() {
     for (const c of contacts) {
       if (c.source_code) leadsByCode[c.source_code] = (leadsByCode[c.source_code] ?? 0) + 1;
     }
-    const hires = contacts.filter((c) => HIRED_STAGES.has((c.stage ?? (c.config as Record<string, unknown> | null)?.stage as string) ?? '')).length;
+    const hires = contacts.filter((c) => HIRED_STAGES.has(c.stage ?? '')).length;
 
     // 4. Агрегация по каналу (alias → main key)
     const aliasToKey: Record<string, string> = {};
