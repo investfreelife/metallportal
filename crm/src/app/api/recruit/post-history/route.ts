@@ -83,15 +83,32 @@ export async function GET(_req: NextRequest) {
         comments: num(st.comments),
         likes: num(st.likes),
         reposts: num(st.reposts),
+        above: num(st.above),                                // сколько постов сверху (утонул)
         stats_at: str(st.checked_at),
+        hour_msk: (() => { const d = new Date(str(c.placed_at) ?? r.created_at); return Number.isNaN(d.getTime()) ? null : (d.getUTCHours() + 3) % 24; })(),
       };
     });
+
+    // ── Прайм-тайм: агрегат по часу публикации (МСК) ──────────────────
+    const byHourMap: Record<number, { posts: number; leads: number; audience: number; views: number }> = {};
+    for (const i of items) {
+      if (i.hour_msk == null) continue;
+      const h = i.hour_msk;
+      byHourMap[h] = byHourMap[h] || { posts: 0, leads: 0, audience: 0, views: 0 };
+      byHourMap[h].posts++; byHourMap[h].leads += i.leads;
+      byHourMap[h].audience += i.audience ?? 0; byHourMap[h].views += i.views ?? 0;
+    }
+    const byHour = Object.entries(byHourMap).map(([h, v]) => ({
+      hour: Number(h), ...v,
+      cr: v.audience > 0 ? Math.round((v.leads / v.audience) * 100000) / 1000 : null,
+    })).sort((a, b) => a.hour - b.hour);
 
     return NextResponse.json({
       items,
       total: items.length,
       total_leads: items.reduce((s, i) => s + i.leads, 0),
       total_audience: items.reduce((s, i) => s + (i.audience ?? 0), 0),
+      byHour,
     });
   } catch (e: unknown) {
     return NextResponse.json({ error: String((e as Error)?.message || e) }, { status: 500 });

@@ -20,6 +20,17 @@ interface Item {
   comments: number | null;
   likes: number | null;
   reposts: number | null;
+  above: number | null;
+  hour_msk: number | null;
+}
+
+interface HourStat {
+  hour: number;
+  posts: number;
+  leads: number;
+  audience: number;
+  views: number;
+  cr: number | null;
 }
 
 function fmt(iso: string): string {
@@ -33,6 +44,7 @@ export default function PostHistoryClient() {
   const [items, setItems] = useState<Item[]>([]);
   const [totalLeads, setTotalLeads] = useState(0);
   const [totalAudience, setTotalAudience] = useState(0);
+  const [byHour, setByHour] = useState<HourStat[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,6 +58,7 @@ export default function PostHistoryClient() {
       setItems(j.items ?? []);
       setTotalLeads(j.total_leads ?? 0);
       setTotalAudience(j.total_audience ?? 0);
+      setByHour(j.byHour ?? []);
     } catch (e) {
       setError(String((e as Error).message || e));
     } finally {
@@ -92,6 +105,34 @@ export default function PostHistoryClient() {
         </div>
       </div>
 
+      {/* ── Прайм-тайм: лиды/CR по часу публикации (МСК) ── */}
+      {byHour.length > 0 && (() => {
+        const maxLeads = Math.max(1, ...byHour.map((h) => h.leads));
+        const best = byHour.filter((h) => h.leads > 0).sort((a, b) => (b.cr ?? 0) - (a.cr ?? 0))[0];
+        return (
+          <div className="mb-5 border border-gray-200 rounded-md p-3">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium flex items-center gap-1.5">🕐 Прайм-тайм (по часу публикации, МСК)</span>
+              {best && <span className="text-[11px] text-emerald-700">Лучший час: <b>{String(best.hour).padStart(2,'0')}:00</b> · CR {best.cr}%</span>}
+            </div>
+            <div className="flex items-end gap-1 h-20">
+              {Array.from({ length: 24 }, (_, h) => {
+                const s = byHour.find((x) => x.hour === h);
+                const leads = s?.leads ?? 0;
+                const hPct = Math.round((leads / maxLeads) * 100);
+                return (
+                  <div key={h} className="flex-1 flex flex-col items-center justify-end" title={s ? `${String(h).padStart(2,'0')}:00 — постов ${s.posts}, лидов ${leads}, CR ${s.cr ?? 0}%` : `${String(h).padStart(2,'0')}:00 — нет постов`}>
+                    <div className={`w-full rounded-t ${leads > 0 ? 'bg-emerald-500' : (s ? 'bg-gray-200' : 'bg-gray-100')}`} style={{ height: `${Math.max(leads > 0 ? 8 : 2, hPct)}%` }} />
+                    <span className="text-[8px] text-gray-400 mt-0.5">{h % 3 === 0 ? h : ''}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="text-[10px] text-gray-400 mt-1">Высота столбца = лиды по этому часу. Данные копятся с постами — чем больше засеяно, тем точнее видно прайм-тайм.</p>
+          </div>
+        );
+      })()}
+
       {error && (
         <div className="mb-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded-md px-3 py-2">{error}</div>
       )}
@@ -111,6 +152,7 @@ export default function PostHistoryClient() {
                 <th className="px-3 py-2">Где</th>
                 <th className="px-3 py-2">Пост</th>
                 <th className="px-3 py-2 text-center">Охват</th>
+                <th className="px-3 py-2 text-center" title="Сколько постов уже выше нашего (насколько утонул)">⬆ Сверху</th>
                 <th className="px-3 py-2 text-center">👁 Просм.</th>
                 <th className="px-3 py-2 text-center">💬 Комм.</th>
                 <th className="px-3 py-2 text-center">Лиды</th>
@@ -133,6 +175,7 @@ export default function PostHistoryClient() {
                     {it.segment && <span className="ml-1 text-[10px] px-1 rounded bg-gray-100 text-gray-500 border border-gray-200">{it.segment}</span>}
                   </td>
                   <td className="px-3 py-2 text-center text-gray-600">{it.audience != null ? it.audience.toLocaleString('ru-RU') : '—'}</td>
+                  <td className="px-3 py-2 text-center text-gray-600">{it.above != null ? (it.above >= 300 ? '300+' : it.above) : '—'}</td>
                   <td className="px-3 py-2 text-center text-gray-600">{it.views != null ? it.views.toLocaleString('ru-RU') : '—'}</td>
                   <td className="px-3 py-2 text-center text-gray-600">{it.comments != null ? it.comments : '—'}</td>
                   <td className="px-3 py-2 text-center">
