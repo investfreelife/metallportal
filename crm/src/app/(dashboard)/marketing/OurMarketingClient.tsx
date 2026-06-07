@@ -117,11 +117,86 @@ export default function OurMarketingClient({ tenantName: _tn }: Props) {
         })}
       </div>
 
+      {/* ── ТЗ-073: статистика инструмента (по source_codes реестру) ── */}
+      <ChannelStats channel={channel === 'landings' ? 'landing' : channel === 'tg' ? 'telegram' : channel} />
+
       {/* ── Содержимое ──────────────────────────────────────────── */}
       {channel === 'landings' && <LandingsTab />}
       {channel === 'vk' && <CampaignsByChannel hint="vk" includeArchived={includeArchived} />}
       {channel === 'tg' && <CampaignsByChannel hint="tg" includeArchived={includeArchived} />}
       {channel === 'other' && <OtherChannelStub />}
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ *  ТЗ-073: ChannelStats — блок «Статистика инструмента». Один и тот же
+ *  endpoint /api/recruit/post-history?channel=<key>. Реальные числа из
+ *  реестра source_codes (без выдумок). Если данных нет — честная пометка.
+ * ───────────────────────────────────────────────────────────────── */
+interface ChannelStatsResp {
+  total: number;
+  total_leads: number;
+  total_audience: number;
+  total_deleted: number;
+  total_blocked: number;
+  byHour: { hour: number; posts: number; leads: number; audience: number; cr: number | null }[];
+  byVariant: { variant: string; posts: number; leads: number; audience: number; cr: number | null }[];
+}
+function ChannelStats({ channel }: { channel: string }) {
+  const [data, setData] = useState<ChannelStatsResp | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLoading(true); setErr(null);
+    safeFetchJson<ChannelStatsResp>(`/api/recruit/post-history?channel=${encodeURIComponent(channel)}`)
+      .then(setData)
+      .catch((e) => setErr(e instanceof Error ? e.message : String(e)))
+      .finally(() => setLoading(false));
+  }, [channel]);
+
+  if (loading) return <div className="text-xs text-gray-400 px-1 py-2">Загрузка статистики…</div>;
+  if (err)     return <div className="text-xs text-red-700 bg-red-50 border border-red-200 rounded px-2 py-1.5">⚠ {err}</div>;
+  if (!data || data.total === 0) {
+    return (
+      <div className="text-[11px] text-gray-500 bg-gray-50 border border-dashed border-gray-200 rounded px-3 py-2">
+        📊 По каналу <strong>{channel}</strong> ещё нет публикаций в реестре. Когда постер запишет первый source_code — здесь появится охват/лиды/CR.
+      </div>
+    );
+  }
+  const cr = data.total_audience > 0 ? (data.total_leads / data.total_audience) * 100 : null;
+  const bestHour = [...data.byHour].sort((a, b) => (b.cr ?? -1) - (a.cr ?? -1))[0];
+  const bestVar  = data.byVariant[0]; // уже отсортирован по CR
+  return (
+    <section className="bg-white border border-gray-200 rounded-md p-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 text-xs">
+      <Stat label="Публикаций" value={data.total} />
+      <Stat label="Охват" value={data.total_audience.toLocaleString('ru-RU')} />
+      <Stat label="Лидов" value={data.total_leads} color={data.total_leads > 0 ? 'emerald' : 'gray'} />
+      <Stat label="CR" value={cr != null ? `${cr.toFixed(3)} %` : '—'} />
+      <Stat label="🗑 удалено" value={data.total_deleted} color={data.total_deleted > 0 ? 'rose' : 'gray'} />
+      <Stat label="⛔ блок" value={data.total_blocked} color={data.total_blocked > 0 ? 'rose' : 'gray'} />
+      {bestHour && (bestHour.cr ?? 0) > 0 && (
+        <div className="col-span-2 sm:col-span-3 md:col-span-3 bg-amber-50 border border-amber-200 rounded px-2 py-1 text-[11px]">
+          ⏰ Лучший час: <strong>{String(bestHour.hour).padStart(2,'0')}:00 МСК</strong> · CR {bestHour.cr?.toFixed(3)} %
+        </div>
+      )}
+      {bestVar && (bestVar.cr ?? 0) > 0 && (
+        <div className="col-span-2 sm:col-span-3 md:col-span-3 bg-emerald-50 border border-emerald-200 rounded px-2 py-1 text-[11px]">
+          🏆 Топ A/B: <strong className="font-mono">{bestVar.variant}</strong> · CR {bestVar.cr?.toFixed(3)} % ({bestVar.leads} лидов / {bestVar.audience.toLocaleString('ru-RU')})
+        </div>
+      )}
+    </section>
+  );
+}
+function Stat({ label, value, color = 'gray' }: { label: string; value: number | string; color?: 'gray' | 'emerald' | 'rose' }) {
+  const cls = color === 'emerald' ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+            : color === 'rose'    ? 'bg-rose-50 text-rose-800 border-rose-200'
+                                  : 'bg-gray-50 text-gray-700 border-gray-200';
+  return (
+    <div className={`border rounded px-2 py-1 ${cls}`}>
+      <div className="text-[9px] uppercase opacity-70">{label}</div>
+      <div className="text-sm font-bold tabular-nums">{value}</div>
     </div>
   );
 }

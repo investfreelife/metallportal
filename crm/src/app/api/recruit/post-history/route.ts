@@ -20,12 +20,14 @@ interface Row {
 }
 function str(v: unknown): string | null { return typeof v === 'string' ? v : null; }
 
-export async function GET(_req: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
     const session = await getSession();
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const tenantId = await getTenantId();
     const supabase = await createClient();
+    // ТЗ-073: фильтр по каналу (vk|telegram|landing|avito|tiktok|...).
+    const channelFilter = (req.nextUrl.searchParams.get('channel') ?? '').trim().toLowerCase();
 
     const { data, error } = await supabase
       .from('channels')
@@ -59,7 +61,7 @@ export async function GET(_req: NextRequest) {
       typeof v === 'number' && Number.isFinite(v) ? v
       : (typeof v === 'string' && v.trim() !== '' && Number.isFinite(Number(v)) ? Number(v) : null);
 
-    const items = rows.map((r) => {
+    const allItems = rows.map((r) => {
       const c = r.config ?? {};
       const code = str(c.code);
       const audience = num(c.audience);
@@ -90,6 +92,28 @@ export async function GET(_req: NextRequest) {
         hour_msk: (() => { const d = new Date(str(c.placed_at) ?? r.created_at); return Number.isNaN(d.getTime()) ? null : (d.getUTCHours() + 3) % 24; })(),
       };
     });
+
+    // ── byChannel: агрегат ПО ВСЕМ items (без фильтра канала) — нужен для главного дашборда. ──
+    const byChannelMap: Record<string, { posts: number; audience: number; leads: number; comments: number; deleted: number; blocked: number }> = {};
+    for (const i of allItems) {
+      const ch = (i.channel ?? '—').toLowerCase();
+      byChannelMap[ch] = byChannelMap[ch] || { posts: 0, audience: 0, leads: 0, comments: 0, deleted: 0, blocked: 0 };
+      byChannelMap[ch].posts++;
+      byChannelMap[ch].audience += i.audience ?? 0;
+      byChannelMap[ch].leads += i.leads;
+      byChannelMap[ch].comments += i.comments ?? 0;
+      if (i.status === 'deleted') byChannelMap[ch].deleted++;
+      if (i.status === 'blocked') byChannelMap[ch].blocked++;
+    }
+    const byChannel = Object.entries(byChannelMap).map(([channel, v]) => ({
+      channel, ...v,
+      cr: v.audience > 0 ? Math.round((v.leads / v.audience) * 100000) / 1000 : null,
+    })).sort((a, b) => b.audience - a.audience);
+
+    // ── ТЗ-073: ?channel=<x> применяется к items + byHour + byVariant + total_* ──
+    const items = channelFilter
+      ? allItems.filter((i) => (i.channel ?? '').toLowerCase() === channelFilter)
+      : allItems;
 
     // ── Прайм-тайм: агрегат по часу публикации (МСК) ──────────────────
     const byHourMap: Record<number, { posts: number; leads: number; audience: number; views: number }> = {};
@@ -128,6 +152,8 @@ export async function GET(_req: NextRequest) {
       total_live: items.filter((i) => i.status === 'live').length,
       byHour,
       byVariant,
+      byChannel,                   // ТЗ-073: всегда по всем данным, для команд-центра
+      channel: channelFilter || null,
     });
   } catch (e: unknown) {
     return NextResponse.json({ error: String((e as Error)?.message || e) }, { status: 500 });
