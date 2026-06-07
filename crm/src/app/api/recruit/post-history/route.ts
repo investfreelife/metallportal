@@ -103,12 +103,26 @@ export async function GET(_req: NextRequest) {
       cr: v.audience > 0 ? Math.round((v.leads / v.audience) * 100000) / 1000 : null,
     })).sort((a, b) => a.hour - b.hour);
 
+    // ── A/B: агрегат по варианту поста (post_ref) ─────────────────────
+    const byVarMap: Record<string, { posts: number; leads: number; audience: number; comments: number }> = {};
+    for (const i of items) {
+      const v = i.post_ref ?? '—';
+      byVarMap[v] = byVarMap[v] || { posts: 0, leads: 0, audience: 0, comments: 0 };
+      byVarMap[v].posts++; byVarMap[v].leads += i.leads;
+      byVarMap[v].audience += i.audience ?? 0; byVarMap[v].comments += i.comments ?? 0;
+    }
+    const byVariant = Object.entries(byVarMap).map(([variant, v]) => ({
+      variant, ...v,
+      cr: v.audience > 0 ? Math.round((v.leads / v.audience) * 100000) / 1000 : null,
+    })).sort((a, b) => (b.cr ?? -1) - (a.cr ?? -1));
+
     return NextResponse.json({
       items,
       total: items.length,
       total_leads: items.reduce((s, i) => s + i.leads, 0),
       total_audience: items.reduce((s, i) => s + (i.audience ?? 0), 0),
       byHour,
+      byVariant,
     });
   } catch (e: unknown) {
     return NextResponse.json({ error: String((e as Error)?.message || e) }, { status: 500 });

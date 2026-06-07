@@ -45,6 +45,7 @@ export default function PostHistoryClient() {
   const [totalLeads, setTotalLeads] = useState(0);
   const [totalAudience, setTotalAudience] = useState(0);
   const [byHour, setByHour] = useState<HourStat[]>([]);
+  const [byVariant, setByVariant] = useState<{ variant: string; posts: number; leads: number; audience: number; comments: number; cr: number | null }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -59,6 +60,7 @@ export default function PostHistoryClient() {
       setTotalLeads(j.total_leads ?? 0);
       setTotalAudience(j.total_audience ?? 0);
       setByHour(j.byHour ?? []);
+      setByVariant(j.byVariant ?? []);
     } catch (e) {
       setError(String((e as Error).message || e));
     } finally {
@@ -104,6 +106,35 @@ export default function PostHistoryClient() {
           <div className="text-[11px] text-amber-600 uppercase tracking-wide">конверсия охват→лид</div>
         </div>
       </div>
+
+      {/* ── A/B: сравнение вариантов поста ── */}
+      {byVariant.length > 1 && (
+        <div className="mb-5 border border-gray-200 rounded-md p-3">
+          <span className="text-sm font-medium flex items-center gap-1.5 mb-2">🆚 A/B по вариантам</span>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead><tr className="text-left text-[11px] text-gray-500 uppercase">
+                <th className="py-1 pr-3">Вариант</th><th className="py-1 px-2 text-center">Постов</th>
+                <th className="py-1 px-2 text-center">Охват</th><th className="py-1 px-2 text-center">Лиды</th>
+                <th className="py-1 px-2 text-center">Комм.</th><th className="py-1 px-2 text-center">CR%</th>
+              </tr></thead>
+              <tbody>
+                {byVariant.map((v, idx) => (
+                  <tr key={v.variant} className={`border-t border-gray-100 ${idx === 0 && v.leads > 0 ? 'bg-emerald-50' : ''}`}>
+                    <td className="py-1.5 pr-3 font-medium">{idx === 0 && v.leads > 0 && '🏆 '}{v.variant}</td>
+                    <td className="py-1.5 px-2 text-center text-gray-600">{v.posts}</td>
+                    <td className="py-1.5 px-2 text-center text-gray-600">{v.audience.toLocaleString('ru-RU')}</td>
+                    <td className="py-1.5 px-2 text-center font-semibold text-emerald-700">{v.leads}</td>
+                    <td className="py-1.5 px-2 text-center text-gray-600">{v.comments}</td>
+                    <td className="py-1.5 px-2 text-center font-semibold">{v.cr != null ? `${v.cr}%` : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-[10px] text-gray-400 mt-1">Победитель — выше CR% при накопленном охвате. 🏆 = лидер по лидам/CR.</p>
+        </div>
+      )}
 
       {/* ── Прайм-тайм: лиды/CR по часу публикации (МСК) ── */}
       {byHour.length > 0 && (() => {
