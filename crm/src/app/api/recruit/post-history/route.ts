@@ -55,9 +55,15 @@ export async function GET(_req: NextRequest) {
       }
     }
 
+    const num = (v: unknown): number | null =>
+      typeof v === 'number' && Number.isFinite(v) ? v
+      : (typeof v === 'string' && v.trim() !== '' && Number.isFinite(Number(v)) ? Number(v) : null);
+
     const items = rows.map((r) => {
       const c = r.config ?? {};
       const code = str(c.code);
+      const audience = num(c.audience);
+      const leads = code ? (leadsByCode[code] ?? 0) : 0;
       return {
         id: r.id,
         code,
@@ -68,7 +74,10 @@ export async function GET(_req: NextRequest) {
         placed_at: str(c.placed_at) ?? r.created_at,
         post_url: str(c.post_url),
         bot_link: code ? `https://t.me/${process.env.BOT_USERNAME || 'stolica_dostavka_bot'}?start=${code}` : null,
-        leads: code ? (leadsByCode[code] ?? 0) : 0,
+        audience,                                            // охват = members группы
+        leads,
+        // конверсия охват→лид, %
+        cr: audience && audience > 0 ? Math.round((leads / audience) * 100000) / 1000 : null,
       };
     });
 
@@ -76,6 +85,7 @@ export async function GET(_req: NextRequest) {
       items,
       total: items.length,
       total_leads: items.reduce((s, i) => s + i.leads, 0),
+      total_audience: items.reduce((s, i) => s + (i.audience ?? 0), 0),
     });
   } catch (e: unknown) {
     return NextResponse.json({ error: String((e as Error)?.message || e) }, { status: 500 });

@@ -13,7 +13,9 @@ interface Item {
   placed_at: string;
   post_url: string | null;
   bot_link: string | null;
+  audience: number | null;
   leads: number;
+  cr: number | null;
 }
 
 function fmt(iso: string): string {
@@ -26,6 +28,7 @@ function fmt(iso: string): string {
 export default function PostHistoryClient() {
   const [items, setItems] = useState<Item[]>([]);
   const [totalLeads, setTotalLeads] = useState(0);
+  const [totalAudience, setTotalAudience] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,6 +41,7 @@ export default function PostHistoryClient() {
       if (!r.ok || j.error) throw new Error(j.error || 'load failed');
       setItems(j.items ?? []);
       setTotalLeads(j.total_leads ?? 0);
+      setTotalAudience(j.total_audience ?? 0);
     } catch (e) {
       setError(String((e as Error).message || e));
     } finally {
@@ -70,9 +74,17 @@ export default function PostHistoryClient() {
           <div className="text-2xl font-bold text-blue-700">{items.length}</div>
           <div className="text-[11px] text-blue-600 uppercase tracking-wide">публикаций</div>
         </div>
+        <div className="px-4 py-2 bg-violet-50 border border-violet-200 rounded-md">
+          <div className="text-2xl font-bold text-violet-700">{totalAudience.toLocaleString('ru-RU')}</div>
+          <div className="text-[11px] text-violet-600 uppercase tracking-wide">охват (участники)</div>
+        </div>
         <div className="px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-md">
           <div className="text-2xl font-bold text-emerald-700">{totalLeads}</div>
           <div className="text-[11px] text-emerald-600 uppercase tracking-wide">лидов всего</div>
+        </div>
+        <div className="px-4 py-2 bg-amber-50 border border-amber-200 rounded-md">
+          <div className="text-2xl font-bold text-amber-700">{totalAudience > 0 ? (Math.round((totalLeads / totalAudience) * 100000) / 1000) : 0}%</div>
+          <div className="text-[11px] text-amber-600 uppercase tracking-wide">конверсия охват→лид</div>
         </div>
       </div>
 
@@ -94,8 +106,9 @@ export default function PostHistoryClient() {
                 <th className="px-3 py-2">Когда</th>
                 <th className="px-3 py-2">Где</th>
                 <th className="px-3 py-2">Пост</th>
-                <th className="px-3 py-2">Код</th>
+                <th className="px-3 py-2 text-center">Охват</th>
                 <th className="px-3 py-2 text-center">Лиды</th>
+                <th className="px-3 py-2 text-center">CR%</th>
                 <th className="px-3 py-2">Ссылки</th>
               </tr>
             </thead>
@@ -113,12 +126,13 @@ export default function PostHistoryClient() {
                     {it.post_ref ?? '—'}
                     {it.segment && <span className="ml-1 text-[10px] px-1 rounded bg-gray-100 text-gray-500 border border-gray-200">{it.segment}</span>}
                   </td>
-                  <td className="px-3 py-2 font-mono text-[12px] text-gray-500">{it.code ?? '—'}</td>
+                  <td className="px-3 py-2 text-center text-gray-600">{it.audience != null ? it.audience.toLocaleString('ru-RU') : '—'}</td>
                   <td className="px-3 py-2 text-center">
                     <span className={`inline-block min-w-[24px] px-1.5 py-0.5 rounded text-[12px] font-semibold ${it.leads > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-400'}`}>
                       {it.leads}
                     </span>
                   </td>
+                  <td className="px-3 py-2 text-center text-[12px] text-gray-600">{it.cr != null ? `${it.cr}%` : '—'}</td>
                   <td className="px-3 py-2">
                     <div className="flex items-center gap-2">
                       {it.post_url && (
