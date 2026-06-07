@@ -16,6 +16,10 @@ interface Item {
   audience: number | null;
   leads: number;
   cr: number | null;
+  views: number | null;
+  comments: number | null;
+  likes: number | null;
+  reposts: number | null;
 }
 
 function fmt(iso: string): string {
@@ -107,6 +111,8 @@ export default function PostHistoryClient() {
                 <th className="px-3 py-2">Где</th>
                 <th className="px-3 py-2">Пост</th>
                 <th className="px-3 py-2 text-center">Охват</th>
+                <th className="px-3 py-2 text-center">👁 Просм.</th>
+                <th className="px-3 py-2 text-center">💬 Комм.</th>
                 <th className="px-3 py-2 text-center">Лиды</th>
                 <th className="px-3 py-2 text-center">CR%</th>
                 <th className="px-3 py-2">Ссылки</th>
@@ -127,6 +133,8 @@ export default function PostHistoryClient() {
                     {it.segment && <span className="ml-1 text-[10px] px-1 rounded bg-gray-100 text-gray-500 border border-gray-200">{it.segment}</span>}
                   </td>
                   <td className="px-3 py-2 text-center text-gray-600">{it.audience != null ? it.audience.toLocaleString('ru-RU') : '—'}</td>
+                  <td className="px-3 py-2 text-center text-gray-600">{it.views != null ? it.views.toLocaleString('ru-RU') : '—'}</td>
+                  <td className="px-3 py-2 text-center text-gray-600">{it.comments != null ? it.comments : '—'}</td>
                   <td className="px-3 py-2 text-center">
                     <span className={`inline-block min-w-[24px] px-1.5 py-0.5 rounded text-[12px] font-semibold ${it.leads > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-400'}`}>
                       {it.leads}

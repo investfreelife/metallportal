@@ -64,6 +64,7 @@ export async function GET(_req: NextRequest) {
       const code = str(c.code);
       const audience = num(c.audience);
       const leads = code ? (leadsByCode[code] ?? 0) : 0;
+      const st = (c.stats && typeof c.stats === 'object') ? c.stats as Record<string, unknown> : {};
       return {
         id: r.id,
         code,
@@ -78,6 +79,11 @@ export async function GET(_req: NextRequest) {
         leads,
         // конверсия охват→лид, %
         cr: audience && audience > 0 ? Math.round((leads / audience) * 100000) / 1000 : null,
+        views: num(st.views),
+        comments: num(st.comments),
+        likes: num(st.likes),
+        reposts: num(st.reposts),
+        stats_at: str(st.checked_at),
       };
     });
 
