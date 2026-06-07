@@ -8,11 +8,13 @@ import type { Campaign } from '@/lib/marketing/types';
 import StrategyClient from './StrategyClient';
 import CompetitorAdsClient from './CompetitorAdsClient';
 import OurMarketingClient from './OurMarketingClient';
+import FunnelDashboardClient from './FunnelDashboardClient';
+import SeedPlanClient from '../seed-plan/SeedPlanClient';
 
 interface Props { tenantName: string | null }
 
 
-type Tab = 'ours' | 'competitors' | 'strategy';
+type Tab = 'funnel' | 'ours' | 'competitors' | 'strategy' | 'planner';
 
 export default function MarketingListClient({ tenantName }: Props) {
   const router = useRouter();
@@ -20,7 +22,8 @@ export default function MarketingListClient({ tenantName }: Props) {
   const [, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
-  const [tab, setTab] = useState<Tab>('ours');
+  // ТЗ-074: первая вкладка теперь «Воронка-дашборд» — главный экран маркетинга.
+  const [tab, setTab] = useState<Tab>('funnel');
   const [reloadKey, setReloadKey] = useState(0);
 
   async function reload() {
@@ -65,8 +68,11 @@ export default function MarketingListClient({ tenantName }: Props) {
         </div>
       </header>
 
-      {/* ── 3 top-таба: Наш маркетинг / Конкуренты / Стратегия ── */}
+      {/* ── Топ-табы: Воронка / Наш маркетинг / Конкуренты / Стратегия / Планировщик ── */}
       <div className="flex items-center gap-1 px-6 bg-white border-b border-gray-200 overflow-x-auto">
+        <TabBtn active={tab === 'funnel'} onClick={() => setTab('funnel')}>
+          🔻 Воронка
+        </TabBtn>
         <TabBtn active={tab === 'ours'} onClick={() => setTab('ours')}>
           🚀 Наш маркетинг
         </TabBtn>
@@ -77,6 +83,9 @@ export default function MarketingListClient({ tenantName }: Props) {
           <Target size={12} />
           Стратегия
         </TabBtn>
+        <TabBtn active={tab === 'planner'} onClick={() => setTab('planner')}>
+          📅 Планировщик
+        </TabBtn>
       </div>
 
       {error && (
@@ -85,11 +94,20 @@ export default function MarketingListClient({ tenantName }: Props) {
         </div>
       )}
 
-      <div className="flex-1 overflow-auto p-6">
-        {tab === 'ours' && <OurMarketingClient key={reloadKey} tenantName={tenantName} />}
-        {tab === 'competitors' && <CompetitorAdsClient tenantName={tenantName} />}
-        {tab === 'strategy' && <StrategyClient tenantName={tenantName} />}
-      </div>
+      {tab === 'planner' ? (
+        // SeedPlanClient рисует свой full-height layout со своим скроллом —
+        // отдаём ему всю область без внешнего padding.
+        <div className="flex-1 min-h-0 overflow-hidden">
+          <SeedPlanClient />
+        </div>
+      ) : (
+        <div className="flex-1 overflow-auto p-6">
+          {tab === 'funnel' && <FunnelDashboardClient />}
+          {tab === 'ours' && <OurMarketingClient key={reloadKey} tenantName={tenantName} />}
+          {tab === 'competitors' && <CompetitorAdsClient tenantName={tenantName} />}
+          {tab === 'strategy' && <StrategyClient tenantName={tenantName} />}
+        </div>
+      )}
 
       {creating && (
         <CreateForm onClose={() => setCreating(false)} onCreated={async (c) => {

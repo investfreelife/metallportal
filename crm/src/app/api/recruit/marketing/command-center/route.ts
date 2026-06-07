@@ -120,28 +120,59 @@ export async function GET() {
       return r;
     }
 
-    type ChAgg = { posts: number; audience: number; leads: number };
+    // ТЗ-074: расширенная агрегация — добавлены views/cost/today для воронки-дашборда.
+    type ChAgg = {
+      posts: number; audience: number; leads: number;
+      views: number; views_seen: boolean;       // views_seen=true если хоть один post отдал views (для honest-empty по органике)
+      cost: number;                              // Σ config.cost (бесплатные органические каналы = 0)
+      today_posts: number; today_audience: number;
+      deleted: number; blocked: number; comments: number;
+    };
     const factByChannel: Record<string, ChAgg> = {};
+    const todayMidnight = (() => { const d = new Date(); d.setUTCHours(-3,0,0,0); return d.getTime(); })(); // 00:00 МСК
     for (const r of srcRows) {
       const c = r.config ?? {};
       const code = str(c.code);
       const audience = num(c.audience) ?? 0;
       const leads = code ? (leadsByCode[code] ?? 0) : 0;
       const chKey = normaliseChannel(str(c.channel));
-      factByChannel[chKey] = factByChannel[chKey] || { posts: 0, audience: 0, leads: 0 };
-      factByChannel[chKey].posts++;
-      factByChannel[chKey].audience += audience;
-      factByChannel[chKey].leads += leads;
+      const st = (c.stats && typeof c.stats === 'object') ? c.stats as Record<string, unknown> : {};
+      const views = num(st.views);
+      const cost = num(c.cost) ?? 0;
+      const placedAt = str(c.placed_at) ?? r.created_at;
+      const placedMs = new Date(placedAt).getTime();
+      const isToday = !Number.isNaN(placedMs) && placedMs >= todayMidnight;
+      const stStatus = str(st.status);
+
+      factByChannel[chKey] = factByChannel[chKey] || {
+        posts: 0, audience: 0, leads: 0, views: 0, views_seen: false, cost: 0,
+        today_posts: 0, today_audience: 0, deleted: 0, blocked: 0, comments: 0,
+      };
+      const a = factByChannel[chKey];
+      a.posts++;
+      a.audience += audience;
+      a.leads += leads;
+      if (views != null) { a.views += views; a.views_seen = true; }
+      a.cost += cost;
+      if (isToday) { a.today_posts++; a.today_audience += audience; }
+      if (stStatus === 'deleted') a.deleted++;
+      if (stStatus === 'blocked') a.blocked++;
+      a.comments += num(st.comments) ?? 0;
     }
 
     const totalReach = Object.values(factByChannel).reduce((s, v) => s + v.audience, 0);
     const totalLeads = Object.values(factByChannel).reduce((s, v) => s + v.leads, 0);
+    const totalViews = Object.values(factByChannel).reduce((s, v) => s + v.views, 0);
+    const totalCost = Object.values(factByChannel).reduce((s, v) => s + v.cost, 0);
+    const anyViewsAvailable = Object.values(factByChannel).some((v) => v.views_seen);
 
-    // 5. План/факт по 25 каналам.
+    // 5. План/факт по 25 каналам — расширен полями ТЗ-074 (views/cost/cpl/today).
     const plan_fact = CHANNELS_PLAN.map((ch) => {
       const f = factByChannel[ch.key];
       const status = !f ? 'не начат' : (f.posts > 0 && f.audience > 0 ? 'запущен' : 'в очереди');
       const actual_cr = f && f.audience > 0 ? Math.round((f.leads / f.audience) * 100000) / 1000 : null;
+      // CPL: cost / leads. Если cost=0 (бесплатно) и leads>0 → null (помечаем «бесплатно» в UI).
+      const cpl = f && f.cost > 0 && f.leads > 0 ? Math.round(f.cost / f.leads) : null;
       return {
         key: ch.key,
         name: ch.name,
@@ -151,6 +182,15 @@ export async function GET() {
         actual_posts: f?.posts ?? 0,
         actual_audience: f?.audience ?? 0,
         actual_leads: f?.leads ?? 0,
+        actual_views: f?.views ?? 0,
+        views_seen: f?.views_seen ?? false,
+        actual_cost: f?.cost ?? 0,
+        actual_cpl: cpl,                                  // ₽/лид (null если бесплатно)
+        today_posts: f?.today_posts ?? 0,
+        today_audience: f?.today_audience ?? 0,
+        actual_deleted: f?.deleted ?? 0,
+        actual_blocked: f?.blocked ?? 0,
+        actual_comments: f?.comments ?? 0,
         actual_cr,
       };
     });
@@ -204,6 +244,10 @@ export async function GET() {
         reach: totalReach,
         leads: totalLeads,
         hires,
+        views: totalViews,                                 // ТЗ-074: ③ «реально увидели»
+        views_available: anyViewsAvailable,                // если false — honest «н/д для органики»
+        cost: totalCost,                                   // Σ по всем каналам (₽)
+        avg_cpl: totalCost > 0 && totalLeads > 0 ? Math.round(totalCost / totalLeads) : null,
         cr_lead: measured_cr_lead,
         cr_hire: totalLeads > 0 ? hires / totalLeads : null,
       },
