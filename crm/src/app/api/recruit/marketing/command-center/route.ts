@@ -68,7 +68,21 @@ function num(v: unknown): number | null {
 }
 
 interface SourceRow { id: string; config: Record<string, unknown> | null; created_at: string; }
-interface ContactRow { id: string; stage: string | null; source_code: string | null; }
+interface ContactRow { id: string; stage: string | null; source_code: string | null; source: string | null; }
+
+/** ТЗ-078: маппинг `contacts.source` → канал (по префиксу/значению). */
+function channelFromSource(src: string | null): string | null {
+  if (!src) return null;
+  const s = src.toLowerCase();
+  if (s.startsWith('vk:') || s === 'vk' || s.startsWith('vk_')) return 'vk';
+  if (s.startsWith('tg:') || s.startsWith('telegram:') || s === 'tg' || s === 'telegram') return 'telegram';
+  if (s.startsWith('ld_') || s === 'landing' || s.startsWith('landing')) return 'landing';
+  if (s.startsWith('avito')) return 'avito';
+  if (s.startsWith('ok:') || s === 'ok') return 'ok';
+  if (s.startsWith('tiktok')) return 'tiktok';
+  if (s.startsWith('ig:') || s.startsWith('instagram')) return 'instagram';
+  return null;
+}
 
 export async function GET() {
   try {
@@ -92,16 +106,29 @@ export async function GET() {
     // 2. Контакты — для подсчёта найма и лидов по коду.
     const { data: contactsData, error: cErr } = await supabase
       .from('contacts')
-      .select('id, stage, source_code')
+      .select('id, stage, source_code, source')
       .eq('tenant_id', tenantId)
       .limit(20000);
     if (cErr) return NextResponse.json({ error: cErr.message }, { status: 500 });
-    const contacts = (contactsData ?? []) as ContactRow[];
+    const contactsAll = (contactsData ?? []) as ContactRow[];
+    // ТЗ-078: исключаем спам из лидов/курьеров (как в /funnel-stages).
+    const contacts = contactsAll.filter((c) => (c.stage ?? '') !== 'spam');
 
-    // 3. Лиды по коду + общая воронка.
+    // 3. Лиды по коду (точная атрибуция) + общая воронка + курьеры по каналу.
     const leadsByCode: Record<string, number> = {};
     for (const c of contacts) {
       if (c.source_code) leadsByCode[c.source_code] = (leadsByCode[c.source_code] ?? 0) + 1;
+    }
+    // ТЗ-078: лиды и курьеры по КАНАЛУ (по contacts.source префиксу).
+    type ChMetric = { leads: number; couriers: number; leads_attributed: number };
+    const channelMetrics: Record<string, ChMetric> = {};
+    for (const c of contacts) {
+      const ch = channelFromSource(c.source);
+      if (!ch) continue;
+      channelMetrics[ch] = channelMetrics[ch] || { leads: 0, couriers: 0, leads_attributed: 0 };
+      channelMetrics[ch].leads++;
+      if (c.source_code) channelMetrics[ch].leads_attributed++;
+      if (HIRED_STAGES.has(c.stage ?? '')) channelMetrics[ch].couriers++;
     }
     const hires = contacts.filter((c) => HIRED_STAGES.has(c.stage ?? '')).length;
 
@@ -166,13 +193,25 @@ export async function GET() {
     const totalCost = Object.values(factByChannel).reduce((s, v) => s + v.cost, 0);
     const anyViewsAvailable = Object.values(factByChannel).some((v) => v.views_seen);
 
-    // 5. План/факт по 25 каналам — расширен полями ТЗ-074 (views/cost/cpl/today).
+    // 5. План/факт по 25 каналам — расширен ТЗ-074 (views/cost/cpl/today) + ТЗ-078 (channel-leads, couriers, cr_to_courier).
     const plan_fact = CHANNELS_PLAN.map((ch) => {
       const f = factByChannel[ch.key];
-      const status = !f ? 'не начат' : (f.posts > 0 && f.audience > 0 ? 'запущен' : 'в очереди');
-      const actual_cr = f && f.audience > 0 ? Math.round((f.leads / f.audience) * 100000) / 1000 : null;
-      // CPL: cost / leads. Если cost=0 (бесплатно) и leads>0 → null (помечаем «бесплатно» в UI).
-      const cpl = f && f.cost > 0 && f.leads > 0 ? Math.round(f.cost / f.leads) : null;
+      const m = channelMetrics[ch.key];                  // ТЗ-078: лиды/курьеры по source
+      // Активность канала определяем теперь не только по постам, но и по лидам
+      // (Anastasia: vk-лид есть, постов в реестре нет → канал «vk» статусом «запущен»).
+      const hasActivity = (f?.posts ?? 0) > 0 || (m?.leads ?? 0) > 0;
+      const status = !hasActivity ? 'не начат' : (f && f.posts > 0 ? 'запущен' : 'органика');
+      // Лиды канала: max(по source, по точным кодам) — берём больше, чтоб не терять «без кода».
+      const ch_leads = Math.max(m?.leads ?? 0, f?.leads ?? 0);
+      const ch_leads_attributed = m?.leads_attributed ?? f?.leads ?? 0;
+      const ch_couriers = m?.couriers ?? 0;
+      const actual_cr = f && f.audience > 0 && ch_leads > 0
+        ? Math.round((ch_leads / f.audience) * 100000) / 1000
+        : null;
+      const cr_to_courier = ch_leads > 0 && ch_couriers > 0
+        ? Math.round((ch_couriers / ch_leads) * 1000) / 10
+        : null;
+      const cpl = f && f.cost > 0 && ch_leads > 0 ? Math.round(f.cost / ch_leads) : null;
       return {
         key: ch.key,
         name: ch.name,
@@ -181,17 +220,20 @@ export async function GET() {
         planned_audience: ch.planned_audience,
         actual_posts: f?.posts ?? 0,
         actual_audience: f?.audience ?? 0,
-        actual_leads: f?.leads ?? 0,
+        actual_leads: ch_leads,
+        actual_leads_attributed: ch_leads_attributed,    // ТЗ-078: к конкретному посту
+        actual_couriers: ch_couriers,                    // ТЗ-078: вышли на линию (online/retained)
         actual_views: f?.views ?? 0,
         views_seen: f?.views_seen ?? false,
         actual_cost: f?.cost ?? 0,
-        actual_cpl: cpl,                                  // ₽/лид (null если бесплатно)
+        actual_cpl: cpl,
         today_posts: f?.today_posts ?? 0,
         today_audience: f?.today_audience ?? 0,
         actual_deleted: f?.deleted ?? 0,
         actual_blocked: f?.blocked ?? 0,
         actual_comments: f?.comments ?? 0,
-        actual_cr,
+        actual_cr,                                       // охват → лид
+        cr_to_courier,                                   // лид → курьер
       };
     });
 
@@ -239,17 +281,27 @@ export async function GET() {
     // 8. North Star
     const days_left = Math.max(0, Math.ceil((new Date(NORTH_STAR_DEADLINE).getTime() - Date.now()) / 86_400_000));
 
+    // ТЗ-078: суммарные лиды по каналу (а не только по точному коду). Берём max,
+    // чтобы не терять органик-лидов вроде `source='vk_seed'` без post-code.
+    const totalChannelLeads = Object.values(channelMetrics).reduce((s, v) => s + v.leads, 0);
+    const totalLeadsEffective = Math.max(totalLeads, totalChannelLeads);
+
     return NextResponse.json({
       funnel: {
         reach: totalReach,
-        leads: totalLeads,
+        leads: totalLeadsEffective,                        // ТЗ-078: лиды по source (vk:/tg:/landing/…), не только по точному коду
+        leads_attributed: totalLeads,                      // оставлено: лиды с точным source_code (post-attribution)
         hires,
+        couriers: hires,                                   // ТЗ-078: alias для UI «🚖 Курьеры»
         views: totalViews,                                 // ТЗ-074: ③ «реально увидели»
         views_available: anyViewsAvailable,                // если false — honest «н/д для органики»
         cost: totalCost,                                   // Σ по всем каналам (₽)
-        avg_cpl: totalCost > 0 && totalLeads > 0 ? Math.round(totalCost / totalLeads) : null,
-        cr_lead: measured_cr_lead,
-        cr_hire: totalLeads > 0 ? hires / totalLeads : null,
+        avg_cpl: totalCost > 0 && totalLeadsEffective > 0 ? Math.round(totalCost / totalLeadsEffective) : null,
+        cpc: totalCost > 0 && hires > 0 ? Math.round(totalCost / hires) : null,  // ТЗ-078: cost per courier
+        cr_lead: totalReach > 0 ? totalLeadsEffective / totalReach : null,        // охват → лид
+        cr_lead_to_courier: totalLeadsEffective > 0 ? hires / totalLeadsEffective : null,  // ТЗ-078
+        cr_reach_to_courier: totalReach > 0 ? hires / totalReach : null,         // ТЗ-078
+        cr_hire: totalLeadsEffective > 0 ? hires / totalLeadsEffective : null,    // legacy alias = cr_lead_to_courier
       },
       north_star: {
         target: NORTH_STAR_TARGET,

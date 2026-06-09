@@ -27,6 +27,8 @@ interface PlanFactRow {
   actual_posts: number;
   actual_audience: number;
   actual_leads: number;
+  actual_leads_attributed?: number;  // ТЗ-078: из них к посту
+  actual_couriers?: number;          // ТЗ-078: вышли на линию
   actual_views: number;
   views_seen: boolean;
   actual_cost: number;
@@ -37,13 +39,19 @@ interface PlanFactRow {
   actual_blocked: number;
   actual_comments: number;
   actual_cr: number | null;
+  cr_to_courier?: number | null;     // ТЗ-078
 }
 interface CCResp {
   funnel: {
     reach: number; leads: number; hires: number;
+    couriers?: number;                                  // ТЗ-078 alias
+    leads_attributed?: number;                          // ТЗ-078
     views: number; views_available: boolean;
     cost: number; avg_cpl: number | null;
+    cpc?: number | null;                                // ТЗ-078 cost per courier
     cr_lead: number | null; cr_hire: number | null;
+    cr_lead_to_courier?: number | null;                 // ТЗ-078
+    cr_reach_to_courier?: number | null;                // ТЗ-078
   };
   plan_fact: PlanFactRow[];
 }
@@ -136,14 +144,15 @@ export default function FunnelDashboardClient() {
 
       {/* ── ② Графическая воронка ─────────────────────────────────── */}
       <section className="bg-white border border-gray-200 rounded-md p-4">
-        <div className="text-[10px] uppercase text-gray-500 font-medium mb-3">② Воронка от посева до лида</div>
+        <div className="text-[10px] uppercase text-gray-500 font-medium mb-3">② Воронка от посева до курьера</div>
         <FunnelSvg
           reach={funnel.reach}
           views={funnel.views}
           viewsAvailable={funnel.views_available}
           leads={funnel.leads}
+          couriers={funnel.couriers ?? funnel.hires}
         />
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 text-xs">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 mt-4 text-xs">
           <KpiCard label="Охват" value={fmt(funnel.reach)} note="Σ audience по реестру" tone="blue" />
           <KpiCard
             label="Реально увидели"
@@ -156,14 +165,24 @@ export default function FunnelDashboardClient() {
           <KpiCard
             label="Лиды"
             value={fmt(funnel.leads)}
-            note={funnel.cr_lead != null ? `CR ${(funnel.cr_lead * 100).toFixed(3)} %` : 'CR измерится после 1-го лида'}
+            note={funnel.cr_lead != null ? `CR охват→лид ${(funnel.cr_lead * 100).toFixed(3)} %` : 'CR измерится после 1-го лида'}
             tone="emerald"
           />
           <KpiCard
-            label="Средний CPL"
-            value={funnel.avg_cpl != null ? `${fmt(funnel.avg_cpl)} ₽` : (funnel.cost === 0 ? 'бесплатно' : '—')}
-            note={`всего потрачено: ${fmt(funnel.cost)} ₽`}
+            label="🚖 Курьеры"
+            value={fmt(funnel.couriers ?? funnel.hires)}
+            note={funnel.cr_lead_to_courier != null && (funnel.couriers ?? funnel.hires) > 0
+              ? `лид→курьер ${(funnel.cr_lead_to_courier * 100).toFixed(1)} %`
+              : (funnel.leads > 0 ? 'лиды есть, курьеров пока нет' : 'появятся после первых лидов')}
             tone="violet"
+          />
+          <KpiCard
+            label={funnel.cpc != null ? 'Цена курьера' : 'Средний CPL'}
+            value={funnel.cpc != null
+              ? `${fmt(funnel.cpc)} ₽`
+              : (funnel.avg_cpl != null ? `${fmt(funnel.avg_cpl)} ₽` : (funnel.cost === 0 ? 'бесплатно' : '—'))}
+            note={`всего потрачено: ${fmt(funnel.cost)} ₽`}
+            tone="rose"
           />
         </div>
       </section>
@@ -184,8 +203,11 @@ export default function FunnelDashboardClient() {
                 <th className="text-right px-2 py-1.5">Постов</th>
                 <th className="text-right px-2 py-1.5">Охват</th>
                 <th className="text-right px-2 py-1.5">Просмотры</th>
-                <th className="text-right px-2 py-1.5">Лиды</th>
-                <th className="text-right px-2 py-1.5">CR %</th>
+                <th className="text-right px-2 py-1.5" title="Лиды по каналу (по contacts.source)">Лиды</th>
+                <th className="text-right px-2 py-1.5" title="из них с точным source_code публикации">из них к посту</th>
+                <th className="text-right px-2 py-1.5">CR % (охват→лид)</th>
+                <th className="text-right px-2 py-1.5" title="contacts.stage IN (online, retained)">🚖 Курьеры</th>
+                <th className="text-right px-2 py-1.5">CR лид→курьер %</th>
                 <th className="text-right px-2 py-1.5">Затраты ₽</th>
                 <th className="text-right px-3 py-1.5">CPL ₽/лид</th>
               </tr>
@@ -202,7 +224,10 @@ export default function FunnelDashboardClient() {
                   <td className="text-right px-2 py-1.5 tabular-nums">{fmt(c.actual_audience)}</td>
                   <td className="text-right px-2 py-1.5 tabular-nums">{c.views_seen ? fmt(c.actual_views) : <span className="text-gray-300">н/д</span>}</td>
                   <td className={`text-right px-2 py-1.5 tabular-nums ${c.actual_leads > 0 ? 'font-bold text-emerald-700' : 'text-gray-400'}`}>{c.actual_leads || '—'}</td>
+                  <td className="text-right px-2 py-1.5 tabular-nums text-gray-500">{(c.actual_leads_attributed ?? 0) > 0 ? c.actual_leads_attributed : '—'}</td>
                   <td className="text-right px-2 py-1.5 tabular-nums">{c.actual_cr != null ? c.actual_cr.toFixed(3) : '—'}</td>
+                  <td className={`text-right px-2 py-1.5 tabular-nums ${(c.actual_couriers ?? 0) > 0 ? 'font-bold text-violet-700' : 'text-gray-400'}`}>{c.actual_couriers || '—'}</td>
+                  <td className="text-right px-2 py-1.5 tabular-nums">{c.cr_to_courier != null ? `${c.cr_to_courier} %` : '—'}</td>
                   <td className="text-right px-2 py-1.5 tabular-nums">{c.actual_cost > 0 ? fmt(c.actual_cost) : <span className="text-gray-300">0 (бесплатно)</span>}</td>
                   <td className={`text-right px-3 py-1.5 tabular-nums ${c.actual_cpl != null ? 'font-bold' : ''}`}>
                     {c.actual_cpl != null ? `${fmt(c.actual_cpl)} ₽` : (c.actual_cost === 0 ? <span className="text-emerald-700">бесплатно</span> : '—')}
@@ -215,7 +240,10 @@ export default function FunnelDashboardClient() {
                 <td className="text-right px-2 py-1.5 tabular-nums">{fmt(funnel.reach)}</td>
                 <td className="text-right px-2 py-1.5 tabular-nums">{funnel.views_available ? fmt(funnel.views) : 'н/д'}</td>
                 <td className="text-right px-2 py-1.5 tabular-nums text-emerald-700">{funnel.leads || '—'}</td>
+                <td className="text-right px-2 py-1.5 tabular-nums text-gray-500">{(funnel.leads_attributed ?? 0) > 0 ? funnel.leads_attributed : '—'}</td>
                 <td className="text-right px-2 py-1.5 tabular-nums">{funnel.cr_lead != null ? (funnel.cr_lead * 100).toFixed(3) : '—'}</td>
+                <td className="text-right px-2 py-1.5 tabular-nums text-violet-700">{(funnel.couriers ?? funnel.hires) || '—'}</td>
+                <td className="text-right px-2 py-1.5 tabular-nums">{funnel.cr_lead_to_courier != null ? `${(funnel.cr_lead_to_courier * 100).toFixed(1)} %` : '—'}</td>
                 <td className="text-right px-2 py-1.5 tabular-nums">{fmt(funnel.cost)}</td>
                 <td className="text-right px-3 py-1.5 tabular-nums">{funnel.avg_cpl != null ? `${fmt(funnel.avg_cpl)} ₽` : (funnel.cost === 0 ? 'бесплатно' : '—')}</td>
               </tr>
@@ -231,13 +259,16 @@ export default function FunnelDashboardClient() {
  * SVG-воронка: 3 трапеции с подписями. Ширина пропорциональна
  * audience → views → leads (с минимальным минимумом).
  * ─────────────────────────────────────────────────────────── */
-function FunnelSvg({ reach, views, viewsAvailable, leads }: { reach: number; views: number; viewsAvailable: boolean; leads: number }) {
-  const W = 720, H = 220, GAP = 6, TIER_H = (H - GAP * 2) / 3;
-  // Нормируем ширины: топ = 100%, дальше относительно reach (но min 20% для видимости лидов).
+function FunnelSvg({ reach, views, viewsAvailable, leads, couriers }: { reach: number; views: number; viewsAvailable: boolean; leads: number; couriers: number }) {
+  const W = 720, H = 280, GAP = 6, TIER_H = (H - GAP * 3) / 4;
+  // Нормируем ширины тиров: каждый ≤ предыдущего, min 12% для видимости.
   const wTop = W;
-  const ratio2 = viewsAvailable && reach > 0 ? Math.max(0.4, Math.min(1, views / reach)) : 0.7;
-  const ratio3 = reach > 0 ? Math.max(0.12, Math.min(1, leads / Math.max(1, reach))) : 0.2;
-  const w2 = W * ratio2, w3 = W * ratio3;
+  const r2 = viewsAvailable && reach > 0 ? Math.max(0.4, Math.min(1, views / reach)) : 0.7;
+  const r3 = reach > 0 ? Math.max(0.18, Math.min(1, leads / Math.max(1, reach) * 100)) : 0.22; // лиды сильно меньше — для UI масштабируем
+  const r4 = leads > 0 ? Math.max(0.08, Math.min(1, couriers / Math.max(1, leads))) : 0.12;
+  const w2 = W * r2;
+  const w3 = Math.min(w2, W * r3);
+  const w4 = Math.min(w3, w3 * Math.max(0.2, r4));
   const cx = W / 2;
 
   const tier = (y: number, wBot: number, wTop: number, fill: string, stroke: string) => (
@@ -248,7 +279,7 @@ function FunnelSvg({ reach, views, viewsAvailable, leads }: { reach: number; vie
   );
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: 260 }}>
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: 320 }}>
       {/* Tier 1: охват */}
       {tier(0, w2, wTop, '#dbeafe', '#93c5fd')}
       <text x={cx} y={TIER_H / 2 + 4} textAnchor="middle" className="fill-blue-900" style={{ fontSize: 12, fontWeight: 700 }}>
@@ -262,20 +293,27 @@ function FunnelSvg({ reach, views, viewsAvailable, leads }: { reach: number; vie
       </text>
 
       {/* Tier 3: лиды */}
-      {tier((TIER_H + GAP) * 2, Math.max(60, w3 * 0.3), w3, '#d1fae5', '#6ee7b7')}
-      <text x={cx} y={(TIER_H + GAP) * 2 + TIER_H / 2 + 4} textAnchor="middle" className="fill-emerald-900" style={{ fontSize: 13, fontWeight: 800 }}>
+      {tier((TIER_H + GAP) * 2, Math.max(80, w4), w3, '#d1fae5', '#6ee7b7')}
+      <text x={cx} y={(TIER_H + GAP) * 2 + TIER_H / 2 + 4} textAnchor="middle" className="fill-emerald-900" style={{ fontSize: 12, fontWeight: 700 }}>
         📥 Лиды · {fmt(leads)}
+      </text>
+
+      {/* Tier 4: 🚖 Курьеры (на линии: stage online/retained) */}
+      {tier((TIER_H + GAP) * 3, Math.max(60, w4 * 0.5), Math.max(80, w4), '#ede9fe', '#a78bfa')}
+      <text x={cx} y={(TIER_H + GAP) * 3 + TIER_H / 2 + 4} textAnchor="middle" className="fill-violet-900" style={{ fontSize: 13, fontWeight: 800 }}>
+        🚖 Курьеры · {fmt(couriers)}
       </text>
     </svg>
   );
 }
 
-function KpiCard({ label, value, note, tone }: { label: string; value: string; note: string; tone: 'blue' | 'amber' | 'emerald' | 'violet' }) {
+function KpiCard({ label, value, note, tone }: { label: string; value: string; note: string; tone: 'blue' | 'amber' | 'emerald' | 'violet' | 'rose' }) {
   const cls = {
     blue:    'bg-blue-50 border-blue-200 text-blue-900',
     amber:   'bg-amber-50 border-amber-200 text-amber-900',
     emerald: 'bg-emerald-50 border-emerald-200 text-emerald-900',
     violet:  'bg-violet-50 border-violet-200 text-violet-900',
+    rose:    'bg-rose-50 border-rose-200 text-rose-900',
   }[tone];
   return (
     <div className={`border rounded px-3 py-2 ${cls}`}>
