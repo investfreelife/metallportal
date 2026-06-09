@@ -48,6 +48,7 @@ interface Ad {
 interface Resp {
   ads: Ad[];
   cta_options: Array<{ key: string; label: string }>;
+  cta_recommended?: string;     // ТЗ-079: VK-рекомендованный CTA для пакета (обычно 'apply')
   campaign: { objective: string; package: number; default_budget_day: number; target: string };
 }
 
@@ -140,6 +141,7 @@ export default function VkAdsClient() {
             key={ad.id}
             ad={ad}
             ctaOptions={data.cta_options}
+            ctaRecommended={data.cta_recommended}
             expanded={expandedId === ad.id}
             onToggle={() => setExpandedId(expandedId === ad.id ? null : ad.id)}
             onPatch={(p) => patchAd(ad.id, { config: p }).catch((e) => alert(String(e)))}
@@ -172,10 +174,11 @@ function mergeAd(a: Ad, cfg: Record<string, unknown>): Ad {
 
 /* ─────────────────────────────────────────────────────── AdCard */
 function AdCard({
-  ad, ctaOptions, expanded, onToggle, onPatch, onReload,
+  ad, ctaOptions, ctaRecommended, expanded, onToggle, onPatch, onReload,
 }: {
   ad: Ad;
   ctaOptions: Array<{ key: string; label: string }>;
+  ctaRecommended?: string;
   expanded: boolean;
   onToggle: () => void;
   onPatch: (cfg: Record<string, unknown>) => void;
@@ -210,7 +213,7 @@ function AdCard({
 
       {expanded && (
         <div className="px-4 py-4 border-t border-gray-100 space-y-4">
-          <TextSection ad={ad} ctaOptions={ctaOptions} onPatch={onPatch} />
+          <TextSection ad={ad} ctaOptions={ctaOptions} ctaRecommended={ctaRecommended} onPatch={onPatch} />
           <DesignBriefPanel ad={ad} />
           {ad.format === 'banner'
             ? <ImageSlots ad={ad} onUploaded={onReload} />
@@ -224,7 +227,7 @@ function AdCard({
 }
 
 /* ─────────────────────────────────────────────────────── Текст-блоки с лимитами */
-function TextSection({ ad, ctaOptions, onPatch }: { ad: Ad; ctaOptions: Array<{ key: string; label: string }>; onPatch: (cfg: Record<string, unknown>) => void }) {
+function TextSection({ ad, ctaOptions, ctaRecommended, onPatch }: { ad: Ad; ctaOptions: Array<{ key: string; label: string }>; ctaRecommended?: string; onPatch: (cfg: Record<string, unknown>) => void }) {
   const [texts, setTexts] = useState<VkTexts>(ad.vk_texts);
   const [savedAt, setSavedAt] = useState<number | null>(null);
 
@@ -255,14 +258,33 @@ function TextSection({ ad, ctaOptions, onPatch }: { ad: Ad; ctaOptions: Array<{ 
 
       <div className="grid grid-cols-2 gap-2">
         <div>
-          <div className="text-[10px] uppercase text-blue-700 font-medium mb-0.5">🔘 CTA-кнопка</div>
+          <div className="text-[10px] uppercase text-blue-700 font-medium mb-0.5 flex items-center gap-1">
+            🔘 CTA-кнопка
+            {ctaRecommended && (
+              <span className="text-[9px] text-emerald-700 normal-case font-normal">
+                · ⭐ VK рекомендует: <code>{ctaRecommended}</code>
+              </span>
+            )}
+          </div>
           <select
             value={texts.cta}
             onChange={(e) => update('cta', e.target.value)}
             className="w-full px-2 py-1 text-xs border border-blue-200 rounded bg-white"
           >
-            {ctaOptions.map((o) => <option key={o.key} value={o.key}>{o.label} ({o.key})</option>)}
+            {ctaOptions.map((o) => (
+              <option key={o.key} value={o.key}>
+                {o.key === ctaRecommended ? '⭐ ' : ''}{o.label} ({o.key})
+              </option>
+            ))}
           </select>
+          {texts.cta !== ctaRecommended && ctaRecommended && (
+            <button
+              onClick={() => update('cta', ctaRecommended)}
+              className="mt-1 text-[10px] text-emerald-700 hover:underline"
+            >
+              ⭐ поставить рекомендованный «{ctaRecommended}»
+            </button>
+          )}
         </div>
         <div>
           <div className="text-[10px] uppercase text-blue-700 font-medium mb-0.5">🔗 Ссылка (start=code — read-only)</div>
