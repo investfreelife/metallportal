@@ -63,15 +63,44 @@ export default async function LeadCardPage({
     supabase.from('dream_status_history').select('*').eq('lead_id', lead.id).order('created_at', { ascending: false }).limit(20),
   ])
 
-  // Disk-side files
-  let reviews: any = null
-  let services: any[] = []
-  let photoUris: string[] = []
-  if (lead.folder_path) {
-    reviews = await readJsonSafe(path.join(lead.folder_path, 'reviews.json'))
-    const serv = await readJsonSafe(path.join(lead.folder_path, 'services.json'))
-    if (Array.isArray(serv)) services = serv
-    photoUris = await readPhotosAsDataUris(lead.folder_path)
+  // Sergey directive 2026-06-17: данные читаем из Supabase (Storage URLs +
+  // нормализованные таблицы), НЕ с диска. Vercel serverless не видит
+  // folder_path локального мака. Fallback на disk оставлен для dev только.
+  const [
+    { data: photosRows },
+    { data: reviewsRows },
+    { data: servicesRows },
+  ] = await Promise.all([
+    supabase.from('dream_lead_photos').select('idx, url, width, height').eq('lead_id', lead.id).order('idx'),
+    supabase.from('dream_lead_reviews').select('idx, author, rating, review_date, text').eq('lead_id', lead.id).order('idx'),
+    supabase.from('dream_lead_services').select('idx, name, price, unit, source, is_default').eq('lead_id', lead.id).order('idx'),
+  ])
+
+  const photoUris: string[] = (photosRows ?? []).map((p: any) => p.url)
+  const services = (servicesRows ?? []).map((s: any) => ({
+    name: s.name, price: s.price, unit: s.unit, source: s.source, is_default: s.is_default,
+  }))
+  const reviews = reviewsRows && reviewsRows.length > 0
+    ? {
+        rating: lead.rating,
+        count: lead.reviews_count,
+        sample: (reviewsRows as any[]).map((r) => ({
+          author: r.author, rating: r.rating, date: r.review_date, text: r.text,
+        })),
+      }
+    : null
+
+  // Dev fallback — если в БД пусто, попробовать диск (только если folder_path локально доступен)
+  if (lead.folder_path && photoUris.length === 0) {
+    try {
+      const fallbackReviews = await readJsonSafe(path.join(lead.folder_path, 'reviews.json'))
+      const serv = await readJsonSafe(path.join(lead.folder_path, 'services.json'))
+      if (Array.isArray(serv)) services.push(...serv)
+      photoUris.push(...(await readPhotosAsDataUris(lead.folder_path)))
+      if (!reviews && fallbackReviews) {
+        ;(globalThis as any).__diskFallback = fallbackReviews
+      }
+    } catch {}
   }
 
   return (
