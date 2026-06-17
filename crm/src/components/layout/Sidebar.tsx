@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import { TenantSwitcher } from './TenantSwitcher'
 import {
   LayoutDashboard,
   Users,
@@ -170,8 +171,39 @@ const NAV_TAXI: NavSection[] = [
   },
 ]
 
+/**
+ * NAV_DREAM — Sergey directive 2026-06-17: tenant «Мечта — Лендинг-фабрика».
+ * Парсим бизнес Москвы из Яндекс.Карт → готовый HTML лендинг → продажа за 25K ₽.
+ */
+const NAV_DREAM: NavSection[] = [
+  {
+    section: 'Мечта',
+    items: [
+      { href: '/dream', label: '🎯 Дашборд', icon: LayoutDashboard },
+      { href: '/dream/leads', label: '📋 Лиды', icon: Users },
+    ],
+  },
+  {
+    section: 'Производство',
+    items: [
+      { href: '/dream/parser', label: '🛰 Парсер', icon: Network },
+      { href: '/dream/landings', label: '🎨 Лендинги', icon: Layers },
+      { href: '/dream/outreach', label: '📨 Outreach', icon: Send },
+    ],
+  },
+  {
+    section: 'Аналитика',
+    items: [
+      { href: '/dream/analytics', label: 'Аналитика', icon: BarChart2 },
+      { href: '/dream/finance', label: '💰 Финансы', icon: Wallet },
+    ],
+  },
+]
+
 function navByIndustry(industry: string | undefined): NavSection[] {
-  return industry === 'taxi' ? NAV_TAXI : NAV_METAL
+  if (industry === 'taxi') return NAV_TAXI
+  if (industry === 'landing_factory') return NAV_DREAM
+  return NAV_METAL
 }
 
 interface SidebarProps {
@@ -184,6 +216,8 @@ interface SidebarProps {
   openQuestions?: number
   industry?: string
   tenantName?: string
+  tenantId?: string
+  isSuperadmin?: boolean
 }
 
 export default function Sidebar({
@@ -196,6 +230,8 @@ export default function Sidebar({
   openQuestions = 0,
   industry = 'metal',
   tenantName,
+  tenantId,
+  isSuperadmin = false,
 }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
@@ -248,6 +284,13 @@ export default function Sidebar({
           <p className="text-gray-400 text-[10px] truncate max-w-[140px]">{displayName}</p>
         </div>
       </div>
+
+      {isSuperadmin && tenantId && (
+        <TenantSwitcher
+          activeTenantId={tenantId}
+          activeTenantName={tenantName ?? displayName}
+        />
+      )}
 
       <nav className="flex-1 px-2 py-3 overflow-y-auto">
         {navSections.map(({ section, items }) => (

@@ -20,18 +20,36 @@ export default async function ContactsPage({
 
   if (segment) query = query.eq('ai_segment', segment)
   if (filter === 'hot') query = query.gt('ai_score', 60)
+  if (filter === 'dream') query = query.eq('source', 'dream_landing')
   if (q) query = query.or(
     `full_name.ilike.%${q}%,company_name.ilike.%${q}%,phone.ilike.%${q}%`
   )
 
-  const { data: contacts } = await query
+  const { data: contactsRaw } = await query
+  const contacts = contactsRaw ?? []
+
+  // Подтянем slug из dream_leads — чтобы клик вёл на карточку лендинг-фабрики
+  const dreamContactIds = contacts.filter(c => c.source === 'dream_landing').map(c => c.id)
+  let slugByContactId = new Map<string, string>()
+  if (dreamContactIds.length > 0) {
+    const { data: leads } = await supabase
+      .from('dream_leads')
+      .select('contact_id, slug')
+      .in('contact_id', dreamContactIds)
+    slugByContactId = new Map((leads ?? []).map((l: any) => [l.contact_id, l.slug]))
+  }
+  const enriched = contacts.map(c => ({
+    ...c,
+    dream_slug: c.source === 'dream_landing' ? (slugByContactId.get(c.id) ?? null) : null,
+  }))
 
   const stats = {
-    total: contacts?.length || 0,
-    hot:  contacts?.filter(c => (c.ai_score || 0) > 60).length || 0,
-    warm: contacts?.filter(c => (c.ai_score || 0) >= 30 && (c.ai_score || 0) <= 60).length || 0,
-    cold: contacts?.filter(c => (c.ai_score || 0) < 30).length || 0,
+    total: enriched.length,
+    hot:   enriched.filter(c => (c.ai_score || 0) > 60).length,
+    warm:  enriched.filter(c => (c.ai_score || 0) >= 30 && (c.ai_score || 0) <= 60).length,
+    cold:  enriched.filter(c => (c.ai_score || 0) < 30).length,
+    dream: enriched.filter(c => c.source === 'dream_landing').length,
   }
 
-  return <ContactsClient contacts={contacts || []} stats={stats} />
+  return <ContactsClient contacts={enriched} stats={stats} />
 }

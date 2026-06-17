@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
   // фирмы. tenant_id + industry + tenant_name берём ИЗ JOIN'a tenants.
   const { data } = await supabase
     .from('admin_users')
-    .select('id, tenant_id, name, login, role, is_active, password, tenants(name, industry)')
+    .select('id, tenant_id, name, login, role, is_active, is_superadmin, password, tenants(name, industry)')
     .eq('login', login.trim().toLowerCase())
     .eq('is_active', true)
     .single<{
@@ -85,6 +85,7 @@ export async function POST(request: NextRequest) {
       login: string
       role: string
       is_active: boolean
+      is_superadmin: boolean | null
       password: string
       tenants?: { name: string; industry: string } | null
     }>()
@@ -113,6 +114,7 @@ export async function POST(request: NextRequest) {
     tenant: data.tenant_id,
     industry: data.tenants?.industry ?? 'metal',
     tenant_name: data.tenants?.name ?? 'МеталлПортал',
+    is_superadmin: !!data.is_superadmin,
     exp: Date.now() + 30 * 24 * 60 * 60 * 1000,
   }
 

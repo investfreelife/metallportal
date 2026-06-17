@@ -41,6 +41,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
         openQuestions={openQuestions ?? 0}
         industry={session.industry}
         tenantName={session.tenant_name}
+        tenantId={TENANT_ID}
+        isSuperadmin={session.is_superadmin}
       />
       <main className="flex-1 flex flex-col bg-gray-50 min-w-0">
         <BrainStatusBanner />
