@@ -18,9 +18,63 @@ export default function DocsPage() {
         Версия 2.0 (2026-06-18) · Для оператора и всех агентов · Источник правды
       </p>
 
+      {/* 6 полных спецификаций */}
+      <section className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
+        <h2 className="text-[16px] font-semibold mb-3">📚 Полные документы (читать целиком)</h2>
+        <p className="text-[12px] text-gray-500 mb-4">Все спецификации проекта — синхронизированы с диском Sergey'я при деплое. Открыть в новой вкладке для агентов:</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <a href="/dream/docs/ARCHITECTURE" className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-sm transition-all">
+            <div className="text-[14px] font-semibold">📐 Архитектура проекта</div>
+            <div className="text-[11px] text-gray-500 mt-1">3 слоя · 12 состояний · схема БД · API · UI · правила</div>
+          </a>
+          <a href="/dream/docs/HANDS_AGENT_PROTOCOL" className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-sm transition-all">
+            <div className="text-[14px] font-semibold">🤖 Протокол агентов-«Рук»</div>
+            <div className="text-[11px] text-gray-500 mt-1">Формат отчёта · эскалации · запреты для каждого агента</div>
+          </a>
+          <a href="/dream/docs/CRM_DATA_CONTRACT" className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-sm transition-all">
+            <div className="text-[14px] font-semibold">📊 Data Contract (парсер)</div>
+            <div className="text-[11px] text-gray-500 mt-1">Куда парсер пишет в БД · pre-flight check · идемпотентность</div>
+          </a>
+          <a href="/dream/docs/LANDING_FACTORY_AGENT_GUIDE" className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-sm transition-all">
+            <div className="text-[14px] font-semibold">🎨 Гайд агента-кодера</div>
+            <div className="text-[11px] text-gray-500 mt-1">Откуда брать данные → как генерить → куда деплоить</div>
+          </a>
+          <a href="/dream/docs/APPROVAL_WORKFLOW" className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-sm transition-all">
+            <div className="text-[14px] font-semibold">✅ Approval workflow</div>
+            <div className="text-[11px] text-gray-500 mt-1">Цепочка build_status · кто что переводит</div>
+          </a>
+          <a href="/dream/docs/SALES_KANBAN_MESSENGER_SPEC" className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-sm transition-all">
+            <div className="text-[14px] font-semibold">💼 Sales-канбан + Звонки</div>
+            <div className="text-[11px] text-gray-500 mt-1">TASK_011: продажная воронка · /dream/board · /dream/calls</div>
+          </a>
+        </div>
+      </section>
+
+      {/* Автомат-фильтр мусора */}
+      <section className="bg-orange-50 border border-orange-200 rounded-xl p-5 mb-6">
+        <h2 className="text-[16px] font-semibold mb-3">🤖 Автомат-фильтр мусора (Sergey не тратит время)</h2>
+        <p className="text-[12px] text-gray-700 mb-3">
+          Перед тем как лид попадает Sergey'ю на утверждение, агент-проверщик вызывает:
+        </p>
+        <pre className="bg-white border border-orange-200 rounded p-2.5 text-[11px] overflow-x-auto mb-3">{`POST /api/dream/leads/<slug>/auto-classify
+Headers: x-agent-token`}</pre>
+        <p className="text-[12px] text-gray-700 mb-2">Автоматом в колонку 🗑 «Мусор» уйдёт с причиной <code>trash_reason</code>:</p>
+        <ul className="list-disc pl-5 text-[12px] text-gray-700 space-y-1">
+          <li><code>auto:has_website</code> — у бизнеса уже есть свой сайт</li>
+          <li><code>auto:wrong_city</code> — не Москва</li>
+          <li><code>auto:low_rating</code> — рейтинг &lt; 3.0 (плохая репутация → не возьмут)</li>
+          <li><code>auto:no_reviews</code> — нет отзывов (нечего показывать на лендинге)</li>
+          <li><code>auto:duplicate</code> — дубль по phone+name с другим лидом</li>
+        </ul>
+        <p className="text-[12px] text-gray-700 mt-3">
+          Sergey видит этих в колонке «🗑 Мусор» канбана. Может вернуть кнопкой
+          «↩️ Вернуть (всё равно делать)» — лид перейдёт обратно в enriching.
+        </p>
+      </section>
+
       {/* TOC */}
       <nav className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-6">
-        <h2 className="text-[12px] font-bold text-gray-500 uppercase tracking-wider mb-2">Содержание</h2>
+        <h2 className="text-[12px] font-bold text-gray-500 uppercase tracking-wider mb-2">Краткое содержание (на этой странице)</h2>
         <ol className="list-decimal pl-5 text-[12px] text-gray-700 space-y-0.5 columns-2">
           <li><a href="#goal" className="text-blue-600">Бизнес-цель</a></li>
           <li><a href="#layers" className="text-blue-600">3 слоя хранения</a></li>
