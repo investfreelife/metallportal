@@ -180,7 +180,8 @@ const NAV_DREAM: NavSection[] = [
     section: 'Мечта',
     items: [
       { href: '/dream', label: '🎯 Дашборд', icon: LayoutDashboard },
-      { href: '/dream/kanban', label: '📊 Канбан-воронка', icon: KanbanSquare },
+      { href: '/dream/kanban', label: '📊 Канбан (производство)', icon: KanbanSquare },
+      { href: '/dream/board', label: '💼 Воронка продаж', icon: KanbanSquare },
       { href: '/dream/leads', label: '📋 Лиды', icon: Users },
     ],
   },
