@@ -187,8 +187,15 @@ const NAV_DREAM: NavSection[] = [
     section: 'Производство',
     items: [
       { href: '/dream/parser', label: '🛰 Парсер', icon: Network },
-      { href: '/dream/landings', label: '🎨 Лендинги', icon: Layers },
+      { href: '/dream/landings', label: '🎨 Лендинги клиентов', icon: Layers },
+      { href: '/dream/agency-sites', label: '✨ Сайты студии', icon: Sparkles },
       { href: '/dream/outreach', label: '📨 Outreach', icon: Send },
+    ],
+  },
+  {
+    section: 'Знания',
+    items: [
+      { href: '/dream/agent-rules', label: '📖 Правила агентам', icon: BookOpen },
     ],
   },
   {

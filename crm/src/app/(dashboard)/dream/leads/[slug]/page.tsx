@@ -71,12 +71,15 @@ export default async function LeadCardPage({
     { data: reviewsRows },
     { data: servicesRows },
   ] = await Promise.all([
-    supabase.from('dream_lead_photos').select('idx, url, width, height').eq('lead_id', lead.id).order('idx'),
+    supabase.from('dream_lead_photos').select('idx, url, width, height, priority, deleted, note').eq('lead_id', lead.id).order('idx'),
     supabase.from('dream_lead_reviews').select('idx, author, rating, review_date, text').eq('lead_id', lead.id).order('idx'),
     supabase.from('dream_lead_services').select('idx, name, price, unit, source, is_default').eq('lead_id', lead.id).order('idx'),
   ])
 
-  const photoUris: string[] = (photosRows ?? []).map((p: any) => p.url)
+  const photos = (photosRows ?? []).map((p: any) => ({
+    idx: p.idx, url: p.url, priority: !!p.priority, deleted: !!p.deleted, note: p.note,
+  }))
+  const photoUris: string[] = photos.filter((p) => !p.deleted).map((p) => p.url)
   const services = (servicesRows ?? []).map((s: any) => ({
     name: s.name, price: s.price, unit: s.unit, source: s.source, is_default: s.is_default,
   }))
@@ -111,6 +114,7 @@ export default async function LeadCardPage({
       reviews={reviews}
       services={services}
       photoUris={photoUris}
+      photos={photos}
     />
   )
 }

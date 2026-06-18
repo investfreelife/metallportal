@@ -35,6 +35,7 @@ interface Props {
   reviews: any
   services: any[]
   photoUris: string[]
+  photos?: Array<{ idx: number; url: string; priority: boolean; deleted: boolean; note: string | null }>
 }
 
 const OUTREACH_TEMPLATES = [
@@ -58,7 +59,25 @@ const OUTREACH_TEMPLATES = [
 
 type Tab = 'overview' | 'photos' | 'services' | 'reviews' | 'landing' | 'journal'
 
-export default function LeadCardClient({ lead, activities, statusHistory, reviews, services, photoUris }: Props) {
+export default function LeadCardClient({ lead, activities, statusHistory, reviews, services, photoUris, photos: photosProp }: Props) {
+  const [photos, setPhotos] = useState(photosProp ?? photoUris.map((url, i) => ({ idx: i + 1, url, priority: false, deleted: false, note: null })))
+  const [showDeleted, setShowDeleted] = useState(false)
+
+  async function togglePhoto(idx: number, field: 'priority' | 'deleted') {
+    const cur = photos.find((p) => p.idx === idx)
+    if (!cur) return
+    const newVal = !cur[field]
+    setPhotos((arr) => arr.map((p) => (p.idx === idx ? { ...p, [field]: newVal } : p)))
+    const r = await fetch(`/api/dream/leads/${lead.slug}/photos/${idx}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ [field]: newVal }),
+    })
+    if (!r.ok) {
+      // откат
+      setPhotos((arr) => arr.map((p) => (p.idx === idx ? { ...p, [field]: !newVal } : p)))
+    }
+  }
   const router = useRouter()
   const [tab, setTab] = useState<Tab>('overview')
   const [notes, setNotes] = useState(lead.notes ?? '')
@@ -209,7 +228,7 @@ export default function LeadCardClient({ lead, activities, statusHistory, review
         <div className="bg-white border border-gray-200 rounded-t-xl border-b-0 px-2 flex gap-1 overflow-x-auto">
           {[
             ['overview', '📋 Обзор'],
-            ['photos', `📷 Фото (${photoUris.length})`],
+            ['photos', `📷 Фото (${photos.filter(p => !p.deleted).length}/${photos.length})`],
             ['services', `🛠 Услуги (${services.length})`],
             ['reviews', `💬 Отзывы (${reviews?.count ?? 0})`],
             ['landing', '🌐 Лендинг'],
@@ -302,17 +321,53 @@ export default function LeadCardClient({ lead, activities, statusHistory, review
           {/* PHOTOS */}
           {tab === 'photos' && (
             <div>
-              {photoUris.length === 0 ? (
+              {photos.length === 0 ? (
                 <div className="text-sm text-gray-500 italic">Фото не загружены</div>
               ) : (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {photoUris.map((u, i) => (
-                    <a key={i} href={u} target="_blank" rel="noopener noreferrer" className="block">
-                      <img src={u} alt={`photo-${i}`}
-                           className="w-full h-36 object-cover rounded-lg border border-gray-100 hover:opacity-90" />
-                    </a>
-                  ))}
-                </div>
+                <>
+                  <div className="flex items-center gap-3 mb-3 text-[11px] text-gray-600">
+                    <span>⭐ {photos.filter(p => p.priority).length} приоритетных</span>
+                    <span>🗑 {photos.filter(p => p.deleted).length} удалённых</span>
+                    <label className="ml-auto flex items-center gap-1.5 cursor-pointer">
+                      <input type="checkbox" checked={showDeleted} onChange={(e) => setShowDeleted(e.target.checked)} className="rounded" />
+                      <span>показать удалённые</span>
+                    </label>
+                  </div>
+                  <p className="text-[11px] text-gray-500 italic mb-3">
+                    ⭐ — агенты-кодеры используют ТОЛЬКО приоритетные. 🗑 — мусор/левые
+                    (например куртки/чужие фото) не пойдут в лендинг.
+                  </p>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {photos.filter(p => showDeleted || !p.deleted).map((p) => (
+                      <div key={p.idx} className={`relative group ${p.deleted ? 'opacity-40' : ''}`}>
+                        <a href={p.url} target="_blank" rel="noopener noreferrer" className="block">
+                          <img src={p.url} alt={`photo-${p.idx}`}
+                               className={`w-full h-36 object-cover rounded-lg border ${p.priority ? 'border-amber-400 ring-2 ring-amber-200' : 'border-gray-100'} hover:opacity-90`} />
+                        </a>
+                        {/* Overlay кнопки */}
+                        <div className="absolute top-1.5 right-1.5 flex gap-1">
+                          <button
+                            onClick={(e) => { e.preventDefault(); togglePhoto(p.idx, 'priority') }}
+                            title={p.priority ? 'снять приоритет' : 'отметить как приоритетное'}
+                            className={`w-7 h-7 flex items-center justify-center rounded-full text-[14px] shadow-md transition-all ${
+                              p.priority ? 'bg-amber-400 text-white' : 'bg-white/90 text-gray-500 hover:bg-amber-100 hover:text-amber-600'
+                            }`}
+                          >⭐</button>
+                          <button
+                            onClick={(e) => { e.preventDefault(); togglePhoto(p.idx, 'deleted') }}
+                            title={p.deleted ? 'восстановить' : 'удалить (мусорное фото)'}
+                            className={`w-7 h-7 flex items-center justify-center rounded-full text-[14px] shadow-md transition-all ${
+                              p.deleted ? 'bg-red-500 text-white' : 'bg-white/90 text-gray-500 hover:bg-red-100 hover:text-red-600'
+                            }`}
+                          >🗑</button>
+                        </div>
+                        <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 text-[10px] text-white bg-black/50 rounded">
+                          #{p.idx}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
           )}
