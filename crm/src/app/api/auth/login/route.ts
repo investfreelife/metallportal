@@ -8,7 +8,7 @@ const scryptAsync = promisify(crypto.scrypt)
 
 // ── Simple in-memory rate limiter (resets on cold start) ──────────
 const loginAttempts = new Map<string, { count: number; resetAt: number }>()
-const MAX_ATTEMPTS = 10
+const MAX_ATTEMPTS = 30                       // было 10 — раздражает Sergey'я при опечатках; 30 всё ещё блокирует брутфорс
 const WINDOW_MS = 15 * 60 * 1000 // 15 minutes
 
 function checkRateLimit(ip: string): boolean {
