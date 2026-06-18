@@ -9,12 +9,15 @@
  * причиной trash_reason='auto:<reason>', и Sergey его НЕ ВИДИТ в обычной
  * воронке (только в колонке «🗑 Мусор» с возможностью «всё равно делать»).
  *
- * Критерии auto:trash:
- *   - has_website=1 → 'auto:has_website'  (у бизнеса уже есть свой сайт)
- *   - rating < 3.0  → 'auto:low_rating'   (плохая репутация → не возьмут наш сайт)
- *   - reviews_count == 0 → 'auto:no_reviews' (нет отзывов → нечего показать)
- *   - Дубль по phone+name → 'auto:duplicate'
- *   - city != Москва → 'auto:wrong_city'
+ * Критерии auto:trash (по AGENT_QUICK_START.md §0.5):
+ *   - has_website=1 / website_url не пуст → 'has_website'
+ *   - city != Москва → 'wrong_city'
+ *   - rating < 4.0 ИЛИ reviews_count == 0 ИЛИ photos_count == 0 → 'low_quality'
+ *   - Дубль по phone → 'duplicate'
+ *   - phone пуст → 'no_phone' (продавать некому)
+ *
+ * Все trash_reason соответствуют значениям из §0.5 (без 'auto:' префикса)
+ * чтобы UI и фильтры показывали одинаковые tags.
  *
  * Sergey может override через CRM (кнопка «↩️ Вернуть из мусора»).
  *
@@ -44,29 +47,33 @@ function classify(lead: any, duplicateOf: number | null): ClassifyResult {
   const details: string[] = []
   let reason: string | null = null
 
-  // 1. У бизнеса уже есть свой сайт
-  if (lead.has_website === 1 && lead.website_url) {
-    reason ??= 'auto:has_website'
+  // 1. У бизнеса уже есть свой сайт (§0.5)
+  if ((lead.has_website === 1 && lead.website_url) || (lead.website_url && lead.website_url.trim().length > 0)) {
+    reason ??= 'has_website'
     details.push(`Сайт уже есть: ${lead.website_url}`)
   }
-  // 2. Город не Москва
+  // 2. Нет телефона — продавать некому (§0.5)
+  if (!lead.phone || lead.phone.trim().length === 0) {
+    reason ??= 'no_phone'
+    details.push('Нет телефона')
+  }
+  // 3. Город не Москва (§0.5)
   if (lead.city && lead.city.toLowerCase().trim() !== 'москва') {
-    reason ??= 'auto:wrong_city'
+    reason ??= 'wrong_city'
     details.push(`Город: ${lead.city} (не Москва)`)
   }
-  // 3. Низкий рейтинг
-  if (lead.rating != null && lead.rating < 3.0) {
-    reason ??= 'auto:low_rating'
-    details.push(`Рейтинг ${lead.rating} (< 3.0)`)
+  // 4. Низкое качество (§0.5): rating<4.0 ИЛИ 0 отзывов ИЛИ 0 фото
+  const qualityIssues: string[] = []
+  if (lead.rating != null && lead.rating < 4.0) qualityIssues.push(`рейтинг ${lead.rating} < 4.0`)
+  if (lead.reviews_count === 0) qualityIssues.push('0 отзывов')
+  if (lead.photos_count === 0)  qualityIssues.push('0 фото')
+  if (qualityIssues.length > 0) {
+    reason ??= 'low_quality'
+    details.push(`Низкое качество: ${qualityIssues.join('; ')}`)
   }
-  // 4. Нет отзывов
-  if (lead.reviews_count != null && lead.reviews_count === 0) {
-    reason ??= 'auto:no_reviews'
-    details.push('Отзывов нет')
-  }
-  // 5. Дубль
+  // 5. Дубль (§0.5)
   if (duplicateOf != null) {
-    reason ??= 'auto:duplicate'
+    reason ??= 'duplicate'
     details.push(`Дубль лида #${duplicateOf}`)
   }
 
@@ -84,7 +91,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
   const sb = admin()
   const { data: lead } = await sb
     .from('dream_leads')
-    .select('id, tenant_id, name, phone, city, has_website, website_url, rating, reviews_count, build_status, trash_reason')
+    .select('id, tenant_id, name, phone, city, has_website, website_url, rating, reviews_count, photos_count, build_status, trash_reason')
     .eq('slug', slug).maybeSingle()
   if (!lead) return NextResponse.json({ error: 'lead not found' }, { status: 404 })
 
@@ -105,7 +112,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
   const verdict = classify(lead, duplicateOf)
 
   if (verdict.is_trash) {
-    // Переводим в trash и пишем причину
+    const actor = session ? session.login : (req.headers.get('x-agent-name') || 'agent:classifier')
+    // Переводим в trash и пишем причину (по §0.5 — trash_reason без префикса 'auto:')
     await sb.from('dream_leads').update({
       build_status: 'trash',
       trash_reason: verdict.reason,
@@ -115,14 +123,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
     await sb.from('dream_lead_transitions').insert({
       lead_id: lead.id, tenant_id: lead.tenant_id,
       from_status: lead.build_status, to_status: 'trash',
-      actor: session ? session.login : (req.headers.get('x-agent-name') || 'agent:classifier'),
-      reason: verdict.reason + ' — ' + verdict.details.join('; '),
+      actor,
+      reason: `[${verdict.reason}] ` + verdict.details.join('; '),
     })
 
     // Записываем как комментарий типа 'fact' для прозрачности
     await sb.from('dream_lead_comments').insert({
       lead_id: lead.id, tenant_id: lead.tenant_id,
-      author: 'agent:classifier',
+      author: actor,
       kind: 'fact',
       text: `🤖 Авто-классификация: ${verdict.reason}\n${verdict.details.join('\n')}`,
     })
