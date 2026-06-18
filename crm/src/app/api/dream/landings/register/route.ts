@@ -1,9 +1,27 @@
+/**
+ * Регистрация готового лендинга в CRM (вызывает агент-кодер).
+ *
+ * POST /api/dream/landings/register
+ *   x-agent-token обязателен.
+ *   Body: { lead_slug, variant, version, template_id,
+ *           storage_prefix, pages[], meta, set_chosen? }
+ *
+ * После генерации сайта в investfreelife.github.io/<slug>/<variant>-<version>/
+ * агент шлёт сюда → запись в dream_landings (UNIQUE lead_id+variant+version).
+ * Если set_chosen=true → триггер dream_landing_chosen_sync обновит
+ * dream_leads.landing_public_url на entry_url.
+ *
+ * GET /api/dream/landings/register?lead_slug=avtoclean
+ *   Список всех вариантов лида (для UI вкладки «🌐 Лендинг»).
+ *
+ * См. ARCHITECTURE.md раздел «Слой 3 — Production Sites».
+ */
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 /**
- * POST /api/dream/landings/register — агент-кодер регистрирует новый
- * вариант лендинга после генерации и загрузки файлов в Storage.
+ * @deprecated этот блок описания дублируется верхним header'ом — оставлен ради
+ * примеров body. Можно удалить после знакомства команды.
  *
  * Headers: x-agent-token (AGENT_WEBHOOK_TOKEN)
  *

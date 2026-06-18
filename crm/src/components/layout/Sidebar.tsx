@@ -196,6 +196,7 @@ const NAV_DREAM: NavSection[] = [
   {
     section: 'Знания',
     items: [
+      { href: '/dream/docs', label: '📐 Архитектура', icon: BookOpen },
       { href: '/dream/agent-rules', label: '📖 Правила агентам', icon: BookOpen },
     ],
   },

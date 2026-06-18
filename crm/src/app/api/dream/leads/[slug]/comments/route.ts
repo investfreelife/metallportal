@@ -1,3 +1,22 @@
+/**
+ * Комментарии и фото-вложения на лидах Мечты.
+ *
+ * Зачем: оператор / агент на любом этапе оставляет заметку
+ *   ('note' / 'fact' / 'issue' / 'blocker') про лида + опционально фото.
+ *   Если kind='blocker' — агент-парсер и агент-кодер ОТКАЗЫВАЮТСЯ
+ *   работать по лиду пока is_resolved=false (см. VIEW dream_lead_blockers).
+ *
+ * Authentication:
+ *   - cookie-session    → оператор (Sergey)
+ *   - x-agent-token     → агенты (передают также x-agent-name)
+ *
+ * Тело запроса:
+ *   а) JSON: {text, kind, attachment_url?}
+ *   б) FormData (multipart): text, kind, file?  (file ≤300KB, image/*)
+ *      файл льётся в bucket dream-comments (Supabase Storage, public)
+ *
+ * См. ARCHITECTURE.md и /dream/docs.
+ */
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { getSession } from '@/lib/session'

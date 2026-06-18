@@ -1,15 +1,28 @@
+/**
+ * Перевод лида по воронке Мечты (build_status).
+ *
+ * 12 состояний:
+ *   parsed → enriching → plan_proposed → approved → building → built →
+ *   review_built → for_sale → selling → sold | lost | trash
+ *
+ * POST /api/dream/leads/[slug]/transition  body: { to_status, reason? }
+ *
+ * Валидация:
+ *  1. to_status в whitelist.
+ *  2. Если автор-агент — переход разрешён только из AGENT_ALLOWED.
+ *  3. Если на лиде активный блокер (dream_lead_blockers) и переход вперёд
+ *     (не 'trash'/'lost') — требуется reason со словом «override» или «всё равно».
+ *
+ * Сайд-эффекты:
+ *  - INSERT в dream_lead_transitions (журнал перехода).
+ *  - При to='approved' проставляются build_approved_at и build_approved_by.
+ *  - dream_leads.updated_at = NOW().
+ *
+ * См. ARCHITECTURE.md раздел «Воронка».
+ */
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { getSession } from '@/lib/session'
-
-/**
- * POST /api/dream/leads/[slug]/transition
- * body: { to_status: string, reason?: string }
- *
- * Перевод лида по воронке. Логируется в dream_lead_transitions.
- * Если to='approved' → проставляются build_approved_at/by.
- * Если to='trash' с reason override → можно вернуть кнопкой.
- */
 
 const VALID = [
   'parsed','enriching','plan_proposed','approved','building','built',

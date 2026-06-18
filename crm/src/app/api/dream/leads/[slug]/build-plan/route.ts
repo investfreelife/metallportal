@@ -1,21 +1,27 @@
+/**
+ * Build-plan для лида Мечты (approval-first workflow).
+ *
+ * GET    /api/dream/leads/[slug]/build-plan
+ *   Чтение build_status и build_plan_json.
+ *
+ * PATCH  /api/dream/leads/[slug]/build-plan
+ *   Body: { build_status?, build_plan_json? }
+ *
+ * build_plan_json содержит план сборки:
+ *   { design_ref, sections[], photo_assignments{idx:section},
+ *     video{photo_idx, engine, enabled},
+ *     seo{title, description, h1, section_texts}, reviews_excluded[] }
+ *
+ * Разграничение прав:
+ *   - агент (x-agent-token) — пишет 'plan_proposed' / 'built' + build_plan_json
+ *   - оператор (cookie-session) — пишет 'approved' / 'chosen'
+ *   Агенты НЕ могут проставить approved/chosen — это решение Sergey'я.
+ *
+ * См. ARCHITECTURE.md раздел «Воронка» + APPROVAL_WORKFLOW.md.
+ */
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { getSession } from '@/lib/session'
-
-/**
- * GET    /api/dream/leads/[slug]/build-plan
- * PATCH  /api/dream/leads/[slug]/build-plan   body: { build_status?, build_plan_json? }
- *
- * Контракт approval-workflow (TASK_CRM_approval_section.md, Sergey 2026-06-18):
- *
- *   parsed → plan_proposed → approved → built → chosen
- *
- * Кодер CRM подключит UI «🧩 Утверждение» к этим методам.
- * Парсер/агент-предлагатель плана пишет с x-agent-token.
- * Оператор (Sergey) меняет статус из UI (cookie-session).
- *
- * approved + build_approved_at + build_approved_by → агент-кодер видит, начинает сборку.
- */
 
 const VALID_STATUSES = ['parsed', 'plan_proposed', 'approved', 'built', 'chosen']
 
