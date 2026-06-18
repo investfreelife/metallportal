@@ -53,12 +53,40 @@ export async function DELETE(
   const id = parseInt(idStr, 10)
 
   const sb = admin()
-  // Снять attachment из Storage
-  const { data: c } = await sb.from('dream_lead_comments').select('attachment_path').eq('id', id).maybeSingle()
+  // Снять attachment: новые в GitHub (raw.githubusercontent.com), legacy в Supabase
+  const { data: c } = await sb.from('dream_lead_comments').select('attachment_path, attachment_url').eq('id', id).maybeSingle()
   if (c?.attachment_path) {
-    await sb.storage.from('dream-comments').remove([c.attachment_path])
+    if (c.attachment_url?.includes('raw.githubusercontent.com')) {
+      // GitHub файл — удаляем через Contents API (требует sha)
+      await deleteFromGitHub(c.attachment_path).catch(() => {})
+    } else {
+      // Legacy Supabase Storage
+      await sb.storage.from('dream-comments').remove([c.attachment_path]).catch(() => {})
+    }
   }
   const { error } = await sb.from('dream_lead_comments').delete().eq('id', id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ ok: true })
+}
+
+async function deleteFromGitHub(path: string) {
+  const token = process.env.DREAM_STORAGE_GH_TOKEN
+  if (!token) return
+  const owner = 'investfreelife', repo = 'dream-landings'
+  // Сначала GET чтобы получить sha
+  const get = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' },
+  })
+  if (!get.ok) return
+  const meta = await get.json()
+  if (!meta.sha) return
+  await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ message: `delete comment attachment ${path}`, sha: meta.sha, branch: 'main' }),
+  })
 }

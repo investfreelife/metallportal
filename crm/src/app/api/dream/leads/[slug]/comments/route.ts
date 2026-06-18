@@ -1,10 +1,13 @@
 /**
  * Комментарии и фото-вложения на лидах Мечты.
  *
- * Зачем: оператор / агент на любом этапе оставляет заметку
- *   ('note' / 'fact' / 'issue' / 'blocker') про лида + опционально фото.
- *   Если kind='blocker' — агент-парсер и агент-кодер ОТКАЗЫВАЮТСЯ
- *   работать по лиду пока is_resolved=false (см. VIEW dream_lead_blockers).
+ * ЗАКОН (Sergey directive 2026-06-18 redux): тяжёлые файлы НЕ в Supabase.
+ * Фото-вложения комментариев → GitHub репо `dream-landings`, путь
+ *   <slug>/comments/<unique>.<ext>
+ * URL → raw.githubusercontent.com/investfreelife/dream-landings/main/...
+ *
+ * Лимит файла: 20 MB (GitHub Contents API поддерживает до 100 MB, но мы
+ * перестрахуемся). Базовый client-side ресайз только если очень крупный.
  *
  * Authentication:
  *   - cookie-session    → оператор (Sergey)
@@ -12,8 +15,7 @@
  *
  * Тело запроса:
  *   а) JSON: {text, kind, attachment_url?}
- *   б) FormData (multipart): text, kind, file?  (file ≤300KB, image/*)
- *      файл льётся в bucket dream-comments (Supabase Storage, public)
+ *   б) FormData (multipart): text, kind, file?
  *
  * См. ARCHITECTURE.md и /dream/docs.
  */
@@ -32,7 +34,41 @@ function admin() {
   )
 }
 
-const STORAGE_PUBLIC = 'https://tmzqirzyvmnkzfmotlcj.supabase.co/storage/v1/object/public/dream-comments/'
+// Параметры GitHub-стораджа (по ЗАКОНУ — тяжёлые файлы тут, не в Supabase)
+const GH_OWNER = 'investfreelife'
+const GH_REPO  = 'dream-landings'
+const RAW_BASE = `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/`
+
+/**
+ * Загрузить файл в GitHub репо через Contents API.
+ * Возвращает {url, path}. Бросает Error если упало.
+ */
+async function uploadToGitHub(path: string, content: Buffer, message: string) {
+  const token = process.env.DREAM_STORAGE_GH_TOKEN
+  if (!token) throw new Error('DREAM_STORAGE_GH_TOKEN не настроен в env')
+
+  // PUT /repos/{owner}/{repo}/contents/{path}
+  // body: { message, content (base64), branch }
+  const r = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message,
+      content: content.toString('base64'),
+      branch: 'main',
+    }),
+  })
+  if (!r.ok) {
+    const err = await r.text()
+    throw new Error(`GitHub upload failed (${r.status}): ${err.slice(0, 200)}`)
+  }
+  return { url: RAW_BASE + path, path }
+}
 
 /** GET /api/dream/leads/[slug]/comments */
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
@@ -83,20 +119,25 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
     kind = String(fd.get('kind') || 'note')
     const file = fd.get('file')
     if (file && typeof file !== 'string') {
-      // Лимит 5 MB (бакет тоже на 5 MB). Pro-план Supabase позволяет.
-      if (file.size > 5_242_880) {
-        return NextResponse.json({ error: 'Файл больше 5 MB. Уменьши перед отправкой.' }, { status: 413 })
+      // ЗАКОН: тяжёлые в GitHub, не Supabase. Лимит 20 MB.
+      if (file.size > 20_971_520) {
+        return NextResponse.json({ error: 'Файл больше 20 MB. Уменьши перед отправкой.' }, { status: 413 })
       }
-      const ext = (file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg')
-      const key = `${slug}/${Date.now()}-${crypto.randomBytes(4).toString('hex')}.${ext}`
+      const ext = (file.type === 'image/png' ? 'png'
+                : file.type === 'image/webp' ? 'webp'
+                : file.type === 'image/heic' ? 'heic'
+                : file.type === 'image/gif'  ? 'gif'
+                : 'jpg')
+      const ghPath = `${slug}/comments/${Date.now()}-${crypto.randomBytes(4).toString('hex')}.${ext}`
       const buf = Buffer.from(await file.arrayBuffer())
-      const { error: upErr } = await sb.storage
-        .from('dream-comments')
-        .upload(key, buf, { contentType: file.type, upsert: false })
-      if (upErr) return NextResponse.json({ error: upErr.message }, { status: 500 })
-      attachment_path = key
-      attachment_url = STORAGE_PUBLIC + key
-      attachment_bytes = file.size
+      try {
+        const up = await uploadToGitHub(ghPath, buf, `${slug}: comment attachment`)
+        attachment_path = up.path
+        attachment_url = up.url
+        attachment_bytes = file.size
+      } catch (e: any) {
+        return NextResponse.json({ error: `Не удалось залить в GitHub: ${e.message}` }, { status: 500 })
+      }
     }
   } else {
     const body = await req.json().catch(() => ({}))

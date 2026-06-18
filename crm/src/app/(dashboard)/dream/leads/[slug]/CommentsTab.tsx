@@ -22,11 +22,10 @@ const KIND_META: Record<Comment['kind'], { label: string; emoji: string; cls: st
 }
 
 /**
- * Лёгкий ресайз в браузере: только если фото больше maxSide (2400px) ИЛИ
- * больше 4 MB. Иначе оставляем оригинал — Sergey хочет нормальные фото,
- * не пере-зажатые в кашу. Лимит бакета 5 MB.
+ * Лёгкий ресайз только если фото >20 MB ИЛИ >3200px. Иначе — оригинал.
+ * Файлы лежат в GitHub репо (dream-landings/<slug>/comments/) — там 100MB лимит.
  */
-async function resizeIfNeeded(file: File, maxSide = 2400, maxBytes = 4_000_000): Promise<Blob> {
+async function resizeIfNeeded(file: File, maxSide = 3200, maxBytes = 18_000_000): Promise<Blob> {
   // Уже маленький — возвращаем как есть
   if (file.size <= maxBytes) {
     const img = await loadImage(file)
@@ -85,14 +84,12 @@ export function CommentsTab({ leadSlug, initial }: { leadSlug: string; initial: 
       let blob: Blob | null = null
       let fileName = 'attachment.webp'
       if (file) {
-        // Лёгкий ресайз: только если >2400px ИЛИ >4MB. Иначе оригинал.
-        // Лимит сервера 5 MB.
-        blob = await resizeIfNeeded(file, 2400, 4_000_000)
-        // Если вернули оригинал — сохраняем его расширение
+        // Ресайз только если >3200px ИЛИ >18MB. Иначе оригинал.
+        // GitHub лимит 100MB, сервер режет на 20MB.
+        blob = await resizeIfNeeded(file, 3200, 18_000_000)
         if (blob === file) fileName = file.name
-        // Если файл всё ещё >5MB после ресайза — последнее средство, пережать сильнее
-        if (blob.size > 5_242_880) {
-          blob = await resizeIfNeeded(file, 1800, 0)  // принудительно webp 85%
+        if (blob.size > 20_971_520) {
+          blob = await resizeIfNeeded(file, 2400, 0)
           fileName = 'attachment.webp'
         }
       }
@@ -171,7 +168,7 @@ export function CommentsTab({ leadSlug, initial }: { leadSlug: string; initial: 
           </button>
         </div>
         <p className="text-[10px] text-gray-400 mt-2">
-          Фото до 5 MB (оригинал). Больше — авто-сжатие до 2400px webp. Заметки видны агентам ПЕРЕД работой.
+          Фото до 20 MB (хранится в GitHub-репо, не в Supabase). Заметки видны агентам ПЕРЕД работой.
         </p>
       </div>
 
