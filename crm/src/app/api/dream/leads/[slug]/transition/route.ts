@@ -1,0 +1,99 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
+import { getSession } from '@/lib/session'
+
+/**
+ * POST /api/dream/leads/[slug]/transition
+ * body: { to_status: string, reason?: string }
+ *
+ * Перевод лида по воронке. Логируется в dream_lead_transitions.
+ * Если to='approved' → проставляются build_approved_at/by.
+ * Если to='trash' с reason override → можно вернуть кнопкой.
+ */
+
+const VALID = [
+  'parsed','enriching','plan_proposed','approved','building','built',
+  'review_built','for_sale','selling','sold','lost','trash',
+]
+
+// Какие переходы агент может делать (без Sergey-апрува)
+const AGENT_ALLOWED: Record<string, string[]> = {
+  parsed:        ['enriching','trash'],
+  enriching:     ['plan_proposed','trash'],
+  building:      ['built'],
+  selling:       ['sold','lost'],
+}
+
+// Какие требуют оператора
+const OPERATOR_ONLY = ['approved','for_sale','selling','trash','lost'] // (но selling/lost может и агент-продавец)
+
+function admin() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false } }
+  )
+}
+
+export async function POST(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const session = await getSession()
+  const agentToken = req.headers.get('x-agent-token')
+  const agentName = req.headers.get('x-agent-name') || 'agent:unknown'
+  const isAgent = agentToken === process.env.AGENT_WEBHOOK_TOKEN
+
+  if (!session && !isAgent) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const { to_status, reason } = await req.json().catch(() => ({}))
+  if (!to_status || !VALID.includes(to_status)) {
+    return NextResponse.json({ error: `Invalid to_status. Must be one of: ${VALID.join(', ')}` }, { status: 400 })
+  }
+
+  const sb = admin()
+  const { data: lead } = await sb.from('dream_leads').select('id, tenant_id, build_status').eq('slug', slug).maybeSingle()
+  if (!lead) return NextResponse.json({ error: 'lead not found' }, { status: 404 })
+
+  // Auth check: агент может делать только разрешённые переходы
+  if (isAgent && !session) {
+    const allowed = AGENT_ALLOWED[lead.build_status] ?? []
+    if (!allowed.includes(to_status)) {
+      return NextResponse.json({
+        error: `Агент не вправе ${lead.build_status} → ${to_status}. Этот переход делает Sergey.`,
+      }, { status: 403 })
+    }
+  }
+
+  // Проверка блокеров для переходов вперёд (не trash/lost)
+  const isForward = !['trash', 'lost'].includes(to_status)
+  const isOverride = reason?.toLowerCase().includes('override') || reason?.toLowerCase().includes('всё равно')
+  if (isForward && !isOverride) {
+    const { data: blockers } = await sb.from('dream_lead_blockers').select('lead_id').eq('lead_id', lead.id)
+    if (blockers && blockers.length > 0) {
+      return NextResponse.json({
+        error: 'На лиде активные блокеры. Закройте их или добавьте reason с "override" чтобы продолжить.',
+      }, { status: 409 })
+    }
+  }
+
+  const actor = session ? session.login : agentName
+  const upd: Record<string, any> = { build_status: to_status, updated_at: new Date().toISOString() }
+  if (to_status === 'approved') {
+    upd.build_approved_at = new Date().toISOString()
+    upd.build_approved_by = actor
+  }
+
+  const { data, error } = await sb
+    .from('dream_leads')
+    .update(upd)
+    .eq('id', lead.id)
+    .select('slug, build_status')
+    .single()
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  await sb.from('dream_lead_transitions').insert({
+    lead_id: lead.id, tenant_id: lead.tenant_id,
+    from_status: lead.build_status, to_status, actor, reason: reason || null,
+  })
+
+  return NextResponse.json({ ok: true, lead: data })
+}
