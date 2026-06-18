@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
 
   let q = supabase
     .from('dream_businesses')
-    .select('id, name, niche, city, address, phone, yandex_url, has_website, website_url, rating, review_count, enriched_at, enrichment_status, dream_lead_id, discovered_at', { count: 'exact' })
+    .select('id, name, niche, city, address, phone, yandex_url, gis_url, lat, lon, has_website, website_url, rating, review_count, enriched_at, enrichment_status, dream_lead_id, discovered_at', { count: 'exact' })
     .eq('tenant_id', DREAM_TENANT_ID)
 
   if (tab === 'no_site') q = q.eq('has_website', 0)
@@ -55,8 +55,25 @@ export async function GET(req: NextRequest) {
   const { data, count, error } = await q.range(offset, offset + limit - 1)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  // Если tab=enriched — подтянуть slug из dream_leads для линка на карточку
-  let items: any[] = data ?? []
+  // Sergey directive 2026-06-17: у OSM-discovered бизнесов нет yandex_url
+  // (Overpass его не отдаёт), но есть координаты — генерируем map_url
+  // fallback по геокоординатам + текстовому поиску по адресу+названию.
+  // Так клик «🗺» из таблицы парсера всегда открывает Яндекс.Карты.
+  function buildMapUrl(b: any): string | null {
+    if (b.yandex_url) return b.yandex_url
+    if (b.lat && b.lon) {
+      const ll = `${b.lon},${b.lat}`
+      const txt = encodeURIComponent([b.name, b.address, 'Москва'].filter(Boolean).join(' '))
+      return `https://yandex.ru/maps/?ll=${ll}&z=17&pt=${ll}&text=${txt}`
+    }
+    if (b.address) {
+      const txt = encodeURIComponent([b.name, b.address, 'Москва'].filter(Boolean).join(' '))
+      return `https://yandex.ru/maps/?text=${txt}`
+    }
+    return null
+  }
+
+  let items: any[] = (data ?? []).map((b: any) => ({ ...b, map_url: buildMapUrl(b) }))
   if (tab === 'enriched' && items.length > 0) {
     const leadIds = items.map((b) => b.dream_lead_id).filter(Boolean)
     if (leadIds.length > 0) {

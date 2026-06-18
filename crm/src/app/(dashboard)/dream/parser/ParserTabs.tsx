@@ -22,6 +22,10 @@ interface Biz {
   address: string | null
   phone: string | null
   yandex_url: string | null
+  gis_url: string | null
+  lat: number | null
+  lon: number | null
+  map_url: string | null         // ⇐ генерится в API из yandex_url ИЛИ из gps
   has_website: number
   website_url: string | null
   rating: number | null
@@ -142,11 +146,19 @@ function TableView({ items, showWebsite }: { items: Biz[]; showWebsite: boolean 
           {items.map((b) => (
             <tr key={b.id} className="hover:bg-gray-50">
               <td className="px-5 py-2.5 font-medium text-gray-900">
-                {b.yandex_url ? (
-                  <a href={b.yandex_url} target="_blank" rel="noopener noreferrer" className="hover:text-sky-600">
-                    {b.name}
-                  </a>
-                ) : b.name}
+                <div className="flex items-center gap-1.5">
+                  <span>{b.name}</span>
+                  {b.map_url && (
+                    <a
+                      href={b.map_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="Открыть в Яндекс.Картах"
+                      className="text-amber-500 hover:text-amber-600 text-[14px] leading-none"
+                      onClick={(e) => e.stopPropagation()}
+                    >🗺</a>
+                  )}
+                </div>
               </td>
               <td className="px-5 py-2.5 text-gray-600">
                 <div>{b.niche ?? '—'}</div>
@@ -190,7 +202,17 @@ function EnrichedView({ items }: { items: Biz[] }) {
           className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-sky-300 transition-all"
         >
           <div className="flex items-baseline justify-between gap-2 mb-1">
-            <h3 className="font-semibold text-gray-900 truncate">{b.name}</h3>
+            <div className="flex items-baseline gap-1.5 min-w-0">
+              <h3 className="font-semibold text-gray-900 truncate">{b.name}</h3>
+              {b.map_url && (
+                <span
+                  role="link"
+                  title="Открыть в Яндекс.Картах"
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(b.map_url!, '_blank') }}
+                  className="text-amber-500 hover:text-amber-600 text-[14px] leading-none cursor-pointer"
+                >🗺</span>
+              )}
+            </div>
             {b.rating && <span className="text-[12px] text-amber-600 flex-shrink-0">⭐ {b.rating}</span>}
           </div>
           <div className="text-[11px] text-gray-500 mb-2">
