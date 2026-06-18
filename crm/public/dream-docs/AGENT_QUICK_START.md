@@ -1,6 +1,6 @@
 # 🤖 AGENT QUICK START — Мечта (полная инструкция за 5 минут)
 
-**Версия:** 1.0 (2026-06-18)
+**Версия:** 1.1 (2026-06-18) — обновлено: ниши, история звонков, досье, фото-вложения в GitHub, transition с trash_reason
 **Для:** агента-кодера лендингов, агента-парсера, агента-продавца, любого другого
 **Команда чтобы прочитать в любой момент:**
 
@@ -36,7 +36,6 @@ curl -s https://metallportal-crm2.vercel.app/api/dream/agent-help
 | Признак | trash_reason | tag |
 |---|---|---|
 | У бизнеса УЖЕ есть свой сайт (`website_url` не пуст, или нашёл живой домен) | `has_website` | `has-site` |
-| Не наша ниша (барбершоп/магазин/опт вместо автосервиса) | `wrong_niche` | `wrong-niche` |
 | Не та гео/город | `wrong_city` | — |
 | Закрыт / «постоянно закрыто» в Я.Картах | `closed` | `closed` |
 | Рейтинг < 4.0 ИЛИ 0 отзывов ИЛИ 0 фото | `low_quality` | — |
@@ -53,7 +52,8 @@ curl -X POST .../api/dream/leads/<slug>/transition -H "x-agent-token: $TOK" -H "
 
 ### СТРОИТЬ только если ВСЁ из:
 - `build_status='approved'` + `build_plan_json` есть (Сергей утвердил) **И** нет блокеров (pre-flight);
-- ниша наша, город наш, бизнес живой, телефон есть, своего сайта нет;
+- город наш, бизнес живой, телефон есть, своего сайта нет;
+- **ниша ОПРЕДЕЛЕНА и проставлена в `niche`** (автосервис / шиномонтаж / автомойка / барбершоп / салон / магазин и т.д.). Ниш МНОГО — это норма, чужая ниша НЕ повод в trash. Главное — правильно классифицировать (поле `niche`) и сделать сайт+оффер именно под эту нишу, не подменять (барбершоп ≠ автосервис в текстах);
 - данных достаточно (фото ≥3, услуги или отзывы есть).
 
 ### ДОРАБОТАТЬ / СПРОСИТЬ (не trash, но и не в проверку):
@@ -78,26 +78,34 @@ curl -X POST .../api/dream/leads/<slug>/transition -H "x-agent-token: $TOK" -H "
 ## 2. ПРАВИЛО ХРАНЕНИЯ — ЧТО КУДА
 
 ```
-┌──────────────────────────────┐
-│  Yandex CDN (оригиналы фото)  │ → URL хранится в dream_lead_photos.source_url
-└──────────────────────────────┘
+┌──────────────────────────────────────┐
+│  Yandex CDN (оригиналы фото лидов)    │ → URL → dream_lead_photos.source_url
+└──────────────────────────────────────┘
 
-┌──────────────────────────────┐
-│  github.com/.../dream-landings│ → сырьё парсера: webp фото лида + json
-│  raw.githubusercontent.com/..│   URL → dream_lead_photos.url
-└──────────────────────────────┘
+┌──────────────────────────────────────┐
+│  github.com/.../dream-landings        │ → сырьё парсера: webp фото лида + json
+│  raw.githubusercontent.com/...        │   URL → dream_lead_photos.url
+│                                        │
+│  + ВСЕ ФОТО-ВЛОЖЕНИЯ КОММЕНТОВ        │ → <slug>/comments/<uuid>.<ext> (≤20 MB)
+│    (Sergey прикладывает доказательства│   URL → dream_lead_comments.attachment_url
+│     закрыт/левое фото/чужой сайт)     │   через GitHub Contents API
+└──────────────────────────────────────┘
 
-┌──────────────────────────────┐
-│  github.com/...investfreelife │ → ГОТОВЫЕ лендинги клиентам (Pages)
-│  investfreelife.github.io/... │   URL → dream_landings.entry_url
-└──────────────────────────────┘
+┌──────────────────────────────────────┐
+│  github.com/.../investfreelife.github.│ → ГОТОВЫЕ лендинги клиентам (Pages)
+│  io                                    │   URL → dream_landings.entry_url
+│  investfreelife.github.io/<slug>/<v>/ │
+└──────────────────────────────────────┘
 
-┌──────────────────────────────┐
-│  Supabase Postgres            │ → ТОЛЬКО метаданные, никаких файлов >200KB
-└──────────────────────────────┘
+┌──────────────────────────────────────┐
+│  Supabase Postgres                    │ → ТОЛЬКО метаданные/URL/записи
+│                                        │   НИКАКИХ ФАЙЛОВ >200 KB
+└──────────────────────────────────────┘
 ```
 
-**ЗАКОН:** ничего тяжёлого в Supabase Storage. Исключение — bucket `dream-comments` для attachments оператора ≤300KB.
+**ЗАКОН:** ничего тяжёлого в Supabase Storage. **Все фото / HTML / медиа — на GitHub.**
+
+Bucket `dream-comments` в Supabase оставлен legacy для старых attachments (300 KB лимит). Новые комментарии льются в GitHub через `DREAM_STORAGE_GH_TOKEN` env.
 
 ---
 
@@ -152,13 +160,53 @@ curl -X POST https://metallportal-crm2.vercel.app/api/dream/leads/<slug>/auto-cl
 #   auto:has_website / auto:wrong_city / auto:low_rating / auto:no_reviews / auto:duplicate
 ```
 
-### 4.3 Агент-кодер ⭐ САМЫЙ ВАЖНЫЙ — ПОЧЕМУ САЙТ НЕ ПОЯВЛЯЕТСЯ
+### 4.3 Агент-кодер ⭐ САМЫЙ ВАЖНЫЙ — ОТКУДА БРАТЬ / КУДА КЛАСТЬ
 
-**ПРАВИЛЬНЫЙ ПУТЬ (5 шагов):**
+#### 📥 ОТКУДА БРАТЬ ВСЁ для сборки сайта
+
+| Что нужно | Где взять | Как |
+|---|---|---|
+| **Базовые поля лида** (name, niche, address, phone, rating, hours_json, description) | `dream_leads` в Supabase | `SELECT * FROM dream_leads WHERE slug='<slug>'` |
+| **План сборки** (design_ref, sections, photo_assignments, video, seo) | `dream_leads.build_plan_json` | parse JSON |
+| **Фото лида** (только утверждённые Sergey'ем) | `dream_lead_photos` | `SELECT idx, url FROM dream_lead_photos WHERE lead_id=:id AND priority=true AND deleted=false ORDER BY idx` |
+| **Сами .webp файлы фото** | GitHub `dream-landings` repo | URL уже в `dream_lead_photos.url` (raw.githubusercontent.com/.../<slug>/photos/NN.webp) |
+| **Услуги с ценами** | `dream_lead_services` | `SELECT * FROM dream_lead_services WHERE lead_id=:id AND is_default=false ORDER BY idx` |
+| **Отзывы** | `dream_lead_reviews` | `SELECT * FROM dream_lead_reviews WHERE lead_id=:id ORDER BY review_date DESC` |
+| **Контактное лицо / ЛПР / интерес** | `dream_leads.{contact_*, decision_maker_*, interest}` | в SELECT выше |
+| **Активные блокеры** (СТОП-кран) | VIEW `dream_lead_blockers` | `SELECT * FROM dream_lead_blockers WHERE lead_id=:id` |
+| **Sergey'ёвы комментарии** (фото/советы/правки) | `dream_lead_comments` | `SELECT * FROM dream_lead_comments WHERE lead_id=:id AND is_resolved=false` — учитывай при сборке! |
+| **Ниша канон** | `lead.niche` → нормализуй через `lib/dream/niches.ts` | автомойка / детейлинг / шиномонтаж / автосервис / барбершоп / стоматология / ... |
+| **Связки/синонимы** | `lib/dream/niches.ts` `SYNONYMS[]` | «полировка» → детейлинг, «балансировка» → шиномонтаж |
+
+Подключение к Supabase (агенту-кодеру):
+```bash
+# Из .env.local:
+export SUPA_URL="$NEXT_PUBLIC_SUPABASE_URL"   # https://tmzqirzyvmnkzfmotlcj.supabase.co
+export SUPA_KEY="$SUPABASE_SERVICE_ROLE_KEY"  # eyJ...
+# REST: GET $SUPA_URL/rest/v1/dream_leads?slug=eq.<slug>&select=*
+```
+
+#### 📤 КУДА КЛАСТЬ готовый сайт
+
+**ЕДИНСТВЕННЫЙ ПРАВИЛЬНЫЙ репо:** `github.com/investfreelife/investfreelife.github.io`
+
+| Что | Куда |
+|---|---|
+| HTML / CSS / JS лендинга | `<slug>/<variant>-<version>/` (например `avtoclean/modern-v1/`) |
+| Картинки страницы (hero, иконки, og.jpg) | `<slug>/<variant>-<version>/assets/` (относительные пути в HTML!) |
+| **Не** клади Pages-сайты в `dream-landings` — там ТОЛЬКО сырьё парсера |
+| **Не** клади ничего в Supabase Storage |
+
+После пуша через 30 сек живёт на:
+`https://investfreelife.github.io/<slug>/<variant>-<version>/`
+
+#### ПОЛНЫЙ ПУТЬ (6 шагов):
 
 ```bash
 # === ШАГ 1: PRE-FLIGHT CHECK ===
-# SQL выше. Если красный — STOP.
+# 1. dream_lead_blockers пустой?     - иначе STOP
+# 2. build_status='approved'?         - иначе STOP
+# 3. build_plan_json IS NOT NULL?     - иначе STOP
 
 # === ШАГ 2: ПЕРЕЙТИ В 'building' ===
 curl -X POST https://metallportal-crm2.vercel.app/api/dream/leads/<slug>/transition \
@@ -167,20 +215,16 @@ curl -X POST https://metallportal-crm2.vercel.app/api/dream/leads/<slug>/transit
   -H "x-agent-name: agent:coder" \
   -d '{"to_status":"building"}'
 
-# === ШАГ 3: ПОЛУЧИТЬ ДАННЫЕ ЛИДА ===
-# - SELECT * FROM dream_leads WHERE slug='<slug>'
-# - SELECT * FROM dream_lead_photos WHERE lead_id=:id AND priority=true AND deleted=false ORDER BY idx
-# - SELECT * FROM dream_lead_reviews/services WHERE lead_id=:id
-# - build_plan_json содержит design_ref/sections/photo_assignments/video/seo
+# === ШАГ 3: ВЫГРУЗИТЬ ВСЁ ИЗ CRM (см. таблицу выше) ===
 
-# === ШАГ 4: ГЕНЕРИТЬ И ПУШИТЬ В ПРАВИЛЬНЫЙ РЕПО ===
+# === ШАГ 4: ГЕНЕРИРОВАТЬ HTML + ПУШИТЬ ===
 git clone https://github.com/investfreelife/investfreelife.github.io
 cd investfreelife.github.io
 mkdir -p <slug>/<variant>-<version>
-# Сгенерируй HTML, CSS, скачай фото в assets/photos/*.webp (≤200KB)
-# Используй относительные пути в HTML, без хардкодов
+# Render index.html из шаблона + build_plan_json.design_ref
+# Скачай нужные фото из dream_lead_photos.url → ассеты
+# ОТНОСИТЕЛЬНЫЕ пути в src/href!
 git add <slug>/ && git commit -m "<slug>: <variant>-<version>" && git push
-# Через 30 сек живёт на https://investfreelife.github.io/<slug>/<variant>-<version>/
 
 # === ШАГ 5: ЗАРЕГИСТРИРОВАТЬ В CRM ===
 curl -X POST https://metallportal-crm2.vercel.app/api/dream/landings/register \
@@ -211,6 +255,19 @@ curl -X POST https://metallportal-crm2.vercel.app/api/dream/leads/<slug>/transit
 #   - в карточке лида → вкладке «🌐 Лендинг» появится новый вариант
 #   - в /dream/board появится после того как Sergey клик «✅ В продажу» (→ for_sale)
 ```
+
+#### Если решил НЕ строить (§0.5):
+
+```bash
+# Любой trash_reason из §0.5: has_website / wrong_niche / wrong_city / closed / low_quality / duplicate / no_phone
+curl -X POST https://metallportal-crm2.vercel.app/api/dream/leads/<slug>/transition \
+  -H "Content-Type: application/json" \
+  -H "x-agent-token: $AGENT_WEBHOOK_TOKEN" \
+  -H "x-agent-name: agent:coder" \
+  -d '{"to_status":"trash","trash_reason":"has_website","note":"живой сайт example.ru"}'
+```
+
+→ `dream_leads.trash_reason='has_website'` + автомат-комментарий kind='fact' от твоего имени.
 
 **Если что-то пошло не так — Sergey не увидит сайт в канбане. Проверь:**
 - `SELECT * FROM dream_landings WHERE lead_id=...` — есть запись?
@@ -272,22 +329,24 @@ WHERE id = :lead_id;
 
 ---
 
-## 5. API endpoints — REFERENCE
+## 5. API endpoints — REFERENCE (актуально 2026-06-18)
 
 | Endpoint | Метод | Auth | Зачем |
 |---|---|---|---|
 | `/api/dream/leads/import` | POST | x-agent-token | Парсер: bulk upsert лидов |
+| `/api/dream/leads/[slug]` | GET/PATCH | cookie | Карточка + inline edit (20+ полей — niche/contact/dm/sales_stage/etc) |
 | `/api/dream/leads/[slug]/photos/[idx]` | PATCH | cookie | Sergey: ⭐ priority / 🗑 deleted |
-| `/api/dream/leads/[slug]/comments` | POST | both | Заметки + фото upload |
+| `/api/dream/leads/[slug]/comments` | POST | both | Заметки + фото в GitHub (≤20MB) |
 | `/api/dream/leads/[slug]/build-plan` | GET/PATCH | both | План + статус (approved только Sergey) |
-| `/api/dream/leads/[slug]/transition` | POST | both | Production воронка (build_status) |
-| `/api/dream/leads/[slug]/stage` | POST | both | Sales воронка (sales_stage) |
-| `/api/dream/leads/[slug]/auto-classify` | POST | both | Автомат-фильтр мусора |
+| `/api/dream/leads/[slug]/transition` | POST | both | **build_status** + опц. `trash_reason` + `note` (§0.5) |
+| `/api/dream/leads/[slug]/stage` | POST | both | **sales_stage** воронка продаж |
+| `/api/dream/leads/[slug]/auto-classify` | POST | both | Авто-фильтр (rating<4 / 0 отзывов / 0 фото / нет тел.) |
+| `/api/dream/leads/[slug]/timeline` | GET | cookie | Лента касаний (звонки+SMS+визиты+комменты) |
 | **`/api/dream/landings/register`** | **POST** | **x-agent-token** | **Кодер: регистрация готового сайта** |
 | `/api/dream/landings/[id]/chosen` | POST | cookie | Sergey: выбор активного варианта |
-| `/api/dream/leads/[slug]/timeline` | GET | cookie | Лента касаний |
-| `/api/dream/calls` | GET | cookie | Журнал звонков + KPI |
-| `/api/dream/calls/[id]` | GET | cookie | Lazy расшифровка |
+| `/api/dream/calls` | GET | cookie | Журнал звонков + KPI (% дозвона / квалиф / ссылок / ₽) |
+| `/api/dream/calls/[id]` | GET | cookie | Lazy расшифровка + meta.lesson/objections |
+| `/api/dream/agent-help` | GET | — | **Эта самая инструкция (plain text для curl)** |
 
 ---
 
@@ -319,7 +378,7 @@ link_sent → negotiating → callback → won | lost | disqualified
 8. **set_chosen / approved / is_resolved (блокеры)** = только Sergey.
 9. **Override блокера** только через `reason` со словом «override».
 10. **Секреты только в `/Users/Shared/металл/`** (+ `metallportal/.env.local`). Не в git, не в чат.
-11. **Сам увидел мусор/свой сайт/не та ниша → TRASH, НЕ в проверку** (§0.5). Не перекладывать отсев на Сергея.
+11. **Сам увидел мусор/свой сайт/закрыт/дубль → TRASH, НЕ в проверку** (§0.5). Чужая ниша — НЕ мусор: классифицируй (`niche`) и веди. Не перекладывать отсев на Сергея.
 12. **Карточку заполнять максимально** (§4.5). Пустые поля при наличии данных = недоработка.
 13. **В проверку/продажу — только то, что сам показал бы клиенту.** Битые сайты, чужие отзывы, подменённая ниша — не регистрировать и не двигать дальше (§4.6).
 
@@ -337,6 +396,20 @@ curl -s https://metallportal-crm2.vercel.app/api/dream/agent-help
 Альтернатива (через UI): https://metallportal-crm2.vercel.app/dream/docs/AGENT_QUICK_START
 
 ---
+
+## 8.5 НОВЫЕ ВОЗМОЖНОСТИ CRM (что появилось — учитывай в работе)
+
+| Фича | Где | Что значит для агента |
+|---|---|---|
+| **Канбан производства** `/dream/kanban` | 7 колонок build_status, drag-drop | После твоего `built` лид появится в «Проверка сайта» |
+| **Канбан продаж** `/dream/board` | 11 колонок sales_stage | Звонилка двигает сама после звонка |
+| **Журнал звонков** `/dream/calls` | KPI + расшифровки | Расширишь meta.lesson/objections → видно на дашборде |
+| **Карточка лида / Досье** | sticky панель с inline edit | Заполняй максимум полей (см. §4.5) |
+| **Таймлайн `📜 История`** | в карточке лида | Записываешь в `dream_activities` → видно сразу |
+| **Комментарии + 🛑 блокеры** | вкладка в карточке | Читай ПЕРЕД работой |
+| **Ниши (бейджи + фильтр)** | оба канбана | Свободный текст в `dream_leads.niche` → клиент нормализует |
+| **Approval-first** | `build_status='approved'` обязателен | Без апрува Sergey'я — STOP |
+| **Auto-classify** | `/api/dream/leads/<slug>/auto-classify` | Прогоняй ПЕРВЫМ — мусор отсеется автоматом |
 
 ## 9. ЕСЛИ ЗАСТРЯЛ
 
