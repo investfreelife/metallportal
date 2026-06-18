@@ -59,9 +59,10 @@ const OUTREACH_TEMPLATES = [
   },
 ]
 
-type Tab = 'overview' | 'photos' | 'services' | 'reviews' | 'landing' | 'comments' | 'journal'
+type Tab = 'overview' | 'photos' | 'services' | 'reviews' | 'landing' | 'comments' | 'history' | 'journal'
 
 import { CommentsTab } from './CommentsTab'
+import { HistoryTab } from './HistoryTab'
 
 export default function LeadCardClient({ lead, activities, statusHistory, reviews, services, photoUris, photos: photosProp, landings: landingsProp, comments: commentsProp }: Props) {
   const unresolvedBlockers = (commentsProp ?? []).filter((c: any) => c.kind === 'blocker' && !c.is_resolved).length
@@ -248,6 +249,7 @@ export default function LeadCardClient({ lead, activities, statusHistory, review
             ['reviews', `💬 Отзывы (${reviews?.count ?? 0})`],
             ['landing', `🌐 Лендинг${landings.length > 0 ? ` (${landings.length})` : ''}`],
             ['comments', `💬 Комментарии${commentsProp && commentsProp.length > 0 ? ` (${commentsProp.length})` : ''}${unresolvedBlockers > 0 ? ` 🛑${unresolvedBlockers}` : ''}`],
+            ['history', `📜 История`],
             ['journal', `📝 Журнал (${activities.length})`],
           ].map(([k, label]) => (
             <button
@@ -498,6 +500,11 @@ export default function LeadCardClient({ lead, activities, statusHistory, review
           {/* COMMENTS */}
           {tab === 'comments' && (
             <CommentsTab leadSlug={lead.slug} initial={commentsProp ?? []} />
+          )}
+
+          {/* HISTORY — единый таймлайн всех касаний (TASK_011 §7.3) */}
+          {tab === 'history' && (
+            <HistoryTab leadSlug={lead.slug} />
           )}
 
           {/* JOURNAL */}
