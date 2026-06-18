@@ -1,13 +1,16 @@
 'use client'
 
 /**
- * Панель ДОСЬЕ на карточке лида (TASK_015).
+ * Панель ДОСЬЕ на карточке лида (TASK_015 + TASK_018).
  * Все статусы и подписи — только по-русски.
  *
  * Inline-редактирование: клик на значение → input → blur/Enter → PATCH /api/dream/leads/[slug].
  * Пустые поля показываем как «—», НЕ скрываем (видно что дозаполнить).
+ *
+ * TASK_018: ниша редактируется выпадашкой с каноническим списком.
  */
 import { useState } from 'react'
+import { NICHES, nicheMeta } from '@/lib/dream/niches'
 
 const SALES_STAGE_RU: Record<string, string> = {
   site_ready:   'Сайт готов',
@@ -118,9 +121,9 @@ export function DossierPanel({ lead: initialLead }: { lead: Lead }) {
 
       {/* КОМПАНИЯ */}
       <Section title="🏢 Компания">
-        <Field label="Название" value={lead.name}    readonly />
-        <Field label="Ниша"     value={lead.niche}   readonly />
-        <Field label="Адрес"    value={lead.address} readonly />
+        <Field label="Название" value={lead.name} onSave={(v) => save('name', v)} saving={saving === 'name'} />
+        <NicheField value={lead.niche} onSave={(v) => save('niche', v)} saving={saving === 'niche'} />
+        <Field label="Адрес"    value={lead.address} onSave={(v) => save('address', v)} saving={saving === 'address'} />
         <Field label="Метро"    value={lead.metro_nearest} readonly />
         <Field label="Рейтинг"  value={lead.rating ? `${lead.rating} ★ (${lead.reviews_count ?? 0} отз.)` : null} readonly />
         <Field label="Сайт"     value={lead.website_url}  onSave={(v) => save('website_url', v)} saving={saving === 'website_url'} />
@@ -214,6 +217,34 @@ function Field({ label, value, onSave, saving, readonly, multiline }: {
         {!readonly && onSave && (
           <span className="text-[9px] text-blue-400 opacity-0 group-hover:opacity-100 ml-1">✎</span>
         )}
+        {saving && <span className="text-[9px] text-amber-500 ml-1">сохраняю…</span>}
+      </dd>
+    </div>
+  )
+}
+
+/**
+ * Поле ниши с выпадашкой канонического списка (TASK_018).
+ * Показывает текущую распарсенную нишу + позволяет выбрать каноническое имя.
+ * Бэкенд сохраняет свободный текст (label), нормализация — на клиенте.
+ */
+function NicheField({ value, onSave, saving }: { value: string | null; onSave: (v: string) => void; saving?: boolean }) {
+  const current = nicheMeta(value)
+  return (
+    <div className="grid grid-cols-[100px_1fr] gap-2 items-baseline text-[12px]">
+      <dt className="text-gray-500">Ниша</dt>
+      <dd>
+        <span className="mr-1">{current.emoji}</span>
+        <select value={current.label} onChange={(e) => onSave(e.target.value)}
+          className="border border-gray-200 rounded px-1.5 py-0.5 text-[12px] bg-white focus:outline-none focus:border-blue-400">
+          {/* Показываем исходный текст если он не совпадает с каноном */}
+          {value && !NICHES.find((n) => n.label === value) && (
+            <option value={value}>{value} (из парсера)</option>
+          )}
+          {NICHES.map((n) => (
+            <option key={n.key} value={n.label}>{n.emoji} {n.label}</option>
+          ))}
+        </select>
         {saving && <span className="text-[9px] text-amber-500 ml-1">сохраняю…</span>}
       </dd>
     </div>

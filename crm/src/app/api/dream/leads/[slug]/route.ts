@@ -126,6 +126,8 @@ export async function PATCH(
     'sales_stage', 'qualification',
     'next_action_at', 'next_action_goal', 'next_action_by',
     'callback_at', 'description_short', 'description_long', 'website_url',
+    // TASK_018: ниша редактируется на карточке
+    'niche', 'name', 'address', 'metro_nearest',
   ]
   const patch: Record<string, any> = {}
   for (const k of allowed) if (body[k] !== undefined) patch[k] = body[k]
