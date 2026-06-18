@@ -63,6 +63,7 @@ type Tab = 'overview' | 'photos' | 'services' | 'reviews' | 'landing' | 'comment
 
 import { CommentsTab } from './CommentsTab'
 import { HistoryTab } from './HistoryTab'
+import { DossierPanel } from './DossierPanel'
 
 export default function LeadCardClient({ lead, activities, statusHistory, reviews, services, photoUris, photos: photosProp, landings: landingsProp, comments: commentsProp }: Props) {
   const unresolvedBlockers = (commentsProp ?? []).filter((c: any) => c.kind === 'blocker' && !c.is_resolved).length
@@ -307,32 +308,21 @@ export default function LeadCardClient({ lead, activities, statusHistory, review
                 </div>
               </div>
 
-              <aside className="space-y-4">
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <div className="text-xs uppercase text-gray-500 tracking-wider mb-1">Рейтинг</div>
-                  <div className="text-3xl font-bold">⭐ {lead.rating ?? '—'}</div>
-                  <div className="text-xs text-gray-500">{lead.ratings_count} оценок · {lead.reviews_count} отзывов</div>
-                </div>
+              {/* TASK_015: Досье клиента — inline-editable панель с русскими лейблами */}
+              <div className="space-y-4">
+                <DossierPanel lead={lead} />
                 {lead.geo_lat && lead.geo_lon && (
                   <a
                     href={`https://yandex.ru/maps/?ll=${lead.geo_lon},${lead.geo_lat}&z=16&pt=${lead.geo_lon},${lead.geo_lat}`}
                     target="_blank" rel="noopener noreferrer"
-                    className="block border border-gray-200 rounded-lg p-4 hover:bg-gray-50"
+                    className="block bg-white border border-gray-200 rounded-xl p-3 hover:bg-gray-50"
                   >
-                    <div className="text-xs uppercase text-gray-500 tracking-wider mb-1">Геолокация</div>
-                    <div className="text-sm text-gray-700">📍 {lead.geo_lat.toFixed(4)}, {lead.geo_lon.toFixed(4)}</div>
-                    <div className="text-xs text-blue-600 mt-1">Открыть на Яндекс.Картах →</div>
+                    <div className="text-[10px] uppercase text-gray-500 tracking-wider mb-1">🗺 Яндекс.Карты</div>
+                    <div className="text-[12px] text-gray-700">📍 {lead.geo_lat.toFixed(4)}, {lead.geo_lon.toFixed(4)}</div>
+                    <div className="text-[11px] text-blue-600 mt-1">Открыть на карте →</div>
                   </a>
                 )}
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <div className="text-xs uppercase text-gray-500 tracking-wider mb-2">Источники парсинга</div>
-                  <div className="flex flex-wrap gap-1">
-                    {(lead.enrichment_sources ?? []).map((s: string) => (
-                      <span key={s} className="bg-blue-50 text-blue-700 text-[10px] font-medium px-2 py-0.5 rounded-full">{s}</span>
-                    ))}
-                  </div>
-                </div>
-              </aside>
+              </div>
             </div>
           )}
 

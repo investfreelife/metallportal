@@ -17,12 +17,21 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     { auth: { persistSession: false } }
   )
+  // TASK_015: добавили запросы к dream_activities для lesson/objections/next_step.
+  // dream_calls сам не имеет этих полей — они в meta связанной активности.
   const { data, error } = await sb
     .from('dream_calls')
-    .select('id, conversation_id, status, result, qualification, summary, transcript, duration_sec, recording_url, sms_sent, cost, started_at, ended_at')
+    .select('id, lead_id, conversation_id, status, result, qualification, summary, transcript, duration_sec, recording_url, sms_sent, cost, started_at, ended_at')
     .eq('id', id)
     .maybeSingle()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   if (!data)  return NextResponse.json({ error: 'call not found' }, { status: 404 })
-  return NextResponse.json(data)
+
+  // Подтягиваем meta из dream_activities (звонилка пишет туда lesson/objections/next_step)
+  const { data: act } = await sb
+    .from('dream_activities')
+    .select('meta')
+    .eq('ref_table', 'dream_calls').eq('ref_id', id)
+    .maybeSingle()
+  return NextResponse.json({ ...data, meta: act?.meta ?? {} })
 }

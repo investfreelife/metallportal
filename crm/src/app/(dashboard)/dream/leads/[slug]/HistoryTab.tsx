@@ -38,6 +38,16 @@ const FILTERS: { key: string; label: string; types: string[] }[] = [
   { key: 'workflow',  label: '🔄 Воронка',   types: ['transition','stage_change','qualification','reminder_set','link_sent'] },
 ]
 
+// TASK_015: русские лейблы стадий для подсказок в title переходов
+const STAGE_RU: Record<string, string> = {
+  parsed:'Спарсен', enriching:'Идёт проверка', plan_proposed:'План готов',
+  approved:'Утверждён', building:'Сборка', built:'Сайт собран', review_built:'Проверка сайта',
+  for_sale:'В продаже', selling:'Продаётся', sold:'Продан', lost:'Отказ', trash:'В мусоре',
+  site_ready:'Сайт готов', to_call:'К обзвону', no_answer:'Недозвон', reached:'Дозвонились',
+  qualified:'Квалифицирован', link_sent:'Ссылка отправлена', negotiating:'Переговоры',
+  callback:'Перезвонить', won:'Куплен', disqualified:'Не целевой',
+}
+
 function timeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime()
   const m = Math.floor(diff / 60000)
@@ -163,6 +173,13 @@ export function HistoryTab({ leadSlug }: { leadSlug: string }) {
 
 function CallDetails({ details }: { details: any }) {
   if (details.error) return <p className="text-[11px] text-red-500 italic mt-2">{details.error}</p>
+
+  // TASK_015: «Вывод/урок» из dream_activities.meta.lesson + возражения из meta.objections
+  const meta = details.meta ?? {}
+  const lesson    = meta.lesson    ?? details.lesson    ?? null
+  const objections = meta.objections ?? details.objections ?? null
+  const nextStep  = meta.next_step ?? details.next_step ?? null
+
   return (
     <div className="mt-3 pt-3 border-t border-gray-100 space-y-2">
       {details.summary && (
@@ -171,19 +188,43 @@ function CallDetails({ details }: { details: any }) {
           <p className="text-[12px] text-gray-700">{details.summary}</p>
         </div>
       )}
+
+      {nextStep && (
+        <div className="bg-amber-50 border border-amber-200 rounded p-2">
+          <div className="text-[10px] font-bold text-amber-700 uppercase mb-0.5">⏰ Следующий шаг</div>
+          <p className="text-[12px] text-amber-900">{nextStep}</p>
+        </div>
+      )}
+
+      {lesson && (
+        <div className="bg-emerald-50 border border-emerald-200 rounded p-2">
+          <div className="text-[10px] font-bold text-emerald-700 uppercase mb-0.5">💡 Вывод / урок</div>
+          <p className="text-[12px] text-emerald-900">{lesson}</p>
+        </div>
+      )}
+
+      {Array.isArray(objections) && objections.length > 0 && (
+        <div className="bg-red-50 border border-red-200 rounded p-2">
+          <div className="text-[10px] font-bold text-red-700 uppercase mb-1">🚫 Возражения</div>
+          <ul className="text-[12px] text-red-900 list-disc pl-5 space-y-0.5">
+            {objections.map((o: string, i: number) => <li key={i}>{o}</li>)}
+          </ul>
+        </div>
+      )}
+
       {details.recording_url && (
         <div>
-          <div className="text-[10px] font-bold text-gray-500 uppercase mb-1">Запись</div>
+          <div className="text-[10px] font-bold text-gray-500 uppercase mb-1">🔊 Запись</div>
           <audio controls src={details.recording_url} className="w-full h-8" preload="none"/>
         </div>
       )}
       {Array.isArray(details.transcript) && details.transcript.length > 0 && (
         <div>
-          <div className="text-[10px] font-bold text-gray-500 uppercase mb-1">Расшифровка</div>
+          <div className="text-[10px] font-bold text-gray-500 uppercase mb-1">📄 Расшифровка</div>
           <ol className="text-[11px] space-y-1.5 max-h-72 overflow-y-auto">
             {details.transcript.map((t: any, i: number) => (
               <li key={i} className={`flex gap-2 ${t.role === 'agent' ? 'text-purple-700' : 'text-gray-700'}`}>
-                <span className="font-bold flex-shrink-0 w-12">{t.role === 'agent' ? '🤖 AI:' : '🙍 К:'}</span>
+                <span className="font-bold flex-shrink-0 w-16">{t.role === 'agent' ? '🤖 Робот:' : '🙍 Клиент:'}</span>
                 <span>{t.text}</span>
               </li>
             ))}

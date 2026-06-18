@@ -116,7 +116,17 @@ export async function PATCH(
     return NextResponse.json({ error: 'invalid_json' }, { status: 400 })
   }
 
-  const allowed = ['notes', 'price', 'tags', 'ai_summary', 'ai_pitch', 'assigned_to', 'priority']
+  // TASK_015: расширили список редактируемых полей под Досье.
+  const allowed = [
+    'notes', 'price', 'tags', 'ai_summary', 'ai_pitch', 'assigned_to', 'priority',
+    // §4.5 + TASK_015: контакт + ЛПР + интерес + воронка + дожим
+    'contact_name', 'contact_position', 'contact_email',
+    'decision_maker_name', 'decision_maker_phone',
+    'preferred_channel', 'interest',
+    'sales_stage', 'qualification',
+    'next_action_at', 'next_action_goal', 'next_action_by',
+    'callback_at', 'description_short', 'description_long', 'website_url',
+  ]
   const patch: Record<string, any> = {}
   for (const k of allowed) if (body[k] !== undefined) patch[k] = body[k]
   if (Object.keys(patch).length === 0) {
