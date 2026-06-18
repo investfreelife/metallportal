@@ -101,14 +101,21 @@ export function KanbanBoard({ leads: initial }: { leads: Lead[] }) {
   const [leads, setLeads] = useState(initial)
   const [showTrash, setShowTrash] = useState(true)
   const [moving, setMoving] = useState<number | null>(null)
+  const [dragging, setDragging] = useState<number | null>(null)
+  const [dragOverCol, setDragOverCol] = useState<string | null>(null)
   const router = useRouter()
 
-  async function transition(lead: Lead, to_status: string, label: string, askReason = false) {
+  /**
+   * Перевод лида.
+   * silent=true (drag-and-drop) — без промптов кроме trash и блокера override.
+   * silent=false (кнопка) — спрашивает причину если askReason.
+   */
+  async function transition(lead: Lead, to_status: string, label: string, askReason = false, silent = false) {
     let reason = ''
     if (to_status === 'trash') {
       reason = prompt('Причина (есть свой сайт / закрыты / др.):') ?? ''
       if (!reason) return
-    } else if (askReason) {
+    } else if (askReason && !silent) {
       reason = prompt(`${label}\nКомментарий / причина (или Enter — пропустить):`) ?? ''
     } else if (lead.has_blocker && to_status !== 'trash' && to_status !== 'lost') {
       reason = prompt('На лиде блокер. Чтобы переопределить, введите причину начинающуюся со слова "override":') ?? ''
@@ -137,13 +144,34 @@ export function KanbanBoard({ leads: initial }: { leads: Lead[] }) {
     if (col) byCol[col.key].push(l)
   })
 
+  /** Drag-and-drop: куда уронить → какой целевой build_status. */
+  function onDropToColumn(col: Column, e: React.DragEvent) {
+    e.preventDefault()
+    setDragOverCol(null)
+    const idStr = e.dataTransfer.getData('text/lead-id')
+    const id = parseInt(idStr, 10)
+    if (!Number.isFinite(id)) return
+    const lead = leads.find((l) => l.id === id)
+    if (!lead) return
+    if (col.statuses.includes(lead.build_status)) return  // та же колонка
+    // Определяем целевой статус по drop'у:
+    //  - если в колонке есть «next» — используем его to (продвижение вперёд)
+    //  - иначе — первый статус колонки (например drop в Парсинг → 'parsed')
+    const target = col.next?.to ?? col.statuses[0]
+    // Для колонки trash и selling/sold — спрашиваем причину
+    const askReason = ['sold', 'lost', 'for_sale', 'approved'].includes(target)
+    transition(lead, target, col.title, askReason, /*silent*/ !askReason)
+  }
+
   return (
     <div className="flex flex-col h-full">
       {/* шапка фиксированная */}
       <div className="flex-shrink-0 flex items-baseline justify-between px-5 pt-5 pb-3">
         <div>
           <h1 className="text-[20px] font-semibold">📊 Канбан-воронка лидов</h1>
-          <p className="text-[12px] text-gray-500">Перенос карточек между этапами + утверждение для агентов</p>
+          <p className="text-[12px] text-gray-500">
+            <b>Перетащи</b> карточку в нужную колонку или жми кнопку. Карточки с 🛑 потребуют override-причину.
+          </p>
         </div>
         <label className="flex items-center gap-2 text-[12px] text-gray-600 cursor-pointer">
           <input type="checkbox" checked={showTrash} onChange={(e) => setShowTrash(e.target.checked)} className="rounded"/>
@@ -157,7 +185,13 @@ export function KanbanBoard({ leads: initial }: { leads: Lead[] }) {
           {COLUMNS.filter((c) => showTrash || c.key !== 'trash').map((col) => {
             const items = byCol[col.key]
             return (
-              <div key={col.key} className={`w-[290px] flex-shrink-0 rounded-xl border ${col.accent} ${col.bg} flex flex-col h-full overflow-hidden`}>
+              <div key={col.key}
+                onDragOver={(e) => { e.preventDefault(); setDragOverCol(col.key) }}
+                onDragLeave={(e) => { if (e.currentTarget.contains(e.relatedTarget as Node)) return; setDragOverCol((c) => c === col.key ? null : c) }}
+                onDrop={(e) => onDropToColumn(col, e)}
+                className={`w-[290px] flex-shrink-0 rounded-xl border ${col.accent} ${col.bg} flex flex-col h-full overflow-hidden transition-all ${
+                  dragOverCol === col.key ? 'ring-4 ring-blue-400 scale-[1.02]' : ''
+                }`}>
                 <header className="px-3 py-2.5 border-b border-black/5 flex items-baseline justify-between flex-shrink-0">
                   <h2 className="text-[13px] font-bold text-gray-800">
                     <span className="mr-1">{col.emoji}</span> {col.title}
@@ -170,7 +204,12 @@ export function KanbanBoard({ leads: initial }: { leads: Lead[] }) {
                   ) : (
                     items.map((lead) => (
                       <article key={lead.id}
-                        className={`bg-white border ${lead.has_blocker ? 'border-red-300 ring-1 ring-red-200' : 'border-gray-200'} rounded-lg p-2.5 hover:shadow-sm transition-all`}>
+                        draggable
+                        onDragStart={(e) => { e.dataTransfer.setData('text/lead-id', String(lead.id)); e.dataTransfer.effectAllowed = 'move'; setDragging(lead.id) }}
+                        onDragEnd={() => { setDragging(null); setDragOverCol(null) }}
+                        className={`bg-white border ${lead.has_blocker ? 'border-red-300 ring-1 ring-red-200' : 'border-gray-200'} rounded-lg p-2.5 hover:shadow-sm transition-all cursor-grab active:cursor-grabbing ${
+                          dragging === lead.id ? 'opacity-40' : ''
+                        }`}>
                         <Link href={`/dream/leads/${lead.slug}`} className="block">
                           <div className="text-[12px] font-semibold text-gray-900 truncate">{lead.name}</div>
                           <div className="text-[10px] text-gray-500 truncate">{lead.niche ?? '—'}</div>
