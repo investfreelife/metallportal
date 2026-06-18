@@ -190,6 +190,7 @@ const NAV_DREAM: NavSection[] = [
       { href: '/dream/parser', label: '🛰 Парсер', icon: Network },
       { href: '/dream/landings', label: '🎨 Лендинги клиентов', icon: Layers },
       { href: '/dream/agency-sites', label: '✨ Сайты студии', icon: Sparkles },
+      { href: '/dream/calls', label: '📞 Звонки', icon: Phone },
       { href: '/dream/outreach', label: '📨 Outreach', icon: Send },
     ],
   },
