@@ -36,6 +36,7 @@ interface Props {
   services: any[]
   photoUris: string[]
   photos?: Array<{ idx: number; url: string; priority: boolean; deleted: boolean; note: string | null }>
+  landings?: Array<{ id: number; variant: string; version: string; template_id: string | null; entry_url: string; pages: any; meta: any; status: string; is_chosen: boolean; generated_at: string }>
 }
 
 const OUTREACH_TEMPLATES = [
@@ -59,9 +60,19 @@ const OUTREACH_TEMPLATES = [
 
 type Tab = 'overview' | 'photos' | 'services' | 'reviews' | 'landing' | 'journal'
 
-export default function LeadCardClient({ lead, activities, statusHistory, reviews, services, photoUris, photos: photosProp }: Props) {
+export default function LeadCardClient({ lead, activities, statusHistory, reviews, services, photoUris, photos: photosProp, landings: landingsProp }: Props) {
   const [photos, setPhotos] = useState(photosProp ?? photoUris.map((url, i) => ({ idx: i + 1, url, priority: false, deleted: false, note: null })))
   const [showDeleted, setShowDeleted] = useState(false)
+  const [landings, setLandings] = useState(landingsProp ?? [])
+
+  async function pickChosen(landingId: number) {
+    setLandings((arr) => arr.map((l) => ({ ...l, is_chosen: l.id === landingId })))
+    const r = await fetch(`/api/dream/landings/${landingId}/chosen`, { method: 'POST' })
+    if (!r.ok) {
+      // refresh anyway
+      ;(window as any).location.reload()
+    }
+  }
 
   async function togglePhoto(idx: number, field: 'priority' | 'deleted') {
     const cur = photos.find((p) => p.idx === idx)
@@ -231,7 +242,7 @@ export default function LeadCardClient({ lead, activities, statusHistory, review
             ['photos', `📷 Фото (${photos.filter(p => !p.deleted).length}/${photos.length})`],
             ['services', `🛠 Услуги (${services.length})`],
             ['reviews', `💬 Отзывы (${reviews?.count ?? 0})`],
-            ['landing', '🌐 Лендинг'],
+            ['landing', `🌐 Лендинг${landings.length > 0 ? ` (${landings.length})` : ''}`],
             ['journal', `📝 Журнал (${activities.length})`],
           ].map(([k, label]) => (
             <button
@@ -422,23 +433,58 @@ export default function LeadCardClient({ lead, activities, statusHistory, review
           {/* LANDING */}
           {tab === 'landing' && (
             <div>
-              {!lead.landing_html_path ? (
-                <div className="text-sm text-gray-500 italic">Готовый лендинг ещё не сгенерирован</div>
+              {landings.length === 0 ? (
+                <div className="text-sm text-gray-500 italic">
+                  Лендингов ещё нет. Агент-кодер создаст и зарегистрирует их через
+                  <code className="mx-1 bg-gray-100 px-1 rounded">/api/dream/landings/register</code>.
+                </div>
               ) : (
                 <>
-                  <div className="text-xs text-gray-500 mb-3">
-                    Файл: <code className="bg-gray-100 px-1.5 py-0.5 rounded">{lead.landing_html_path}</code>
+                  <p className="text-[11px] text-gray-500 italic mb-3">
+                    На одного лида можно сделать НЕСКОЛЬКО лендингов (разные стили / версии).
+                    ⭐ <b>chosen</b> = активный для outreach. Клик «Сделать активным» переключает.
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {landings.map((l) => (
+                      <div key={l.id} className={`border rounded-xl p-4 transition-all ${
+                        l.is_chosen ? 'border-amber-400 bg-amber-50/40 ring-2 ring-amber-200' : 'border-gray-200 bg-white hover:border-blue-300'
+                      }`}>
+                        <div className="flex items-baseline justify-between gap-2 mb-2">
+                          <h3 className="font-semibold text-gray-900">
+                            {l.variant} <span className="text-gray-400 text-[12px]">/ {l.version}</span>
+                          </h3>
+                          {l.is_chosen && <span className="text-[10px] px-2 py-0.5 bg-amber-400 text-white rounded-full font-bold">⭐ CHOSEN</span>}
+                        </div>
+                        {l.template_id && <div className="text-[11px] text-gray-500 mb-2">template: <code>{l.template_id}</code></div>}
+                        {l.meta?.reference && (
+                          <div className="text-[11px] text-gray-600 mb-1">Референс: <b>{l.meta.reference}</b></div>
+                        )}
+                        {Array.isArray(l.meta?.features) && l.meta.features.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mb-3">
+                            {l.meta.features.slice(0, 3).map((f: string) => (
+                              <span key={f} className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded">{f}</span>
+                            ))}
+                          </div>
+                        )}
+                        <div className="text-[11px] text-gray-500 break-all mb-3 font-mono">{l.entry_url}</div>
+                        <div className="flex gap-2">
+                          <a href={l.entry_url} target="_blank" rel="noopener noreferrer"
+                             className="flex-1 text-center bg-blue-600 text-white px-3 py-1.5 rounded-md text-[12px] font-semibold hover:bg-blue-700">
+                            🌐 Открыть
+                          </a>
+                          {!l.is_chosen && (
+                            <button onClick={() => pickChosen(l.id)}
+                              className="text-[12px] px-3 py-1.5 border border-amber-400 text-amber-700 rounded-md hover:bg-amber-50 font-medium">
+                              Сделать активным
+                            </button>
+                          )}
+                        </div>
+                        <div className="text-[10px] text-gray-400 mt-2">
+                          сгенерён {new Date(l.generated_at).toLocaleDateString('ru-RU')}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="text-sm text-gray-700">
-                    Генератор: <code className="bg-gray-100 px-1.5 py-0.5 rounded">app/generator.py</code> — рендерит
-                    готовый HTML под нишу с palette {'{primary, secondary, accent}'} + данные из data.json.
-                  </div>
-                  {lead.landing_deployed_url && (
-                    <a href={lead.landing_deployed_url} target="_blank" rel="noopener noreferrer"
-                       className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">
-                      🌐 Открыть deployed: {lead.landing_deployed_url}
-                    </a>
-                  )}
                 </>
               )}
             </div>
