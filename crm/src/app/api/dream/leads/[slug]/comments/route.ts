@@ -83,8 +83,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
     kind = String(fd.get('kind') || 'note')
     const file = fd.get('file')
     if (file && typeof file !== 'string') {
-      if (file.size > 320_000) {
-        return NextResponse.json({ error: 'Файл больше 300 KB. Уменьши перед отправкой.' }, { status: 413 })
+      // Лимит 5 MB (бакет тоже на 5 MB). Pro-план Supabase позволяет.
+      if (file.size > 5_242_880) {
+        return NextResponse.json({ error: 'Файл больше 5 MB. Уменьши перед отправкой.' }, { status: 413 })
       }
       const ext = (file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg')
       const key = `${slug}/${Date.now()}-${crypto.randomBytes(4).toString('hex')}.${ext}`

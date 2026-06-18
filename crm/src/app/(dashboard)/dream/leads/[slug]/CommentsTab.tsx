@@ -21,8 +21,22 @@ const KIND_META: Record<Comment['kind'], { label: string; emoji: string; cls: st
   blocker: { label: 'СТОП',     emoji: '🛑', cls: 'bg-red-100 text-red-700 border-red-200' },
 }
 
-async function resizeImage(file: File, maxSide = 1400, quality = 0.78): Promise<Blob> {
-  return new Promise((resolve, reject) => {
+/**
+ * Лёгкий ресайз в браузере: только если фото больше maxSide (2400px) ИЛИ
+ * больше 4 MB. Иначе оставляем оригинал — Sergey хочет нормальные фото,
+ * не пере-зажатые в кашу. Лимит бакета 5 MB.
+ */
+async function resizeIfNeeded(file: File, maxSide = 2400, maxBytes = 4_000_000): Promise<Blob> {
+  // Уже маленький — возвращаем как есть
+  if (file.size <= maxBytes) {
+    const img = await loadImage(file)
+    if (Math.max(img.width, img.height) <= maxSide) {
+      img.remove?.()
+      return file  // оригинал, без потерь
+    }
+  }
+  // Иначе — пережимаем в webp
+  return new Promise<Blob>((resolve, reject) => {
     const img = new Image()
     img.onerror = reject
     img.onload = () => {
@@ -33,8 +47,17 @@ async function resizeImage(file: File, maxSide = 1400, quality = 0.78): Promise<
       c.width = cw; c.height = ch
       const ctx = c.getContext('2d')!
       ctx.drawImage(img, 0, 0, cw, ch)
-      c.toBlob((b) => b ? resolve(b) : reject(new Error('toBlob failed')), 'image/webp', quality)
+      c.toBlob((b) => b ? resolve(b) : reject(new Error('toBlob failed')), 'image/webp', 0.85)
     }
+    img.src = URL.createObjectURL(file)
+  })
+}
+
+function loadImage(file: File): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => resolve(img)
+    img.onerror = reject
     img.src = URL.createObjectURL(file)
   })
 }
@@ -60,22 +83,24 @@ export function CommentsTab({ leadSlug, initial }: { leadSlug: string; initial: 
     setSending(true)
     try {
       let blob: Blob | null = null
+      let fileName = 'attachment.webp'
       if (file) {
-        // ресайз на клиенте → webp ≤300KB
-        let q = 0.82
-        let attempt: Blob | null = null
-        for (let i = 0; i < 4; i++) {
-          attempt = await resizeImage(file, 1400, q)
-          if (attempt.size <= 290_000) break
-          q -= 0.15
+        // Лёгкий ресайз: только если >2400px ИЛИ >4MB. Иначе оригинал.
+        // Лимит сервера 5 MB.
+        blob = await resizeIfNeeded(file, 2400, 4_000_000)
+        // Если вернули оригинал — сохраняем его расширение
+        if (blob === file) fileName = file.name
+        // Если файл всё ещё >5MB после ресайза — последнее средство, пережать сильнее
+        if (blob.size > 5_242_880) {
+          blob = await resizeIfNeeded(file, 1800, 0)  // принудительно webp 85%
+          fileName = 'attachment.webp'
         }
-        blob = attempt
       }
 
       const fd = new FormData()
       fd.append('text', text.trim())
       fd.append('kind', kind)
-      if (blob) fd.append('file', blob, 'attachment.webp')
+      if (blob) fd.append('file', blob, fileName)
 
       const r = await fetch(`/api/dream/leads/${leadSlug}/comments`, { method: 'POST', body: fd })
       const j = await r.json()
@@ -146,7 +171,7 @@ export function CommentsTab({ leadSlug, initial }: { leadSlug: string; initial: 
           </button>
         </div>
         <p className="text-[10px] text-gray-400 mt-2">
-          Фото ресайзится в браузере до 1400px webp ≤300 KB. Заметки видны агентам ПЕРЕД работой.
+          Фото до 5 MB (оригинал). Больше — авто-сжатие до 2400px webp. Заметки видны агентам ПЕРЕД работой.
         </p>
       </div>
 
