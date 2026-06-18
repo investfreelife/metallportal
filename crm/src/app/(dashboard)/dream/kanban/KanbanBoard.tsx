@@ -138,8 +138,9 @@ export function KanbanBoard({ leads: initial }: { leads: Lead[] }) {
   })
 
   return (
-    <div className="p-5 max-w-full">
-      <div className="flex items-baseline justify-between mb-4">
+    <div className="flex flex-col h-full">
+      {/* шапка фиксированная */}
+      <div className="flex-shrink-0 flex items-baseline justify-between px-5 pt-5 pb-3">
         <div>
           <h1 className="text-[20px] font-semibold">📊 Канбан-воронка лидов</h1>
           <p className="text-[12px] text-gray-500">Перенос карточек между этапами + утверждение для агентов</p>
@@ -150,19 +151,20 @@ export function KanbanBoard({ leads: initial }: { leads: Lead[] }) {
         </label>
       </div>
 
-      <div className="overflow-x-auto pb-4">
-        <div className="flex gap-3 min-w-max">
+      {/* горизонтальный скролл — фишка: overflow-x-auto на КОНТЕЙНЕРЕ с явной h-[calc(...)] */}
+      <div className="flex-1 overflow-x-auto overflow-y-hidden px-5 pb-5" style={{ scrollbarGutter: 'stable' }}>
+        <div className="flex gap-3 h-full" style={{ width: 'max-content' }}>
           {COLUMNS.filter((c) => showTrash || c.key !== 'trash').map((col) => {
             const items = byCol[col.key]
             return (
-              <div key={col.key} className={`w-[280px] flex-shrink-0 rounded-xl border ${col.accent} ${col.bg} flex flex-col`}>
-                <header className="px-3 py-2.5 border-b border-black/5 flex items-baseline justify-between sticky top-0 backdrop-blur z-10">
+              <div key={col.key} className={`w-[290px] flex-shrink-0 rounded-xl border ${col.accent} ${col.bg} flex flex-col h-full overflow-hidden`}>
+                <header className="px-3 py-2.5 border-b border-black/5 flex items-baseline justify-between flex-shrink-0">
                   <h2 className="text-[13px] font-bold text-gray-800">
                     <span className="mr-1">{col.emoji}</span> {col.title}
                   </h2>
                   <span className="text-[11px] font-bold tabular-nums text-gray-500">{items.length}</span>
                 </header>
-                <div className="p-2 space-y-2 max-h-[75vh] overflow-y-auto">
+                <div className="p-2 space-y-2 overflow-y-auto flex-1">
                   {items.length === 0 ? (
                     <div className="text-center text-[11px] text-gray-400 italic py-6">пусто</div>
                   ) : (
