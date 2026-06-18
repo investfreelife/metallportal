@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { requireRole } from "@/lib/auth";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -7,9 +8,25 @@ const supabase = createClient(
 );
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN!;
 
+/**
+ * POST /api/telegram/send  (TASK_052 hardening, audit 2026-06-18 SEV-1)
+ *
+ * Шлёт менеджерское сообщение клиенту в Telegram и пишет manager-row в
+ * `messages`. Раньше без auth — позволял любому посетителю писать клиентам
+ * "от имени менеджера" + инжектить фейк-сообщения в БД.
+ *
+ * Теперь: требует роль admin/manager/designer. `managerId` берётся ТОЛЬКО
+ * из сессии (body.managerId игнорируется, чтобы нельзя было спуфнуть автора).
+ */
+export const runtime = "nodejs";
+
 export async function POST(req: NextRequest) {
+  const auth = await requireRole(["admin", "manager", "designer"]);
+  if (!auth.ok) return auth.error;
+  const managerId = auth.userId;
+
   try {
-    const { chatId, message, managerId } = await req.json();
+    const { chatId, message } = await req.json();
     if (!chatId || !message) {
       return NextResponse.json({ error: "chatId and message required" }, { status: 400 });
     }
@@ -37,11 +54,11 @@ export async function POST(req: NextRequest) {
     });
     const tgData = await tgRes.json();
 
-    // Сохранить в messages
+    // Сохранить в messages (managerId из auth, не из body)
     await supabase.from("messages").insert({
       chat_id: chatId,
       sender_type: "manager",
-      sender_id: managerId ?? null,
+      sender_id: managerId,
       content: message,
       telegram_message_id: tgData.result?.message_id ?? null,
     });
@@ -52,7 +69,10 @@ export async function POST(req: NextRequest) {
       .eq("id", chatId);
 
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+  } catch (e: unknown) {
+    // SEV-2 fix: не отдавать сырой e.message клиенту (утечка внутренностей)
+    const msg = e instanceof Error ? e.message : "internal error";
+    console.error("[telegram/send] error:", msg);
+    return NextResponse.json({ error: "Failed to send message" }, { status: 500 });
   }
 }

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { randomInt } from 'crypto'
+import { accountLoginRatelimit, getClientIp } from '@/lib/ratelimit'
 
 function getSupabase() {
   return createClient(
@@ -20,6 +22,22 @@ export async function POST(req: NextRequest) {
     : digits.length === 10 ? '+7' + digits
     : '+' + digits
 
+  // TASK_052 hardening: rate-limit отправки OTP (защита от SMS/TG-спама).
+  // 3 попытки / 1 ч per-phone И per-IP — реальный пользователь укладывается,
+  // спамер блокируется. И «404 Номер не найден» (ниже) тоже спам-фактор —
+  // лимит не даёт энумерировать базу телефонов.
+  const ip = getClientIp(req)
+  const ipLimit = await accountLoginRatelimit.limit(`ip:${ip}`)
+  const phoneLimit = await accountLoginRatelimit.limit(`phone:${normalized}`)
+  if (!ipLimit.success || !phoneLimit.success) {
+    const reset = Math.max(ipLimit.reset, phoneLimit.reset)
+    const retryAfterSec = Math.max(1, Math.ceil((reset - Date.now()) / 1000))
+    return NextResponse.json(
+      { error: 'Слишком много запросов. Попробуйте позже.' },
+      { status: 429, headers: { 'Retry-After': String(retryAfterSec) } }
+    )
+  }
+
   const supabase = getSupabase()
 
   // Find contact by phone
@@ -35,8 +53,9 @@ export async function POST(req: NextRequest) {
     }, { status: 404 })
   }
 
-  // Generate 6-digit OTP
-  const otp = String(Math.floor(100000 + Math.random() * 900000))
+  // TASK_052 hardening: crypto.randomInt вместо Math.random (CSPRNG, не PRNG).
+  // Math.random — V8 xorshift128+, предсказуем, не для безопасности.
+  const otp = String(randomInt(100000, 1000000))
   const expires = new Date(Date.now() + 10 * 60 * 1000).toISOString() // 10 min
 
   await supabase.from('contacts').update({

@@ -107,6 +107,28 @@ async function handleCrmCallback(callbackQuery: {
 
 export async function POST(req: NextRequest) {
   try {
+    // TASK_052 hardening (audit 2026-06-18 SEV-1):
+    // Telegram при setWebhook(secret_token=…) шлёт его в каждом запросе как
+    // `X-Telegram-Bot-Api-Secret-Token`. Без проверки любой подделает
+    // callback_query/message и:
+    //   - аппрувит/реджектит позиции в CRM AI-очереди (handleCrmCallback)
+    //   - входит в reply-mode менеджера и шлёт сообщения клиентам
+    //   - инжектит контакты в БД
+    // Установить секрет:
+    //   1) Vercel env TELEGRAM_WEBHOOK_SECRET=<random ≥32 chars>
+    //   2) re-register webhook (см. /api/telegram/register-webhook)
+    const expectedSecret = process.env.TELEGRAM_WEBHOOK_SECRET;
+    if (expectedSecret) {
+      const got = req.headers.get("x-telegram-bot-api-secret-token");
+      if (got !== expectedSecret) {
+        console.warn("[telegram/webhook] secret mismatch, drop");
+        return NextResponse.json({ ok: true });  // тихо, чтобы не сигналить злоумышленнику
+      }
+    } else {
+      // Fail-open для bootstrap (env ещё не задан), но громко логируем.
+      console.warn("[telegram/webhook] TELEGRAM_WEBHOOK_SECRET not set — accepting all callbacks (INSECURE)");
+    }
+
     const body = await req.json();
 
     // Handle CRM inline button callbacks
