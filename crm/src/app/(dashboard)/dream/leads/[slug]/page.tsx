@@ -63,14 +63,14 @@ export default async function LeadCardPage({
     supabase.from('dream_status_history').select('*').eq('lead_id', lead.id).order('created_at', { ascending: false }).limit(20),
   ])
 
-  // Sergey directive 2026-06-17: данные читаем из Supabase (Storage URLs +
-  // нормализованные таблицы), НЕ с диска. Vercel serverless не видит
-  // folder_path локального мака. Fallback на disk оставлен для dev только.
+  // Sergey directive 2026-06-17/18: всё читаем из Supabase (нормализованные таблицы).
+  // Heavy/Temp файлы — НЕ в Storage, только URL/метаданные (Yandex CDN / raw.github / investfreelife.github.io).
   const [
-    { data: photosRows },
-    { data: reviewsRows },
-    { data: servicesRows },
-    { data: landingsRows },
+    photosRes,
+    reviewsRes,
+    servicesRes,
+    landingsRes,
+    commentsRes,
   ] = await Promise.all([
     supabase.from('dream_lead_photos').select('idx, url, width, height, priority, deleted, note').eq('lead_id', lead.id).order('idx'),
     supabase.from('dream_lead_reviews').select('idx, author, rating, review_date, text').eq('lead_id', lead.id).order('idx'),
@@ -80,9 +80,15 @@ export default async function LeadCardPage({
       .eq('lead_id', lead.id)
       .order('is_chosen', { ascending: false })
       .order('generated_at', { ascending: false }),
+    supabase.from('dream_lead_comments')
+      .select('*').eq('lead_id', lead.id).order('created_at', { ascending: false }),
   ])
 
-  const landings = landingsRows ?? []
+  const photosRows   = photosRes.data
+  const reviewsRows  = reviewsRes.data
+  const servicesRows = servicesRes.data
+  const landings     = landingsRes.data ?? []
+  const comments     = commentsRes.data ?? []
 
   const photos = (photosRows ?? []).map((p: any) => ({
     idx: p.idx, url: p.url, priority: !!p.priority, deleted: !!p.deleted, note: p.note,
@@ -101,7 +107,7 @@ export default async function LeadCardPage({
       }
     : null
 
-  // Dev fallback — если в БД пусто, попробовать диск (только если folder_path локально доступен)
+  // Dev fallback — если в БД пусто, попробовать диск (только локально)
   if (lead.folder_path && photoUris.length === 0) {
     try {
       const fallbackReviews = await readJsonSafe(path.join(lead.folder_path, 'reviews.json'))
@@ -124,6 +130,7 @@ export default async function LeadCardPage({
       photoUris={photoUris}
       photos={photos}
       landings={landings}
+      comments={comments}
     />
   )
 }

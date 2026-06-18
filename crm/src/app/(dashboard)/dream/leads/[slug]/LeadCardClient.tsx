@@ -37,6 +37,7 @@ interface Props {
   photoUris: string[]
   photos?: Array<{ idx: number; url: string; priority: boolean; deleted: boolean; note: string | null }>
   landings?: Array<{ id: number; variant: string; version: string; template_id: string | null; entry_url: string; pages: any; meta: any; status: string; is_chosen: boolean; generated_at: string }>
+  comments?: any[]
 }
 
 const OUTREACH_TEMPLATES = [
@@ -58,9 +59,12 @@ const OUTREACH_TEMPLATES = [
   },
 ]
 
-type Tab = 'overview' | 'photos' | 'services' | 'reviews' | 'landing' | 'journal'
+type Tab = 'overview' | 'photos' | 'services' | 'reviews' | 'landing' | 'comments' | 'journal'
 
-export default function LeadCardClient({ lead, activities, statusHistory, reviews, services, photoUris, photos: photosProp, landings: landingsProp }: Props) {
+import { CommentsTab } from './CommentsTab'
+
+export default function LeadCardClient({ lead, activities, statusHistory, reviews, services, photoUris, photos: photosProp, landings: landingsProp, comments: commentsProp }: Props) {
+  const unresolvedBlockers = (commentsProp ?? []).filter((c: any) => c.kind === 'blocker' && !c.is_resolved).length
   const [photos, setPhotos] = useState(photosProp ?? photoUris.map((url, i) => ({ idx: i + 1, url, priority: false, deleted: false, note: null })))
   const [showDeleted, setShowDeleted] = useState(false)
   const [landings, setLandings] = useState(landingsProp ?? [])
@@ -243,6 +247,7 @@ export default function LeadCardClient({ lead, activities, statusHistory, review
             ['services', `🛠 Услуги (${services.length})`],
             ['reviews', `💬 Отзывы (${reviews?.count ?? 0})`],
             ['landing', `🌐 Лендинг${landings.length > 0 ? ` (${landings.length})` : ''}`],
+            ['comments', `💬 Комментарии${commentsProp && commentsProp.length > 0 ? ` (${commentsProp.length})` : ''}${unresolvedBlockers > 0 ? ` 🛑${unresolvedBlockers}` : ''}`],
             ['journal', `📝 Журнал (${activities.length})`],
           ].map(([k, label]) => (
             <button
@@ -488,6 +493,11 @@ export default function LeadCardClient({ lead, activities, statusHistory, review
                 </>
               )}
             </div>
+          )}
+
+          {/* COMMENTS */}
+          {tab === 'comments' && (
+            <CommentsTab leadSlug={lead.slug} initial={commentsProp ?? []} />
           )}
 
           {/* JOURNAL */}
