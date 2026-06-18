@@ -18,11 +18,30 @@ export default function DocsPage() {
         Версия 2.0 (2026-06-18) · Для оператора и всех агентов · Источник правды
       </p>
 
-      {/* 6 полных спецификаций */}
+      {/* AGENT QUICK START — самый важный, сверху */}
+      <section className="bg-emerald-50 border-2 border-emerald-300 rounded-xl p-5 mb-6">
+        <h2 className="text-[16px] font-semibold mb-2">🤖 AGENT QUICK START — для любого агента</h2>
+        <p className="text-[12px] text-gray-700 mb-3">
+          <b>Короткая команда</b> (агент в любой момент получает свежую инструкцию):
+        </p>
+        <pre className="bg-white border border-emerald-200 rounded p-2.5 text-[12px] mb-3 overflow-x-auto">curl -s https://metallportal-crm2.vercel.app/api/dream/agent-help</pre>
+        <p className="text-[12px] text-gray-700 mb-3">
+          Или открыть в браузере: <a href="/dream/docs/AGENT_QUICK_START" className="text-blue-600 font-medium">/dream/docs/AGENT_QUICK_START</a>
+        </p>
+        <p className="text-[11px] text-gray-600">
+          ⚠️ <b>Если сайт не появляется в канбане</b> — там объяснены 5 типичных ошибок (неправильный репо, пропущенный /transition, и т.д.).
+        </p>
+      </section>
+
+      {/* 7 полных спецификаций */}
       <section className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
         <h2 className="text-[16px] font-semibold mb-3">📚 Полные документы (читать целиком)</h2>
         <p className="text-[12px] text-gray-500 mb-4">Все спецификации проекта — синхронизированы с диском Sergey'я при деплое. Открыть в новой вкладке для агентов:</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <a href="/dream/docs/AGENT_QUICK_START" className="border-2 border-emerald-300 rounded-lg p-3 hover:border-emerald-500 hover:shadow-sm transition-all bg-emerald-50">
+            <div className="text-[14px] font-semibold">🤖 AGENT QUICK START ⭐</div>
+            <div className="text-[11px] text-gray-700 mt-1">Полная инструкция для любого агента за 5 минут</div>
+          </a>
           <a href="/dream/docs/ARCHITECTURE" className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-sm transition-all">
             <div className="text-[14px] font-semibold">📐 Архитектура проекта</div>
             <div className="text-[11px] text-gray-500 mt-1">3 слоя · 12 состояний · схема БД · API · UI · правила</div>

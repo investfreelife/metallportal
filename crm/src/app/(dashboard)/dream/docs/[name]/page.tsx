@@ -13,12 +13,14 @@ import { notFound } from 'next/navigation'
 export const dynamic = 'force-dynamic'
 
 const DOCS: Record<string, { title: string; emoji: string; descr: string }> = {
+  AGENT_QUICK_START:           { title: 'AGENT QUICK START (читать всем агентам)', emoji: '🤖', descr: 'Полная инструкция за 5 минут: куда что писать, почему сайт не появляется в канбане, короткая команда' },
   ARCHITECTURE:                { title: 'Архитектура проекта',         emoji: '📐', descr: 'Главная спека — 3 слоя, 12 состояний воронки, схема БД, API, UI' },
   HANDS_AGENT_PROTOCOL:        { title: 'Протокол агентов-«Рук»',     emoji: '🤖', descr: 'Что должен делать каждый агент: формат отчёта, эскалации, запреты' },
   CRM_DATA_CONTRACT:           { title: 'Data Contract (для парсера)', emoji: '📊', descr: 'Куда парсер пишет в БД: tenant, таблицы, идемпотентность, pre-flight check' },
   LANDING_FACTORY_AGENT_GUIDE: { title: 'Гайд агента-кодера',          emoji: '🎨', descr: 'Откуда брать данные → как генерить лендинг → куда деплоить' },
   APPROVAL_WORKFLOW:           { title: 'Approval-first workflow',     emoji: '✅', descr: 'Цепочка состояний build_status, кто что переводит' },
   SALES_KANBAN_MESSENGER_SPEC: { title: 'Sales-канбан + Звонки',       emoji: '💼', descr: 'TASK_011: продажная воронка, /dream/board, /dream/calls, Messenger' },
+  CLOUDFLARE_WORKER_TRACKER:   { title: 'Cloudflare Worker (Tracker)',  emoji: '🌐', descr: 'TASK_012: трекинг визитов, Worker code, beacon-script для лендингов' },
 }
 
 export default async function DocViewerPage({ params }: { params: Promise<{ name: string }> }) {
