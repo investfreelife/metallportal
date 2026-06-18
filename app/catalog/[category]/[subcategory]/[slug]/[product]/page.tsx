@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getCategoryBySlug, getProductBySlug, getProductPriceItemsCutoverAware, getProductSellerOffers, getRelatedProducts } from "@/lib/queries";
 import ProductDetailView from "@/components/catalog/ProductDetailView";
 import Breadcrumbs from "@/components/seo/Breadcrumbs";
+import { SITE_URL } from "@/lib/site";
 
 export const revalidate = 3600;
 
@@ -17,7 +18,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = product.description
     ? product.description.slice(0, 155)
     : `${product.name} — купить оптом и в розницу в Москве.`;
-  return { title, description };
+  // TASK_053 (audit 2026-06-18 SEV-2): canonical на товарных страницах глубины 4.
+  // Раньше отсутствовал → дубли при ?utm/?ref. depth-3 шаблон обновляется тем же фиксом ниже.
+  const canonical = `${SITE_URL}/catalog/${params.category}/${params.subcategory}/${params.slug}/${params.product}`;
+  return { title, description, alternates: { canonical } };
 }
 
 export default async function ProductAtDepth4Page({ params }: Props) {

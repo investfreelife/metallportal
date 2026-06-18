@@ -25,7 +25,8 @@ const config: Config = {
         "primary-foreground": "var(--primary-foreground)",
       },
       fontFamily: {
-        sans: ["Inter", "sans-serif"],
+        // TASK_053: Inter через next/font (CSS var) с fallback на системные.
+        sans: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
       },
       maxWidth: {
         container: "1440px",

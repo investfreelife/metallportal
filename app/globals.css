@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+/* TASK_053 (audit 2026-06-18 SEV-2): Inter теперь через next/font/google
+ * в app/layout.tsx — self-hosted, preload, без render-blocking @import. */
 
 /* Dark theme (default) */
 :root,

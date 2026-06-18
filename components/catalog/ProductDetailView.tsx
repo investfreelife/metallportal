@@ -61,27 +61,38 @@ export default function ProductDetailView({ product, priceItems, related, basePa
     ? Math.min(...priceItems.map((pi: any) => Number(pi.discount_price ?? pi.base_price)))
     : 0;
 
+  // TASK_053 (audit 2026-06-18 SEV-2): Product schema всегда c image + offers.
+  // Раньше при bestPrice=0 Offer выпадал → Google рисовал товар без price.
+  // image — обязательное поле schema.org/Product для rich-results.
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
     description: product.description || undefined,
     sku: product.id,
+    image: product.image_url ? [product.image_url] : undefined,
     brand: { "@type": "Brand", name: "Харланметалл" },
     ...(product.gost && {
       additionalProperty: [{ "@type": "PropertyValue", name: "ГОСТ", value: product.gost }],
     }),
-    ...(bestPrice > 0 && {
-      offers: {
-        "@type": "Offer",
-        price: bestPrice,
-        priceCurrency: "RUB",
-        availability: priceItems.some((p: any) => p.in_stock)
-          ? "https://schema.org/InStock"
-          : "https://schema.org/PreOrder",
-        seller: { "@type": "Organization", name: "Харланметалл" },
-      },
-    }),
+    offers: bestPrice > 0
+      ? {
+          "@type": "Offer",
+          price: bestPrice,
+          priceCurrency: "RUB",
+          availability: priceItems.some((p: any) => p.in_stock)
+            ? "https://schema.org/InStock"
+            : "https://schema.org/PreOrder",
+          seller: { "@type": "Organization", name: "Харланметалл" },
+        }
+      : {
+          // «Цена по запросу» — отдельная валидная форма Offer без price-value
+          // (priceSpecification.MinPrice пуста). Google понимает.
+          "@type": "Offer",
+          priceCurrency: "RUB",
+          availability: "https://schema.org/PreOrder",
+          seller: { "@type": "Organization", name: "Харланметалл" },
+        },
   };
 
   return (
