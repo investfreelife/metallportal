@@ -115,17 +115,72 @@ git add <slug>/ && git commit -m "<slug>: parsed" && git push`}</pre>
         </ol>
       </section>
 
+      {/* COMMENTS & BLOCKERS */}
+      <section className="bg-red-50 border border-red-200 rounded-xl p-5 mb-4">
+        <h2 className="text-[15px] font-semibold mb-3">💬 Комментарии + 🛑 Блокеры — обязательная проверка</h2>
+        <p className="text-[12px] text-gray-700 mb-3">
+          Оператор/агент пишет комментарий через UI <code>/dream/leads/&lt;slug&gt;</code> → вкладка
+          «💬 Комментарии». Есть 4 типа:
+        </p>
+        <ul className="list-disc pl-5 text-[12px] space-y-1 text-gray-700 mb-4">
+          <li><b>📝 note</b> — заметка для агентов (учти при сборке)</li>
+          <li><b>✓ fact</b> — установленный факт (телефон другой, цены устарели)</li>
+          <li><b>⚠️ issue</b> — проблема, агент решает (битое фото)</li>
+          <li><b>🛑 blocker</b> — <b>СТОП-кран</b>: компания закрыта, есть свой сайт, отказались</li>
+        </ul>
+        <div className="bg-white border border-red-200 rounded-lg p-3 mb-3">
+          <p className="text-[12px] font-bold text-red-700 mb-2">
+            ⚠️ Каждый агент ОБЯЗАН перед работой выполнить:
+          </p>
+          <pre className="bg-gray-50 p-2 rounded text-[11px] overflow-x-auto">{`SELECT * FROM dream_lead_blockers WHERE lead_id = :lead_id;
+-- если строка ЕСТЬ → STOP
+-- лог dream_landing_generations.status = 'blocked_by_comment'
+-- никаких действий пока Sergey не пометит is_resolved=true`}</pre>
+        </div>
+        <p className="text-[11px] text-gray-600">
+          API для агента: <code>POST /api/dream/leads/&lt;slug&gt;/comments</code> с
+          <code>x-agent-token</code> + <code>x-agent-name: agent:parser</code>.
+          Тело: <code>{`{text, kind, attachment_url?}`}</code>.
+        </p>
+      </section>
+
+      {/* APPROVAL */}
+      <section className="bg-emerald-50 border border-emerald-200 rounded-xl p-5 mb-4">
+        <h2 className="text-[15px] font-semibold mb-3">✅ Approval-first (build_status)</h2>
+        <p className="text-[12px] text-gray-700 mb-3">
+          Лид проходит цепочку состояний <code>dream_leads.build_status</code>:
+        </p>
+        <p className="text-[12px] font-mono mb-3 bg-white border border-emerald-200 rounded p-2">
+          parsed → plan_proposed → <b>approved</b> (Sergey) → built → <b>chosen</b> (Sergey)
+        </p>
+        <ul className="list-disc pl-5 text-[12px] space-y-1 text-gray-700">
+          <li>Парсер кладёт лид → <code>build_status='parsed'</code></li>
+          <li>Агент-предлагатель плана → <code>'plan_proposed'</code> + <code>build_plan_json</code></li>
+          <li><b>Sergey клик</b> «Утвердить → в производство» → <code>'approved'</code></li>
+          <li>Только после approved агент-кодер собирает → <code>'built'</code></li>
+          <li>Sergey выбирает активный вариант → <code>'chosen'</code></li>
+        </ul>
+        <p className="text-[11px] text-red-700 mt-3 font-medium">
+          Если build_status != 'approved' — агент-кодер ОТКАЗ. Лог blocked_not_approved.
+        </p>
+        <p className="text-[11px] text-gray-600 mt-2">
+          API: <code>GET/PATCH /api/dream/leads/&lt;slug&gt;/build-plan</code>. Полная спека:
+          <code>app/queue/SPEC/APPROVAL_WORKFLOW.md</code>.
+        </p>
+      </section>
+
       {/* RULES */}
       <section className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-4">
         <h2 className="text-[15px] font-semibold mb-3">⚖️ Жёсткие правила</h2>
         <ul className="list-disc pl-5 text-[12px] space-y-1.5 text-gray-800">
-          <li><b>НЕ грузи фото/HTML в Supabase Storage.</b> Квота 1 GB убивает весь CRM.</li>
+          <li><b>СНАЧАЛА</b> проверь <code>dream_lead_blockers</code> и <code>build_status='approved'</code>. Если нет — STOP.</li>
+          <li><b>НЕ грузи фото/HTML в Supabase Storage.</b> Квота 1 GB убивает весь CRM. Bucket dream-comments — исключение (≤300KB attachments).</li>
           <li><b>Yandex CDN URL — для оригиналов</b>, не пере-аплоадь.</li>
           <li><b>WebP обязательно</b> для фото в репо. JPG/PNG — fail на CI.</li>
           <li><b>≤200 KB</b> на фото (после оптимизации).</li>
           <li><b>Относительные ссылки</b> в HTML лендингов — чтоб переехать с github.io на свой домен без правок.</li>
           <li><b>Не выдумывай факты</b> (годы работы, акции). Из CRM или ничего.</li>
-          <li><b>set_chosen=true</b> ставит только Sergey, не агент.</li>
+          <li><b>build_status='approved' / set_chosen=true / is_resolved (на блокерах)</b> — только Sergey, не агент.</li>
           <li><b>Секреты только в <code>/Users/Shared/металл/_SECRETS/</code></b>, никогда не светить в логах/чате/git.</li>
         </ul>
       </section>
@@ -136,8 +191,11 @@ git add <slug>/ && git commit -m "<slug>: parsed" && git push`}</pre>
         <ul className="list-disc pl-5 text-[12px] space-y-1 text-gray-700">
           <li><code>~/Documents/Claude/Projects/Мечта/app/queue/SPEC/CRM_DATA_CONTRACT.md</code> — куда парсер пишет</li>
           <li><code>~/Documents/Claude/Projects/Мечта/app/queue/SPEC/LANDING_FACTORY_AGENT_GUIDE.md</code> — как кодер делает лендинги</li>
+          <li><code>~/Documents/Claude/Projects/Мечта/app/queue/SPEC/APPROVAL_WORKFLOW.md</code> — gate состояний</li>
+          <li><code>~/Documents/Claude/Projects/Мечта/app/queue/INBOX/TASK_CRM_approval_section.md</code> — ТЗ кодеру на UI «🧩 Утверждение»</li>
           <li><code>~/Documents/Claude/Projects/Мечта/HANDS_AGENT_PROTOCOL.md</code> — общий протокол Рук</li>
           <li><code>~/.claude/projects/-Users-sergey/memory/law_heavy_files_free_storage_crm_metadata_only.md</code> — глобальный ЗАКОН про storage</li>
+          <li><code>~/.claude/projects/-Users-sergey/memory/dream_approval_first_workflow.md</code> — apruvals правило</li>
           <li><code>~/Documents/Claude/Projects/Мечта/SITES_REGISTRY.md</code> — реестр сайтов студии</li>
         </ul>
       </section>
