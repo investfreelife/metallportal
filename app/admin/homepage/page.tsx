@@ -5,7 +5,7 @@ import { Save, RefreshCw, Eye } from "lucide-react";
 const DEFAULTS: Record<string, string> = {
   hero_title: "Металлопрокат и Металлоконструкции",
   hero_subtitle: "Прямые поставки от производителей",
-  trust_bar_1: "1500+ позиций",
+  trust_bar_1: "12 000+ позиций",  // TASK_054: единая цифра, см. components/home/TrustCounters.tsx
   trust_bar_2: "50+ поставщиков",
   trust_bar_3: "Доставка за 3 дня",
   trust_bar_4: "Документы: УПД, счёт-фактура",

@@ -8,7 +8,10 @@ export default async function TrustCounters() {
 
   const counters = [1, 2, 3, 4].map((i) => ({
     icon: ICONS[i - 1],
-    label: settings[`trust_bar_${i}`] || ["1500+ позиций", "50+ поставщиков", "Доставка за 3 дня", "Документы"][i - 1],
+    // TASK_054 (audit 2026-06-18 SEV-1): единая цифра 12 000+ (вместо 1500+).
+    // Реальная цифра — 12166 SKU. Settings из БД переписывают этот fallback —
+    // обнови trust_bar_1 в админке /admin/homepage если до сих пор «1500+».
+    label: settings[`trust_bar_${i}`] || ["12 000+ позиций", "50+ поставщиков", "Доставка за 3 дня", "Документы"][i - 1],
   }));
 
   return (
