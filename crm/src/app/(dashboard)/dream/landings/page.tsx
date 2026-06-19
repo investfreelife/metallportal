@@ -22,27 +22,37 @@ const STATUS_COLOR: Record<string, string> = {
   lost: 'bg-gray-100 text-gray-600',
 }
 
-async function loadLandings() {
+async function loadLandings(showTrash: boolean) {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     { auth: { persistSession: false } }
   )
 
-  // Все лиды у которых ЕСТЬ landing_html_path или landing_deployed_url
-  const { data } = await supabase
+  // TASK_014/024 п.7: по умолчанию НЕ показываем trash/неподходящих
+  // (build_status='trash' + sales_stage='disqualified')
+  let q = supabase
     .from('dream_leads')
-    .select('id, slug, name, niche, rating, reviews_count, photos_count, services_count, status, price, landing_html_path, landing_deployed_url, completeness_score, updated_at')
+    .select('id, slug, name, niche, rating, reviews_count, photos_count, services_count, status, build_status, sales_stage, trash_reason, price, landing_html_path, landing_deployed_url, completeness_score, updated_at')
     .eq('tenant_id', DREAM_TENANT_ID)
     .or('landing_html_path.not.is.null,landing_deployed_url.not.is.null')
-    .order('updated_at', { ascending: false })
-    .limit(200)
 
+  if (!showTrash) {
+    q = q.neq('build_status', 'trash')
+  }
+
+  const { data } = await q.order('updated_at', { ascending: false }).limit(200)
   return data ?? []
 }
 
-export default async function LandingsPage() {
-  const landings = await loadLandings()
+export default async function LandingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ trash?: string }>
+}) {
+  const { trash } = await searchParams
+  const showTrash = trash === '1'
+  const landings = await loadLandings(showTrash)
 
   const deployed = landings.filter((l) => l.landing_deployed_url)
   const local = landings.filter((l) => l.landing_html_path && !l.landing_deployed_url)
@@ -57,9 +67,16 @@ export default async function LandingsPage() {
               Готовые HTML страницы под ключ. {deployed.length} опубликовано · {local.length} локально
             </p>
           </div>
-          <Link href="/dream/parser" className="bg-white text-purple-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-white/90">
-            Парсер →
-          </Link>
+          <div className="flex items-center gap-2">
+            {/* TASK_014/024 п.7: тумблер «показать мусор» */}
+            <Link href={showTrash ? '/dream/landings' : '/dream/landings?trash=1'}
+              className="bg-white/15 text-white border border-white/30 px-3 py-1.5 rounded-lg text-[12px] hover:bg-white/25">
+              {showTrash ? '✓ показан мусор' : 'показать мусор'}
+            </Link>
+            <Link href="/dream/parser" className="bg-white text-purple-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-white/90">
+              Парсер →
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -102,6 +119,12 @@ function LandingCard({ lead }: { lead: any }) {
           <h3 className="font-semibold text-gray-900 truncate flex-1">{lead.name}</h3>
           <span className={`text-[10px] px-2 py-0.5 rounded-full ${statusCls} flex-shrink-0`}>{lead.status}</span>
         </div>
+        {/* TASK_024 п.7: бейдж курации (trash_reason) — почему в мусоре */}
+        {lead.build_status === 'trash' && (
+          <span className="inline-block text-[10px] px-2 py-0.5 rounded bg-red-100 text-red-700 mb-1.5 font-bold">
+            🗑 в мусоре{lead.trash_reason ? ` · ${lead.trash_reason}` : ''}
+          </span>
+        )}
         <div className="text-[11px] text-gray-500 mb-3">
           {lead.niche ?? '—'} · ⭐ {lead.rating ?? '—'} · {lead.reviews_count ?? 0} отз
         </div>
