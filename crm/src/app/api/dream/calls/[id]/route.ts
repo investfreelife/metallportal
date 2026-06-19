@@ -17,8 +17,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     { auth: { persistSession: false } }
   )
-  // TASK_015: добавили запросы к dream_activities для lesson/objections/next_step.
-  // dream_calls сам не имеет этих полей — они в meta связанной активности.
+  // TASK_015 + TASK_021: подтягиваем meta из dream_activities — там звонилка
+  // пишет lesson/objections/next_step/who_answered/outcome/what_worked/coaching.
   const { data, error } = await sb
     .from('dream_calls')
     .select('id, lead_id, conversation_id, status, result, qualification, summary, transcript, duration_sec, recording_url, sms_sent, cost, started_at, ended_at')
@@ -27,11 +27,25 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   if (!data)  return NextResponse.json({ error: 'call not found' }, { status: 404 })
 
-  // Подтягиваем meta из dream_activities (звонилка пишет туда lesson/objections/next_step)
   const { data: act } = await sb
     .from('dream_activities')
     .select('meta')
     .eq('ref_table', 'dream_calls').eq('ref_id', id)
     .maybeSingle()
-  return NextResponse.json({ ...data, meta: act?.meta ?? {} })
+  const meta = act?.meta ?? {}
+
+  return NextResponse.json({
+    ...data,
+    meta,
+    // TASK_021: разложим по верху для удобства фронта (могут быть и в meta, и здесь)
+    who_answered: meta.who_answered ?? null,
+    outcome:      meta.outcome      ?? null,
+    objections:   meta.objections   ?? [],
+    what_worked:  meta.what_worked  ?? null,
+    lesson:       meta.lesson       ?? null,
+    next_step:    meta.next_step    ?? null,
+    coaching:     meta.coaching     ?? null,
+    // URL прокси-аудио (есть запись только если conversation_id задан)
+    audio_url: data.conversation_id ? `/api/dream/calls/${id}/audio` : null,
+  })
 }

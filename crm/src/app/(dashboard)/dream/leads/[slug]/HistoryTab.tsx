@@ -174,32 +174,40 @@ export function HistoryTab({ leadSlug }: { leadSlug: string }) {
 function CallDetails({ details }: { details: any }) {
   if (details.error) return <p className="text-[11px] text-red-500 italic mt-2">{details.error}</p>
 
-  // TASK_015: «Вывод/урок» из dream_activities.meta.lesson + возражения из meta.objections
-  const meta = details.meta ?? {}
-  const lesson    = meta.lesson    ?? details.lesson    ?? null
-  const objections = meta.objections ?? details.objections ?? null
-  const nextStep  = meta.next_step ?? details.next_step ?? null
+  // TASK_021: все 7 полей выводов мозга — на верхнем уровне (роутер их вытянул из meta)
+  const audioUrl   = details.audio_url ?? null
+  const summary    = details.summary
+  const whoAnswered= details.who_answered
+  const outcome    = details.outcome
+  const objections = details.objections
+  const whatWorked = details.what_worked
+  const lesson     = details.lesson
+  const nextStep   = details.next_step
+  const coaching   = details.coaching
 
   return (
     <div className="mt-3 pt-3 border-t border-gray-100 space-y-2">
-      {details.summary && (
+      {/* 🔊 АУДИО — прокси TASK_021 */}
+      {audioUrl ? (
         <div>
-          <div className="text-[10px] font-bold text-gray-500 uppercase mb-1">Резюме</div>
-          <p className="text-[12px] text-gray-700">{details.summary}</p>
+          <div className="text-[10px] font-bold text-gray-500 uppercase mb-1">🔊 Запись разговора</div>
+          <audio controls src={audioUrl} className="w-full h-8" preload="none"/>
         </div>
+      ) : (
+        <p className="text-[11px] text-gray-400 italic">Записи нет (недозвон)</p>
       )}
 
-      {nextStep && (
-        <div className="bg-amber-50 border border-amber-200 rounded p-2">
-          <div className="text-[10px] font-bold text-amber-700 uppercase mb-0.5">⏰ Следующий шаг</div>
-          <p className="text-[12px] text-amber-900">{nextStep}</p>
-        </div>
-      )}
-
-      {lesson && (
-        <div className="bg-emerald-50 border border-emerald-200 rounded p-2">
-          <div className="text-[10px] font-bold text-emerald-700 uppercase mb-0.5">💡 Вывод / урок</div>
-          <p className="text-[12px] text-emerald-900">{lesson}</p>
+      {/* 🧠 ВЫВОДЫ МОЗГА */}
+      {(summary || whoAnswered || outcome) && (
+        <div className="bg-gray-50 border border-gray-200 rounded p-2.5 space-y-1.5">
+          <div className="text-[10px] font-bold text-gray-700 uppercase">🧠 Выводы мозга</div>
+          {summary && <p className="text-[12px] text-gray-800">{summary}</p>}
+          {(whoAnswered || outcome) && (
+            <div className="text-[11px] text-gray-700 flex flex-wrap gap-x-3 gap-y-0.5">
+              {whoAnswered && <span><b>Кто ответил:</b> {whoAnswered}</span>}
+              {outcome     && <span><b>Итог:</b> {outcome}</span>}
+            </div>
+          )}
         </div>
       )}
 
@@ -212,12 +220,37 @@ function CallDetails({ details }: { details: any }) {
         </div>
       )}
 
-      {details.recording_url && (
-        <div>
-          <div className="text-[10px] font-bold text-gray-500 uppercase mb-1">🔊 Запись</div>
-          <audio controls src={details.recording_url} className="w-full h-8" preload="none"/>
+      {whatWorked && (
+        <div className="bg-emerald-50 border border-emerald-200 rounded p-2">
+          <div className="text-[10px] font-bold text-emerald-700 uppercase mb-0.5">✅ Сработало</div>
+          <p className="text-[12px] text-emerald-900">{whatWorked}</p>
         </div>
       )}
+
+      {lesson && (
+        <div className="bg-amber-50 border border-amber-200 rounded p-2">
+          <div className="text-[10px] font-bold text-amber-700 uppercase mb-0.5">💡 Урок</div>
+          <p className="text-[12px] text-amber-900">{lesson}</p>
+        </div>
+      )}
+
+      {nextStep && (
+        <div className="bg-sky-50 border border-sky-200 rounded p-2">
+          <div className="text-[10px] font-bold text-sky-700 uppercase mb-0.5">⏰ Следующий шаг</div>
+          <p className="text-[12px] text-sky-900">{nextStep}</p>
+        </div>
+      )}
+
+      {/* 🚀 КАК УЛУЧШИТЬ — самое ценное (мировой уровень) */}
+      {coaching && (
+        <div className="bg-gradient-to-br from-violet-50 to-indigo-50 border-2 border-violet-300 rounded p-2.5">
+          <div className="text-[10px] font-bold text-violet-700 uppercase mb-1">
+            🚀 Как улучшить (мировой уровень)
+          </div>
+          <p className="text-[12px] text-violet-900 leading-relaxed whitespace-pre-wrap">{coaching}</p>
+        </div>
+      )}
+
       {Array.isArray(details.transcript) && details.transcript.length > 0 && (
         <div>
           <div className="text-[10px] font-bold text-gray-500 uppercase mb-1">📄 Расшифровка</div>
