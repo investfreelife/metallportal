@@ -12,43 +12,8 @@
 import { useState } from 'react'
 import { NICHES, nicheMeta } from '@/lib/dream/niches'
 
-const SALES_STAGE_RU: Record<string, string> = {
-  site_ready:   'Сайт готов',
-  to_call:      'К обзвону',
-  no_answer:    'Недозвон',
-  reached:      'Дозвонились',
-  qualified:    'Квалифицирован',
-  link_sent:    'Ссылка отправлена',
-  negotiating:  'Переговоры',
-  callback:     'Перезвонить',
-  won:          'Куплен',
-  lost:         'Отказ',
-  disqualified: 'Не целевой',
-}
-const QUALIFICATION_RU: Record<string, string> = {
-  qualified:    'Целевой',
-  disqualified: 'Не целевой',
-  unknown:      'Не определён',
-  callback:     'Перезвонить',
-}
-const BUILD_STATUS_RU: Record<string, string> = {
-  parsed:        'Спарсен',
-  enriching:     'Идёт проверка',
-  plan_proposed: 'План готов',
-  approved:      'Утверждён',
-  building:      'Сборка сайта',
-  built:         'Сайт собран',
-  review_built:  'Проверка сайта',
-  for_sale:      'В продаже',
-  selling:       'Продаётся',
-  sold:          'Продан',
-  lost:          'Отказ',
-  trash:         'В мусоре',
-}
-const CHANNEL_RU: Record<string, string> = {
-  voice: 'Звонок', sms: 'СМС', email: 'Email',
-  telegram: 'Telegram', whatsapp: 'WhatsApp', max: 'MAX', vk: 'ВКонтакте',
-}
+// TASK_022/024: единый источник лейблов из lib/dream/statuses
+import { SALES_STAGE_RU, QUALIFICATION_RU, BUILD_STATUS_RU, CHANNEL_RU } from '@/lib/dream/statuses'
 
 interface Lead { slug: string; [k: string]: any }
 

@@ -12,10 +12,11 @@
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { nicheMeta, nicheBadgeCls } from '@/lib/dream/niches'
+import { BUILD_STATUS_RU, SALES_STAGE_RU, isClosedSale, salesStageCls, buildStatusCls } from '@/lib/dream/statuses'
 
 interface Lead {
   id: number; slug: string; name: string; niche: string | null; phone: string | null
-  rating: number | null; sales_stage: string; qualification: string
+  rating: number | null; build_status: string; sales_stage: string; qualification: string
   decision_maker_name: string | null; decision_maker_phone: string | null
   preferred_channel: string | null; callback_at: string | null
   last_contact_at: string | null; last_channel: string | null; unread_count: number
@@ -59,6 +60,7 @@ export function SalesBoard({ leads: initial }: { leads: Lead[] }) {
   const [dragOver, setDragOver] = useState<string | null>(null)
   const [moving, setMoving] = useState<number | null>(null)
   const [filterNiche, setFilterNiche] = useState<string>('all')
+  const [showClosed, setShowClosed] = useState(false)
 
   // TASK_018: сводка по нишам
   const nicheCounts = useMemo(() => {
@@ -71,9 +73,16 @@ export function SalesBoard({ leads: initial }: { leads: Lead[] }) {
     return Array.from(counts.values()).sort((a, b) => b.n - a.n)
   }, [leads])
 
-  const visibleLeads = useMemo(() =>
-    filterNiche === 'all' ? leads : leads.filter((l) => nicheMeta(l.niche).key === filterNiche),
-    [leads, filterNiche])
+  const visibleLeads = useMemo(() => {
+    let arr = filterNiche === 'all' ? leads : leads.filter((l) => nicheMeta(l.niche).key === filterNiche)
+    // TASK_022/024: разделить активную воронку и закрытые сделки.
+    // Активная воронка: sales_stage NOT IN closed (won/lost/disqualified)
+    // Закрытые: эти 3 — показываются ТОЛЬКО если showClosed=true
+    if (!showClosed) arr = arr.filter((l) => !isClosedSale(l.sales_stage))
+    return arr
+  }, [leads, filterNiche, showClosed])
+
+  const closedCount = useMemo(() => leads.filter((l) => isClosedSale(l.sales_stage)).length, [leads])
 
   async function moveStage(lead: Lead, sales_stage: string, askReason = false) {
     let reason = ''
@@ -109,10 +118,18 @@ export function SalesBoard({ leads: initial }: { leads: Lead[] }) {
   return (
     <div className="flex flex-col h-full">
       <div className="flex-shrink-0 px-5 pt-5 pb-3">
-        <h1 className="text-[20px] font-semibold">💼 Воронка продаж</h1>
-        <p className="text-[12px] text-gray-500 mb-2">
-          После того как сайт готов — ведём лида до продажи. <b>Перетащи</b> карточку между колонками.
-        </p>
+        <div className="flex items-baseline justify-between mb-2">
+          <div>
+            <h1 className="text-[20px] font-semibold">💼 Воронка продаж</h1>
+            <p className="text-[12px] text-gray-500">
+              Только лиды с <b>build_status='for_sale'+</b>. <b>Перетащи</b> карточку между колонками.
+            </p>
+          </div>
+          <label className="flex items-center gap-2 text-[12px] text-gray-600 cursor-pointer">
+            <input type="checkbox" checked={showClosed} onChange={(e) => setShowClosed(e.target.checked)} className="rounded"/>
+            показывать закрытые ({closedCount})
+          </label>
+        </div>
         {/* TASK_018: фильтр по нише */}
         <div className="flex gap-1.5 flex-wrap text-[11px]">
           <button onClick={() => setFilterNiche('all')}
@@ -130,7 +147,7 @@ export function SalesBoard({ leads: initial }: { leads: Lead[] }) {
 
       <div className="flex-1 overflow-x-auto overflow-y-hidden px-5 pb-5" style={{ scrollbarGutter: 'stable' }}>
         <div className="flex gap-3 h-full" style={{ width: 'max-content' }}>
-          {COLUMNS.map((col) => {
+          {COLUMNS.filter((c) => showClosed || !['won','lost','disqualified'].includes(c.key)).map((col) => {
             const items = byCol[col.key] ?? []
             const potential = items.length * AVG_DEAL
             return (
@@ -165,14 +182,20 @@ export function SalesBoard({ leads: initial }: { leads: Lead[] }) {
                         } ${moving === lead.id ? 'animate-pulse' : ''}`}>
                         <Link href={`/dream/leads/${lead.slug}`} className="block">
                           <div className="text-[12px] font-semibold text-gray-900 truncate">{lead.name}</div>
-                          {(() => {
-                            const m = nicheMeta(lead.niche)
-                            return (
-                              <span className={`inline-block text-[10px] px-1.5 py-0.5 rounded mt-0.5 ${nicheBadgeCls(m.color)}`}>
-                                {m.emoji} {m.label}
-                              </span>
-                            )
-                          })()}
+                          <div className="flex flex-wrap gap-1 mt-0.5">
+                            {(() => {
+                              const m = nicheMeta(lead.niche)
+                              return (
+                                <span className={`text-[10px] px-1.5 py-0.5 rounded ${nicheBadgeCls(m.color)}`}>
+                                  {m.emoji} {m.label}
+                                </span>
+                              )
+                            })()}
+                            {/* TASK_022: оба статуса видны на карточке */}
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded ${buildStatusCls(lead.build_status)}`} title="Production">
+                              {BUILD_STATUS_RU[lead.build_status] ?? lead.build_status}
+                            </span>
+                          </div>
                         </Link>
                         <div className="flex flex-wrap gap-1 mt-2 text-[10px]">
                           {lead.qualification === 'qualified' && (
