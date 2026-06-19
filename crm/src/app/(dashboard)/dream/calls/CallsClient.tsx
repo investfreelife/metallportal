@@ -10,6 +10,7 @@
  */
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+// audioUrl + детали подтягиваются динамически из /api/dream/calls/[id] в CallModal
 
 interface Call {
   id: string
@@ -215,6 +216,23 @@ function StatusBadge({ status }: { status: string | null }) {
 }
 
 function CallModal({ call, onClose }: { call: Call; onClose: () => void }) {
+  const [details, setDetails] = useState<any>(null)
+  useEffect(() => {
+    fetch(`/api/dream/calls/${call.id}`).then((r) => r.json()).then(setDetails).catch(() => {})
+  }, [call.id])
+
+  // TASK_021 — все блоки выводов мозга
+  const audioUrl   = details?.audio_url ?? null
+  const summary    = details?.summary ?? call.summary
+  const whoAnswered= details?.who_answered
+  const outcome    = details?.outcome
+  const objections = details?.objections
+  const whatWorked = details?.what_worked
+  const lesson     = details?.lesson
+  const nextStep   = details?.next_step
+  const coaching   = details?.coaching
+  const transcript = details?.transcript ?? call.transcript
+
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={onClose}>
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
@@ -224,7 +242,7 @@ function CallModal({ call, onClose }: { call: Call; onClose: () => void }) {
           </h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-700 text-xl leading-none">×</button>
         </div>
-        <div className="flex-1 overflow-y-auto p-5 space-y-4">
+        <div className="flex-1 overflow-y-auto p-5 space-y-3">
           {/* Meta */}
           <div className="grid grid-cols-3 gap-2 text-[11px]">
             <div><span className="text-gray-500">Дата:</span> {new Date(call.created_at).toLocaleString('ru-RU')}</div>
@@ -235,27 +253,76 @@ function CallModal({ call, onClose }: { call: Call; onClose: () => void }) {
             <div><span className="text-gray-500">Квалиф.:</span> {QUAL_BADGE[call.qualification]?.label ?? '—'}</div>
           </div>
 
-          {call.summary && (
+          {/* 🔊 АУДИО — прокси ElevenLabs */}
+          {audioUrl ? (
             <div>
-              <div className="text-[10px] uppercase font-bold text-gray-500 mb-1">Резюме</div>
-              <p className="text-[13px] text-gray-800 bg-gray-50 p-3 rounded">{call.summary}</p>
+              <div className="text-[10px] uppercase font-bold text-gray-500 mb-1">🔊 Запись разговора</div>
+              <audio controls src={audioUrl} className="w-full h-9" preload="none"/>
+            </div>
+          ) : details && (
+            <p className="text-[11px] text-gray-400 italic">Записи нет (недозвон)</p>
+          )}
+
+          {/* 🧠 ВЫВОДЫ МОЗГА */}
+          {(summary || whoAnswered || outcome) && (
+            <div className="bg-gray-50 border border-gray-200 rounded p-3 space-y-1.5">
+              <div className="text-[10px] uppercase font-bold text-gray-700">🧠 Выводы мозга</div>
+              {summary && <p className="text-[12.5px] text-gray-800">{summary}</p>}
+              {(whoAnswered || outcome) && (
+                <div className="text-[11.5px] text-gray-700 flex flex-wrap gap-x-4 gap-y-0.5">
+                  {whoAnswered && <span><b>Кто ответил:</b> {whoAnswered}</span>}
+                  {outcome     && <span><b>Итог:</b> {outcome}</span>}
+                </div>
+              )}
             </div>
           )}
 
-          {call.recording_url && (
-            <div>
-              <div className="text-[10px] uppercase font-bold text-gray-500 mb-1">Запись</div>
-              <audio controls src={call.recording_url} className="w-full h-9" preload="none"/>
+          {Array.isArray(objections) && objections.length > 0 && (
+            <div className="bg-red-50 border border-red-200 rounded p-2.5">
+              <div className="text-[10px] uppercase font-bold text-red-700 mb-1">🚫 Возражения</div>
+              <ul className="text-[12px] text-red-900 list-disc pl-5 space-y-0.5">
+                {objections.map((o: string, i: number) => <li key={i}>{o}</li>)}
+              </ul>
             </div>
           )}
 
-          {Array.isArray(call.transcript) && call.transcript.length > 0 && (
+          {whatWorked && (
+            <div className="bg-emerald-50 border border-emerald-200 rounded p-2.5">
+              <div className="text-[10px] uppercase font-bold text-emerald-700 mb-1">✅ Сработало</div>
+              <p className="text-[12px] text-emerald-900">{whatWorked}</p>
+            </div>
+          )}
+
+          {lesson && (
+            <div className="bg-amber-50 border border-amber-200 rounded p-2.5">
+              <div className="text-[10px] uppercase font-bold text-amber-700 mb-1">💡 Урок</div>
+              <p className="text-[12px] text-amber-900">{lesson}</p>
+            </div>
+          )}
+
+          {nextStep && (
+            <div className="bg-sky-50 border border-sky-200 rounded p-2.5">
+              <div className="text-[10px] uppercase font-bold text-sky-700 mb-1">⏰ Следующий шаг</div>
+              <p className="text-[12px] text-sky-900">{nextStep}</p>
+            </div>
+          )}
+
+          {coaching && (
+            <div className="bg-gradient-to-br from-violet-50 to-indigo-50 border-2 border-violet-300 rounded p-3">
+              <div className="text-[10px] uppercase font-bold text-violet-700 mb-1.5">
+                🚀 Как улучшить (мировой уровень)
+              </div>
+              <p className="text-[12.5px] text-violet-900 leading-relaxed whitespace-pre-wrap">{coaching}</p>
+            </div>
+          )}
+
+          {Array.isArray(transcript) && transcript.length > 0 && (
             <div>
-              <div className="text-[10px] uppercase font-bold text-gray-500 mb-1">Расшифровка</div>
+              <div className="text-[10px] uppercase font-bold text-gray-500 mb-1">📄 Расшифровка</div>
               <ol className="space-y-2 text-[12px]">
-                {call.transcript.map((t: any, i: number) => (
+                {transcript.map((t: any, i: number) => (
                   <li key={i} className={`flex gap-3 ${t.role === 'agent' ? 'text-purple-700' : 'text-gray-700'}`}>
-                    <span className="font-bold flex-shrink-0 w-14">{t.role === 'agent' ? '🤖 AI' : '🙍 Клиент'}</span>
+                    <span className="font-bold flex-shrink-0 w-16">{t.role === 'agent' ? '🤖 Робот' : '🙍 Клиент'}</span>
                     <span>{t.text}</span>
                   </li>
                 ))}
