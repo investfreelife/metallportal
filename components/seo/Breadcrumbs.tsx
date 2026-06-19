@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SITE_URL } from "@/lib/site";
+import { jsonLdString } from "@/lib/jsonLd";
 
 /**
  * Single source of truth для хлебных крошек: визуальная навигация +
@@ -69,7 +70,7 @@ export default function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
       </nav>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }}
       />
     </>
   );

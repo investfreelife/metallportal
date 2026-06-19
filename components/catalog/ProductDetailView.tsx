@@ -7,6 +7,7 @@ import NavesProductDetail from "@/components/catalog/NavesProductDetail";
 import { CheckCircle } from "lucide-react";
 import CategoryCallbackCTA from "@/components/catalog/CategoryCallbackCTA";
 import { formatDimensions, formatDimensionsCompact } from "@/lib/formatDimensions";
+import { jsonLdString } from "@/lib/jsonLd";
 
 function buildSpecs(product: any): Record<string, string | null> {
   const dims = formatDimensions(product.dimensions);
@@ -97,7 +98,7 @@ export default function ProductDetailView({ product, priceItems, related, basePa
 
   return (
     <div>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }} />
 
       <nav className="text-sm text-muted-foreground mb-5 flex items-center gap-1.5 flex-wrap">
         <Link href="/" className="hover:text-gold transition-colors">Главная</Link>

@@ -5,6 +5,7 @@ import { getArticle, getAllSlugs, extractFAQ } from "@/lib/blog";
 import ArticleRenderer from "@/components/blog/ArticleRenderer";
 import RelatedArticles from "@/components/blog/RelatedArticles";
 import { SITE_URL } from "@/lib/site";
+import { jsonLdString } from "@/lib/jsonLd";
 
 interface Props {
   params: { slug: string };
@@ -121,16 +122,16 @@ export default function ArticlePage({ params }: Props) {
     <main className="bg-background min-h-screen">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(blogPostingSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(breadcrumbSchema) }}
       />
       {faqSchema && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdString(faqSchema) }}
         />
       )}
 

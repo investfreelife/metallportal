@@ -1,5 +1,6 @@
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 import { CONTACT_PHONE_TEL, CONTACT_EMAIL } from "@/lib/contact";
+import { jsonLdString } from "@/lib/jsonLd";
 
 /**
  * Site-wide JSON-LD schemas — рендерятся в `<body>` через `app/layout.tsx`.
@@ -68,11 +69,11 @@ export default function SiteSchemas() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(websiteSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(localBusinessSchema) }}
       />
     </>
   );

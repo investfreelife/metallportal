@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Phone, Send, ShieldCheck, Truck, Award, FileText, ArrowRight } from "lucide-react";
 import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_TEL } from "@/lib/contact";
+import { jsonLdString } from "@/lib/jsonLd";
 
 /**
  * EmptyCategoryLanding — SEO-optimized fallback страница для категорий с 0 products.
@@ -60,7 +61,7 @@ export default function EmptyCategoryLanding({ category, parentName }: EmptyCate
       {/* Schema.org JSON-LD */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(schema) }}
       />
 
       {/* Hero */}

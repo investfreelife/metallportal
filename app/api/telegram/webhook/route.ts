@@ -283,11 +283,19 @@ export async function POST(req: NextRequest) {
             user_name: firstName,
           }).eq("code", code);
 
-          // Создать профиль если нет
+          // Создать профиль если нет.
+          // TASK_054 (audit SEV-3): пароль был `tg_${tgId}_${code.slice(0,8)}`
+          // — детерминированно выводился из публичного tgId. Логин по
+          // email/password этих юзеров идёт только через telegram-flow, но
+          // если кто-то перебирает tgId — мог получить session. Заменил на
+          // 32 байта CSPRNG → пароль теряется навсегда (что и нужно для
+          // synthetic-user; вход — только через tg auth).
           const syntheticEmail = `tg_${tgId}@telegram.metallportal.app`;
+          const { randomBytes } = await import('crypto');
+          const syntheticPassword = randomBytes(32).toString('hex');
           await supabase.auth.admin.createUser({
             email: syntheticEmail,
-            password: `tg_${tgId}_${code.slice(0,8)}`,
+            password: syntheticPassword,
             email_confirm: true,
             user_metadata: { full_name: firstName, telegram_id: tgId },
           }).catch(() => {});

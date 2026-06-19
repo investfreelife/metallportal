@@ -9,6 +9,7 @@ import CTASection from "@/components/home/CTASection";
 import Link from "next/link";
 import { CheckCircle, Calculator, ArrowRight } from "lucide-react";
 import { DocumentUpload } from "@/components/DocumentUpload";
+import { jsonLdString } from "@/lib/jsonLd";
 
 export const metadata: Metadata = {
   title: "Харланметалл — Металлопрокат оптом и в розницу в Москве",
@@ -64,7 +65,7 @@ export default function HomePage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(organizationSchema) }}
       />
       <Hero />
       <TrustCounters />

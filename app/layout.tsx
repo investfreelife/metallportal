@@ -65,11 +65,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ru" suppressHydrationWarning className={inter.variable}>
       <body className="min-h-screen bg-background text-foreground transition-colors duration-200 font-sans">
+        {/* TASK_054 (audit SEV-3): skip-link для клавиатурной навигации.
+            Видим только при :focus (Tab из URL-бара) — пользователи мыши
+            ничего не видят, screen-reader/keyboard юзеры могут пропустить
+            длинный header. */}
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-gold focus:text-black focus:font-bold focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-2xl"
+        >
+          Перейти к содержимому
+        </a>
         <SiteSchemas />
         <ThemeProvider>
           <CartProvider>
             <Header />
-            {children}
+            <div id="main">{children}</div>
             <Footer />
             <AdminBar />
           </CartProvider>

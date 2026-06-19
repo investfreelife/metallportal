@@ -35,15 +35,34 @@ export async function POST(req: NextRequest) {
 
     if (!file) return NextResponse.json({ error: "No file" }, { status: 400 });
 
-    const ext = file.name.split(".").pop() || "jpg";
+    // TASK_054 (audit SEV-3): magic-byte проверка вместо доверия к
+    // file.type / расширению. Раньше юзер мог отправить evil.html с
+    // contentType=image/jpeg → лежал бы в bucket'е и Supabase отдавал бы
+    // его с заголовком image/jpeg, но реально это HTML. Низкий риск
+    // (роут защищён requireRole admin/designer), но best-practice.
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const m = buffer.subarray(0, 12);
+    const detected =
+      m.length >= 3 && m[0] === 0xff && m[1] === 0xd8 && m[2] === 0xff ? { ext: "jpg", mime: "image/jpeg" } :
+      m.length >= 4 && m[0] === 0x89 && m[1] === 0x50 && m[2] === 0x4e && m[3] === 0x47 ? { ext: "png", mime: "image/png" } :
+      m.length >= 12 && m[0] === 0x52 && m[1] === 0x49 && m[2] === 0x46 && m[3] === 0x46 &&
+        m[8] === 0x57 && m[9] === 0x45 && m[10] === 0x42 && m[11] === 0x50 ? { ext: "webp", mime: "image/webp" } :
+      m.length >= 4 && m[0] === 0x47 && m[1] === 0x49 && m[2] === 0x46 && m[3] === 0x38 ? { ext: "gif", mime: "image/gif" } :
+      null;
+    if (!detected) {
+      return NextResponse.json(
+        { error: "Файл не похож на JPG/PNG/WebP/GIF (magic-byte mismatch)" },
+        { status: 400 },
+      );
+    }
+
     // Path: site-images/user-uploads/<folder>/<timestamp>.<ext>
     // — `user-uploads/` сигнал для imageCdn.ts что rewrite НЕ нужен.
-    const fileName = `user-uploads/${folder}/${Date.now()}.${ext}`;
-    const buffer = Buffer.from(await file.arrayBuffer());
+    const fileName = `user-uploads/${folder}/${Date.now()}.${detected.ext}`;
 
     const { error } = await supabase.storage
       .from("site-images")
-      .upload(fileName, buffer, { contentType: file.type, upsert: true });
+      .upload(fileName, buffer, { contentType: detected.mime, upsert: true });
 
     if (error) {
       console.error("[upload-image] supabase upload failed:", error.message);

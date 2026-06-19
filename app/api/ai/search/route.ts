@@ -121,8 +121,15 @@ async function catalogSearch(query: string) {
 
 // ─── Route handler ───────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
-  const body = await req.json()
-  const query: string = (body.query || '').trim()
+  // TASK_054 (audit SEV-2): await req.json() без try/catch → 500 при invalid JSON
+  // (фронт-баг, бот, scanner).
+  let body: { query?: unknown }
+  try {
+    body = await req.json()
+  } catch {
+    return NextResponse.json({ error: 'invalid JSON body' }, { status: 400 })
+  }
+  const query: string = (typeof body.query === 'string' ? body.query : '').trim()
 
   if (!query) {
     return NextResponse.json({ error: 'query required' }, { status: 400 })

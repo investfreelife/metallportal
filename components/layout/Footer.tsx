@@ -74,7 +74,9 @@ export default async function Footer() {
               </li>
               <li className="flex items-start gap-2 text-foreground/80">
                 <Clock size={16} className="text-gold mt-0.5 flex-shrink-0" />
-                <span>Пн–Пт 9:00–18:00 МСК</span>
+                {/* TASK_054 (audit SEV-2): синхронизация с /contacts —
+                    там было Пн-Пт + Сб, в Footer только Пн-Пт. */}
+                <span>Пн–Пт 9:00–18:00, Сб 10:00–15:00 МСК</span>
               </li>
             </ul>
           </div>

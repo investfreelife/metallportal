@@ -27,11 +27,12 @@ export const dynamic = "force-static";    // подсказка фреймвор
 
 /**
  * Supabase REST API имеет hard cap 1000 строк per query (PostgREST default).
- * Чтобы вытащить полный каталог (5400+ SKU и растёт) — paginate'им через
- * `.range()`. SAFETY_CAP — защита от infinite loop при schema-баге.
+ * Чтобы вытащить полный каталог (12166 SKU и растёт — audit 2026-06-18) —
+ * paginate'им через `.range()`. SAFETY_CAP — защита от infinite loop при
+ * schema-баге.
  *
  * Sitemap protocol limit — 50000 URL per file. Если каталог превысит — нужен
- * sharding на `sitemap-products-{N}.xml` + index sitemap. На текущих ~5500
+ * sharding на `sitemap-products-{N}.xml` + index sitemap. На текущих ~12000
  * SKU + ~250 categories + 9 static — мы далеко до этого порога.
  */
 const PAGE_SIZE = 1000;

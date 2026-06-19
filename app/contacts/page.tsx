@@ -53,7 +53,7 @@ export default function ContactsPage() {
             </div>
             <div>
               <div className="font-semibold text-foreground mb-1">Telegram</div>
-              <a href="https://t.me/harlansteel" target="_blank" className="text-lg font-medium text-[#229ED9] hover:underline">
+              <a href="https://t.me/harlansteel" target="_blank" rel="noopener noreferrer" className="text-lg font-medium text-[#229ED9] hover:underline">
                 @harlansteel
               </a>
               <p className="text-sm text-muted-foreground mt-1">Быстрый ответ в мессенджере</p>

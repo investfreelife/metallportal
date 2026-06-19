@@ -1,5 +1,5 @@
 'use client'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Turnstile } from '@marsidev/react-turnstile'
 
 interface CartItem {
@@ -38,6 +38,17 @@ export function SmartSearch() {
   const recognitionRef = useRef<any>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const voiceCallbackRef = useRef<((text: string) => void) | null>(null)
+
+  // TASK_054 (audit SEV-3): cleanup на unmount. Раньше если юзер закрывал
+  // страницу/уходил во время голос-записи — SpeechRecognition продолжал
+  // слушать в фоне, а setInterval тикать (warning от React о setState
+  // в unmounted; на мобильных утечка батареи). Чиним: stop+clearInterval.
+  useEffect(() => {
+    return () => {
+      try { recognitionRef.current?.stop() } catch {}
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+  }, [])
 
   // Быстрый поиск по каталогу (текстовый ввод)
   const search = async (q?: string) => {

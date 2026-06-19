@@ -95,10 +95,13 @@ function getBestPrice(product: any): number | null {
 
 function SelectFilter({ label, value, options, onChange }: { label: string; value: string; options: string[]; onChange: (v: string) => void }) {
   if (!options.length) return null;
+  // TASK_054 (audit SEV-3): связываем label↔select через htmlFor/id —
+  // screen-reader корректно зачитывает «Марка стали, выбор».
+  const fieldId = `catalog-filter-${label.replace(/\s+/g, "-").toLowerCase()}`;
   return (
     <div>
-      <label className="block text-xs uppercase tracking-wider text-muted-foreground mb-1.5">{label}</label>
-      <select value={value} onChange={(e) => onChange(e.target.value)}
+      <label htmlFor={fieldId} className="block text-xs uppercase tracking-wider text-muted-foreground mb-1.5">{label}</label>
+      <select id={fieldId} value={value} onChange={(e) => onChange(e.target.value)}
         className="w-full bg-input border border-border rounded px-3 py-2 text-sm text-foreground outline-none focus:border-gold transition-colors">
         <option value="">Все</option>
         {options.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
@@ -464,15 +467,24 @@ export default function CatalogView({ category, subcategories, products, categor
             )}
           </div>
           <div className="flex items-center gap-3">
-            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}
-              className="bg-card border border-border rounded px-3 py-1.5 text-sm text-foreground outline-none focus:border-gold">
+            {/* TASK_054 (audit SEV-3): aria-label на sort-select. */}
+            <select
+              aria-label="Сортировка товаров"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="bg-card border border-border rounded px-3 py-1.5 text-sm text-foreground outline-none focus:border-gold"
+            >
               {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
-            <div className="flex items-center gap-1 bg-card border border-border rounded p-1">
+            <div className="flex items-center gap-1 bg-card border border-border rounded p-1" role="group" aria-label="Режим отображения">
               <button onClick={() => setViewMode("table")}
+                aria-label="Таблица"
+                aria-pressed={viewMode === "table"}
                 className={`p-2 rounded transition-all ${viewMode === "table" ? "bg-gold text-black" : "text-muted-foreground hover:text-foreground"}`}
                 title="Таблица"><List size={16} /></button>
               <button onClick={() => setViewMode("cards")}
+                aria-label="Карточки"
+                aria-pressed={viewMode === "cards"}
                 className={`p-2 rounded transition-all ${viewMode === "cards" ? "bg-gold text-black" : "text-muted-foreground hover:text-foreground"}`}
                 title="Карточки"><LayoutGrid size={16} /></button>
             </div>
@@ -529,28 +541,34 @@ export default function CatalogView({ category, subcategories, products, categor
               </>
             )}
 
-            {/* Pagination */}
+            {/* Pagination — TASK_054 (audit SEV-3): nav role + aria-label
+                на стрелочные кнопки (←/→ — screen-reader зачитывает
+                "стрелка влево/вправо" без контекста). */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 mt-6">
+              <nav aria-label="Пагинация каталога" className="flex items-center justify-center gap-2 mt-6">
                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
+                  aria-label="Предыдущая страница"
                   className="px-4 py-2 bg-card border border-border rounded text-sm hover:border-gold disabled:opacity-40 transition-all">
-                  ←
+                  <span aria-hidden="true">←</span>
                 </button>
                 {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
                   const p = i + Math.max(1, page - 3);
                   if (p > totalPages) return null;
                   return (
                     <button key={p} onClick={() => setPage(p)}
+                      aria-label={`Страница ${p}`}
+                      aria-current={p === page ? "page" : undefined}
                       className={`w-9 h-9 rounded text-sm transition-all ${p === page ? "bg-gold text-black font-bold" : "bg-card border border-border hover:border-gold"}`}>
                       {p}
                     </button>
                   );
                 })}
                 <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
+                  aria-label="Следующая страница"
                   className="px-4 py-2 bg-card border border-border rounded text-sm hover:border-gold disabled:opacity-40 transition-all">
-                  →
+                  <span aria-hidden="true">→</span>
                 </button>
-              </div>
+              </nav>
             )}
           </main>
         </div>
