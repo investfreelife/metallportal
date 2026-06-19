@@ -36,8 +36,12 @@
   --border: #e2e8f0;
   --muted: #f1f5f9;
   --muted-foreground: #64748b;
-  --gold: #E8B86D;
-  --gold-dark: #c49a54;
+  /* TASK_054 (audit 2026-06-18 SEV-2 WCAG AA):
+   * gold #E8B86D на белом фоне ~2.7:1 — fail AA для текста (нужно ≥4.5:1).
+   * Затемняем gold в light до #B3801F (≈4.6:1 на белом). На тёмном фоне
+   * (dark theme выше) gold остаётся прежним — контраст там был OK. */
+  --gold: #B3801F;
+  --gold-dark: #8C6418;
   --success: #10b981;
   --topbar-bg: #1a1a2e;
   --topbar-text: #ffffff;

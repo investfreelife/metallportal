@@ -31,23 +31,25 @@ export default function AISearchPage() {
       <div className="container-main pt-4">
         <Breadcrumbs items={[{ name: "Поиск с ИИ" }]} />
       </div>
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 pt-14 pb-10">
+      {/* Hero — TASK_054 (audit 2026-06-18 SEV-2 бренд):
+          палитра была blue, в бренде Харланметалл основной акцент — gold.
+          Перекрасил все blue-* на gold/тёплые тёмные оттенки. */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#0a0a0a] via-[#1a1410] to-[#0a0a0a] pt-14 pb-10">
         {/* Background glow */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-blue-500/10 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gold/10 rounded-full blur-3xl" />
         </div>
 
         <div className="container-main relative z-10">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 bg-blue-500/15 border border-blue-400/30 text-blue-300 text-xs font-semibold px-4 py-1.5 rounded-full mb-5">
+            <div className="inline-flex items-center gap-2 bg-gold/15 border border-gold/30 text-gold text-xs font-semibold px-4 py-1.5 rounded-full mb-5">
               <Sparkles size={13} />
               Искусственный интеллект
             </div>
             <h1 className="text-3xl md:text-4xl font-black text-white mb-3 leading-tight">
               Умный поиск металлопроката
             </h1>
-            <p className="text-blue-200/80 text-base md:text-lg max-w-xl mx-auto leading-relaxed">
+            <p className="text-white/75 text-base md:text-lg max-w-xl mx-auto leading-relaxed">
               Опишите что нужно своими словами — ИИ подберёт из&nbsp;12&nbsp;000+ позиций
               и&nbsp;сформирует заявку с&nbsp;ценами
             </p>
@@ -60,10 +62,10 @@ export default function AISearchPage() {
 
           {/* Example queries */}
           <div className="mt-6 text-center">
-            <p className="text-blue-300/60 text-xs mb-3">Примеры запросов:</p>
+            <p className="text-gold/70 text-xs mb-3">Примеры запросов:</p>
             <div className="flex flex-wrap justify-center gap-2 max-w-2xl mx-auto">
               {EXAMPLES.map((ex) => (
-                <span key={ex} className="text-xs bg-white/5 border border-white/10 text-blue-200/70 px-3 py-1.5 rounded-full">
+                <span key={ex} className="text-xs bg-white/5 border border-white/10 text-white/70 px-3 py-1.5 rounded-full">
                   {ex}
                 </span>
               ))}
@@ -78,8 +80,8 @@ export default function AISearchPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {FEATURES.map(({ icon: Icon, title, desc }) => (
               <div key={title} className="flex flex-col items-center text-center gap-2 p-4 bg-card border border-border rounded-2xl">
-                <div className="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center">
-                  <Icon size={20} className="text-blue-500" />
+                <div className="w-10 h-10 bg-gold/10 rounded-xl flex items-center justify-center">
+                  <Icon size={20} className="text-gold" />
                 </div>
                 <p className="font-bold text-foreground text-sm">{title}</p>
                 <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
@@ -101,7 +103,7 @@ export default function AISearchPage() {
               { n: "4", title: "Менеджер перезванивает за 15 мин", desc: "Подтверждает наличие, уточняет условия и отправляет точное коммерческое предложение." },
             ].map(({ n, title, desc }) => (
               <div key={n} className="flex gap-4 bg-card border border-border rounded-2xl p-5">
-                <div className="w-9 h-9 bg-blue-500 rounded-xl flex items-center justify-center text-white font-black text-sm flex-shrink-0">
+                <div className="w-9 h-9 bg-gold rounded-xl flex items-center justify-center text-black font-black text-sm flex-shrink-0">
                   {n}
                 </div>
                 <div>
