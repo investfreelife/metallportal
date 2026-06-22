@@ -27,6 +27,9 @@ const PUBLIC_PREFIX = [
   // URGENT 2026-05-17 OMNICHANNEL: /api/inbox/send + /api/inbox/ai-suggest
   // handlers сами проверяют session cookie ИЛИ x-agent-token.
   '/api/inbox/',
+  // TZ_nimbo_form_backend 2026-06-22: публичный приём заявок с лендингов.
+  // Защита внутри handler-а: CORS allowlist + honeypot + rate-limit.
+  '/api/public/',
 ]
 
 // ── Edge-compatible HMAC-SHA256 ────────────────────────────────────
