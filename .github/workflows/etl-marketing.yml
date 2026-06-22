@@ -28,7 +28,7 @@ jobs:
         # Re-add: вернуть `, yandex_direct` в list после approve.
         source: [yandex_metrika, yandex_webmaster, voximplant_calls]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v5
         with:
