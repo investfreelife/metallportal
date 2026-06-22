@@ -68,8 +68,10 @@ async function loadData() {
       .order('started_at', { ascending: false })
       .limit(5)
       .maybeSingle()
-      .then((r) => ({ data: Array.isArray(r.data) ? r.data : (r.data ? [r.data] : []) }))
-      .catch(() => ({ data: [] })),
+      .then(
+        (r) => ({ data: Array.isArray(r.data) ? r.data : (r.data ? [r.data] : []) }),
+        () => ({ data: [] }),
+      ),
     supabase
       .from('dream_activities')
       .select('id, lead_id, type, actor, title, body, ts, created_at')
