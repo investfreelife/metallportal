@@ -88,7 +88,13 @@ export async function proxy(request: NextRequest) {
   const token = request.cookies.get('crm_session')?.value
   const valid = token ? await verifyToken(token) : false
 
-  if (!valid) {
+  // TASK_030 #3: defence-in-depth. Если x-agent-token совпадает с
+  // AGENT_WEBHOOK_TOKEN — пропускаем дальше; handler сам проверит ещё раз
+  // через requireDreamAuth (две независимые проверки = два барьера).
+  const agentToken = request.headers.get('x-agent-token')
+  const isAgent = !!(agentToken && process.env.AGENT_WEBHOOK_TOKEN && agentToken === process.env.AGENT_WEBHOOK_TOKEN)
+
+  if (!valid && !isAgent) {
     // API → 401 JSON
     if (pathname.startsWith('/api/')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
