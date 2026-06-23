@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireDreamAuth } from '@/lib/dream/requireAuth'
 
 const DREAM_TENANT_ID = '11111111-2222-3333-4444-555555555555'
 
@@ -11,6 +12,10 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  // TASK_030 #3: defence-in-depth auth.
+  const __auth = await requireDreamAuth(req)
+  if (!__auth.ok) return __auth.res
+
   const { slug } = await params
   let body: any
   try {

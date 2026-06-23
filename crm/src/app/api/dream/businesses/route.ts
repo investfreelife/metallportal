@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { safeSearch, safeIlikeOr } from '@/lib/dream/safeSearch'
+import { requireDreamAuth } from '@/lib/dream/requireAuth'
 
 /**
  * GET /api/dream/businesses — для 3 вкладок страницы Парсер.
@@ -25,9 +27,14 @@ function admin() {
 }
 
 export async function GET(req: NextRequest) {
+  // TASK_030 #3: defence-in-depth auth.
+  const auth = await requireDreamAuth(req)
+  if (!auth.ok) return auth.res
+
   const url = new URL(req.url)
   const tab = url.searchParams.get('tab') ?? 'all'
-  const search = (url.searchParams.get('search') ?? '').trim()
+  // CWE-943: search санитизируется — иначе PostgREST `.or()` filter-injection.
+  const search = safeSearch(url.searchParams.get('search'))
   const limit = Math.min(parseInt(url.searchParams.get('limit') ?? '50', 10), 300)
   const offset = parseInt(url.searchParams.get('offset') ?? '0', 10)
 
@@ -42,7 +49,7 @@ export async function GET(req: NextRequest) {
   if (tab === 'enriched') q = q.not('enriched_at', 'is', null)
 
   if (search) {
-    q = q.or(`name.ilike.%${search}%,address.ilike.%${search}%,phone.ilike.%${search}%`)
+    q = q.or(safeIlikeOr(['name','address','phone'], search))
   }
 
   // Сортировка: enriched сверху, потом по рейтингу/discovered

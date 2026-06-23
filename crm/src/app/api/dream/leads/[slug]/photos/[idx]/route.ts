@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireDreamAuth } from '@/lib/dream/requireAuth'
 
 /**
  * PATCH /api/dream/leads/[slug]/photos/[idx]
@@ -13,6 +14,10 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string; idx: string }> }
 ) {
+  // TASK_030 #3: defence-in-depth auth.
+  const __auth = await requireDreamAuth(req)
+  if (!__auth.ok) return __auth.res
+
   const { slug, idx: idxStr } = await params
   const idx = parseInt(idxStr, 10)
   if (!Number.isFinite(idx)) return NextResponse.json({ error: 'invalid idx' }, { status: 400 })

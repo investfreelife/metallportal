@@ -16,12 +16,17 @@
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireDreamAuth } from '@/lib/dream/requireAuth'
 
 export const dynamic = 'force-dynamic'
 
 const DREAM_TENANT_ID = '11111111-2222-3333-4444-555555555555'
 
 export async function GET(req: NextRequest) {
+  // TASK_030 #3: defence-in-depth auth.
+  const __auth = await requireDreamAuth(req)
+  if (!__auth.ok) return __auth.res
+
   const url = new URL(req.url)
   const from = url.searchParams.get('from')
   const to   = url.searchParams.get('to')

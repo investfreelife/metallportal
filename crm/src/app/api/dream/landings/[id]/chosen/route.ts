@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireDreamAuth } from '@/lib/dream/requireAuth'
 
 /**
  * POST /api/dream/landings/[id]/chosen
@@ -11,6 +12,10 @@ export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // TASK_030 #3: defence-in-depth auth.
+  const __auth = await requireDreamAuth(_req)
+  if (!__auth.ok) return __auth.res
+
   const { id: idStr } = await params
   const id = parseInt(idStr, 10)
   if (!Number.isFinite(id)) return NextResponse.json({ error: 'invalid id' }, { status: 400 })

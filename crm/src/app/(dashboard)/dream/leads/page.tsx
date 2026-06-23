@@ -1,11 +1,16 @@
 import Link from 'next/link'
 import { createClient } from '@supabase/supabase-js'
+import { sourceMeta } from '@/lib/dream/statuses'
 
 export const dynamic = 'force-dynamic'
 export const metadata = { title: 'Лиды · Мечта' }
 
 const DREAM_TENANT_ID = '11111111-2222-3333-4444-555555555555'
 
+// LEGACY `status` колонка dream_leads (new/enriched/generated/outreach/contacted/...).
+// НОВЫЙ канон — sales_stage из lib/dream/statuses.ts SALES_STAGE_RU. Эта таблица
+// статусов остаётся для обратной совместимости старых лидов; новые UI компоненты
+// (DossierPanel, SalesBoard, HistoryTab) уже импортируют SALES_STAGE_RU.
 const STATUS_META: Record<string, { label: string; color: string; emoji: string }> = {
   new: { label: 'Новые', color: '#6366f1', emoji: '🆕' },
   enriched: { label: 'Спарсены', color: '#0ea5e9', emoji: '🛰' },
@@ -79,6 +84,15 @@ export default async function DreamLeadsPage() {
                           >
                             {meta.emoji} {meta.label}
                           </span>
+                          {/* TASK_030 #2: бейдж source — откуда пришёл лид */}
+                          {(() => {
+                            const sm = sourceMeta(l.source)
+                            return (
+                              <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${sm.cls}`}>
+                                {sm.emoji} {sm.label}
+                              </span>
+                            )
+                          })()}
                           {l.completeness_score && (
                             <span className="text-[10px] text-gray-500">
                               ✓ {Math.round(l.completeness_score * 100)}% полнота

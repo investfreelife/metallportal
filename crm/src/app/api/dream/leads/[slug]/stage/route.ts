@@ -9,11 +9,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { getSession } from '@/lib/session'
+// TASK_030 #2: единый источник правды по sales_stage — не дублируем здесь,
+// чтобы валидация всегда совпадала с UI-выпадашками и канбаном.
+import { SALES_STAGES } from '@/lib/dream/statuses'
 
-const VALID_STAGES = [
-  'site_ready','to_call','no_answer','reached','qualified','disqualified',
-  'link_sent','negotiating','callback','won','lost',
-]
+const VALID_STAGES = SALES_STAGES
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   const session = await getSession()

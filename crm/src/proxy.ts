@@ -17,6 +17,9 @@ const PUBLIC_EXACT = new Set([
   // URGENT 2026-05-17 sergey_actions: list endpoint. POST endpoints (status/check)
   // под /api/sergey-actions/[id]/ имеют свою auth (session cookie OR x-agent-token).
   '/api/sergey-actions',
+  // TASK_030 #3: agent-help — публичный плейбук для агентов (нет секретов).
+  // Документация по тому как агенты должны работать с CRM. Защищать нечего.
+  '/api/dream/agent-help',
 ])
 // PUBLIC_PREFIX — все sub-paths bypass session check (handlers сами авторизуют).
 const PUBLIC_PREFIX = [

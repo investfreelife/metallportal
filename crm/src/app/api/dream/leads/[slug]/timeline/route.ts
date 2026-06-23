@@ -18,6 +18,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireDreamAuth } from '@/lib/dream/requireAuth'
 
 export const dynamic = 'force-dynamic'
 
@@ -50,6 +51,10 @@ const TYPE_ICON: Record<string, string> = {
 }
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+  // TASK_030 #3: defence-in-depth auth.
+  const __auth = await requireDreamAuth(_req)
+  if (!__auth.ok) return __auth.res
+
   const { slug } = await params
   const sb = admin()
 

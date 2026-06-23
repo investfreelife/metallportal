@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { safeSearch, safeIlikeOr } from '@/lib/dream/safeSearch'
+import { requireDreamAuth } from '@/lib/dream/requireAuth'
 
 /**
  * GET /api/dream/leads — список лидов проекта «Мечта».
@@ -23,11 +25,16 @@ function admin() {
 }
 
 export async function GET(req: NextRequest) {
+  // TASK_030 #3: defence-in-depth — auth и в хендлере, не только в proxy.ts.
+  const auth = await requireDreamAuth(req)
+  if (!auth.ok) return auth.res
+
   const url = new URL(req.url)
   const status = url.searchParams.get('status')
   const niche = url.searchParams.get('niche')
   const minRating = url.searchParams.get('min_rating')
-  const search = url.searchParams.get('search')?.trim() ?? ''
+  // CWE-943: search санитизируется — иначе PostgREST `.or()` filter-injection.
+  const search = safeSearch(url.searchParams.get('search'))
 
   const supabase = admin()
   let query = supabase
@@ -42,9 +49,7 @@ export async function GET(req: NextRequest) {
   if (niche) query = query.eq('niche', niche)
   if (minRating) query = query.gte('rating', parseFloat(minRating))
   if (search) {
-    query = query.or(
-      `name.ilike.%${search}%,phone.ilike.%${search}%,address.ilike.%${search}%,niche.ilike.%${search}%`
-    )
+    query = query.or(safeIlikeOr(['name','phone','address','niche'], search))
   }
 
   const { data, error } = await query

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import fs from 'fs/promises'
 import path from 'path'
+import { requireDreamAuth } from '@/lib/dream/requireAuth'
 
 /**
  * GET /api/dream/leads/[slug] — карточка одного лида + связанные данные.
@@ -53,6 +54,10 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  // TASK_030 #3: defence-in-depth auth.
+  const __auth = await requireDreamAuth(_req)
+  if (!__auth.ok) return __auth.res
+
   const { slug } = await params
   const supabase = admin()
 
@@ -107,6 +112,10 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  // TASK_030 #3: defence-in-depth auth.
+  const __auth = await requireDreamAuth(req)
+  if (!__auth.ok) return __auth.res
+
   const { slug } = await params
 
   let body: any

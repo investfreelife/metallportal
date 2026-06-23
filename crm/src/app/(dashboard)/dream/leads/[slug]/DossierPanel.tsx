@@ -13,7 +13,7 @@ import { useState } from 'react'
 import { NICHES, nicheMeta } from '@/lib/dream/niches'
 
 // TASK_022/024: единый источник лейблов из lib/dream/statuses
-import { SALES_STAGE_RU, QUALIFICATION_RU, BUILD_STATUS_RU, CHANNEL_RU } from '@/lib/dream/statuses'
+import { SALES_STAGE_RU, QUALIFICATION_RU, BUILD_STATUS_RU, CHANNEL_RU, sourceMeta } from '@/lib/dream/statuses'
 
 interface Lead { slug: string; [k: string]: any }
 
@@ -69,6 +69,20 @@ export function DossierPanel({ lead: initialLead }: { lead: Lead }) {
           <div className="text-[12px] text-gray-500 italic">Не задано</div>
         )}
       </div>
+
+      {/* ИСТОЧНИК ЛИДА — откуда пришёл (TASK_030 #2) */}
+      {(() => {
+        const sm = sourceMeta(lead.source)
+        return (
+          <div className="mb-3 flex items-center gap-2 px-1">
+            <span className="text-[10px] uppercase font-bold text-gray-500">Источник</span>
+            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium ${sm.cls}`}>
+              <span>{sm.emoji}</span>
+              <span>{sm.label}</span>
+            </span>
+          </div>
+        )
+      })()}
 
       {/* КОНТАКТ */}
       <Section title="📇 Контакт">
