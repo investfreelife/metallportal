@@ -131,12 +131,16 @@ test('nav reflects DB: все root-категории на /catalog имеют �
         .filter((p) => p.split('/').filter(Boolean).length === 2), // только /catalog/<slug>
   )
 
-  // Должно быть хотя бы 3 root-категории (FOOTER_PRODUCTS_LIMIT=5,
-  // HEADER_NAV_LIMIT=5; даже если БД сильно пустая, 3 root'а живут).
+  // Smoke: header показывает хотя бы 1 видимую root-категорию = SSR fetch
+  // жив. Раньше тест требовал ≥3, но Header.tsx скрывает 3 root'а
+  // (HEADER_NAV_HIDE_SLUGS — Sergey directive «удали и на их место ничего
+  // не ставь» — пустые слоты сознательны). Если sort_order передвинет
+  // скрытые в top-5 — после фильтра останется ≤2 видимых, и это валидное
+  // состояние. Проверяем только что fetchCategoriesTree вернул что-то.
   expect(
     new Set(rootHrefs).size,
-    'Header показывает <3 root-категорий — fetchCategoriesTree упал?',
-  ).toBeGreaterThanOrEqual(3)
+    'Header не показал ни одной root-категории — fetchCategoriesTree упал?',
+  ).toBeGreaterThanOrEqual(1)
 
   // Один из root'ов должен реально открываться (200/308→200).
   const sample = rootHrefs[0]
