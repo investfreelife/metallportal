@@ -179,7 +179,7 @@ export default function AccountPage() {
             {contactUser?.telegram_chat_id ? (
               <span className="text-green-400 text-xs">✓ Подключён</span>
             ) : (
-              <a href="https://t.me/metallportal_bot" target="_blank" className="text-[#229ED9] text-xs hover:underline">Подключить →</a>
+              <a href="https://t.me/metallportal_bot" target="_blank" rel="noopener noreferrer" className="text-[#229ED9] text-xs hover:underline">Подключить →</a>
             )}
           </div>
           {joinedAt && (

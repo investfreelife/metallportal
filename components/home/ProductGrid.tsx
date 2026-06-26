@@ -50,10 +50,14 @@ export default function ProductGrid() {
       if (raw) searches = JSON.parse(raw);
     } catch {}
 
+    // TASK_054 (audit SEV-2): fetch без .catch — unhandled rejection при offline/500.
     fetch("/api/popular-products")
-      .then(r => r.json())
+      .then(r => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
       .then(pool => {
         if (Array.isArray(pool)) setProducts(pickProducts(pool, searches));
+      })
+      .catch(err => {
+        console.warn("[ProductGrid] popular-products failed:", err?.message ?? err);
       })
       .finally(() => setLoading(false));
   }, []);

@@ -1,12 +1,16 @@
 'use client';
 
-import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { safeFetchJson } from '@/lib/safe-fetch';
 import {
   Send,
   RefreshCw,
   Search,
   Trash2,
+  Plus,
+  Pencil,
+  X,
+  Save,
   ExternalLink,
   Pause,
   Play,
@@ -33,15 +37,32 @@ interface ChannelItem {
   found_query: string | null;
   city: string | null;
   is_group: boolean;
-  can_post: boolean;
+  status: string | null;
+  needs_human: boolean | null;
+  join_type: string | null;
+  audience: string | null;
+  work_status: string | null;
+  can_post: boolean | null;
+  post_via: string | null;
+  ad_contact: string | null;
+  ad_link: string | null;
+  post_mode: string | null;
+  about: string | null;
   joined: boolean | null;
+  post_rejected: boolean | null;
+  publish_ok: boolean | null;
+  legal: string | null;
+  threats_seen: string | null;
+  rules: string | null;
+  required_channel: string | null;
+  required_link: string | null;
   source: string | null;
   last_sync_at: string | null;
 }
 
 interface ListResponse {
   items: ChannelItem[];
-  summary: { total: number; small: number; mid: number; large: number; no_members: number; joined: number };
+  summary: { total: number; small: number; mid: number; large: number; no_members: number; joined: number; postable: number; readonly: number; bot_paid: number; rejected: number; verified: number; needs_human: number };
   page: { page: number; per: number; total: number; pages: number };
 }
 
@@ -72,6 +93,24 @@ function fmtNum(n: number | null | undefined): string {
   return n.toLocaleString('ru-RU');
 }
 
+// Человекочитаемая метка стадии пайплайна группы.
+const STATUS_LABELS: Record<string, string> = {
+  found: '🔍 найдена',
+  analyzed: '📋 разобрана',
+  pending_admin: '⏳ ждём админа',
+  negotiation: '💬 переговоры',
+  pending: '🕒 неподтверждённая',
+  paid: '💰 платная',
+  diaspora: '🌐 диаспора',
+  ready: '✅ готова',
+  posting: '📤 постим',
+  rejected: '🚫 стоп',
+};
+function fmtStatus(s: string | null | undefined): string {
+  if (!s) return '—';
+  return STATUS_LABELS[s] ?? '—';
+}
+
 export default function TelegramGroupsClient({ tenantName }: Props) {
   const [resp, setResp] = useState<ListResponse | null>(null);
   const [status, setStatus] = useState<ParserStatus | null>(null);
@@ -80,11 +119,15 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
+  const [editing, setEditing] = useState<ChannelItem | null>(null);
 
   const [search, setSearch] = useState('');
   const [size, setSize] = useState<'' | 'small' | 'mid' | 'large'>('');
   const [joinedF, setJoinedF] = useState<'' | 'yes' | 'no'>('');
   const [hasMembers, setHasMembers] = useState<'' | 'yes' | 'no'>('');
+  const [postF, setPostF] = useState<'' | 'yes' | 'no' | 'paid' | 'rejected' | 'verified'>('');
+  const [needsHuman, setNeedsHuman] = useState(false);
   const [sort, setSort] = useState<'members' | 'name'>('members');
   const [dir, setDir] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
@@ -98,6 +141,8 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
       if (size) qs.set('size', size);
       if (joinedF) qs.set('joined', joinedF);
       if (hasMembers) qs.set('has_members', hasMembers);
+      if (postF) qs.set('post', postF);
+      if (needsHuman) qs.set('needs_human', '1');
       qs.set('sort', sort);
       qs.set('dir', dir);
       qs.set('page', String(page));
@@ -111,7 +156,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [search, size, joinedF, hasMembers, sort, dir, page]);
+  }, [search, size, joinedF, hasMembers, postF, needsHuman, sort, dir, page]);
 
   const reloadStatus = useCallback(async () => {
     try {
@@ -134,7 +179,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
   }, [search]);
 
   // Прочие фильтры/sort — мгновенно
-  useEffect(() => { setPage(1); reloadList(); /* eslint-disable-next-line */ }, [size, joinedF, hasMembers, sort, dir]);
+  useEffect(() => { setPage(1); reloadList(); /* eslint-disable-next-line */ }, [size, joinedF, hasMembers, postF, needsHuman, sort, dir]);
   // Page changes
   useEffect(() => { reloadList(); /* eslint-disable-next-line */ }, [page]);
 
@@ -173,11 +218,16 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
   }
 
   const items = resp?.items ?? [];
-  const summary = resp?.summary ?? { total: 0, small: 0, mid: 0, large: 0, no_members: 0, joined: 0 };
+  const summary = resp?.summary ?? { total: 0, small: 0, mid: 0, large: 0, no_members: 0, joined: 0, postable: 0, readonly: 0, bot_paid: 0, rejected: 0, verified: 0, needs_human: 0 };
   const pageInfo = resp?.page ?? { page: 1, per, total: 0, pages: 1 };
 
   // Эффективное состояние паузы: control.paused приоритетнее, иначе status.paused.
   const effectivePaused = control?.paused ?? status?.paused ?? false;
+
+  const tableScrollRef = useRef<HTMLDivElement | null>(null);
+  function scrollTableBy(dx: number) {
+    tableScrollRef.current?.scrollBy({ left: dx, behavior: 'smooth' });
+  }
 
   return (
     <div className="flex flex-col h-full bg-gray-50">
@@ -191,15 +241,32 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
             Спарсенные Telegram-группы и каналы (доноры для рекрутинга) + панель парсера. Время МСК.
           </p>
         </div>
-        <button
-          onClick={() => { reloadList(); reloadStatus(); }}
-          disabled={refreshing}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 text-gray-700 text-xs font-medium rounded-md hover:bg-gray-50 disabled:opacity-50"
-        >
-          <RefreshCw size={12} className={refreshing ? 'animate-spin' : ''} />
-          Обновить
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => { reloadList(); reloadStatus(); }}
+            disabled={refreshing}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 text-gray-700 text-xs font-medium rounded-md hover:bg-gray-50 disabled:opacity-50"
+          >
+            <RefreshCw size={12} className={refreshing ? 'animate-spin' : ''} />
+            Обновить
+          </button>
+          <button
+            onClick={() => setAdding(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-md hover:bg-blue-700"
+          >
+            <Plus size={12} />
+            Добавить канал
+          </button>
+        </div>
       </header>
+      {adding && (
+        <ChannelFormModal mode="create" onClose={() => setAdding(false)} onSaved={async () => { setAdding(false); await reloadList(true); }} />
+      )}
+      {editing && (
+        <ChannelFormModal mode="edit" initial={editing}
+          onClose={() => setEditing(null)}
+          onSaved={async () => { setEditing(null); await reloadList(true); }} />
+      )}
 
       {/* ── Панель парсера ───────────────────────────────────────────── */}
       <ParserPanel
@@ -217,6 +284,67 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
         <TotalCard label="Средних 1k–10k" value={fmtNum(summary.mid)} />
         <TotalCard label="Крупных >10k" value={fmtNum(summary.large)} />
         <TotalCard label="Подписан" value={fmtNum(summary.joined)} hint={`${summary.no_members} без members`} />
+      </div>
+
+      {/* ── Пояснение «как это работает» (чтобы было понятно) ──────── */}
+      <div className="mx-6 mt-3 mb-1 text-xs bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-gray-700 leading-relaxed">
+        <div className="font-semibold text-gray-900 mb-1">📌 Как машина тут работает (тебе руками ничего делать не надо)</div>
+        <div className="grid sm:grid-cols-3 gap-2 mt-2">
+          <div><span className="text-emerald-700 font-medium">🟢 Вступи и пиши</span> — чтобы постить в группу, надо в неё <b>вступить</b>. Машина вступает <b>медленно сама</b> (анти-бан, несколько в день) и публикует твои согласованные посты. Постить во все сразу нельзя — это спам и бан, поэтому только в хорошие и по чуть-чуть.</div>
+          <div><span className="text-amber-700 font-medium">🤖 Платно (бот/админ)</span> — размещение за деньги через рекламного бота/админа (так делают Озон, Х5, Магнит). Жмёшь контакт в колонке «Платно через» → машина пишет ему, узнаёт цену. <b>Оплату подтверждаешь только ты.</b></div>
+          <div><span className="text-rose-600 font-medium">🔴 Только чтение</span> — писать нельзя и платный контакт не нашёлся. Пропускаем.</div>
+        </div>
+        <div className="mt-2 text-[11px] text-gray-500">Сами посты ты согласовываешь во вкладке <b>Контент</b>. Здесь — только база каналов, куда машина их разносит.</div>
+      </div>
+
+      {/* ── Разделы «Где могу писать» (главное) ───────────────────── */}
+      <div className="flex items-center gap-2 px-6 py-3 bg-white border-b border-gray-100 flex-wrap">
+        <span className="text-xs font-semibold text-gray-700 mr-1">Где могу писать:</span>
+        <SectionTab
+          active={postF === 'yes'}
+          onClick={() => setPostF(postF === 'yes' ? '' : 'yes')}
+          color="emerald"
+          label={`🟢 Вступи и пиши · ${fmtNum(summary.postable)}`}
+        />
+        <SectionTab
+          active={postF === 'paid'}
+          onClick={() => setPostF(postF === 'paid' ? '' : 'paid')}
+          color="amber"
+          label={`🤖 Платно (бот/админ) · ${fmtNum(summary.bot_paid)}`}
+        />
+        <SectionTab
+          active={postF === 'no'}
+          onClick={() => setPostF(postF === 'no' ? '' : 'no')}
+          color="rose"
+          label={`🔴 Только чтение · ${fmtNum(summary.readonly)}`}
+        />
+        <SectionTab
+          active={postF === 'rejected'}
+          onClick={() => setPostF(postF === 'rejected' ? '' : 'rejected')}
+          color="red"
+          label={`🚫 Отклонённые · ${fmtNum(summary.rejected)}`}
+        />
+        <SectionTab
+          active={postF === 'verified'}
+          onClick={() => setPostF(postF === 'verified' ? '' : 'verified')}
+          color="green"
+          label={`✅ Проверена · ${fmtNum(summary.verified)}`}
+        />
+        <SectionTab
+          active={needsHuman}
+          onClick={() => setNeedsHuman((v) => !v)}
+          color="amber"
+          label={`🙋 Требуется человек · ${fmtNum(summary.needs_human)}`}
+        />
+        <SectionTab
+          active={postF === ''}
+          onClick={() => setPostF('')}
+          color="gray"
+          label="Все"
+        />
+        <span className="text-[11px] text-gray-400 ml-2 w-full">
+          🟢 — вступаешь в группу и пишешь бесплатно (осторожно, анти-спам) · 🤖 — размещение через бота/админа (платно), контакт в колонке «Платно через» · 🔴 — постинг запрещён, контакт не найден
+        </span>
       </div>
 
       {/* ── Фильтры ─────────────────────────────────────────────── */}
@@ -262,13 +390,41 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
       )}
 
       {/* ── Таблица ───────────────────────────────────────────── */}
-      <div className="flex-1 overflow-auto">
+      {/* Sergey directive 2026-06-06: правая колонка «Подписан» обрезается,
+          ползунка не видно (родительский <main> ловит весь overflow).
+          Чиню «двойной» обёрткой: внешний relative + ◀▶ кнопки, внутренний
+          с явным style.overflowX='scroll' и paddingBottom, чтобы ползунок
+          гарантированно сидел внутри страницы. */}
+      <div className="relative flex-1 min-h-0">
+        {!loading && items.length > 0 && (
+          <>
+            <button
+              onClick={() => scrollTableBy(-500)}
+              title="Прокрутить таблицу влево"
+              className="absolute left-2 top-12 z-10 w-9 h-9 bg-white border border-gray-300 shadow-lg rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-50 hover:scale-105 active:scale-95 transition"
+            >
+              ◀
+            </button>
+            <button
+              onClick={() => scrollTableBy(500)}
+              title="Прокрутить таблицу вправо"
+              className="absolute right-2 top-12 z-10 w-9 h-9 bg-white border border-gray-300 shadow-lg rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-50 hover:scale-105 active:scale-95 transition"
+            >
+              ▶
+            </button>
+          </>
+        )}
+        <div
+          ref={tableScrollRef}
+          className="hscroll h-full"
+          style={{ overflowX: 'scroll', overflowY: 'auto', paddingBottom: 0 }}
+        >
         {loading ? (
           <p className="text-xs text-gray-400 text-center py-12">Загрузка…</p>
         ) : items.length === 0 ? (
           <p className="text-sm text-gray-400 text-center py-12">Ничего не найдено.</p>
         ) : (
-          <table className="w-full text-sm">
+          <table className="min-w-[1700px] text-sm">
             <thead className="bg-gray-50 border-y border-gray-200 sticky top-0">
               <tr className="text-left text-[11px] font-medium text-gray-600 uppercase tracking-wide">
                 <th className="px-3 py-2 w-8" />
@@ -295,8 +451,12 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
                   width="w-28"
                 />
                 <th className="px-3 py-2 w-20">Тип</th>
+                <th className="px-3 py-2 w-32">Статус</th>
                 <th className="px-3 py-2 w-24 text-center">Можно постить</th>
+                <th className="px-3 py-2 w-36">Платно через</th>
+                <th className="px-3 py-2 w-12 text-center">Правила</th>
                 <th className="px-3 py-2 w-20 text-center">Подписан</th>
+                <th className="px-3 py-2 w-24 text-center">Профиль</th>
                 <th className="px-3 py-2 w-24">Источник</th>
                 <th className="px-3 py-2 w-8" />
               </tr>
@@ -328,14 +488,86 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
                   <td className="px-3 py-2 text-xs text-gray-700">{it.country || '—'}</td>
                   <td className="px-3 py-2 text-xs text-right font-medium tabular-nums">{fmtNum(it.members)}</td>
                   <td className="px-3 py-2 text-xs text-gray-700">{it.is_group ? 'группа' : 'канал'}</td>
+                  <td
+                    className="px-3 py-2 text-xs text-gray-700 whitespace-nowrap"
+                    title={`Вход: ${it.join_type ?? '—'} · ЦА: ${it.audience ?? '—'} · ${it.work_status ?? '—'}`}
+                  >
+                    <span>{fmtStatus(it.status)}</span>
+                    {it.needs_human && <span className="ml-1" title="требует взгляда человека">🙋</span>}
+                  </td>
                   <td className="px-3 py-2 text-xs text-center text-gray-700">
-                    {it.is_group ? <span className="text-emerald-600">да</span> : <span className="text-gray-400">—</span>}
+                    {it.post_rejected ? (
+                      <span className="inline-block px-1.5 py-0.5 bg-red-100 text-red-700 border border-red-300 rounded font-medium" title="в этой группе наши посты удаляют / нас забанили">🚫 удаляют наши посты</span>
+                    ) : it.can_post === true ? (
+                      <span className="text-emerald-600 font-medium" title={it.post_via ?? 'свободно'}>🟢 можно</span>
+                    ) : it.can_post === false ? (
+                      <span className="text-rose-500" title={it.post_via ?? 'постинг запрещён участникам'}>🔴 нельзя</span>
+                    ) : (
+                      <span className="text-gray-400" title="не размечено парсером">—</span>
+                    )}
+                    {it.required_channel && (
+                      <div className="mt-0.5">
+                        <a
+                          href={it.required_link ?? `https://t.me/${it.required_channel.replace(/^@/, '')}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[10px] text-amber-700 hover:underline"
+                          title="для записи в группу требуется подписка на этот канал"
+                        >
+                          🔒 нужна подписка @{it.required_channel.replace(/^@/, '')}
+                        </a>
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-3 py-2 text-xs">
+                    {it.ad_contact && it.ad_link ? (
+                      <a
+                        href={it.ad_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-amber-700 hover:underline inline-flex items-center gap-1 font-medium"
+                        title={it.about ?? 'контакт для платного размещения'}
+                      >
+                        🤖 {it.ad_contact}
+                        <ExternalLink size={10} className="opacity-50" />
+                      </a>
+                    ) : (
+                      <span className="text-gray-300">—</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-2 text-xs text-center">
+                    {it.rules ? (
+                      <span className="cursor-help" title={it.rules}>📋</span>
+                    ) : (
+                      <span className="text-gray-300">—</span>
+                    )}
                   </td>
                   <td className="px-3 py-2 text-xs text-center">
                     {it.joined === true ? <span className="text-emerald-600">✓</span> : <span className="text-gray-400">—</span>}
                   </td>
+                  <td className="px-3 py-2 text-xs text-center">
+                    {it.publish_ok === true ? (
+                      <span
+                        className="inline-block px-1.5 py-0.5 bg-green-50 text-green-700 border border-green-300 rounded font-medium"
+                        title={`Страна: ${it.country ?? '—'} · Легально: ${it.legal ?? '—'} · Угрозы: ${it.threats_seen ?? '—'}`}
+                      >
+                        ✅ готова
+                      </span>
+                    ) : it.post_rejected ? (
+                      <span className="text-red-600" title="наши посты удаляют / нас забанили">🚫</span>
+                    ) : (
+                      <span className="text-gray-400" title="ещё не проверена">—</span>
+                    )}
+                  </td>
                   <td className="px-3 py-2 text-[10px] text-gray-500">{it.source ?? '—'}</td>
-                  <td className="px-3 py-2 text-center">
+                  <td className="px-3 py-2 text-center whitespace-nowrap">
+                    <button
+                      onClick={() => setEditing(it)}
+                      className="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded mr-0.5"
+                      title="Редактировать"
+                    >
+                      <Pencil size={12} />
+                    </button>
                     <button
                       onClick={() => removeRow(it)}
                       className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
@@ -349,6 +581,7 @@ export default function TelegramGroupsClient({ tenantName }: Props) {
             </tbody>
           </table>
         )}
+        </div>
       </div>
 
       {/* ── Пагинация ─────────────────────────────────────────── */}
@@ -541,6 +774,35 @@ function FilterChip({
   );
 }
 
+function SectionTab({
+  active,
+  onClick,
+  label,
+  color,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  color: 'emerald' | 'rose' | 'gray' | 'amber' | 'red' | 'green';
+}) {
+  const palette = {
+    emerald: active ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100',
+    rose: active ? 'bg-rose-600 text-white border-rose-600' : 'bg-rose-50 text-rose-600 border-rose-200 hover:bg-rose-100',
+    amber: active ? 'bg-amber-500 text-white border-amber-500' : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100',
+    red: active ? 'bg-red-700 text-white border-red-700' : 'bg-red-50 text-red-700 border-red-300 hover:bg-red-100',
+    green: active ? 'bg-green-600 text-white border-green-600' : 'bg-green-50 text-green-700 border-green-300 hover:bg-green-100',
+    gray: active ? 'bg-gray-800 text-white border-gray-800' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50',
+  }[color];
+  return (
+    <button
+      onClick={onClick}
+      className={`px-3 py-1.5 text-xs font-medium border rounded-md transition-colors ${palette}`}
+    >
+      {label}
+    </button>
+  );
+}
+
 function SortableTh({
   label,
   active,
@@ -566,5 +828,234 @@ function SortableTh({
         {active && (dir === 'asc' ? <ArrowUp size={9} /> : <ArrowDown size={9} />)}
       </span>
     </th>
+  );
+}
+
+/* ─── Модалка добавления/редактирования канала (Sergey directive 2026-06-06) ─── */
+function ChannelFormModal({
+  mode, initial, onClose, onSaved,
+}: {
+  mode: 'create' | 'edit';
+  initial?: ChannelItem;
+  onClose: () => void;
+  onSaved: () => void | Promise<void>;
+}) {
+  const [name, setName] = useState(initial?.name ?? '');
+  const [username, setUsername] = useState(initial?.username ?? '');
+  const [link, setLink] = useState(initial?.link ?? '');
+  const [members, setMembers] = useState<number | ''>(typeof initial?.members === 'number' ? initial.members : '');
+  const [city, setCity] = useState(initial?.city ?? '');
+  const [country, setCountry] = useState(initial?.country ?? '');
+  const [audience, setAudience] = useState(initial?.audience ?? '');
+  const [isGroup, setIsGroup] = useState<boolean>(initial?.is_group === true);
+  const [canPostStr, setCanPostStr] = useState<string>(
+    initial?.can_post === true ? 'yes' : initial?.can_post === false ? 'no' : ''
+  );
+  const [postVia, setPostVia] = useState(initial?.post_via ?? '');
+  const [postMode, setPostMode] = useState(initial?.post_mode ?? '');
+  const [adContact, setAdContact] = useState(initial?.ad_contact ?? '');
+  const [joinedStr, setJoinedStr] = useState<string>(
+    initial?.joined === true ? 'yes' : initial?.joined === false ? 'no' : ''
+  );
+  const [rules, setRules] = useState(initial?.rules ?? '');
+  const [requiredChannel, setRequiredChannel] = useState(initial?.required_channel ?? '');
+  const [publishOkStr, setPublishOkStr] = useState<string>(
+    initial?.publish_ok === true ? 'yes' : initial?.publish_ok === false ? 'no' : ''
+  );
+  const [legal, setLegal] = useState(initial?.legal ?? '');
+  const [threatsSeen, setThreatsSeen] = useState(initial?.threats_seen ?? '');
+  const [status, setStatus] = useState(initial?.status ?? '');
+  const [workStatus, setWorkStatus] = useState(initial?.work_status ?? '');
+  const [needsHumanFlag, setNeedsHumanFlag] = useState<boolean>(initial?.needs_human === true);
+  const [foundQuery, setFoundQuery] = useState(initial?.found_query ?? '');
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function submit() {
+    setBusy(true); setErr(null);
+    try {
+      const triBool = (s: string) => s === 'yes' ? true : s === 'no' ? false : null;
+      const trim = (s: string | null | undefined): string | null => (s ?? '').trim() || null;
+      const config: Record<string, unknown> = {
+        username: trim(username)?.replace(/^@/, '') ?? null,
+        link: trim(link),
+        members: typeof members === 'number' ? members : null,
+        city: trim(city), country: trim(country), audience: trim(audience),
+        is_group: isGroup, role: isGroup ? 'donor_group' : null,
+        can_post: triBool(canPostStr), post_via: trim(postVia),
+        post_mode: trim(postMode), ad_contact: trim(adContact),
+        joined: triBool(joinedStr),
+        rules: trim(rules), required_channel: trim(requiredChannel),
+        publish_ok: triBool(publishOkStr), legal: trim(legal), threats_seen: trim(threatsSeen),
+        status: trim(status), needs_human: needsHumanFlag, work_status: trim(workStatus),
+        found_query: trim(foundQuery),
+      };
+      const body = { name: name.trim(), status: status.trim() || null, config };
+      const url = mode === 'create' ? '/api/recruit/parser-channels' : `/api/recruit/parser-channels/${initial!.id}`;
+      const method = mode === 'create' ? 'POST' : 'PATCH';
+      const r = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const j = await r.json();
+      if (!r.ok || j.error) throw new Error(j.error || `HTTP ${r.status}`);
+      await onSaved();
+    } catch (e) { setErr(e instanceof Error ? e.message : String(e)); }
+    finally { setBusy(false); }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="relative bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <header className="px-4 py-3 border-b border-gray-200 flex items-center justify-between sticky top-0 bg-white">
+          <h2 className="text-sm font-semibold text-gray-900">
+            {mode === 'create' ? '➕ Добавить канал/группу' : '✏️ Редактировать канал/группу'}
+          </h2>
+          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded"><X size={16} /></button>
+        </header>
+        <div className="px-4 py-3 space-y-3">
+          {err && <div className="text-xs text-red-700 bg-red-50 border border-red-200 rounded px-2 py-1.5">{err}</div>}
+
+          <div className="grid grid-cols-2 gap-2">
+            <ChField label="Название (обязательно)">
+              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Работа Москва"
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </ChField>
+            <ChField label="@username">
+              <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="rabota_moskva"
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </ChField>
+            <ChField label="Ссылка (link)">
+              <input value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://t.me/…"
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </ChField>
+            <ChField label="Участников">
+              <input type="number" value={members} onChange={(e) => setMembers(e.target.value === '' ? '' : Number(e.target.value))}
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </ChField>
+            <ChField label="Город">
+              <input value={city} onChange={(e) => setCity(e.target.value)}
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </ChField>
+            <ChField label="Страна">
+              <input value={country} onChange={(e) => setCountry(e.target.value)}
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </ChField>
+            <ChField label="Аудитория">
+              <input value={audience} onChange={(e) => setAudience(e.target.value)} placeholder="курьеры / диаспора / …"
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </ChField>
+            <ChField label="Found-запрос">
+              <input value={foundQuery} onChange={(e) => setFoundQuery(e.target.value)} placeholder="аренда мурманск"
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+            </ChField>
+          </div>
+
+          <fieldset className="border border-gray-200 rounded p-2 space-y-2">
+            <legend className="text-[10px] font-medium text-gray-500 px-1">Постинг</legend>
+            <div className="grid grid-cols-2 gap-2">
+              <ChField label="Можно постить (can_post)">
+                <select value={canPostStr} onChange={(e) => setCanPostStr(e.target.value)}
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded">
+                  <option value="">—</option>
+                  <option value="yes">🟢 да</option>
+                  <option value="no">🔴 нет</option>
+                </select>
+              </ChField>
+              <ChField label="Через кого (post_via)">
+                <input value={postVia} onChange={(e) => setPostVia(e.target.value)} placeholder="@admin / бот"
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+              </ChField>
+              <ChField label="Режим (post_mode)">
+                <select value={postMode} onChange={(e) => setPostMode(e.target.value)}
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded">
+                  <option value="">—</option>
+                  <option value="free">🟢 free</option>
+                  <option value="bot_paid">💰 bot_paid</option>
+                  <option value="readonly">🔴 readonly</option>
+                </select>
+              </ChField>
+              <ChField label="Контакт для платного (ad_contact)">
+                <input value={adContact} onChange={(e) => setAdContact(e.target.value)} placeholder="@menager"
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+              </ChField>
+              <ChField label="Группа?">
+                <select value={isGroup ? 'yes' : 'no'} onChange={(e) => setIsGroup(e.target.value === 'yes')}
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded">
+                  <option value="no">канал</option>
+                  <option value="yes">группа</option>
+                </select>
+              </ChField>
+              <ChField label="Вступили?">
+                <select value={joinedStr} onChange={(e) => setJoinedStr(e.target.value)}
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded">
+                  <option value="">—</option>
+                  <option value="yes">✓ да</option>
+                  <option value="no">✗ нет</option>
+                </select>
+              </ChField>
+            </div>
+          </fieldset>
+
+          <fieldset className="border border-gray-200 rounded p-2 space-y-2">
+            <legend className="text-[10px] font-medium text-gray-500 px-1">Проверка</legend>
+            <div className="grid grid-cols-2 gap-2">
+              <ChField label="Готова к публикации (publish_ok)">
+                <select value={publishOkStr} onChange={(e) => setPublishOkStr(e.target.value)}
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded">
+                  <option value="">—</option>
+                  <option value="yes">✅ да</option>
+                  <option value="no">— нет</option>
+                </select>
+              </ChField>
+              <ChField label="Статус пайплайна">
+                <input value={status} onChange={(e) => setStatus(e.target.value)} placeholder="raw / checked / …"
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+              </ChField>
+              <ChField label="Легально (legal)">
+                <input value={legal} onChange={(e) => setLegal(e.target.value)} placeholder="чисто / описание"
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+              </ChField>
+              <ChField label="Угрозы (threats_seen)">
+                <input value={threatsSeen} onChange={(e) => setThreatsSeen(e.target.value)} placeholder="нет / описание"
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+              </ChField>
+              <ChField label="Правила (rules)">
+                <input value={rules} onChange={(e) => setRules(e.target.value)} placeholder="условия группы"
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+              </ChField>
+              <ChField label="Нужна подписка (required_channel)">
+                <input value={requiredChannel} onChange={(e) => setRequiredChannel(e.target.value)} placeholder="@chan"
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+              </ChField>
+              <ChField label="Работаем (work_status)">
+                <input value={workStatus} onChange={(e) => setWorkStatus(e.target.value)} placeholder="active / paused / …"
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded" />
+              </ChField>
+              <div className="flex items-end pb-1">
+                <label className="text-xs flex items-center gap-1.5">
+                  <input type="checkbox" checked={needsHumanFlag} onChange={(e) => setNeedsHumanFlag(e.target.checked)} />
+                  🤔 нужен взгляд человека
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+        <footer className="px-4 py-3 border-t border-gray-200 bg-gray-50 flex items-center justify-end gap-2 sticky bottom-0">
+          <button onClick={onClose} className="px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-200 rounded">Отмена</button>
+          <button onClick={submit} disabled={busy || !name.trim()}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 disabled:opacity-40">
+            <Save size={12} /> {busy ? 'Сохранение…' : (mode === 'create' ? 'Создать' : 'Сохранить')}
+          </button>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+function ChField({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide block mb-0.5">{label}</label>
+      {children}
+    </div>
   );
 }

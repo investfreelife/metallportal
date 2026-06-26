@@ -1,6 +1,7 @@
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 import { CONTACT_PHONE_TEL } from "@/lib/contact";
 import type { LandingConfig } from "@/lib/landings";
+import { jsonLdString } from "@/lib/jsonLd";
 
 /**
  * JSON-LD schemas для landing page:
@@ -59,12 +60,12 @@ export default function LandingSchemas({ landing }: { landing: LandingConfig }) 
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(serviceSchema) }}
       />
       {faqSchema && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdString(faqSchema) }}
         />
       )}
     </>

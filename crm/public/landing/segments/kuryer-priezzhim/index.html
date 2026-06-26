@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Работа курьером в Москве для приезжих — жильё и авто от парка | «Столица»</title>
+  <meta name="description" content="Приехал в Москву на заработок? Парк «Столица» (партнёр Яндекс Доставки) даёт жильё на старте, авто от парка на газу и помощь с документами. Любое гражданство. Выплаты каждый день, выход на линию за 1–2 дня. Напиши боту — без анкет." />
+  <meta name="keywords" content="работа курьером москва для приезжих, работа с жильём москва, курьер с проживанием, авто от парка, работа любое гражданство" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#1A4D5C" />
+  <meta name="format-detection" content="telephone=no" />
+  <link rel="canonical" href="https://metallportal-crm2.vercel.app/landing/segments/kuryer-priezzhim/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:url" content="https://metallportal-crm2.vercel.app/landing/segments/kuryer-priezzhim/" />
+  <meta property="og:title" content="Курьером в Москве для приезжих — жильё и авто от парка" />
+  <meta property="og:description" content="Парк «Столица»: жильё на старте, авто от парка, помощь с документами. Любое гражданство, выплаты каждый день. Напиши боту — без анкет." />
+  <meta property="og:image" content="https://metallportal-crm2.vercel.app/og-stolica.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Курьером в Москве для приезжих — жильё и авто от парка" />
+  <meta name="twitter:description" content="Жильё на старте, авто от парка, помощь с документами. Любое гражданство. Напиши боту — без анкет." />
+  <meta name="twitter:image" content="https://metallportal-crm2.vercel.app/og-stolica.jpg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Root+UI:wght@400;500;700;800&display=swap" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Root+UI:wght@400;500;700;800&display=swap" /></noscript>
+
+  <style>
+    :root{
+      --terra:#E8634D; --terra-deep:#cf5340; --terra-soft:rgba(232,99,77,.12);
+      --cream:#FAF7F2; --cream-warm:#F5EFE3;
+      --teal:#1A4D5C; --teal-deep:#0F3A47; --teal-soft:rgba(26,77,92,.08);
+      --ink:#1A2B30; --ink-soft:rgba(26,43,48,.65); --line:#E7DFD3; --tg:#2AABEE;
+      --u:8px; --radius:16px; --maxw:1080px;
+      --sh:0 0 0 1px rgba(26,43,48,.04), 0 1px 2px -1px rgba(26,43,48,.08), 0 4px 12px -6px rgba(26,43,48,.10);
+      --sh-lg:0 0 0 1px rgba(26,43,48,.04), 0 12px 34px -12px rgba(26,43,48,.24);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+    body{font-family:'PT Root UI',Manrope,-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,sans-serif;
+      font-size:16px;line-height:1.5;color:var(--ink);background:var(--cream);
+      -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+    .wrap{max-width:var(--maxw);margin:0 auto;padding:0 18px}
+    h1,h2,h3{line-height:1.08;font-weight:800;letter-spacing:-.025em;color:var(--teal)}
+    h1{font-size:clamp(32px,7vw,58px);letter-spacing:-.03em}
+    h2{font-size:clamp(25px,5vw,38px);margin-bottom:calc(var(--u)*2)}
+    p{color:var(--ink-soft)} svg{flex-shrink:0}
+    section{padding:calc(var(--u)*7) 0}
+    .soft{background:var(--cream-warm)}
+    em{font-style:normal;background:linear-gradient(transparent 62%, var(--terra-soft) 62%);padding:0 2px}
+    .ph{color:#9a3a2a;background:var(--terra-soft);padding:0 5px;border-radius:5px;font-weight:700}
+    .eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.1em;
+      text-transform:uppercase;color:var(--terra)}
+    .badge{display:inline-flex;align-items:center;gap:7px;background:var(--teal);color:var(--cream);
+      font-size:13px;font-weight:700;padding:6px 12px;border-radius:999px}
+    .badge .ya{display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--cream);color:var(--teal);font-weight:800;font-size:12px}
+
+    header.bar{position:sticky;top:0;z-index:50;background:rgba(250,247,242,.86);
+      backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line);transition:box-shadow .2s ease}
+    .bar.scrolled{box-shadow:0 1px 0 rgba(26,43,48,.04), 0 8px 22px -14px rgba(26,43,48,.3)}
+    .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+    .logo{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--teal);font-size:18px}
+    .logo .mono{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--teal);color:var(--cream);font-weight:800}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:54px;
+      padding:0 24px;border-radius:14px;font-size:16px;font-weight:700;text-decoration:none;
+      border:1px solid transparent;cursor:pointer;transition:transform .12s ease, box-shadow .12s ease, background .12s ease;font-family:inherit}
+    .btn:active{transform:scale(.97)}
+    .btn-sm{min-height:42px;padding:0 16px;font-size:15px;border-radius:11px}
+    .btn-tg{background:var(--tg);color:#fff} .btn-tg:hover{background:#1f9fe0}
+    .btn-terra{background:var(--terra);color:#fff;box-shadow:var(--sh)} .btn-terra:hover{box-shadow:var(--sh-lg);background:var(--terra-deep)}
+    .btn-ghost{background:#fff;color:var(--teal);border-color:var(--line);box-shadow:var(--sh)}
+
+    .hero{padding:calc(var(--u)*7) 0 calc(var(--u)*5);
+      background:radial-gradient(125% 90% at 88% -10%, var(--terra-soft), transparent 52%), var(--cream)}
+    .hero .grid{display:grid;gap:calc(var(--u)*4);align-items:center}
+    .hero h1{margin:14px 0 16px} .hero .lead{font-size:clamp(16px,2.4vw,20px);color:var(--ink);max-width:40ch}
+    .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:calc(var(--u)*3)}
+    .microcopy{font-size:13px;color:var(--ink-soft);margin-top:10px}
+    .trust{display:flex;flex-wrap:wrap;gap:12px 20px;margin-top:calc(var(--u)*3);font-size:14px;color:var(--ink)}
+    .trust .i{display:inline-flex;align-items:center;gap:7px} .trust b{color:var(--teal)}
+    @media(min-width:880px){.hero .grid{grid-template-columns:1.08fr .92fr}}
+
+    .helpcard{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--sh-lg);padding:calc(var(--u)*3)}
+    .helpcard h3{font-size:18px;margin-bottom:4px;color:var(--teal)}
+    .helpcard .sub{font-size:13px;color:var(--ink-soft);margin-bottom:calc(var(--u)*2)}
+    .checklist{display:grid;gap:13px}
+    .checklist li{list-style:none;display:flex;gap:12px;align-items:flex-start}
+    .checklist .tick{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--terra-soft);color:var(--terra);display:grid;place-items:center;font-size:15px}
+    .checklist b{color:var(--teal);font-size:15px} .checklist p{font-size:13px;margin-top:2px}
+
+    .calc{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--sh-lg);padding:clamp(20px,4vw,32px)}
+    .calc .field{margin-bottom:calc(var(--u)*3)}
+    .calc label{display:flex;justify-content:space-between;align-items:baseline;font-weight:700;color:var(--teal);font-size:15px;margin-bottom:10px}
+    .calc label .val{color:var(--terra);font-size:16px}
+    .calc input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:7px;border-radius:999px;
+      background:linear-gradient(var(--terra),var(--terra)) no-repeat,var(--cream-warm);background-size:var(--fill,50%) 100%;cursor:pointer}
+    .calc input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--terra);box-shadow:var(--sh);cursor:pointer}
+    .calc input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--terra);box-shadow:var(--sh);cursor:pointer}
+    .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .seg button{font-family:inherit;font-weight:700;font-size:14px;padding:11px 6px;border-radius:12px;border:1px solid var(--line);background:var(--cream);color:var(--ink);cursor:pointer;transition:.12s;line-height:1.15}
+    .seg button .e{display:block;font-size:18px;margin-bottom:3px}
+    .seg button[aria-pressed=true]{background:var(--teal);color:var(--cream);border-color:var(--teal)}
+    .calc-out{margin-top:calc(var(--u)*3);background:var(--teal);color:var(--cream);border-radius:16px;padding:20px;text-align:center}
+    .calc-out .k{font-size:13px;opacity:.85} .calc-out .v{font-size:clamp(30px,7vw,44px);font-weight:800;letter-spacing:-.02em;margin:2px 0}
+    .calc-out small{font-size:12px;opacity:.75;display:block;margin-top:4px}
+
+    .benefits{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    @media(min-width:760px){.benefits{grid-template-columns:repeat(3,1fr)}}
+    .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:calc(var(--u)*2.5);box-shadow:var(--sh)}
+    .card .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--terra-soft);color:var(--terra);margin-bottom:12px;font-size:21px}
+    .card.ours{background:var(--teal);border-color:var(--teal)} .card.ours h3{color:var(--cream)} .card.ours p{color:rgba(250,247,242,.8)}
+    .card.ours .ic{background:rgba(250,247,242,.14);color:var(--cream)}
+    .card h3{font-size:16px;margin-bottom:6px} .card p{font-size:14px;line-height:1.45}
+
+    .steps{display:grid;grid-template-columns:1fr;gap:12px;counter-reset:s}
+    @media(min-width:760px){.steps{grid-template-columns:repeat(4,1fr)}}
+    .step{position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:calc(var(--u)*2.5);box-shadow:var(--sh)}
+    .step::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:var(--terra);color:#fff;font-weight:800;margin-bottom:12px}
+    .step h3{font-size:16px;margin-bottom:6px} .step p{font-size:14px;line-height:1.45}
+    .step .min{display:inline-block;margin-top:9px;font-size:12px;font-weight:700;color:var(--terra);background:var(--terra-soft);padding:3px 9px;border-radius:999px}
+
+    ul.plain{list-style:none;display:grid;gap:11px;margin-top:6px}
+    ul.plain li{position:relative;padding-left:30px;color:var(--ink);font-size:16px}
+    ul.plain li::before{content:"";position:absolute;left:0;top:3px;width:20px;height:20px;border-radius:50%;background:var(--terra-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23E8634D' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/12px no-repeat}
+
+    .reviews{display:grid;grid-template-columns:1fr;gap:12px}
+    @media(min-width:760px){.reviews{grid-template-columns:repeat(3,1fr)}}
+    .review{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:calc(var(--u)*2.5);box-shadow:var(--sh)}
+    .review p{color:var(--ink);font-size:15px;line-height:1.5}
+    .review .who{display:flex;align-items:center;gap:11px;margin-top:14px}
+    .review .av{width:38px;height:38px;border-radius:50%;background:var(--teal);color:var(--cream);display:grid;place-items:center;font-weight:800}
+    .review .nm{font-weight:700;color:var(--teal);font-size:14px} .review .st{font-size:12px;color:var(--ink-soft)}
+    .review .stars{color:var(--terra);font-size:14px;letter-spacing:2px}
+
+    details{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:15px 18px;margin-top:10px;box-shadow:var(--sh)}
+    summary{cursor:pointer;font-weight:700;font-size:16px;list-style:none;display:flex;justify-content:space-between;gap:12px;color:var(--teal)}
+    summary::-webkit-details-marker{display:none}
+    summary::after{content:"+";color:var(--terra);font-weight:800;font-size:21px;line-height:1}
+    details[open] summary::after{content:"–"} details p{margin-top:10px;font-size:15px;line-height:1.5}
+
+    .final{background:var(--teal);color:var(--cream);border-radius:22px;text-align:center;padding:calc(var(--u)*6) 22px;margin:calc(var(--u)*2) 0;box-shadow:var(--sh-lg);position:relative;overflow:hidden}
+    .final::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 60% at 50% -10%, rgba(232,99,77,.28), transparent 60%)}
+    .final>*{position:relative} .final h2{color:#fff} .final p{color:rgba(250,247,242,.82);max-width:48ch;margin:10px auto 0} .final .cta-row{justify-content:center}
+    footer{padding:calc(var(--u)*5) 0;border-top:1px solid var(--line);color:var(--ink-soft);font-size:13px;line-height:1.5}
+
+    .card,.step,.review{transition:transform .18s cubic-bezier(.2,.7,.2,1), box-shadow .18s ease}
+    .card:hover,.step:hover,.review:hover{transform:translateY(-3px);box-shadow:var(--sh-lg)}
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease, transform .55s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0ms)}
+    .reveal.in{opacity:1;transform:none}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important;animation:none!important}.reveal{opacity:1!important;transform:none!important}.card:hover,.step:hover,.review:hover{transform:none}}
+  </style>
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"JobPosting",
+   "title":"Курьер Яндекс Доставки в Москве для приезжих — жильё и авто от парка",
+   "description":"Набор курьеров в таксопарк «Столица», партнёр Яндекс Доставки. Для приезжих: жильё на старте, авто от парка, помощь с документами. Любое гражданство. Выплаты каждый день, выход на линию за 1–2 дня — через Telegram-бота, без анкет.",
+   "datePosted":"2026-06-04","validThrough":"2026-12-31","employmentType":["FULL_TIME","PART_TIME","CONTRACTOR"],
+   "hiringOrganization":{"@type":"Organization","name":"Парк «Столица»","sameAs":"https://metallportal-crm2.vercel.app/landing/segments/kuryer-priezzhim/"},
+   "jobLocation":{"@type":"Place","address":{"@type":"PostalAddress","addressLocality":"Москва","addressRegion":"Москва","addressCountry":"RU"}},
+   "applicantLocationRequirements":{"@type":"Country","name":"RU"},
+   "jobBenefits":"Жильё на старте, авто от парка, помощь с оформлением документов, ежедневные выплаты",
+   "baseSalary":{"@type":"MonetaryAmount","currency":"RUB","value":{"@type":"QuantitativeValue","unitText":"MONTH","minValue":50000,"maxValue":400000}},
+   "industry":"Доставка, курьерские услуги","directApply":false}
+  </script>
+</head>
+<body>
+  <script>window.__CONTACTS__={phone:"",telegram:"stolica_dostavka_zbium_bot"};</script>
+
+  <header class="bar">
+    <div class="wrap">
+      <span class="logo"><span class="mono">С</span>Столица</span>
+      <a class="btn btn-terra btn-sm" data-cta="telegram" data-loc="header">Стать курьером</a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap grid">
+      <div>
+        <span class="badge"><span class="ya">Я</span>Партнёр Яндекс Доставки · Москва</span>
+        <h1>Приехал в Москву? <em>Жильё и авто</em> — от парка</h1>
+        <p class="lead">Парк «Столица» даёт жильё на старте, авто от парка и помощь с документами. Любое гражданство — поможем оформить. Выплаты каждый день, выход на линию за 1–2 дня. Напиши боту — без анкет.</p>
+        <div class="cta-row">
+          <a class="btn btn-terra" data-cta="telegram" data-loc="hero">Стать курьером</a>
+          <a class="btn btn-ghost" data-cta="call" data-loc="hero">Позвонить</a>
+        </div>
+        <p class="microcopy">Бот ответит за секунды, 24/7. Расскажем про жильё, авто и оформление под твою ситуацию.</p>
+        <div class="trust">
+          <span class="i">✓ <b>Жильё</b> на старте</span>
+          <span class="i">✓ <b>Авто от парка</b></span>
+          <span class="i">✓ <b>Любое гражданство</b></span>
+        </div>
+      </div>
+
+      <!-- Чеклист «берём на себя» -->
+      <div class="helpcard">
+        <h3>Что берём на себя</h3>
+        <p class="sub">Чтобы переезд не был стрессом</p>
+        <ul class="checklist">
+          <li><span class="tick">🏠</span><div><b>Жильё на старте</b><p class="ph">Поможем с жильём на первое время.</p></div></li>
+          <li><span class="tick">🚗</span><div><b>Авто от парка на газу</b><p class="ph">Авто и велосипед — в аренду на выгодных условиях.</p></div></li>
+          <li><span class="tick">📄</span><div><b>Документы</b><p class="ph">Бесплатно оформим самозанятость за 10 минут.</p></div></li>
+          <li><span class="tick">🤝</span><div><b>Наставник на старте</b><p class="ph">Поддержка 24/7 — ответим на любой вопрос в любое время.</p></div></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- КАЛЬКУЛЯТОР -->
+  <section class="soft" id="calc">
+    <div class="wrap">
+      <span class="eyebrow">Калькулятор</span>
+      <h2>Посчитай свой доход</h2>
+      <p style="max-width:46ch;margin-bottom:calc(var(--u)*3)">Подвигай ползунки — увидишь ориентир заработка. Точную цифру под район и транспорт бот посчитает за минуту.</p>
+      <div class="calc" data-calc>
+        <div class="field">
+          <label>Часов в день <span class="val"><b data-h>8</b> ч</span></label>
+          <input type="range" min="2" max="12" value="8" step="1" data-hours aria-label="Часов в день" />
+        </div>
+        <div class="field">
+          <label>Дней в неделю <span class="val"><b data-d>6</b></span></label>
+          <input type="range" min="1" max="7" value="6" step="1" data-days aria-label="Дней в неделю" />
+        </div>
+        <div class="field">
+          <label>Транспорт</label>
+          <div class="seg" data-transport role="group" aria-label="Транспорт">
+            <button type="button" data-rate="170" aria-pressed="false"><span class="e">🚶</span>Пеший</button>
+            <button type="button" data-rate="290" aria-pressed="false"><span class="e">🚲</span>Вело</button>
+            <button type="button" data-rate="420" aria-pressed="true"><span class="e">🚗</span>Авто</button>
+          </div>
+        </div>
+        <div class="calc-out">
+          <div class="k">Ориентир дохода в месяц</div>
+          <div class="v"><b data-result>≈ 174 700 ₽</b></div>
+          <small>Оценка по ставке за час и числу смен. Не гарантия — доход зависит от района, заказов и целей Яндекса.</small>
+        </div>
+        <div class="cta-row" style="margin-top:calc(var(--u)*2)">
+          <a class="btn btn-terra" style="width:100%" data-cta="telegram" data-loc="calc">Узнать точный доход в боте</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ВЫГОДЫ -->
+  <section>
+    <div class="wrap">
+      <span class="eyebrow">Почему «Столица»</span>
+      <h2>Поможем стартовать в Москве</h2>
+      <div class="benefits">
+        <div class="card ours"><div class="ic">🏠</div><h3>Жильё на старте</h3><p>Не нужно искать квартиру с улицы — поможем с жильём по приезде. Детали — в чате.</p></div>
+        <div class="card ours"><div class="ic">🚗</div><h3>Авто от парка на газу</h3><p>Нет своей машины — возьмёшь авто у парка. Газ дешевле бензина, расходы ниже.</p></div>
+        <div class="card ours"><div class="ic">📄</div><h3>Помощь с документами</h3><p>Любое гражданство. Подскажем по самозанятости и оформлению — сделаем вместе.</p></div>
+        <div class="card"><div class="ic">💸</div><h3>Выплаты каждый день</h3><p>Деньги на карту ежедневно — доход с первого выхода, не нужно ждать конца месяца.</p></div>
+        <div class="card"><div class="ic">📉</div><h3>Низкая комиссия</h3><p>Одна из самых низких в Москве. Больше денег остаётся тебе.</p></div>
+        <div class="card"><div class="ic">🤝</div><h3>Наставник рядом</h3><p>Поможем с первыми заказами и приложением, чтобы ты быстро вышел на доход.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ЧТО НУЖНО + ШАГИ -->
+  <section class="soft">
+    <div class="wrap">
+      <span class="eyebrow">Старт</span>
+      <h2>Что нужно, чтобы начать</h2>
+      <ul class="plain" style="margin-bottom:calc(var(--u)*4)">
+        <li>Тебе есть 18 лет</li>
+        <li>Смартфон с интернетом</li>
+        <li>Готов работать в Москве — жильё и авто поможем закрыть</li>
+        <li>Опыт и своя машина не обязательны — любое гражданство</li>
+      </ul>
+      <div class="steps">
+        <div class="step"><h3>Напиши боту</h3><p>Расскажи откуда едешь и что нужно. Без анкет и паспорта на сайте.</p><span class="min">1 минута</span></div>
+        <div class="step"><h3>Решим про жильё и авто</h3><p>Подберём вариант проживания и транспорт, подскажем по документам.</p><span class="min">ответ за секунды</span></div>
+        <div class="step"><h3>Оформим</h3><p>Поможем с самозанятостью и профилем в Яндекс Про — любое гражданство.</p><span class="min">в тот же день</span></div>
+        <div class="step"><h3>Выходи на линию</h3><p>Бери заказы и получай выплаты уже в первый день.</p><span class="min">1–2 дня</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- УСЛОВИЯ -->
+  <section>
+    <div class="wrap">
+      <span class="eyebrow">Условия парка</span>
+      <h2>Прозрачные условия</h2>
+      <ul class="plain">
+        <li>Жильё на старте — поможем с проживанием по приезде</li>
+        <li>Авто от парка на газу — если нет своей машины</li>
+        <li>Любое гражданство — поможем оформить документы</li>
+        <li>Выплаты каждый день на карту, без задержек</li>
+        <li>Комиссия — одна из самых низких в Москве</li>
+        <li>Официальное партнёрство с Яндекс Доставкой</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- СОЦДОКАЗАТЕЛЬСТВО -->
+  <section class="soft">
+    <div class="wrap">
+      <span class="eyebrow">Уже на линии</span>
+      <h2>Что говорят курьеры</h2>
+      <div class="reviews">
+        <div class="review"><div class="stars">★★★★★</div><p class="ph">Вышел на линию в первый же день. Выплаты реально каждый вечер на карту, ни разу не задержали. График выбираю сам.</p><div class="who"><span class="av">А</span><div><div class="nm ph">Алексей</div><div class="st ph">курьер на авто, 4 месяца</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><p class="ph">Совмещаю с учёбой — катаюсь вечерами и по выходным. Поддержка отвечает быстро, с оформлением помогли сразу.</p><div class="who"><span class="av">М</span><div><div class="nm ph">Марина</div><div class="st ph">вело-курьер, 7 месяцев</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><p class="ph">Приехал в Москву — помогли с жильём и всё оформили. Через день уже работал. Спасибо команде «Столицы».</p><div class="who"><span class="av">Р</span><div><div class="nm ph">Руслан</div><div class="st ph">пеший курьер, приехал из Казани</div></div></div></div>
+      </div>
+      <p class="microcopy" style="margin-top:14px">Отзывы реальных курьеров — добавим имена и стаж после подтверждения.</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section>
+    <div class="wrap">
+      <span class="eyebrow">Вопросы</span>
+      <h2>Частые вопросы</h2>
+      <details open><summary>Негде жить по приезде — поможете?</summary><p>Да. Поможем с жильём на старте, чтобы тебе было где остановиться с первого дня. Условия и варианты расскажем в чате.</p></details>
+      <details><summary>У меня нет машины. Что делать?</summary><p>Можно взять авто от парка — на газу, расходы ниже бензина. Или начать пешком/на велосипеде. Детали аренды авто — в чате.</p></details>
+      <details><summary>Я не гражданин РФ. Можно работать?</summary><p>Работаем с курьерами разного гражданства и помогаем с оформлением документов. Напиши боту — подскажем по твоей ситуации.</p></details>
+      <details><summary>Можно без опыта?</summary><p>Да. Покажем приложение Яндекс Про и поможем с первыми заказами. Главное — смартфон и желание работать.</p></details>
+      <details><summary>Когда и как выплаты?</summary><p>Каждый день на карту. Доход идёт с первого выхода на линию — ждать до конца месяца не нужно.</p></details>
+      <details><summary>Как оформить самозанятость?</summary><p>Это бесплатно и занимает пару минут в приложении. Поможем оформить и подскажем по налогам (4–6%).</p></details>
+    </div>
+  </section>
+
+  <!-- ФИНАЛЬНЫЙ CTA -->
+  <section>
+    <div class="wrap">
+      <div class="final">
+        <h2>Готов начать в Москве?</h2>
+        <p>Напиши боту — поможем с жильём, авто и документами, выведем на линию за 1–2 дня. Без анкет.</p>
+        <div class="cta-row">
+          <a class="btn btn-terra" data-cta="telegram" data-loc="final">Стать курьером</a>
+          <a class="btn btn-ghost" style="background:rgba(250,247,242,.12);color:#fff;border-color:rgba(250,247,242,.25)" data-cta="call" data-loc="final">Позвонить</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap"><p>Парк «Столица» — официальный партнёр Яндекс Доставки, Москва. Доход «до 400 000 ₽/мес» — верхняя планка при полной загрузке, не гарантия. Условия жилья, авто и оформления — индивидуально в чате. Мы не собираем персональные данные на этом сайте: связь только через Telegram-бота и телефон.</p></div>
+  </footer>
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+   {"@type":"Question","name":"Негде жить по приезде — поможете?","acceptedAnswer":{"@type":"Answer","text":"Да. Поможем с жильём на старте, чтобы тебе было где остановиться с первого дня. Условия расскажем в чате."}},
+   {"@type":"Question","name":"У меня нет машины. Что делать?","acceptedAnswer":{"@type":"Answer","text":"Можно взять авто от парка — на газу, расходы ниже бензина. Или начать пешком или на велосипеде."}},
+   {"@type":"Question","name":"Я не гражданин РФ. Можно работать?","acceptedAnswer":{"@type":"Answer","text":"Работаем с курьерами разного гражданства и помогаем с оформлением документов."}},
+   {"@type":"Question","name":"Можно без опыта?","acceptedAnswer":{"@type":"Answer","text":"Да. Покажем приложение Яндекс Про и поможем с первыми заказами."}},
+   {"@type":"Question","name":"Когда и как выплаты?","acceptedAnswer":{"@type":"Answer","text":"Каждый день на карту. Доход идёт с первого выхода на линию."}},
+   {"@type":"Question","name":"Как оформить самозанятость?","acceptedAnswer":{"@type":"Answer","text":"Это бесплатно и занимает пару минут в приложении. Поможем оформить и подскажем по налогам 4–6%."}}
+  ]}
+  </script>
+
+  <script>
+// UTM-хелпер лендинга «Едет в Москву». Самодостаточный, без зависимостей, без cookie.
+
+function resolveUtm(defaults) {
+  const incoming = new URLSearchParams(window.location.search);
+  const utm = { ...defaults };
+  for (const key of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term']) {
+    const v = incoming.get(key);
+    if (v) utm[key] = v;
+  }
+  return utm;
+}
+
+function withUtm(url, utm) {
+  try {
+    const u = new URL(url, window.location.href);
+    for (const [k, v] of Object.entries(utm)) if (v) u.searchParams.set(k, v);
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
+function telegramLink(handle, utm) {
+  const h = String(handle || '').replace(/^@/, '').trim();
+  const base = `https://t.me/${h}`;
+  if (!h) return base;
+  const parts = [utm.utm_campaign, utm.utm_source].filter(Boolean).join('__');
+  const start = parts.replace(/[^a-zA-Z0-9_]/g, '_').slice(0, 64);
+  return start ? `${base}?start=${start}` : base;
+}
+
+// Поведение лендинга «Курьер · Приезжим». Зависит от resolveUtm/telegramLink (utm.js,
+// инлайнится на сборке). Без import — bundle подставляет функции выше.
+
+(function () {
+  var DEFAULT_UTM = { utm_source: 'landing', utm_medium: 'cta', utm_campaign: 'kuryer-priezzhim' };
+  var utm = resolveUtm(DEFAULT_UTM);
+  var contacts = window.__CONTACTS__ || { phone: '', telegram: '' };
+
+  function logClick(meta) {
+    var ev = { event: 'cta_click', cta: meta.cta, location: meta.loc,
+      campaign: utm.utm_campaign, source: utm.utm_source, ts: new Date().toISOString() };
+    (window.dataLayer = window.dataLayer || []).push(ev);
+    if (window.console && console.debug) console.debug('[cta]', ev);
+  }
+  function hrefFor(cta) {
+    if (cta === 'call') return contacts.phone ? 'tel:' + contacts.phone.replace(/[^\d+]/g, '') : '#';
+    if (cta === 'telegram' || cta === 'contact') return telegramLink(contacts.telegram, utm);
+    return '#';
+  }
+  function wireCta() {
+    var nodes = document.querySelectorAll('[data-cta]');
+    for (var i = 0; i < nodes.length; i++) (function (el) {
+      var cta = el.getAttribute('data-cta'), loc = el.getAttribute('data-loc') || 'page';
+      var href = hrefFor(cta);
+      el.setAttribute('href', href);
+      if (cta === 'call') el.setAttribute('rel', 'nofollow');
+      else { el.setAttribute('target', '_blank'); el.setAttribute('rel', 'noopener nofollow'); }
+      if (href === '#') el.setAttribute('aria-disabled', 'true');
+      el.addEventListener('click', function () { logClick({ cta: cta, loc: loc }); });
+    })(nodes[i]);
+  }
+
+  /* ---------- Калькулятор дохода ---------- */
+  // Оценка = ставка_за_час × часы × дни × 4.33 недели. Ставки — ориентир, не гарантия.
+  function setupCalc() {
+    var root = document.querySelector('[data-calc]');
+    if (!root) return;
+    var hours = root.querySelector('[data-hours]');
+    var days = root.querySelector('[data-days]');
+    var hOut = root.querySelector('[data-h]');
+    var dOut = root.querySelector('[data-d]');
+    var result = root.querySelector('[data-result]');
+    var transBtns = root.querySelectorAll('[data-transport] button');
+    var rate = 290; // вело по умолчанию
+
+    function fmt(n) {
+      var r = Math.round(n / 100) * 100;
+      return '≈ ' + String(r).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
+    }
+    function fill(input) {
+      var min = +input.min, max = +input.max, v = +input.value;
+      input.style.setProperty('--fill', ((v - min) / (max - min) * 100) + '%');
+    }
+    function recalc() {
+      var h = +hours.value, d = +days.value;
+      if (hOut) hOut.textContent = h;
+      if (dOut) dOut.textContent = d;
+      // мягкий потолок на максимуме, чтобы не обещать нереалистичное
+      var monthly = rate * h * d * 4.33;
+      if (monthly > 400000) monthly = 400000;
+      if (result) result.textContent = fmt(monthly);
+      fill(hours); fill(days);
+    }
+    for (var i = 0; i < transBtns.length; i++) (function (b) {
+      b.addEventListener('click', function () {
+        for (var j = 0; j < transBtns.length; j++) transBtns[j].setAttribute('aria-pressed', 'false');
+        b.setAttribute('aria-pressed', 'true');
+        rate = +b.getAttribute('data-rate') || rate;
+        recalc();
+      });
+    })(transBtns[i]);
+    hours.addEventListener('input', recalc);
+    days.addEventListener('input', recalc);
+    recalc();
+  }
+
+  /* ---------- Движение: scroll-reveal + elevation хедера ---------- */
+  function setupMotion() {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var bar = document.querySelector('.bar');
+    if (bar) {
+      var onScroll = function () { bar.classList.toggle('scrolled', window.scrollY > 8); };
+      window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+    }
+    if (reduce || !('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var kids = en.target.querySelectorAll('.card, .step, .review, .stats > div, h2, .incomecard, .calc, .cta-row, .lead, ul.plain li, details');
+        kids.forEach(function (k, i) { k.style.setProperty('--d', Math.min(i * 50, 260) + 'ms'); k.classList.add('in'); });
+        io.unobserve(en.target);
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.card, .step, .review, .stats > div, section h2, .incomecard, .calc, .cta-row, .hero .lead, ul.plain li, details')
+      .forEach(function (e) { e.classList.add('reveal'); });
+    document.querySelectorAll('section .wrap, .hero .wrap').forEach(function (g) { io.observe(g); });
+  }
+
+  function init() { wireCta(); setupCalc(); setupMotion(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+
+</script>
+</body>
+</html>

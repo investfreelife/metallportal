@@ -93,7 +93,7 @@ export function buildUtm(campaignName: string | null | undefined, label: string 
 }
 
 /** Полная ссылка для канала рекрутинга Столицы (Sergey directive). */
-export const STOLICA_BOT_BASE = 'https://t.me/stolica_dostavka_zbium_bot?start=';
+export const STOLICA_BOT_BASE = 'https://t.me/stolica_dostavka_bot?start=';
 export function buildStartLink(utm: string): string {
   return `${STOLICA_BOT_BASE}${encodeURIComponent(utm)}`;
 }

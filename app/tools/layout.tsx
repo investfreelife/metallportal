@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { jsonLdString } from "@/lib/jsonLd";
 
 export const metadata: Metadata = {
   title: "Калькуляторы металлопроката — вес, арматура, сметы",
@@ -58,7 +59,7 @@ export default function ToolsLayout({ children }: { children: React.ReactNode })
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(faqSchema) }}
       />
       {children}
     </>

@@ -7,12 +7,32 @@ import { getAllArticles } from "@/lib/blog";
 const BASE_URL = SITE_URL;
 
 /**
+ * TASK_053 (audit 2026-06-18 SEV-1: sitemap 502): главный SEO-фикс.
+ *
+ * Корень 502:
+ *   - 14 последовательных Supabase-запросов (cats + products .range() по 1000) на каждый хит
+ *   - fs.readFileSync блога на каждый хит
+ *   - default Vercel maxDuration=10c — таймаут на серверлесс
+ *   ⇒ ycalb gateway отдаёт 502 → robots.txt ссылается → 12166 SKU не индексируются
+ *
+ * Fix: ISR (revalidate=1ч) + maxDuration=60. Кэшируется на edge один раз/час,
+ * собирается за раз и отдаётся всем. 502 уходит, без хитрого reorg запросов.
+ *
+ * Если каталог дорастёт >50k URL — потребуется sharding на sitemap-products-{N}.xml
+ * + index sitemap (см. SAFETY_CAP ниже).
+ */
+export const revalidate = 3600;          // ISR: пересборка раз в час
+export const maxDuration = 60;            // Vercel serverless timeout (default 10c)
+export const dynamic = "force-static";    // подсказка фреймворку: не "always dynamic"
+
+/**
  * Supabase REST API имеет hard cap 1000 строк per query (PostgREST default).
- * Чтобы вытащить полный каталог (5400+ SKU и растёт) — paginate'им через
- * `.range()`. SAFETY_CAP — защита от infinite loop при schema-баге.
+ * Чтобы вытащить полный каталог (12166 SKU и растёт — audit 2026-06-18) —
+ * paginate'им через `.range()`. SAFETY_CAP — защита от infinite loop при
+ * schema-баге.
  *
  * Sitemap protocol limit — 50000 URL per file. Если каталог превысит — нужен
- * sharding на `sitemap-products-{N}.xml` + index sitemap. На текущих ~5500
+ * sharding на `sitemap-products-{N}.xml` + index sitemap. На текущих ~12000
  * SKU + ~250 categories + 9 static — мы далеко до этого порога.
  */
 const PAGE_SIZE = 1000;

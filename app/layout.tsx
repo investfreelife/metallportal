@@ -1,6 +1,25 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
+
+/**
+ * TASK_053 (audit 2026-06-18 SEV-2): Inter через next/font/google вместо
+ * CSS @import. Раньше в globals.css был `@import url(...fonts.googleapis...)`,
+ * который render-blocking + 2 RTT (CSS → font request → font download).
+ * next/font:
+ *   - self-host fonts (без блокировок на fonts.googleapis.com)
+ *   - preload + display=swap по дефолту
+ *   - убирает CLS от font-fallback
+ * Передаём CSS var `--font-inter` — Tailwind подцепит через fontFamily.sans
+ * (см. tailwind.config.ts: ["var(--font-inter)", "Inter", "sans-serif"]).
+ */
+const inter = Inter({
+  subsets: ["latin", "cyrillic"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-inter",
+  display: "swap",
+});
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ThemeProvider from "@/components/ThemeProvider";
@@ -44,13 +63,23 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru" suppressHydrationWarning>
-      <body className="min-h-screen bg-background text-foreground transition-colors duration-200">
+    <html lang="ru" suppressHydrationWarning className={inter.variable}>
+      <body className="min-h-screen bg-background text-foreground transition-colors duration-200 font-sans">
+        {/* TASK_054 (audit SEV-3): skip-link для клавиатурной навигации.
+            Видим только при :focus (Tab из URL-бара) — пользователи мыши
+            ничего не видят, screen-reader/keyboard юзеры могут пропустить
+            длинный header. */}
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-gold focus:text-black focus:font-bold focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-2xl"
+        >
+          Перейти к содержимому
+        </a>
         <SiteSchemas />
         <ThemeProvider>
           <CartProvider>
             <Header />
-            {children}
+            <div id="main">{children}</div>
             <Footer />
             <AdminBar />
           </CartProvider>

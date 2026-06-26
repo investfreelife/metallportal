@@ -74,7 +74,9 @@ export default async function Footer() {
               </li>
               <li className="flex items-start gap-2 text-foreground/80">
                 <Clock size={16} className="text-gold mt-0.5 flex-shrink-0" />
-                <span>Пн–Пт 9:00–18:00 МСК</span>
+                {/* TASK_054 (audit SEV-2): синхронизация с /contacts —
+                    там было Пн-Пт + Сб, в Footer только Пн-Пт. */}
+                <span>Пн–Пт 9:00–18:00, Сб 10:00–15:00 МСК</span>
               </li>
             </ul>
           </div>
@@ -132,9 +134,34 @@ export default async function Footer() {
           </div>
         </div>
 
+        {/* TASK_054 (audit 2026-06-18 SEV-1): юр.реквизиты для B2B-доверия.
+            Снабженец без ИНН/ОГРН не заводит контрагента.
+            Значения из env LEGAL_*; если не заданы — «реквизиты по запросу»
+            (НЕ выдумываем — Сергей должен задать в Vercel env):
+              LEGAL_NAME    = ООО «Харланметалл» (или ИП ФИО)
+              LEGAL_INN     = 7700000000
+              LEGAL_OGRN    = 1170000000000  (или ОГРНИП)
+              LEGAL_KPP     = 770000000      (для ИП — пусто, не задавать)
+              LEGAL_ADDRESS = 117000, Москва, ул. ..., д. ...           */}
+        {(process.env.LEGAL_INN || process.env.LEGAL_NAME) ? (
+          <div className="pt-8 border-t border-gold/10 text-xs text-foreground/60 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1 mb-4">
+            {process.env.LEGAL_NAME && <div><span className="text-foreground/40">Юр.лицо:</span> {process.env.LEGAL_NAME}</div>}
+            {process.env.LEGAL_INN && <div><span className="text-foreground/40">ИНН:</span> {process.env.LEGAL_INN}</div>}
+            {process.env.LEGAL_OGRN && <div><span className="text-foreground/40">ОГРН/ОГРНИП:</span> {process.env.LEGAL_OGRN}</div>}
+            {process.env.LEGAL_KPP && <div><span className="text-foreground/40">КПП:</span> {process.env.LEGAL_KPP}</div>}
+            {process.env.LEGAL_ADDRESS && <div className="md:col-span-2"><span className="text-foreground/40">Адрес:</span> {process.env.LEGAL_ADDRESS}</div>}
+          </div>
+        ) : (
+          <div className="pt-8 border-t border-gold/10 text-xs text-foreground/60 mb-4">
+            ИНН / ОГРН / КПП / адрес склада — высылаем по запросу в{" "}
+            <Link href="/contacts" className="text-gold hover:underline">Контакты</Link> или{" "}
+            <a href="https://t.me/harlansteel" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">Telegram</a>.
+          </div>
+        )}
+
         {/* Bottom — Telegram реальный (@harlansteel, см. /contacts);
             VK / YouTube handles нет, ссылки убраны вместо href="#". */}
-        <div className="pt-8 border-t border-gold/10 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="pt-2 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-foreground/40 text-sm">
             © {new Date().getFullYear()} Харланметалл. Все права защищены.
           </p>

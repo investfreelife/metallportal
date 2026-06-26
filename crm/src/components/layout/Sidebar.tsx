@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import { TenantSwitcher } from './TenantSwitcher'
 import {
   LayoutDashboard,
   Users,
@@ -23,12 +24,19 @@ import {
   Wallet,
   Wrench,
   CalendarDays,
+  CalendarClock,
   ListChecks,
   MessageSquare,
   KanbanSquare,
   HelpCircle,
   BookOpen,
   MailOpen,
+  Lightbulb,
+  Flame,
+  MessagesSquare,
+  Gift,
+  Sprout,
+  ShieldCheck,
 } from 'lucide-react'
 
 type NavItem = {
@@ -64,7 +72,7 @@ const NAV_METAL: NavSection[] = [
       { href: '/deals', label: 'Сделки', icon: Briefcase },
       { href: '/calls', label: 'Звонки', icon: Phone, badgeKey: 'calls' },
       { href: '/dialogs', label: 'Диалоги', icon: MessageSquare },
-      { href: '/funnel', label: 'Воронка', icon: KanbanSquare },
+      { href: '/funnel-stages', label: '🔻 Воронка', icon: KanbanSquare },
       { href: '/questions', label: 'Вопросы', icon: HelpCircle, badgeKey: 'open_questions' },
       { href: '/kb', label: 'База знаний', icon: BookOpen },
     ],
@@ -83,6 +91,8 @@ const NAV_METAL: NavSection[] = [
     items: [
       { href: '/content-plan', label: 'Контент-план', icon: ListChecks },
       { href: '/content', label: 'Планировщик', icon: CalendarDays },
+      { href: '/content-ideas', label: '💡 Инфо-поводы', icon: Lightbulb },
+      { href: '/seed-plan', label: '📅 Посев-план', icon: CalendarClock },
       { href: '/connections', label: 'Связи', icon: Network },
     ],
   },
@@ -110,10 +120,15 @@ const NAV_TAXI: NavSection[] = [
     items: [
       { href: '/dialogs', label: 'Диалоги', icon: MessageSquare },
       { href: '/business', label: 'Бизнес-личка', icon: MailOpen },
-      { href: '/funnel', label: 'Воронка', icon: KanbanSquare },
+      { href: '/funnel-stages', label: '🔻 Воронка', icon: KanbanSquare },
+      { href: '/job-seekers', label: '🔥 Соискатели', icon: Flame },
+      { href: '/communication', label: '💬 Общение', icon: MessagesSquare },
+      { href: '/referral-program', label: '🎁 Рефералка', icon: Gift },
       { href: '/questions', label: 'Вопросы', icon: HelpCircle, badgeKey: 'open_questions' },
       { href: '/kb', label: 'База знаний', icon: BookOpen },
-      { href: '/marketing', label: 'Маркетинг', icon: Megaphone },
+      { href: '/marketing', label: '📣 Маркетинг', icon: Megaphone },
+      { href: '/marketing-planner', label: '📅 Посев-планировщик', icon: CalendarDays },
+      { href: '/vk-ads', label: '📢 ВК Реклама', icon: Megaphone },
     ],
   },
   {
@@ -131,6 +146,8 @@ const NAV_TAXI: NavSection[] = [
       { href: '/trips', label: 'Поездки', icon: MapPin },
       { href: '/payouts', label: 'Выплаты', icon: Wallet },
       { href: '/channels', label: 'Telegram каналы', icon: Send },
+      { href: '/vk-groups', label: 'VK группы', icon: Users },
+      { href: '/legal-guard', label: '🛡 Юр-щит', icon: ShieldCheck },
     ],
   },
   {
@@ -138,6 +155,10 @@ const NAV_TAXI: NavSection[] = [
     items: [
       { href: '/content-plan', label: 'Контент-план', icon: ListChecks },
       { href: '/content', label: 'Планировщик', icon: CalendarDays },
+      { href: '/content-ideas', label: '💡 Инфо-поводы', icon: Lightbulb },
+      { href: '/seed-plan', label: '📅 Посев-план', icon: CalendarClock },
+      { href: '/seed-groups', label: '🌱 Готовы к засеву', icon: Sprout },
+      { href: '/post-history', label: '📢 История постинга', icon: Megaphone },
       { href: '/connections', label: 'Связи', icon: Network },
     ],
   },
@@ -150,8 +171,50 @@ const NAV_TAXI: NavSection[] = [
   },
 ]
 
+/**
+ * NAV_DREAM — Sergey directive 2026-06-17: tenant «Мечта — Лендинг-фабрика».
+ * Парсим бизнес Москвы из Яндекс.Карт → готовый HTML лендинг → продажа за 25K ₽.
+ */
+const NAV_DREAM: NavSection[] = [
+  {
+    section: 'Мечта',
+    items: [
+      { href: '/dream', label: '🎯 Дашборд', icon: LayoutDashboard },
+      { href: '/dream/kanban', label: '📊 Канбан (производство)', icon: KanbanSquare },
+      { href: '/dream/board', label: '💼 Воронка продаж', icon: KanbanSquare },
+      { href: '/dream/leads', label: '📋 Лиды', icon: Users },
+    ],
+  },
+  {
+    section: 'Производство',
+    items: [
+      { href: '/dream/parser', label: '🛰 Парсер', icon: Network },
+      { href: '/dream/landings', label: '🎨 Лендинги клиентов', icon: Layers },
+      { href: '/dream/agency-sites', label: '✨ Сайты студии', icon: Sparkles },
+      { href: '/dream/calls', label: '📞 Звонки', icon: Phone },
+      { href: '/dream/outreach', label: '📨 Outreach', icon: Send },
+    ],
+  },
+  {
+    section: 'Знания',
+    items: [
+      { href: '/dream/docs', label: '📐 Архитектура', icon: BookOpen },
+      { href: '/dream/agent-rules', label: '📖 Правила агентам', icon: BookOpen },
+    ],
+  },
+  {
+    section: 'Аналитика',
+    items: [
+      { href: '/dream/analytics', label: 'Аналитика', icon: BarChart2 },
+      { href: '/dream/finance', label: '💰 Финансы', icon: Wallet },
+    ],
+  },
+]
+
 function navByIndustry(industry: string | undefined): NavSection[] {
-  return industry === 'taxi' ? NAV_TAXI : NAV_METAL
+  if (industry === 'taxi') return NAV_TAXI
+  if (industry === 'landing_factory') return NAV_DREAM
+  return NAV_METAL
 }
 
 interface SidebarProps {
@@ -164,6 +227,8 @@ interface SidebarProps {
   openQuestions?: number
   industry?: string
   tenantName?: string
+  tenantId?: string
+  isSuperadmin?: boolean
 }
 
 export default function Sidebar({
@@ -176,6 +241,8 @@ export default function Sidebar({
   openQuestions = 0,
   industry = 'metal',
   tenantName,
+  tenantId,
+  isSuperadmin = false,
 }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
@@ -228,6 +295,13 @@ export default function Sidebar({
           <p className="text-gray-400 text-[10px] truncate max-w-[140px]">{displayName}</p>
         </div>
       </div>
+
+      {isSuperadmin && tenantId && (
+        <TenantSwitcher
+          activeTenantId={tenantId}
+          activeTenantName={tenantName ?? displayName}
+        />
+      )}
 
       <nav className="flex-1 px-2 py-3 overflow-y-auto">
         {navSections.map(({ section, items }) => (

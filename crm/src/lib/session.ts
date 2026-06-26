@@ -23,6 +23,12 @@ export interface CrmSession {
   industry?: string
   /** Display name из tenants.name — показывается в Sidebar header. */
   tenant_name?: string
+  /**
+   * Sergey directive 2026-06-17 — глубокая интеграция Мечты.
+   * Если TRUE → пользователь может переключаться между tenants через
+   * `/api/auth/switch-tenant`. В Sidebar появляется dropdown тенантов.
+   */
+  is_superadmin?: boolean
   exp: number
 }
 

@@ -27,6 +27,12 @@ const nextConfig: NextConfig = {
       },
     ]
   },
+  // Чистые URL сегментных лендингов → статический index.html в public/.
+  async rewrites() {
+    return [
+      { source: '/landing/segments/:seg', destination: '/landing/segments/:seg/index.html' },
+    ]
+  },
 }
 
 export default nextConfig

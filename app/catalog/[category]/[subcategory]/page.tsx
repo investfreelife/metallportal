@@ -7,6 +7,7 @@ import {
   getCategoryBySlug, getSubcategories, getCategoryWithChildren, getAggregatedCategoryCards,
   getProductBySlug, getProductPriceItemsCutoverAware, getProductSellerOffers, getRelatedProducts, getProductCounts, sumCounts,
 } from "@/lib/queries";
+import { jsonLdString } from "@/lib/jsonLd";
 import { supabase } from "@/lib/supabase";
 import { SITE_URL } from "@/lib/site";
 import CatalogView from "@/components/catalog/CatalogView";
@@ -925,7 +926,7 @@ export default async function SubcategoryPage({ params }: Props) {
       <>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdString(productSchema) }}
         />
         <Breadcrumbs
           items={[

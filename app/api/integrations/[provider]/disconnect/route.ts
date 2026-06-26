@@ -2,19 +2,22 @@ import { NextRequest, NextResponse } from "next/server";
 import { getIntegrationsClient } from "@/lib/integrations/_base";
 import { isValidProvider } from "@/lib/integrations/_providers";
 import type { IntegrationProviderSlug } from "@/lib/integrations/_base";
+import { getCurrentUser } from "@/lib/auth";
 
 /**
  * POST /api/integrations/[provider]/disconnect
  *
- * Удаляет integration row для given provider. Token revocation на стороне
- * provider (Yandex/VK) — TBD per-provider helper в m007/m008. Сейчас
- * полагается на TTL access_token + manual user revocation если потребуется.
+ * TASK_052 hardening (audit 2026-06-18 SEV-1):
+ * Раньше без auth — любой запрос удалял integration row по provider, без
+ * проверки владельца (UNIQUE(provider, connected_by) — у одного юзера одна
+ * интеграция на провайдер, но row может быть и чужой). Атака: drop OAuth
+ * у другого юзера.
  *
- * Body: пустое.
- * Response: { ok: true } или { error }.
+ * Теперь: требует залогиненного user + удаляет ТОЛЬКО `eq('connected_by', user.id)`.
  *
- * **Note**: для Voximplant disconnect через UI неприменим (env-based) —
- * возвращаем 400.
+ * Body: пустое. Response: { ok: true, deleted } или { error }.
+ *
+ * **Note**: для Voximplant disconnect через UI неприменим (env-based) — 400.
  */
 
 export const runtime = "nodejs";
@@ -23,6 +26,11 @@ export async function POST(
   _req: NextRequest,
   { params }: { params: { provider: string } },
 ) {
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   if (!isValidProvider(params.provider)) {
     return NextResponse.json({ error: "Unknown provider" }, { status: 404 });
   }
@@ -39,14 +47,17 @@ export async function POST(
   }
 
   const supabase = getIntegrationsClient();
+  // SEV-1 fix: owner-scoped delete — нельзя дропнуть чужую интеграцию.
   const { error, count } = await supabase
     .from("integrations")
     .delete({ count: "exact" })
-    .eq("provider", provider);
+    .eq("provider", provider)
+    .eq("connected_by", user.id);
 
   if (error) {
+    console.error("[integrations/disconnect] error:", error.message);
     return NextResponse.json(
-      { error: `Delete failed: ${error.message}` },
+      { error: "Delete failed" },
       { status: 500 },
     );
   }

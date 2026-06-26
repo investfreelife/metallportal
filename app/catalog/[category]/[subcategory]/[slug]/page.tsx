@@ -6,6 +6,7 @@ import {
 } from "@/lib/queries";
 import CatalogView from "@/components/catalog/CatalogView";
 import ProductDetailView from "@/components/catalog/ProductDetailView";
+import { SITE_URL } from "@/lib/site";
 import EmptyCategoryLanding from "@/components/catalog/EmptyCategoryLanding";
 import NavesView from "@/components/navesy/NavesView";
 import NavesProductDetail from "@/components/navesy/NavesProductDetail";
@@ -44,15 +45,21 @@ const CANONICAL_REDIRECTS: Record<string, string> = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  // TASK_053 (audit 2026-06-18 SEV-2): canonical на depth-3 шаблоне.
+  // Этот роут служит и категорию, и товар → canonical по реальному URL.
+  const canonical = `${SITE_URL}/catalog/${params.category}/${params.subcategory}/${params.slug}`;
   const cat = await getCategoryBySlug(params.slug);
-  if (cat) return { title: `${cat.name} — купить в Москве | Харланметалл` };
+  if (cat) return {
+    title: `${cat.name} — купить в Москве | Харланметалл`,
+    alternates: { canonical },
+  };
   const product = await getProductBySlug(params.slug);
   if (!product) return { title: "Не найдено | Харланметалл" };
   const title = `${product.name} цена купить в Москве | Харланметалл`;
   const description = product.description
     ? product.description.slice(0, 155)
     : `${product.name} — купить оптом и в розницу в Москве.`;
-  return { title, description };
+  return { title, description, alternates: { canonical } };
 }
 
 export default async function SlugPage({ params }: Props) {

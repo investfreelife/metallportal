@@ -21,6 +21,7 @@ import {
   ArrowDown,
   Layers,
   Save,
+  Lock,
 } from 'lucide-react';
 import type { ContentPost, PostStatus, FeedbackEntry, RedoFlag, PhotoOption } from '@/lib/content/types';
 import { isPublishable, CAROUSEL_LIMIT } from '@/lib/content/types';
@@ -77,12 +78,31 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
     return draft.photo_url ? [draft.photo_url] : [];
   })();
   const [carousel, setCarousel] = useState<string[]>(initialCarousel);
+  // Помним последний remote-snapshot — чтобы понимать, трогал юзер или нет.
+  const lastRemoteRef = useRef<string>(JSON.stringify(initialCarousel));
   // Синхроним carousel когда воркер обновляет draft.photos извне (polling).
+  // ВАЖНО (фикс 2026-06-06 по скрину Сергея): НЕ перезаписываем локальный
+  // выбор пользователя. Подхватываем remote ТОЛЬКО если юзер ничего не
+  // менял с прошлой синхронизации (carousel === lastRemoteRef.current).
+  // Иначе свежие галочки моментально слетали обратно к старому БД-значению.
   useEffect(() => {
-    const remote = Array.isArray(draft.photos) ? draft.photos.filter((u) => typeof u === 'string' && u) : null;
-    if (remote && JSON.stringify(remote) !== JSON.stringify(carousel)) {
-      setCarousel(remote);
+    const remote = Array.isArray(draft.photos)
+      ? draft.photos.filter((u) => typeof u === 'string' && u)
+      : null;
+    if (!remote) return;
+    const remoteJson = JSON.stringify(remote);
+    const localJson = JSON.stringify(carousel);
+    if (remoteJson === localJson) {
+      // уже совпадает — просто запомним
+      lastRemoteRef.current = remoteJson;
+      return;
     }
+    // Юзер не трогал (локальное == прошлый remote) → можно подхватить новый
+    if (localJson === lastRemoteRef.current) {
+      setCarousel(remote);
+      lastRemoteRef.current = remoteJson;
+    }
+    // иначе игнорируем: у юзера есть несохранённые изменения, не сбиваем.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draft.photos]);
 
@@ -188,6 +208,37 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
     } finally {
       setBusy(null);
     }
+  }
+
+  /**
+   * Sergey directive 2026-06-06: «загружать сразу несколько файлов».
+   * Бегает по списку файлов и грузит ПОСЛЕДОВАТЕЛЬНО (чтобы порядок в
+   * photo_options совпадал с выбором юзера и сервер не перегрузился).
+   * Прогресс: «загружено N/M…» в busy-надписи. Если хотя бы один файл
+   * упал — копим текст ошибок и показываем в банере; продолжаем дальше.
+   */
+  async function uploadMany(files: File[] | FileList) {
+    const list = Array.from(files).filter((f) => f.type.startsWith('image/'));
+    if (!list.length) return;
+    setError(null);
+    const errors: string[] = [];
+    for (let i = 0; i < list.length; i++) {
+      const f = list[i];
+      setBusy(`upload:${i + 1}/${list.length}`);
+      try {
+        const fd = new FormData();
+        fd.append('file', f);
+        const r = await fetch(`/api/content/posts/${post.id}/photo`, { method: 'POST', body: fd });
+        const j = await r.json();
+        if (!r.ok || j.error) throw new Error(j.error || 'upload failed');
+        setDraft(j.post);
+        await onChanged(j.post);
+      } catch (e: any) {
+        errors.push(`${f.name}: ${String(e.message || e)}`);
+      }
+    }
+    if (errors.length) setError(`Ошибки загрузки:\n${errors.join('\n')}`);
+    setBusy(null);
   }
 
   async function publishNow() {
@@ -331,6 +382,20 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
         </header>
 
         <div className="flex-1 overflow-y-auto">
+          {/* ── Куда публиковать (Postiz-style: круглые аватары наверху) ── */}
+          <ChannelsPicker
+            activeConnections={activeConnections}
+            value={Array.isArray(draft.channels_sel) ? draft.channels_sel : ['telegram', 'vk']}
+            onChange={(next) => { setDraft({ ...draft, channels_sel: next }); patch({ channels_sel: next }); }}
+          />
+
+          {/* 🔒 Согласовано человеком — автоматика не двигает дату/фото/текст. */}
+          {draft.approved_final === true && (
+            <div className="mx-4 mt-3 flex items-start gap-2 bg-amber-50 border border-amber-200 text-amber-800 text-xs rounded px-3 py-2">
+              <Lock size={14} className="flex-shrink-0 mt-0.5" />
+              <span>🔒 Согласовано человеком — меняет только человек. Автоматика не двигает дату/фото/текст.</span>
+            </div>
+          )}
           {error && (
             <div className="mx-4 mt-3 flex items-start gap-2 text-xs text-red-700 bg-red-50 border border-red-200 rounded-md px-2.5 py-2">
               <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
@@ -377,11 +442,21 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
             <div className="mt-1 text-[10px] text-gray-400">{(draft.body ?? '').length} симв.</div>
 
             {redoingText ? (
-              <div className="mt-2 flex items-center gap-2 text-xs text-violet-700 bg-violet-50 border border-violet-200 rounded px-2.5 py-1.5">
-                <RefreshCw size={12} className="animate-spin" />
-                <span>
+              <div className="mt-2 flex items-start gap-2 text-xs text-violet-700 bg-violet-50 border border-violet-200 rounded px-2.5 py-1.5">
+                <RefreshCw size={12} className="animate-spin mt-0.5" />
+                <span className="flex-1">
                   🔄 Воркер переделывает текст… {draft.comment_text && <em className="text-violet-600">(твой коммент: {draft.comment_text})</em>}
                 </span>
+                <button
+                  onClick={async () => {
+                    if (!confirm('Снять флаг переделки текста? Воркер перестанет ждать его, текст останется как сейчас.')) return;
+                    await patch({ redo: { ...(redo as RedoFlag), text: false } });
+                  }}
+                  title="Снять флаг переделки (воркер завис / больше не нужно)"
+                  className="flex items-center gap-1 px-2 py-0.5 text-[10px] bg-white border border-violet-300 text-violet-700 rounded hover:bg-violet-100 flex-shrink-0"
+                >
+                  <X size={10} /> Отменить
+                </button>
               </div>
             ) : (
               <RedoBlock
@@ -419,11 +494,21 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
             </div>
 
             {redoingPhoto ? (
-              <div className="rounded-md border border-violet-200 bg-violet-50 p-4 text-xs text-violet-700 flex items-center gap-2">
-                <RefreshCw size={14} className="animate-spin flex-shrink-0" />
-                <span>
+              <div className="rounded-md border border-violet-200 bg-violet-50 p-4 text-xs text-violet-700 flex items-start gap-2">
+                <RefreshCw size={14} className="animate-spin flex-shrink-0 mt-0.5" />
+                <span className="flex-1">
                   🔄 Воркер генерирует новое фото… {draft.comment_photo && <em className="text-violet-600">(твой коммент: {draft.comment_photo})</em>}
                 </span>
+                <button
+                  onClick={async () => {
+                    if (!confirm('Снять флаг переделки фото? Воркер перестанет ждать его, текущее фото останется как есть.')) return;
+                    await patch({ redo: { ...(redo as RedoFlag), photo: false } });
+                  }}
+                  title="Снять флаг переделки (воркер завис / больше не нужно)"
+                  className="flex items-center gap-1 px-2 py-0.5 text-[10px] bg-white border border-violet-300 text-violet-700 rounded hover:bg-violet-100 flex-shrink-0"
+                >
+                  <X size={10} /> Отменить
+                </button>
               </div>
             ) : draft.photo_url ? (
               <div className="rounded-md overflow-hidden border border-gray-200 bg-gray-50 relative">
@@ -453,20 +538,22 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
               ref={fileRef}
               type="file"
               accept="image/png,image/jpeg,image/webp,image/*"
+              multiple
               hidden
               onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) uploadPhoto(f);
-                // Сбрасываем чтобы можно было загрузить тот же файл повторно.
+                const files = e.target.files;
+                if (files && files.length) uploadMany(files);
+                // Сбрасываем чтобы можно было загрузить те же файлы повторно.
                 if (fileRef.current) fileRef.current.value = '';
               }}
             />
             {/* Drag&drop / клик зона */}
             <UploadDropArea
-              busy={busy === 'upload'}
+              busy={!!busy && busy.startsWith('upload')}
+              busyLabel={busy && busy.startsWith('upload:') ? busy.replace('upload:', '') : null}
               disabled={redoingPhoto}
               onPick={() => fileRef.current?.click()}
-              onFile={(f) => uploadPhoto(f)}
+              onFiles={(files) => uploadMany(files)}
             />
             <div className="mt-2 flex items-center gap-3 flex-wrap">
               {/* «Дать варианты» — воркер сгенерит 3 бесплатных Flux. */}
@@ -709,12 +796,9 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
             </section>
           )}
 
-          {/* ── Channels (multi-select galo4kami) ─────────────────── */}
-          <ChannelsPicker
-            activeConnections={activeConnections}
-            value={Array.isArray(draft.channels_sel) ? draft.channels_sel : ['telegram', 'vk']}
-            onChange={(next) => { setDraft({ ...draft, channels_sel: next }); patch({ channels_sel: next }); }}
-          />
+          {/* Sergey directive 2026-06-06 (по скрину Postiz): пикер каналов
+              ПЕРЕЕХАЛ в шапку (см. блок «Куда публиковать» сразу под header).
+              Здесь оставлен пустой anchor чтобы сохранить нумерацию секций. */}
 
           {/* ── Approval ──────────────────────────────────────────── */}
           <section className="px-4 py-3 border-t border-gray-100">
@@ -840,14 +924,17 @@ export default function PostEditor({ post, activeConnections, onClose, onChanged
  */
 function UploadDropArea({
   busy,
+  busyLabel,
   disabled,
   onPick,
-  onFile,
+  onFiles,
 }: {
   busy: boolean;
+  /** Прогресс типа «3/8» — если идёт multi-upload (Sergey directive 2026-06-06). */
+  busyLabel?: string | null;
   disabled: boolean;
   onPick: () => void;
-  onFile: (f: File) => void;
+  onFiles: (files: FileList | File[]) => void;
 }) {
   const [over, setOver] = useState(false);
   return (
@@ -859,8 +946,8 @@ function UploadDropArea({
         e.preventDefault();
         setOver(false);
         if (disabled || busy) return;
-        const f = e.dataTransfer.files?.[0];
-        if (f && f.type.startsWith('image/')) onFile(f);
+        const files = Array.from(e.dataTransfer.files || []).filter((f) => f.type.startsWith('image/'));
+        if (files.length) onFiles(files);
       }}
       className={`mt-2 rounded-md border-2 border-dashed px-3 py-3 text-center cursor-pointer transition-colors ${
         disabled || busy
@@ -873,13 +960,13 @@ function UploadDropArea({
       <div className="flex items-center justify-center gap-1.5 text-xs font-medium">
         <Upload size={12} />
         {busy
-          ? 'Загрузка…'
+          ? `Загрузка${busyLabel ? ` ${busyLabel}` : ''}…`
           : over
-            ? 'Отпусти — добавлю в варианты'
-            : '⬆️ Загрузить своё фото (клик или перетащи PNG / JPG)'}
+            ? 'Отпусти — добавлю в варианты (можно несколько)'
+            : '⬆️ Загрузить свои фото (клик или перетащи — можно несколько PNG/JPG)'}
       </div>
       <div className="text-[10px] text-blue-600/80 mt-0.5">
-        Файл уходит в Storage, появляется в галерее «Варианты» — обложкой можно сделать кнопкой ✅ Обложка
+        Файлы уходят в Storage, появляются в галерее «Варианты» — обложкой можно сделать кнопкой ✅ Обложка
       </div>
     </div>
   );
@@ -901,73 +988,76 @@ function ChannelsPicker({
   onChange: (next: string[]) => void;
 }) {
   const conns = activeConnections.filter((c) => c.enabled && (c.platform === 'telegram' || c.platform === 'vk'));
-  // Уникальные платформы из connections (если есть несколько TG — всё равно
-  // галочка одна «telegram», т.к. демон выберет первую активную).
   const platforms = Array.from(new Set(conns.map((c) => c.platform))) as Array<'telegram' | 'vk'>;
-  if (platforms.length === 0 && conns.length === 0) {
-    return (
-      <section className="px-4 py-3 border-t border-gray-100">
-        <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Куда публиковать</label>
-        <p className="text-[10px] text-amber-700 mt-1">
-          Нет активных связей. Добавь в <a href="/connections" className="underline">/connections</a>.
-        </p>
-      </section>
-    );
-  }
+  const hasAnyConn = platforms.length > 0;
 
   function toggle(p: string) {
     if (value.includes(p)) onChange(value.filter((x) => x !== p));
     else onChange([...value, p]);
   }
 
-  // Подписи под платформой — берём первую connection.
+  // Подписи под аватаром — берём label первой connection платформы.
   const labelByPlatform: Record<string, string> = {};
   for (const c of conns) {
     if (!labelByPlatform[c.platform]) labelByPlatform[c.platform] = c.label;
   }
 
+  // Postiz-style: круглые большие аватары с буквой; активный — синяя обводка
+  // + галочка ✓ в углу. Клик по аватару = toggle. Нет связей — амбер-баннер.
   return (
-    <section className="px-4 py-3 border-t border-gray-100">
-      <div className="flex items-center justify-between mb-1.5">
+    <section className="px-4 py-3 border-b border-gray-100 bg-gray-50/50">
+      <div className="flex items-center justify-between mb-2">
         <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
-          Куда публиковать ({value.length})
+          📣 Куда публиковать
         </label>
-        <span className="text-[10px] text-gray-400">можно несколько</span>
+        <span className="text-[10px] text-gray-400">клик = вкл/выкл · можно несколько</span>
       </div>
-      <div className="space-y-1">
+      <div className="flex items-end gap-3">
         {(['telegram', 'vk'] as const).map((p) => {
           const isAvailable = platforms.includes(p);
           const isChecked = value.includes(p);
           const label = labelByPlatform[p] ?? (p === 'telegram' ? 'Telegram' : 'VK');
-          const pretty = p === 'telegram' ? 'Telegram' : 'VK';
+          const platformPretty = p === 'telegram' ? 'TG' : 'VK';
           return (
-            <label
+            <button
               key={p}
-              className={`flex items-center gap-2 px-2.5 py-2 border rounded-md cursor-pointer ${
-                !isAvailable ? 'opacity-50 cursor-not-allowed' : isChecked ? 'border-blue-300 bg-blue-50' : 'border-gray-200 bg-white hover:bg-gray-50'
-              }`}
+              type="button"
+              onClick={() => isAvailable && toggle(p)}
+              disabled={!isAvailable}
+              title={!isAvailable ? `${p === 'telegram' ? 'Telegram' : 'VK'} не настроен в /connections` : (isChecked ? `Снять «${label}»` : `Публиковать в «${label}»`)}
+              className={`group flex flex-col items-center gap-1 ${!isAvailable ? 'cursor-not-allowed opacity-40' : 'cursor-pointer'}`}
             >
-              <input
-                type="checkbox"
-                checked={isChecked}
-                disabled={!isAvailable}
-                onChange={() => isAvailable && toggle(p)}
-                className="rounded text-blue-600"
-              />
-              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                p === 'telegram' ? 'bg-sky-100 text-sky-700' : 'bg-blue-100 text-blue-800'
+              <span className={`relative w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-base transition-all ${
+                p === 'telegram'
+                  ? (isChecked ? 'bg-sky-500 ring-2 ring-sky-600 ring-offset-2' : 'bg-sky-200 hover:bg-sky-300')
+                  : (isChecked ? 'bg-blue-600 ring-2 ring-blue-700 ring-offset-2' : 'bg-blue-200 hover:bg-blue-300')
               }`}>
-                {pretty}
+                {platformPretty}
+                {isChecked && (
+                  <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center">
+                    <Check size={9} strokeWidth={3} className="text-white" />
+                  </span>
+                )}
               </span>
-              <span className="flex-1 text-xs text-gray-800 truncate">{label}</span>
-              {!isAvailable && <span className="text-[10px] text-gray-500">не настроен</span>}
-            </label>
+              <span className={`text-[10px] max-w-[80px] truncate ${isChecked ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
+                {label}
+              </span>
+            </button>
           );
         })}
+        <div className="flex-1" />
+        <div className="text-[10px] text-gray-500 pb-1">
+          выбрано: <strong className="text-gray-900">{value.length}</strong>
+        </div>
       </div>
-      {value.length === 0 && (
-        <p className="text-[10px] text-amber-700 mt-1.5">
-          ⚠️ Выбери хотя бы один канал — иначе пост не опубликуется.
+      {!hasAnyConn && (
+        <p className="text-[10px] text-amber-700 mt-2">
+          ⚠️ Нет активных связей. Добавь в <a href="/connections" className="underline">/connections</a>.
+        </p>
+      )}
+      {hasAnyConn && value.length === 0 && (
+        <p className="text-[10px] text-amber-700 mt-2">
+          ⚠️ Не выбран ни один канал — пост не опубликуется. Кликни по аватару выше.
         </p>
       )}
     </section>

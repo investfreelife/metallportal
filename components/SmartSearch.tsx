@@ -1,5 +1,5 @@
 'use client'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Turnstile } from '@marsidev/react-turnstile'
 
 interface CartItem {
@@ -38,6 +38,17 @@ export function SmartSearch() {
   const recognitionRef = useRef<any>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const voiceCallbackRef = useRef<((text: string) => void) | null>(null)
+
+  // TASK_054 (audit SEV-3): cleanup на unmount. Раньше если юзер закрывал
+  // страницу/уходил во время голос-записи — SpeechRecognition продолжал
+  // слушать в фоне, а setInterval тикать (warning от React о setState
+  // в unmounted; на мобильных утечка батареи). Чиним: stop+clearInterval.
+  useEffect(() => {
+    return () => {
+      try { recognitionRef.current?.stop() } catch {}
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+  }, [])
 
   // Быстрый поиск по каталогу (текстовый ввод)
   const search = async (q?: string) => {
@@ -246,28 +257,39 @@ export function SmartSearch() {
     <div className="w-full max-w-2xl mx-auto">
       <div className="flex gap-2">
         <input
+          type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && search()}
           placeholder="Что ищете? Например: арматура 12мм 20 тонн, труба 40х40 10 тонн"
+          aria-label="Поиск металлопроката (AI)"
           className="flex-1 border-2 border-gray-200 rounded-2xl px-5 py-4 text-sm focus:outline-none focus:border-blue-500 transition-colors"
         />
+        {/* TASK_054 (audit 2026-06-18 SEV-2 a11y): aria-label на иконочных
+            контролах — screenreader без них озвучивает «button 🔍» / «🎤». */}
         <button
+          type="button"
           onClick={() => search()}
           disabled={loading}
+          aria-label={loading ? 'Идёт поиск' : 'Найти'}
+          title="Найти"
           className="w-14 h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center hover:bg-blue-700 disabled:opacity-50 flex-shrink-0"
         >
           {loading ? (
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-          ) : '🔍'}
+            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden="true" />
+          ) : <span aria-hidden="true">🔍</span>}
         </button>
         <button
+          type="button"
           onClick={() => recording ? stopVoice() : startVoice()}
+          aria-label={recording ? 'Остановить запись голоса' : 'Голосовой поиск'}
+          aria-pressed={recording}
+          title={recording ? 'Стоп' : 'Голосовой поиск'}
           className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 text-xl transition-colors ${
             recording ? 'bg-red-500 text-white animate-pulse' : 'bg-gray-100 hover:bg-gray-200'
           }`}
         >
-          🎤
+          <span aria-hidden="true">🎤</span>
         </button>
       </div>
       {recording && (

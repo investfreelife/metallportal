@@ -107,6 +107,28 @@ async function handleCrmCallback(callbackQuery: {
 
 export async function POST(req: NextRequest) {
   try {
+    // TASK_052 hardening (audit 2026-06-18 SEV-1):
+    // Telegram при setWebhook(secret_token=…) шлёт его в каждом запросе как
+    // `X-Telegram-Bot-Api-Secret-Token`. Без проверки любой подделает
+    // callback_query/message и:
+    //   - аппрувит/реджектит позиции в CRM AI-очереди (handleCrmCallback)
+    //   - входит в reply-mode менеджера и шлёт сообщения клиентам
+    //   - инжектит контакты в БД
+    // Установить секрет:
+    //   1) Vercel env TELEGRAM_WEBHOOK_SECRET=<random ≥32 chars>
+    //   2) re-register webhook (см. /api/telegram/register-webhook)
+    const expectedSecret = process.env.TELEGRAM_WEBHOOK_SECRET;
+    if (expectedSecret) {
+      const got = req.headers.get("x-telegram-bot-api-secret-token");
+      if (got !== expectedSecret) {
+        console.warn("[telegram/webhook] secret mismatch, drop");
+        return NextResponse.json({ ok: true });  // тихо, чтобы не сигналить злоумышленнику
+      }
+    } else {
+      // Fail-open для bootstrap (env ещё не задан), но громко логируем.
+      console.warn("[telegram/webhook] TELEGRAM_WEBHOOK_SECRET not set — accepting all callbacks (INSECURE)");
+    }
+
     const body = await req.json();
 
     // Handle CRM inline button callbacks
@@ -261,11 +283,19 @@ export async function POST(req: NextRequest) {
             user_name: firstName,
           }).eq("code", code);
 
-          // Создать профиль если нет
+          // Создать профиль если нет.
+          // TASK_054 (audit SEV-3): пароль был `tg_${tgId}_${code.slice(0,8)}`
+          // — детерминированно выводился из публичного tgId. Логин по
+          // email/password этих юзеров идёт только через telegram-flow, но
+          // если кто-то перебирает tgId — мог получить session. Заменил на
+          // 32 байта CSPRNG → пароль теряется навсегда (что и нужно для
+          // synthetic-user; вход — только через tg auth).
           const syntheticEmail = `tg_${tgId}@telegram.metallportal.app`;
+          const { randomBytes } = await import('crypto');
+          const syntheticPassword = randomBytes(32).toString('hex');
           await supabase.auth.admin.createUser({
             email: syntheticEmail,
-            password: `tg_${tgId}_${code.slice(0,8)}`,
+            password: syntheticPassword,
             email_confirm: true,
             user_metadata: { full_name: firstName, telegram_id: tgId },
           }).catch(() => {});

@@ -1,5 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { requireRole } from "@/lib/auth";
+
+/**
+ * TASK_052 hardening (audit 2026-06-18 SEV-1):
+ * Раньше без auth — позволял phone-enumeration через profiles + рассылку
+ * произвольных Telegram-сообщений. Теперь — только admin/manager (internal
+ * CRM endpoint, дёргается при смене статуса заказа).
+ */
+export const runtime = "nodejs";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -26,6 +35,9 @@ async function sendTelegram(chatId: number, text: string) {
 }
 
 export async function POST(req: NextRequest) {
+  const auth = await requireRole(["admin", "manager"]);
+  if (!auth.ok) return auth.error;
+
   try {
     const { orderId, status, customerPhone, customerName } = await req.json();
 
@@ -81,7 +93,10 @@ ${status === "confirmed" ? "Менеджер подтвердил заказ, с
     }
 
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+  } catch (e: unknown) {
+    // SEV-2 fix: не отдаём сырое сообщение Supabase клиенту
+    const msg = e instanceof Error ? e.message : "internal error";
+    console.error("[orders/notify] error:", msg);
+    return NextResponse.json({ error: "Notify failed" }, { status: 500 });
   }
 }

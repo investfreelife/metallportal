@@ -310,14 +310,28 @@ export default function CartPage() {
                   className="w-full bg-input border border-border rounded-lg px-3 py-2.5 text-sm text-foreground outline-none focus:border-gold transition-colors resize-none" />
               </div>
 
-              {/* Consent */}
+              {/* Consent — TASK_054 (audit 2026-06-18 SEV-2 a11y):
+                  был <div onClick> внутри label — мышью работает, клавиатурой нет
+                  (Tab/Space). Заменил на нативный <input type="checkbox"> с визуально
+                  скрытой, но фокусируемой иконкой через peer-checked, чтобы и стиль,
+                  и a11y. */}
               <label className="flex items-start gap-2.5 cursor-pointer">
-                <div onClick={() => setConsent(v => !v)}
-                  className={`mt-0.5 w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center transition-all ${
+                <input
+                  type="checkbox"
+                  checked={consent}
+                  onChange={e => setConsent(e.target.checked)}
+                  required
+                  aria-required="true"
+                  className="peer sr-only"
+                />
+                <span
+                  aria-hidden="true"
+                  className={`mt-0.5 w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center transition-all peer-focus-visible:ring-2 peer-focus-visible:ring-gold peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-background ${
                     consent ? "bg-gold border-gold" : "border-border hover:border-gold"
-                  }`}>
+                  }`}
+                >
                   {consent && <Check size={10} className="text-black" />}
-                </div>
+                </span>
                 <span className="text-xs text-muted-foreground leading-relaxed">
                   Я согласен на обработку{" "}
                   <Link href="/privacy" target="_blank" className="text-gold hover:underline inline-flex items-center gap-0.5">

@@ -33,6 +33,7 @@ const SEGMENT_META: Record<string, { label: string; color: string; bg: string }>
 const SOURCE_LABELS: Record<string, string> = {
   site: 'Сайт', telegram: 'Telegram', referral: 'Реферал',
   cold: 'Холодный', email: 'Email', phone: 'Звонок', vk: 'VK', manual: 'Вручную',
+  dream_landing: '🏠 Мечта (лендинг)',
 }
 
 export function ContactsClient({ contacts, stats }: { contacts: any[]; stats: any }) {
@@ -50,7 +51,8 @@ export function ContactsClient({ contacts, stats }: { contacts: any[]; stats: an
     const matchSegment = segment === 'all' ||
       (segment === 'hot'  && score > 60) ||
       (segment === 'warm' && score >= 30 && score <= 60) ||
-      (segment === 'cold' && score < 30)
+      (segment === 'cold' && score < 30) ||
+      (segment === 'dream' && c.source === 'dream_landing')
     return matchSearch && matchSegment
   })
 
@@ -79,6 +81,7 @@ export function ContactsClient({ contacts, stats }: { contacts: any[]; stats: an
               { key: 'hot',  label: `🔴 Горячие (${stats.hot})` },
               { key: 'warm', label: `🟡 Тёплые (${stats.warm})` },
               { key: 'cold', label: `🔵 Холодные (${stats.cold})` },
+              ...(stats.dream ? [{ key: 'dream', label: `🏠 Мечта (${stats.dream})` }] : []),
             ].map(f => (
               <button key={f.key} onClick={() => setSegment(f.key)}
                 className={`text-[10px] px-3 py-1.5 rounded-lg border transition-all whitespace-nowrap ${
@@ -113,7 +116,11 @@ export function ContactsClient({ contacts, stats }: { contacts: any[]; stats: an
               return (
                 <tr key={contact.id}
                   className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
-                  onClick={() => router.push(`/contacts/${contact.id}`)}>
+                  onClick={() => router.push(
+                    contact.dream_slug
+                      ? `/dream/leads/${contact.dream_slug}`
+                      : `/contacts/${contact.id}`
+                  )}>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2.5">
                       <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-medium flex-shrink-0"

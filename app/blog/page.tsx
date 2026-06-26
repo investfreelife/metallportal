@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getAllArticles } from "@/lib/blog";
 import BlogCard from "@/components/blog/BlogCard";
 import { SITE_URL } from "@/lib/site";
+import { jsonLdString } from "@/lib/jsonLd";
 
 /**
  * Blog listing — `/blog`.
@@ -44,7 +45,7 @@ export default function BlogIndexPage() {
     <main className="bg-background min-h-screen">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(itemListSchema) }}
       />
       <div className="container-main py-8 md:py-12">
         <header className="mb-8 md:mb-12">

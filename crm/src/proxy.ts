@@ -21,6 +21,8 @@ const PUBLIC_EXACT = new Set([
 // PUBLIC_PREFIX — все sub-paths bypass session check (handlers сами авторизуют).
 const PUBLIC_PREFIX = [
   '/_next/', '/favicon', '/api/auth/', '/track.js', '/partner', '/api/ref/',
+  // Сегментные лендинги (статика в public/landing/) — публичны для рекламного трафика.
+  '/landing/',
   '/api/sergey-actions/',  // /[id]/status, /[id]/check
   // URGENT 2026-05-17 OMNICHANNEL: /api/inbox/send + /api/inbox/ai-suggest
   // handlers сами проверяют session cookie ИЛИ x-agent-token.

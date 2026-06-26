@@ -36,11 +36,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   }, []);
 
-  const persist = (next: CartItem[]) => {
-    setItems(next);
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
-  };
-
   const addItem = useCallback((item: Omit<CartItem, "quantity">) => {
     setItems(prev => {
       const existing = prev.find(i => i.id === item.id);
@@ -52,16 +47,32 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  // TASK_054 (audit SEV-3): removeItem/updateQty были useCallback с [items]
+  // в deps — каждый рендер пересоздавали ссылку, и если consumer успел
+  // вызвать старую ссылку до перерисовки — работал со stale items.
+  // Перевёл на functional updater (setItems(prev => ...)) — закрываемся
+  // на актуальное состояние и можем убрать items из deps.
   const removeItem = useCallback((id: string) => {
-    persist(items.filter(i => i.id !== id));
-  }, [items]);
+    setItems(prev => {
+      const next = prev.filter(i => i.id !== id);
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }, []);
 
   const updateQty = useCallback((id: string, qty: number) => {
     if (qty < 1) return;
-    persist(items.map(i => i.id === id ? { ...i, quantity: qty } : i));
-  }, [items]);
+    setItems(prev => {
+      const next = prev.map(i => i.id === id ? { ...i, quantity: qty } : i);
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }, []);
 
-  const clearCart = useCallback(() => persist([]), []);
+  const clearCart = useCallback(() => {
+    setItems([]);
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify([])); } catch {}
+  }, []);
 
   const count = items.reduce((s, i) => s + i.quantity, 0);
 

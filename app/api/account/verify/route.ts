@@ -1,7 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
+import { accountVerifyRatelimit, getClientIp } from '@/lib/ratelimit'
 
+/**
+ * POST /api/account/verify  (TASK_052 hardening, audit 2026-06-18 SEV-1)
+ *
+ * Раньше: 6-значный OTP без rate-limit/счётчика попыток → брутфорс ≤10 мин
+ * (1e6 комбинаций ÷ скорость HTTP = захват кабинета). Теперь:
+ *   - sliding-window 5 попыток / 15 мин per-IP И per-phone (distrib + targeted)
+ *   - 429 после превышения, с Retry-After
+ *   - на неверном OTP — generic "Неверный код" (без раскрытия что именно)
+ *   - OTP всё ещё генерится через `crypto.randomInt` в /login (зафиксено отдельно)
+ */
 function getSupabase() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -10,6 +21,8 @@ function getSupabase() {
 }
 
 const TENANT_ID = 'a1000000-0000-0000-0000-000000000001'
+
+export const runtime = 'nodejs'
 
 export async function POST(req: NextRequest) {
   const { phone, otp } = await req.json()
@@ -20,6 +33,20 @@ export async function POST(req: NextRequest) {
     : digits.length === 10 ? '+7' + digits
     : '+' + digits
 
+  // SEV-1: rate-limit per-IP И per-phone — нужно ОБА превысить, чтобы не получить хвост.
+  const ip = getClientIp(req)
+  const ipLimit = await accountVerifyRatelimit.limit(`ip:${ip}`)
+  const phoneLimit = await accountVerifyRatelimit.limit(`phone:${normalized}`)
+  const blocked = !ipLimit.success || !phoneLimit.success
+  if (blocked) {
+    const reset = Math.max(ipLimit.reset, phoneLimit.reset)
+    const retryAfterSec = Math.max(1, Math.ceil((reset - Date.now()) / 1000))
+    return NextResponse.json(
+      { error: 'Слишком много попыток. Попробуйте через несколько минут.' },
+      { status: 429, headers: { 'Retry-After': String(retryAfterSec) } }
+    )
+  }
+
   const supabase = getSupabase()
 
   const { data: contact } = await supabase.from('contacts')
@@ -28,8 +55,11 @@ export async function POST(req: NextRequest) {
     .eq('phone', normalized)
     .maybeSingle()
 
-  if (!contact) return NextResponse.json({ error: 'Контакт не найден' }, { status: 404 })
-  if (contact.login_otp !== String(otp)) return NextResponse.json({ error: 'Неверный код' }, { status: 400 })
+  // Generic error: не раскрываем "Контакт не найден" vs "Неверный код"
+  // (защита от phone-enumeration). 400 единый.
+  if (!contact || contact.login_otp !== String(otp)) {
+    return NextResponse.json({ error: 'Неверный код или истёк' }, { status: 400 })
+  }
   if (!contact.login_otp_expires_at || new Date(contact.login_otp_expires_at) < new Date()) {
     return NextResponse.json({ error: 'Код истёк. Запросите новый.' }, { status: 400 })
   }

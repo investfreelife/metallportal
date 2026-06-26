@@ -52,6 +52,25 @@ export const registerRatelimit = new Ratelimit({
   prefix: 'rl:register',
 })
 
+// TASK_052 hardening (audit 2026-06-18 SEV-1): brute-force OTP /api/account/verify.
+// 6-значный OTP при rate=∞ ломается за секунды. 5 попыток / 15 мин per-key —
+// окно жизни OTP 10 мин, энтропия ~17.6 бит → практически непробиваемо.
+// Ключи: per-IP (защита от distributed) + per-phone (защита от targeted с rotating IP).
+export const accountVerifyRatelimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(5, '15 m'),
+  analytics: true,
+  prefix: 'rl:acct-verify',
+})
+
+// /api/account/login (OTP send) — 3 попытки / 1 ч per-phone, чтобы не спамить SMS/TG.
+export const accountLoginRatelimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(3, '1 h'),
+  analytics: true,
+  prefix: 'rl:acct-login',
+})
+
 /**
  * Best-effort client IP from common Vercel/Cloudflare proxy headers.
  *

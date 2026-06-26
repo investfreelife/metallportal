@@ -9,16 +9,17 @@ import CTASection from "@/components/home/CTASection";
 import Link from "next/link";
 import { CheckCircle, Calculator, ArrowRight } from "lucide-react";
 import { DocumentUpload } from "@/components/DocumentUpload";
+import { jsonLdString } from "@/lib/jsonLd";
 
 export const metadata: Metadata = {
   title: "Харланметалл — Металлопрокат оптом и в розницу в Москве",
   description:
-    "Купите металлопрокат оптом и в розницу: арматура, трубы, листовой металл. 1500+ позиций в наличии. Доставка по Москве и всей России. Цены от производителя.",
+    "Купите металлопрокат оптом и в розницу: арматура, трубы, листовой металл. 12 000+ позиций в наличии. Доставка по Москве и всей России. Цены от производителя.",
   alternates: { canonical: "/" },
   openGraph: {
     title: "Харланметалл — Металлопрокат оптом и в розницу в Москве",
     description:
-      "Купите металлопрокат оптом и в розницу: арматура, трубы, листовой металл. 1500+ позиций в наличии. Доставка по Москве и всей России.",
+      "Купите металлопрокат оптом и в розницу: арматура, трубы, листовой металл. 12 000+ позиций в наличии. Доставка по Москве и всей России.",
     url: "/",
     type: "website",
   },
@@ -64,7 +65,7 @@ export default function HomePage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(organizationSchema) }}
       />
       <Hero />
       <TrustCounters />
@@ -109,7 +110,11 @@ export default function HomePage() {
       <CTASection />
       <section className="bg-background py-14">
         <div className="container-main">
-          <h2 className="text-3xl font-bold text-foreground mb-5">Металлопрокат и металлоконструкции — Харланметалл</h2>
+          {/* TASK_053 (audit 2026-06-18 SEV-1): главной нужен ровно ОДИН h1.
+              В живом HTML было 0×h1 / 7×h2 — Google теряет сильнейший on-page
+              сигнал ВЧ-коммерции. Поднимаем этот h2 → h1 (он содержит главный
+              keyword «Металлопрокат и металлоконструкции — Харланметалл»). */}
+          <h1 className="text-3xl font-bold text-foreground mb-5">Металлопрокат и металлоконструкции — Харланметалл</h1>
           <p className="text-muted-foreground leading-relaxed mb-10 max-w-4xl">
             Харланметалл — крупный поставщик металлопроката и производитель металлоконструкций для частных лиц, строительных компаний и промышленных предприятий по всей России. Прямые договоры с проверенными заводами-производителями позволяют нам предлагать металл оптом и в розницу по конкурентным ценам без посредников. Вся продукция соответствует требованиям ГОСТ и действующим строительным нормам.
           </p>
@@ -269,7 +274,7 @@ export default function HomePage() {
           <h2 className="text-2xl font-bold text-foreground text-center mb-8">Почему выбирают Харланметалл</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-4xl mx-auto">
             {[
-              "Более 1 500 позиций металлопроката в наличии на складе",
+              "Более 12 000 позиций металлопроката в наличии на складе",
               "Свыше 50 проверенных поставщиков и производителей",
               "Изготовление металлоконструкций любой сложности под заказ",
               "Работа с физическими и юридическими лицами — НДС, все документы",

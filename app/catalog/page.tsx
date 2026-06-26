@@ -3,13 +3,17 @@ import { getFullCategoryTree } from "@/lib/queries";
 import type { Metadata } from "next";
 import Breadcrumbs from "@/components/seo/Breadcrumbs";
 import { SECTION_METALLPROKAT, SECTION_META } from "@/lib/sections";
+import { SITE_URL } from "@/lib/site";
 
 export const revalidate = 3600;
 
+// TASK_053 (audit 2026-06-18 SEV-2): canonical на /catalog — раньше отсутствовал,
+// риск дублей при utm/ref параметрах. Категорийные [category]/[subcategory] уже OK.
 export const metadata: Metadata = {
   title: "Каталог металлопроката — Харланметалл",
   description:
     "Полный каталог металлопроката: сортовой прокат, листовой прокат, трубы, нержавеющая сталь, цветные металлы, инженерные системы. Оптом и в розницу.",
+  alternates: { canonical: `${SITE_URL}/catalog` },
 };
 
 /**
