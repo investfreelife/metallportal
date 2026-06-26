@@ -254,7 +254,18 @@ function CallModal({ call, onClose }: { call: Call; onClose: () => void }) {
             <div><span className="text-gray-500">Квалиф.:</span> {QUAL_BADGE[call.qualification]?.label ?? '—'}</div>
           </div>
 
-          {/* 🔊 АУДИО — прокси ElevenLabs */}
+          {/* TASK_034: ссылка на карточку клиента из модалки */}
+          {call.lead_slug && (
+            <Link
+              href={`/dream/leads/${call.lead_slug}`}
+              className="inline-flex items-center gap-1.5 text-[12px] font-medium text-blue-600 hover:text-blue-700 hover:underline"
+            >
+              👤 Открыть карточку клиента{call.lead_name ? `: ${call.lead_name}` : ''}
+              <span aria-hidden>→</span>
+            </Link>
+          )}
+
+          {/* 🔊 АУДИО — приоритет: наша сохранённая запись (recording_url) → прокси ElevenLabs */}
           {audioUrl ? (
             <div>
               <div className="text-[10px] uppercase font-bold text-gray-500 mb-1">🔊 Запись разговора</div>

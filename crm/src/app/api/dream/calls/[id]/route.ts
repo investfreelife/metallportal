@@ -50,7 +50,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     lesson:       meta.lesson       ?? null,
     next_step:    meta.next_step    ?? null,
     coaching:     meta.coaching     ?? null,
-    // URL прокси-аудио (есть запись только если conversation_id задан)
-    audio_url: data.conversation_id ? `/api/dream/calls/${id}/audio` : null,
+    // TASK_034: приоритет — НАША сохранённая запись из Supabase Storage
+    // (бакет dream-calls, public). Fallback — прокси к ElevenLabs живьём (геоблок РФ → бывает 0:00).
+    audio_url: data.recording_url || (data.conversation_id ? `/api/dream/calls/${id}/audio` : null),
   })
 }
