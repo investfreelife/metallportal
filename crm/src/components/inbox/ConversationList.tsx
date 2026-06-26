@@ -3,6 +3,7 @@
 import { RefObject, useEffect } from 'react'
 import type { ConversationCard } from './InboxApp'
 import { CHANNEL_META } from './InboxApp'
+import { TZ } from '@/lib/tz'
 
 interface Props {
   conversations: ConversationCard[]
@@ -24,10 +25,10 @@ function timeAgo(iso: string): string {
   const d = new Date(iso)
   const today = new Date()
   const isToday = d.toDateString() === today.toDateString()
-  if (isToday) return d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+  if (isToday) return d.toLocaleTimeString('ru-RU', { timeZone: TZ, hour: '2-digit', minute: '2-digit' })
   const sameYear = d.getFullYear() === today.getFullYear()
-  if (sameYear) return d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'short' })
-  return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit' })
+  if (sameYear) return d.toLocaleDateString('ru-RU', { timeZone: TZ, day: '2-digit', month: 'short' })
+  return d.toLocaleDateString('ru-RU', { timeZone: TZ, day: '2-digit', month: '2-digit', year: '2-digit' })
 }
 
 const PRIORITY_BADGE: Record<string, { emoji: string; cls: string }> = {

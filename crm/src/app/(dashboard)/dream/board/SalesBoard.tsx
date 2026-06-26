@@ -13,6 +13,7 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { nicheMeta, nicheBadgeCls } from '@/lib/dream/niches'
 import { BUILD_STATUS_RU, SALES_STAGE_RU, isClosedSale, salesStageCls, buildStatusCls } from '@/lib/dream/statuses'
+import { TZ } from '@/lib/tz'
 
 interface Lead {
   id: number; slug: string; name: string; niche: string | null; phone: string | null
@@ -221,7 +222,7 @@ export function SalesBoard({ leads: initial }: { leads: Lead[] }) {
                         )}
                         {lead.next_action_at && (
                           <div className="text-[10px] text-amber-700 mt-1.5">
-                            ⏰ {new Date(lead.next_action_at).toLocaleString('ru-RU', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })}
+                            ⏰ {new Date(lead.next_action_at).toLocaleString('ru-RU', { timeZone: TZ, day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })}
                             {lead.next_action_by === 'robot' && <span className="ml-1 text-purple-600">🤖</span>}
                             {lead.next_action_goal && <div className="text-[9px] text-gray-500 truncate">{lead.next_action_goal}</div>}
                           </div>

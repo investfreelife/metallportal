@@ -10,6 +10,7 @@
  */
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { fmtMsk } from '@/lib/tz'
 // audioUrl + детали подтягиваются динамически из /api/dream/calls/[id] в CallModal
 
 interface Call {
@@ -151,7 +152,7 @@ export function CallsClient() {
                 const qual = QUAL_BADGE[c.qualification] ?? QUAL_BADGE.unknown
                 return (
                   <tr key={c.id} className="hover:bg-gray-50">
-                    <td className="px-3 py-2 whitespace-nowrap text-gray-700">{new Date(c.created_at).toLocaleString('ru-RU')}</td>
+                    <td className="px-3 py-2 whitespace-nowrap text-gray-700">{fmtMsk(c.created_at)}</td>
                     <td className="px-3 py-2">
                       {c.lead_slug
                         ? <Link href={`/dream/leads/${c.lead_slug}`} className="text-blue-600 hover:underline font-medium">{c.lead_name}</Link>
@@ -245,7 +246,7 @@ function CallModal({ call, onClose }: { call: Call; onClose: () => void }) {
         <div className="flex-1 overflow-y-auto p-5 space-y-3">
           {/* Meta */}
           <div className="grid grid-cols-3 gap-2 text-[11px]">
-            <div><span className="text-gray-500">Дата:</span> {new Date(call.created_at).toLocaleString('ru-RU')}</div>
+            <div><span className="text-gray-500">Дата:</span> {fmtMsk(call.created_at)}</div>
             <div><span className="text-gray-500">Длит.:</span> {fmtDuration(call.duration_sec)}</div>
             <div><span className="text-gray-500">Стоимость:</span> {call.cost ? `${Number(call.cost).toFixed(2)} ₽` : '—'}</div>
             <div><span className="text-gray-500">Статус:</span> {call.status ?? '—'}</div>

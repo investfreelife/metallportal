@@ -13,7 +13,10 @@ export function formatCurrency(amount: number | null, currency = 'RUB'): string 
 
 export function formatDate(dateString: string | null): string {
   if (!dateString) return '—'
+  // TASK_033: Москва-время независимо от таймзоны компьютера зрителя.
+  // Данные в БД — UTC; форматирование — Europe/Moscow.
   return new Intl.DateTimeFormat('ru-RU', {
+    timeZone: 'Europe/Moscow',
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',

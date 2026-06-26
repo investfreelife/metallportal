@@ -9,6 +9,7 @@ import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { nicheMeta, nicheBadgeCls } from '@/lib/dream/niches'
 import { SALES_STAGE_RU, BUILD_STATUS_RU } from '@/lib/dream/statuses'
+import { TZ } from '@/lib/tz'
 
 export const dynamic = 'force-dynamic'
 
@@ -90,7 +91,7 @@ export default async function SchedulePage() {
                   return (
                     <li key={l.id} className="bg-white border border-gray-200 rounded-lg p-3 flex items-baseline gap-3">
                       <div className="flex-shrink-0 w-24 text-[13px] font-mono">
-                        {when.toLocaleString('ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                        {when.toLocaleString('ru-RU', { timeZone: TZ, day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                       </div>
                       <div className="flex-1 min-w-0">
                         <Link href={`/dream/leads/${l.slug}`} className="text-[13px] font-semibold text-gray-900 hover:text-blue-700 truncate block">

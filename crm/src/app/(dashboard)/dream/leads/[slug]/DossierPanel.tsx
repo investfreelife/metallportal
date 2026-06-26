@@ -14,6 +14,7 @@ import { NICHES, nicheMeta } from '@/lib/dream/niches'
 
 // TASK_022/024: единый источник лейблов из lib/dream/statuses
 import { SALES_STAGE_RU, QUALIFICATION_RU, BUILD_STATUS_RU, CHANNEL_RU, sourceMeta } from '@/lib/dream/statuses'
+import { TZ } from '@/lib/tz'
 
 interface Lead { slug: string; [k: string]: any }
 
@@ -23,7 +24,8 @@ function fmt(v: any, dash = '—'): string {
 }
 function fmtDateTime(iso: string | null): string {
   if (!iso) return '—'
-  try { return new Date(iso).toLocaleString('ru-RU', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) }
+  // TASK_033: МСК всегда, независимо от таймзоны компьютера.
+  try { return new Date(iso).toLocaleString('ru-RU', { timeZone: TZ, day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) }
   catch { return iso }
 }
 function fmtMinutes(sec: number | null): string {

@@ -4,6 +4,7 @@ import { RefObject, useEffect, useMemo, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { ConversationCard } from './InboxApp'
 import { CHANNEL_META } from './InboxApp'
+import { TZ } from '@/lib/tz'
 
 interface ThreadMessage {
   id: string
@@ -38,6 +39,7 @@ interface Props {
 function timeFmt(iso: string): string {
   if (!iso) return ''
   return new Date(iso).toLocaleString('ru-RU', {
+    timeZone: TZ,
     day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
   })
 }

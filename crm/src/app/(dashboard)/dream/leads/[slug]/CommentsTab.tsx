@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { fmtMsk } from '@/lib/tz'
 
 interface Comment {
   id: number
@@ -186,7 +187,7 @@ export function CommentsTab({ leadSlug, initial }: { leadSlug: string; initial: 
                 <div className="flex items-baseline gap-2 mb-1.5">
                   <span className="text-[11px] font-bold">{m.emoji} {m.label}</span>
                   <span className="text-[10px] opacity-70">от {c.author}</span>
-                  <span className="text-[10px] opacity-50 ml-auto">{new Date(c.created_at).toLocaleString('ru-RU')}</span>
+                  <span className="text-[10px] opacity-50 ml-auto">{fmtMsk(c.created_at)}</span>
                 </div>
                 {c.text && <p className="text-[13px] whitespace-pre-wrap mb-2">{c.text}</p>}
                 {c.attachment_url && (
@@ -195,7 +196,7 @@ export function CommentsTab({ leadSlug, initial }: { leadSlug: string; initial: 
                   </a>
                 )}
                 {c.is_resolved && c.resolved_at && (
-                  <div className="text-[10px] opacity-70 mt-1">✓ закрыт {c.resolved_by} {new Date(c.resolved_at).toLocaleDateString('ru-RU')}</div>
+                  <div className="text-[10px] opacity-70 mt-1">✓ закрыт {c.resolved_by} {fmtMsk(c.resolved_at, false)}</div>
                 )}
                 <div className="flex gap-1 mt-2">
                   <button onClick={() => toggleResolve(c)} className="text-[10px] px-2 py-1 bg-white/70 rounded hover:bg-white">

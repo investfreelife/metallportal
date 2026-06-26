@@ -8,6 +8,7 @@
  * Lazy-load: расшифровка/запись звонка подтягиваются по клику (отдельный endpoint).
  */
 import { useEffect, useState } from 'react'
+import { fmtMsk, TZ } from '@/lib/tz'
 
 interface Event {
   id: string
@@ -57,7 +58,7 @@ function timeAgo(iso: string): string {
   if (h < 24) return `${h} ч назад`
   const d = Math.floor(h / 24)
   if (d < 30) return `${d} дн назад`
-  return new Date(iso).toLocaleDateString('ru-RU')
+  return fmtMsk(iso, false)
 }
 
 export function HistoryTab({ leadSlug }: { leadSlug: string }) {
@@ -96,7 +97,7 @@ export function HistoryTab({ leadSlug }: { leadSlug: string }) {
   // Группируем по дням
   const byDay = new Map<string, Event[]>()
   filtered.forEach((e) => {
-    const d = new Date(e.ts).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })
+    const d = new Date(e.ts).toLocaleDateString('ru-RU', { timeZone: TZ, day: 'numeric', month: 'long', year: 'numeric' })
     if (!byDay.has(d)) byDay.set(d, [])
     byDay.get(d)!.push(e)
   })
@@ -143,7 +144,7 @@ export function HistoryTab({ leadSlug }: { leadSlug: string }) {
                           {a.emoji} {a.label}
                         </span>
                         <span className="text-[13px] font-medium text-gray-900 flex-1 truncate">{e.title}</span>
-                        <time className="text-[10px] text-gray-400 flex-shrink-0" title={new Date(e.ts).toLocaleString('ru-RU')}>
+                        <time className="text-[10px] text-gray-400 flex-shrink-0" title={fmtMsk(e.ts)}>
                           {timeAgo(e.ts)}
                         </time>
                       </div>

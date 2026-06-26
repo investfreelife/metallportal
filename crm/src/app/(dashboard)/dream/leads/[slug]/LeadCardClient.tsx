@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { fmtMsk } from '@/lib/tz'
 
 const STATUS_META: Record<string, { label: string; color: string; emoji: string }> = {
   new: { label: 'Новый', color: '#6366f1', emoji: '🆕' },
@@ -477,7 +478,7 @@ export default function LeadCardClient({ lead, activities, statusHistory, review
                           )}
                         </div>
                         <div className="text-[10px] text-gray-400 mt-2">
-                          сгенерён {new Date(l.generated_at).toLocaleDateString('ru-RU')}
+                          сгенерён {fmtMsk(l.generated_at, false)}
                         </div>
                       </div>
                     ))}

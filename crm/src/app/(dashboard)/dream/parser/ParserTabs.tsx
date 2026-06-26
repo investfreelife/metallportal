@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { fmtMsk } from '@/lib/tz'
 
 /**
  * 3 вкладки парсера (Sergey directive 2026-06-17):
@@ -226,7 +227,7 @@ function EnrichedView({ items }: { items: Biz[] }) {
 
           <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
             <span className="text-[10px] text-gray-400">
-              Спарсен {b.enriched_at ? new Date(b.enriched_at).toLocaleDateString('ru-RU') : '—'}
+              Спарсен {b.enriched_at ? fmtMsk(b.enriched_at, false) : '—'}
             </span>
             <span className="text-[11px] text-sky-600 font-medium">
               {b.dream_lead_slug ? 'Открыть карточку →' : 'Лид не привязан'}

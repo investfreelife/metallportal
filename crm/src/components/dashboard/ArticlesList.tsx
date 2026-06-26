@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { TZ } from '@/lib/tz'
 
 /**
  * ArticlesList — Section 4 «Статьи (Юля)».
@@ -131,6 +132,7 @@ export default async function ArticlesList() {
           {PUBLISHED_ARTICLES.map((a) => {
             const metrics = viewsByPath.get(a.slug)
             const publishedDate = new Date(a.publishedAt).toLocaleDateString('ru-RU', {
+              timeZone: TZ,
               day: 'numeric',
               month: 'long',
             })
